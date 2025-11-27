@@ -1,0 +1,20 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../generated/prisma"
+  moduleFormat = "cjs"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model Stock {
+  id        Int      @id @default(autoincrement())
+  nev       String
+  gyarto    String
+  lejarat   DateTime
+  ar        Int
+  mennyiseg Int
+  parcella  String
+}
