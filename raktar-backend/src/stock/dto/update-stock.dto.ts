@@ -1,4 +1,5 @@
 // src/stock/dto/update-stock.dto.ts
+import { Type } from 'class-transformer';
 import { IsString, IsNotEmpty, IsNumber, IsDate, IsPositive, Matches, IsOptional } from 'class-validator';
 
 export class UpdateStockDto {
@@ -13,8 +14,8 @@ export class UpdateStockDto {
   @IsOptional()
   gyarto?: string;
 
+  @Type(() => Date)   // ⬅️ EZ A KULCS
   @IsDate()
-  @IsOptional()
   lejarat: Date;
 
   @IsNumber()

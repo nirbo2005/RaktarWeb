@@ -16,7 +16,14 @@ async function bootstrap() {
     optionsSuccessStatus: 204,
   });
 
-  app.useGlobalPipes(new ValidationPipe());
+  // 🔑 FONTOS: transform: true kell, hogy a DTO-kban a @Type(() => Date) működjön
+  app.useGlobalPipes(
+    new ValidationPipe({
+      transform: true,
+      whitelist: true,      // opcionális: csak DTO-ban lévő mezőket engedjük
+      forbidNonWhitelisted: true, // opcionális: ismeretlen mezőt tiltsuk
+    }),
+  );
 
   app.useStaticAssets(path.join(__dirname, '..', '..', 'public'));
   app.setBaseViewsDir(path.join(__dirname, '..', '..', 'views'));
