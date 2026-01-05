@@ -1,0 +1,64 @@
+.product-grid-view {
+    font-family: Arial, sans-serif;
+}
+  
+.parcella-valaszto {
+    margin-bottom: 1rem;
+}
+
+.parcella-row {
+    margin-bottom: 0.5rem;
+}
+
+.parcella-btn {
+    margin-right: 0.3rem;
+    padding: 0.5rem 1rem;
+    cursor: pointer;
+    border: 1px solid #007bff;
+    border-radius: 4px;
+    background-color: white;
+    color: #007bff;
+    transition: all 0.2s ease;
+}
+
+.parcella-btn:hover {
+    background-color: #007bff;
+    color: white;
+}
+
+.parcella-btn.active {
+    background-color: #007bff;
+    color: white;
+}
+
+.polc-container {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+.polc {
+    border: 1px solid #ccc;
+    padding: 0.5rem;
+    border-radius: 5px;
+    width: 200px;
+}
+
+.polc h4 {
+    margin-bottom: 0.5rem;
+}
+
+.danger {
+    color: red;
+    font-weight: bold;
+}
+
+.warning {
+    color: orange;
+}
+
+.error {
+    color: red;
+    font-weight: bold;
+}
+
