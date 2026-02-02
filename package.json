@@ -1,0 +1,27 @@
+{
+  "name": "raktarweb",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "install-all": "npm install && cd raktar-backend && npm install && cd ../raktar-frontend && npm install",
+    "prisma:setup": "cd raktar-backend && npx prisma generate && npx prisma migrate dev --name create_basic_table",
+    "dev": "concurrently -n \"BACKEND,FRONTEND\" -c \"bgBlue,bgMagenta\" \"cd raktar-backend && npm run start:dev\" \"cd raktar-frontend && npm run dev\"",
+    "everything": "npm run install-all && npm run prisma:setup && npm run dev"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/nirbo2005/RaktarWeb.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/nirbo2005/RaktarWeb/issues"
+  },
+  "homepage": "https://github.com/nirbo2005/RaktarWeb#readme",
+  "description": "",
+  "devDependencies": {
+    "baseline-browser-mapping": "^2.9.19",
+    "concurrently": "^9.2.1"
+  }
+}
