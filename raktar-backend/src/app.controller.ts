@@ -1,4 +1,4 @@
-//app.controller.ts
+//src/stock/app.controller.ts
 import { Controller, Get, Render } from '@nestjs/common';
 import { AppService } from './app.service';
 
