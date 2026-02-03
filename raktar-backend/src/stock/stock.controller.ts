@@ -1,16 +1,16 @@
-import { 
-  Body, 
-  Controller, 
-  Delete, 
-  Get, 
-  Param, 
-  Post, 
-  Put, 
-  Query, 
-  UsePipes, 
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Post,
+  Put,
+  Query,
+  UsePipes,
   ValidationPipe,
   ParseIntPipe,
-  Patch
+  Patch,
 } from '@nestjs/common';
 import { StockService } from './stock.service';
 import { CreateStockDto } from './dto/create-stock.dto';
@@ -32,9 +32,8 @@ export class StockController {
   @Get(':id')
   async getOne(
     @Param('id', ParseIntPipe) id: number,
-    @Query('admin') admin?: string
+    @Query('admin') admin?: string,
   ) {
-    // Ha a query-ben admin=true jön, a töröltek között is keres
     return this.stockService.findOne(id, admin === 'true');
   }
 
@@ -50,8 +49,8 @@ export class StockController {
   @Put(':id')
   @UsePipes(new ValidationPipe({ whitelist: true, transform: true }))
   async update(
-    @Param('id', ParseIntPipe) id: number, 
-    @Body() body: UpdateStockDto & { userId: number }
+    @Param('id', ParseIntPipe) id: number,
+    @Body() body: UpdateStockDto & { userId: number },
   ) {
     const { userId, ...stockData } = body;
     return this.stockService.update(id, stockData, userId);
@@ -60,8 +59,8 @@ export class StockController {
   @ApiOperation({ summary: 'Termék puha törlése (Soft Delete)' })
   @Delete(':id')
   async delete(
-    @Param('id', ParseIntPipe) id: number, 
-    @Query('userId', ParseIntPipe) userId: number
+    @Param('id', ParseIntPipe) id: number,
+    @Query('userId', ParseIntPipe) userId: number,
   ) {
     return this.stockService.delete(id, userId);
   }
@@ -70,7 +69,7 @@ export class StockController {
   @Patch(':id/restore')
   async restore(
     @Param('id', ParseIntPipe) id: number,
-    @Query('userId', ParseIntPipe) userId: number
+    @Query('userId', ParseIntPipe) userId: number,
   ) {
     return this.stockService.restore(id, userId);
   }

@@ -9,10 +9,9 @@ import { AuditModule } from './audit/audit.module';
 
 @Module({
   imports: [
-    // A ConfigModule-t az imports lista elejére érdemes tenni
     ConfigModule.forRoot({
-      isGlobal: true, // Ezzel a beállítással nem kell minden modulban külön importálni a ConfigModule-t
-      envFilePath: '.env', // Megadjuk a környezeti változókat tartalmazó fájl útvonalát
+      isGlobal: true,
+      envFilePath: '.env',
     }),
     AuthModule,
     UserModule,

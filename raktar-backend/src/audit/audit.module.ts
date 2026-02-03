@@ -6,6 +6,6 @@ import { PrismaService } from '../prisma.service';
 @Module({
   controllers: [AuditController],
   providers: [AuditService, PrismaService],
-  exports: [AuditService], // Ez kritikus, hogy a StockService lássa!
+  exports: [AuditService],
 })
 export class AuditModule {}

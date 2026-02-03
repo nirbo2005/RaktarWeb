@@ -1,11 +1,17 @@
-import { Controller, Get, Param, Query, ParseIntPipe, ParseBoolPipe } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Param,
+  Query,
+  ParseIntPipe,
+  ParseBoolPipe,
+} from '@nestjs/common';
 import { AuditService } from './audit.service';
 
 @Controller('audit')
 export class AuditController {
   constructor(private readonly auditService: AuditService) {}
 
-  // Végpont: GET /audit/user/5?admin=true
   @Get('user/:userId')
   async getLogs(
     @Param('userId', ParseIntPipe) userId: number,

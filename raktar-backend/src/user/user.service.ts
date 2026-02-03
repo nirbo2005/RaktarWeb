@@ -22,7 +22,7 @@ export class UserService {
         nev: true,
         felhasznalonev: true,
         admin: true,
-      }
+      },
     });
   }
 
@@ -35,7 +35,7 @@ export class UserService {
   async findOne(id: number) {
     return this.prisma.user.findUnique({
       where: { id },
-      select: { id: true, nev: true, felhasznalonev: true, admin: true }
+      select: { id: true, nev: true, felhasznalonev: true, admin: true },
     });
   }
 }

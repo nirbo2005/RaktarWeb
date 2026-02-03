@@ -18,7 +18,6 @@ async function handleResponse(res: Response) {
   return res.json();
 }
 
-// --- AUTH ---
 export async function login(felhasznalonev: string, jelszo: string) {
   const res = await fetch(`${BASE_URL}/auth/login`, {
     method: "POST",
@@ -28,7 +27,11 @@ export async function login(felhasznalonev: string, jelszo: string) {
   return handleResponse(res);
 }
 
-export async function register(userData: { nev: string; felhasznalonev: string; jelszo: string }) {
+export async function register(userData: {
+  nev: string;
+  felhasznalonev: string;
+  jelszo: string;
+}) {
   const res = await fetch(`${BASE_URL}/user/register`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
@@ -37,7 +40,6 @@ export async function register(userData: { nev: string; felhasznalonev: string; 
   return handleResponse(res);
 }
 
-// --- AUDIT ---
 export async function getAuditLogs(userId: number, isAdmin: boolean) {
   const res = await fetch(`${BASE_URL}/audit/user/${userId}?admin=${isAdmin}`, {
     headers: getHeaders(),
@@ -45,14 +47,15 @@ export async function getAuditLogs(userId: number, isAdmin: boolean) {
   return handleResponse(res);
 }
 
-// --- STOCK ---
 export async function getProducts(): Promise<Product[]> {
   const res = await fetch(`${BASE_URL}/stock`, { headers: getHeaders() });
   return handleResponse(res);
 }
 
-export async function getProductById(id: number, isAdmin: boolean = false): Promise<Product & { isDeleted: boolean }> {
-  // Admin query paraméter átadása, hogy lássuk a törölt terméket is
+export async function getProductById(
+  id: number,
+  isAdmin: boolean = false,
+): Promise<Product & { isDeleted: boolean }> {
   const res = await fetch(`${BASE_URL}/stock/${id}?admin=${isAdmin}`, {
     headers: getHeaders(),
   });
@@ -68,7 +71,11 @@ export async function addProduct(product: Omit<Product, "id">, userId: number) {
   return handleResponse(res);
 }
 
-export async function updateProduct(id: number, product: Omit<Product, "id">, userId: number) {
+export async function updateProduct(
+  id: number,
+  product: Omit<Product, "id">,
+  userId: number,
+) {
   const res = await fetch(`${BASE_URL}/stock/${id}`, {
     method: "PUT",
     headers: getHeaders(),
@@ -85,7 +92,6 @@ export async function deleteProduct(id: number, userId: number) {
   return handleResponse(res);
 }
 
-// ÚJ: Termék visszaállítása
 export async function restoreProduct(id: number, userId: number) {
   const res = await fetch(`${BASE_URL}/stock/${id}/restore?userId=${userId}`, {
     method: "PATCH",

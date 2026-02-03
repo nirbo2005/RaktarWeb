@@ -1,4 +1,11 @@
-import { IsString, IsNotEmpty, IsBoolean, IsOptional, MinLength, MaxLength } from 'class-validator';
+import {
+  IsString,
+  IsNotEmpty,
+  IsBoolean,
+  IsOptional,
+  MinLength,
+  MaxLength,
+} from 'class-validator';
 
 export class CreateUserDto {
   @IsString({ message: 'A névnek szövegnek kell lennie!' })
@@ -7,7 +14,9 @@ export class CreateUserDto {
 
   @IsString()
   @IsNotEmpty({ message: 'A felhasználónév nem lehet üres!' })
-  @MinLength(3, { message: 'A felhasználónévnek legalább 3 karakternek kell lennie!' })
+  @MinLength(3, {
+    message: 'A felhasználónévnek legalább 3 karakternek kell lennie!',
+  })
   @MaxLength(20, { message: 'A felhasználónév maximum 20 karakter lehet!' })
   felhasznalonev: string;
 

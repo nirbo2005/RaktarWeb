@@ -7,12 +7,12 @@ import { JwtService } from '@nestjs/jwt';
 export class AuthService {
   constructor(
     private userService: UserService,
-    private jwtService: JwtService
+    private jwtService: JwtService,
   ) {}
 
   async login(felhasznalonev: string, jelszo: string) {
     const user = await this.userService.findByUsername(felhasznalonev);
-    
+
     if (!user) {
       throw new UnauthorizedException('Hibás felhasználónév vagy jelszó!');
     }
@@ -22,16 +22,20 @@ export class AuthService {
     if (!isMatch) {
       throw new UnauthorizedException('Hibás felhasználónév vagy jelszó!');
     }
-    const payload = { sub: user.id, username: user.felhasznalonev, admin: user.admin };
-    
+    const payload = {
+      sub: user.id,
+      username: user.felhasznalonev,
+      admin: user.admin,
+    };
+
     return {
       access_token: await this.jwtService.signAsync(payload),
       user: {
         id: user.id,
         nev: user.nev,
         felhasznalonev: user.felhasznalonev,
-        admin: user.admin
-      }
+        admin: user.admin,
+      },
     };
   }
 }

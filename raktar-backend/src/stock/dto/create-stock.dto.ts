@@ -1,4 +1,3 @@
-// src/stock/dto/create-stock.dto.ts
 import { Type } from 'class-transformer';
 import {
   IsString,
@@ -18,7 +17,7 @@ export class CreateStockDto {
   @IsNotEmpty()
   gyarto: string;
 
-  @Type(() => Date)   // ⬅️ EZ A KULCS
+  @Type(() => Date)
   @IsDate()
   lejarat: Date;
 
