@@ -34,105 +34,115 @@ function ProductList() {
 
   const sortedProducts = useMemo(() => {
     const copy = [...products];
-
     copy.sort((a, b) => {
       if (sortColumn === "lejarat") {
         return isAscending
           ? a.lejarat.getTime() - b.lejarat.getTime()
           : b.lejarat.getTime() - a.lejarat.getTime();
       }
-
       if (sortColumn === "mennyiseg") {
-        return isAscending
-          ? a.mennyiseg - b.mennyiseg
-          : b.mennyiseg - a.mennyiseg;
+        return isAscending ? a.mennyiseg - b.mennyiseg : b.mennyiseg - a.mennyiseg;
       }
-
       return isAscending
         ? a.nev.localeCompare(b.nev)
         : b.nev.localeCompare(a.nev);
     });
-
     return copy;
   }, [products, sortColumn, isAscending]);
 
   const handleDelete = async (id: number) => {
-    await deleteProduct(id);
-    setProducts((prev) => prev.filter((p) => p.id !== id));
+    if (window.confirm("Biztosan törölni szeretnéd ezt a terméket?")) {
+      await deleteProduct(id);
+      setProducts((prev) => prev.filter((p) => p.id !== id));
+    }
   };
 
-  const getRowClass = (p: Product) => {
+  const getStatusClasses = (p: Product) => {
     const now = new Date();
     const oneWeekLater = new Date();
     oneWeekLater.setDate(now.getDate() + 7);
 
-    if (p.lejarat <= now || p.mennyiseg < 10) {
-      return "danger";
-    }
-
-    if (p.lejarat <= oneWeekLater || p.mennyiseg < 100) {
-      return "warning";
-    }
-
-    return "";
+    if (p.lejarat <= now || p.mennyiseg < 10) return "bg-red-50 text-red-700";
+    if (p.lejarat <= oneWeekLater || p.mennyiseg < 100) return "bg-amber-50 text-amber-700";
+    return "bg-white text-gray-700";
   };
 
+  const thClass = "px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100 transition-colors";
+
   return (
-    <div>
-      <h1>Raktárkészlet</h1>
+    <div className="min-h-screen bg-gray-50 p-8">
+      <div className="max-w-7xl mx-auto">
+        
+        <div className="flex justify-between items-center mb-8">
+          <h1 className="text-3xl font-bold text-gray-800">📦 Aktuális Raktárkészlet</h1>
+          <button 
+            onClick={() => navigate("/add")}
+            className="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2.5 rounded-xl font-semibold shadow-lg transition-all"
+          >
+            + Új termék
+          </button>
+        </div>
 
-      {/* RÉGI RENDEZŐ GOMBOK */}
-      <div style={{ marginBottom: "1rem" }}>
-        <button onClick={() => handleSort("nev")}>
-          Rendezés név szerint
-        </button>
-        <button onClick={() => handleSort("lejarat")}>
-          Rendezés lejárat szerint
-        </button>
-        <button onClick={() => handleSort("mennyiseg")}>
-          Rendezés mennyiség szerint
-        </button>
+        <div className="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden">
+          <div className="overflow-x-auto">
+            <table className="min-w-full divide-y divide-gray-200">
+              <thead className="bg-gray-50">
+                <tr>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase">ID</th>
+                  <th className={thClass} onClick={() => handleSort("nev")}>
+                    Név {sortColumn === "nev" && (isAscending ? "↑" : "↓")}
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Gyártó</th>
+                  <th className={thClass} onClick={() => handleSort("lejarat")}>
+                    Lejárat {sortColumn === "lejarat" && (isAscending ? "↑" : "↓")}
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Ár</th>
+                  <th className={thClass} onClick={() => handleSort("mennyiseg")}>
+                    Mennyiség {sortColumn === "mennyiseg" && (isAscending ? "↑" : "↓")}
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Parcella</th>
+                  <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase">Műveletek</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-gray-200">
+                {sortedProducts.map((p) => (
+                  <tr key={p.id} className={`${getStatusClasses(p)} transition-colors hover:bg-opacity-50`}>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm font-mono text-gray-400">{p.id}</td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm font-bold">{p.nev}</td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{p.gyarto}</td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm">{p.lejarat.toLocaleDateString()}</td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm font-semibold">{p.ar.toLocaleString()} Ft</td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                      <span className={`px-2.5 py-1 rounded-full text-xs ${p.mennyiseg < 10 ? 'bg-red-200' : 'bg-gray-100'}`}>
+                        {p.mennyiseg} db
+                      </span>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
+                        <span className="bg-blue-50 text-blue-600 px-2 py-1 rounded border border-blue-100 uppercase text-xs font-bold">
+                            {p.parcella}
+                        </span>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium space-x-2">
+                      <button 
+                        onClick={() => navigate(`/modify/${p.id}`)}
+                        className="text-blue-600 hover:text-blue-900 bg-blue-50 px-3 py-1 rounded-md transition-colors"
+                      >
+                        Szerkesztés
+                      </button>
+                      <button 
+                        onClick={() => handleDelete(p.id)}
+                        className="text-red-600 hover:text-red-900 bg-red-50 px-3 py-1 rounded-md transition-colors"
+                      >
+                        Törlés
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
       </div>
-
-      <table>
-        <thead>
-          <tr>
-            <th>ID</th>
-            <th>Név</th>
-            <th>Gyártó</th>
-            <th>Lejárat</th>
-            <th>Ár</th>
-            <th>Mennyiség</th>
-            <th>Parcella</th>
-            <th>Műveletek</th>
-          </tr>
-        </thead>
-        <tbody>
-          {sortedProducts.map((p) => {
-            const rowClass = getRowClass(p);
-
-            return (
-              <tr key={p.id} className={rowClass}>
-                <td>{p.id}</td>
-                <td>{p.nev}</td>
-                <td>{p.gyarto}</td>
-                <td>{p.lejarat.toLocaleDateString()}</td>
-                <td>{p.ar}</td>
-                <td>{p.mennyiseg}</td>
-                <td>{p.parcella}</td>
-                <td>
-                  <button onClick={() => navigate(`/modify/${p.id}`)}>
-                    Módosítás
-                  </button>
-                  <button onClick={() => handleDelete(p.id)}>
-                    Törlés
-                  </button>
-                </td>
-              </tr>
-            );
-          })}
-        </tbody>
-      </table>
     </div>
   );
 }

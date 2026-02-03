@@ -4,7 +4,7 @@
   "main": "index.js",
   "scripts": {
     "install-all": "npm install && cd raktar-backend && npm install && cd ../raktar-frontend && npm install",
-    "prisma:setup": "cd raktar-backend && npx prisma generate && npx prisma migrate dev --name create_basic_table",
+    "prisma:setup": "cd raktar-backend && npx prisma generate && npx prisma migrate dev --name init && npx prisma db seed",
     "dev": "concurrently -n \"BACKEND,FRONTEND\" -c \"bgBlue,bgMagenta\" \"cd raktar-backend && npm run start:dev\" \"cd raktar-frontend && npm run dev\"",
     "master": "npm run install-all && npm run prisma:setup && npm run dev"
   },
