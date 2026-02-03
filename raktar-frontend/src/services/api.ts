@@ -1,10 +1,15 @@
 import type { Product } from "../types/Product";
 
-const BASE_URL = "http://localhost:3000/stock";
+const BASE_URL = "http://localhost:3000";
 
-/**
- * Közös response handler – normális hibaüzenetekhez
- */
+function getHeaders() {
+  const token = localStorage.getItem("token");
+  return {
+    "Content-Type": "application/json",
+    ...(token ? { Authorization: `Bearer ${token}` } : {}),
+  };
+}
+
 async function handleResponse(res: Response) {
   if (!res.ok) {
     const errorText = await res.text();
@@ -13,43 +18,78 @@ async function handleResponse(res: Response) {
   return res.json();
 }
 
-export async function getProducts(): Promise<Product[]> {
-  const res = await fetch(BASE_URL);
-  return handleResponse(res);
-}
-
-export async function getProductById(id: number): Promise<Product> {
-  const res = await fetch(`${BASE_URL}/${id}`);
-  return handleResponse(res);
-}
-
-export async function addProduct(product: Omit<Product, "id">) {
-  const res = await fetch(BASE_URL, {
+// --- AUTH ---
+export async function login(felhasznalonev: string, jelszo: string) {
+  const res = await fetch(`${BASE_URL}/auth/login`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(product),
+    body: JSON.stringify({ felhasznalonev, jelszo }),
   });
-
   return handleResponse(res);
 }
 
-export async function updateProduct(
-  id: number,
-  product: Omit<Product, "id">
-) {
-  const res = await fetch(`${BASE_URL}/${id}`, {
-    method: "PUT",
+export async function register(userData: { nev: string; felhasznalonev: string; jelszo: string }) {
+  const res = await fetch(`${BASE_URL}/user/register`, {
+    method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(product), // ⬅️ lejarat STRING
+    body: JSON.stringify(userData),
   });
-
   return handleResponse(res);
 }
 
-export async function deleteProduct(id: number) {
-  const res = await fetch(`${BASE_URL}/${id}`, {
-    method: "DELETE",
+// --- AUDIT ---
+export async function getAuditLogs(userId: number, isAdmin: boolean) {
+  const res = await fetch(`${BASE_URL}/audit/user/${userId}?admin=${isAdmin}`, {
+    headers: getHeaders(),
   });
+  return handleResponse(res);
+}
 
+// --- STOCK ---
+export async function getProducts(): Promise<Product[]> {
+  const res = await fetch(`${BASE_URL}/stock`, { headers: getHeaders() });
+  return handleResponse(res);
+}
+
+export async function getProductById(id: number, isAdmin: boolean = false): Promise<Product & { isDeleted: boolean }> {
+  // Admin query paraméter átadása, hogy lássuk a törölt terméket is
+  const res = await fetch(`${BASE_URL}/stock/${id}?admin=${isAdmin}`, {
+    headers: getHeaders(),
+  });
+  return handleResponse(res);
+}
+
+export async function addProduct(product: Omit<Product, "id">, userId: number) {
+  const res = await fetch(`${BASE_URL}/stock`, {
+    method: "POST",
+    headers: getHeaders(),
+    body: JSON.stringify({ ...product, userId }),
+  });
+  return handleResponse(res);
+}
+
+export async function updateProduct(id: number, product: Omit<Product, "id">, userId: number) {
+  const res = await fetch(`${BASE_URL}/stock/${id}`, {
+    method: "PUT",
+    headers: getHeaders(),
+    body: JSON.stringify({ ...product, userId }),
+  });
+  return handleResponse(res);
+}
+
+export async function deleteProduct(id: number, userId: number) {
+  const res = await fetch(`${BASE_URL}/stock/${id}?userId=${userId}`, {
+    method: "DELETE",
+    headers: getHeaders(),
+  });
+  return handleResponse(res);
+}
+
+// ÚJ: Termék visszaállítása
+export async function restoreProduct(id: number, userId: number) {
+  const res = await fetch(`${BASE_URL}/stock/${id}/restore?userId=${userId}`, {
+    method: "PATCH",
+    headers: getHeaders(),
+  });
   return handleResponse(res);
 }

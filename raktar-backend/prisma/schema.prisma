@@ -1,6 +1,5 @@
 generator client {
   provider = "prisma-client-js"
-  moduleFormat = "cjs"
 }
 
 datasource db {
@@ -9,11 +8,34 @@ datasource db {
 }
 
 model Stock {
-  id        Int      @id @default(autoincrement())
+  id        Int        @id @default(autoincrement())
   nev       String
   gyarto    String
   lejarat   DateTime
   ar        Int
   mennyiseg Int
   parcella  String
+  isDeleted Boolean    @default(false)
+  logs      AuditLog[]
+}
+
+model User {
+  id             Int        @id @default(autoincrement())
+  nev            String
+  felhasznalonev String     @unique
+  jelszo         String
+  admin          Boolean    @default(false)
+  logs           AuditLog[]
+}
+
+model AuditLog {
+  id      Int      @id @default(autoincrement())
+  idopont DateTime @default(now())
+  muvelet String
+  userId  Int
+  user    User     @relation(fields: [userId], references: [id])
+  stockId Int?
+  stock   Stock?   @relation(fields: [stockId], references: [id], onDelete: SetNull)
+  regiAdat Json?
+  ujAdat   Json?
 }

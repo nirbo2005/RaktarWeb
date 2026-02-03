@@ -1,51 +1,77 @@
-//stock.controller.ts
-import { Body, Controller, Delete, Get, Param, Post, Put } from '@nestjs/common';
+import { 
+  Body, 
+  Controller, 
+  Delete, 
+  Get, 
+  Param, 
+  Post, 
+  Put, 
+  Query, 
+  UsePipes, 
+  ValidationPipe,
+  ParseIntPipe,
+  Patch
+} from '@nestjs/common';
 import { StockService } from './stock.service';
 import { CreateStockDto } from './dto/create-stock.dto';
 import { UpdateStockDto } from './dto/update-stock.dto';
-import { ApiTags } from '@nestjs/swagger'; // For API documentation (optional)
-import { UsePipes, ValidationPipe } from '@nestjs/common'; // For validation
+import { ApiTags, ApiOperation, ApiQuery } from '@nestjs/swagger';
 
-@ApiTags('stock') // Swagger documentation tag for stock endpoints
-@Controller('stock') // Base route for stock endpoints
+@ApiTags('stock')
+@Controller('stock')
 export class StockController {
   constructor(private readonly stockService: StockService) {}
 
-  // Get all stock items
+  @ApiOperation({ summary: 'Összes aktív termék lekérése' })
   @Get()
   async getAll() {
     return this.stockService.findAll();
   }
 
-  // Get a single stock item by its ID
+  @ApiOperation({ summary: 'Egy termék lekérése (adminoknak a törölteket is)' })
   @Get(':id')
-  async getOne(@Param('id') id: string) {
-    return this.stockService.findOne(Number(id));
+  async getOne(
+    @Param('id', ParseIntPipe) id: number,
+    @Query('admin') admin?: string
+  ) {
+    // Ha a query-ben admin=true jön, a töröltek között is keres
+    return this.stockService.findOne(id, admin === 'true');
   }
 
-  // Create a new stock item
+  @ApiOperation({ summary: 'Új termék létrehozása naplózással' })
   @Post()
-  @UsePipes(new ValidationPipe({ whitelist: true, transform: true })) // Enables DTO validation
-  async create(@Body() body: CreateStockDto) {
-    return this.stockService.create(body);
+  @UsePipes(new ValidationPipe({ whitelist: true, transform: true }))
+  async create(@Body() body: CreateStockDto & { userId: number }) {
+    const { userId, ...stockData } = body;
+    return this.stockService.create(stockData, userId);
   }
 
-  // Update a stock item by its ID
+  @ApiOperation({ summary: 'Termék módosítása naplózással' })
   @Put(':id')
-  @UsePipes(new ValidationPipe({ whitelist: true, transform: true })) // Enables DTO validation
-  async update(@Param('id') id: string, @Body() body: UpdateStockDto) {
-    return this.stockService.update(Number(id), body);
+  @UsePipes(new ValidationPipe({ whitelist: true, transform: true }))
+  async update(
+    @Param('id', ParseIntPipe) id: number, 
+    @Body() body: UpdateStockDto & { userId: number }
+  ) {
+    const { userId, ...stockData } = body;
+    return this.stockService.update(id, stockData, userId);
   }
 
-  // Delete a stock item by its ID
+  @ApiOperation({ summary: 'Termék puha törlése (Soft Delete)' })
   @Delete(':id')
-  async delete(@Param('id') id: string) {
-    return this.stockService.delete(Number(id));
+  async delete(
+    @Param('id', ParseIntPipe) id: number, 
+    @Query('userId', ParseIntPipe) userId: number
+  ) {
+    return this.stockService.delete(id, userId);
   }
 
-  // Create sample stock data
-  @Post('mintaadat')
-  async createMintaAdat() {
-    return this.stockService.createMintaAdat();
+  @ApiOperation({ summary: 'Törölt termék visszaállítása' })
+  @Patch(':id/restore')
+  async restore(
+    @Param('id', ParseIntPipe) id: number,
+    @Query('userId', ParseIntPipe) userId: number
+  ) {
+    return this.stockService.restore(id, userId);
   }
 }

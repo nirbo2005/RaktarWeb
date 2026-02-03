@@ -1,0 +1,13 @@
+[
+  { "nev": "Kovács János", "felhasznalonev": "kjanos", "admin": false },
+  { "nev": "Nagy Ilona", "felhasznalonev": "nilona", "admin": false },
+  { "nev": "Szabó Péter", "felhasznalonev": "szpeter", "admin": false },
+  { "nev": "Tóth Anikó", "felhasznalonev": "taniko", "admin": false },
+  { "nev": "Kiss László", "felhasznalonev": "klaszlo", "admin": false },
+  { "nev": "Horváth Éva", "felhasznalonev": "heva", "admin": false },
+  { "nev": "Varga Zoltán", "felhasznalonev": "vzoltan", "admin": false },
+  { "nev": "Molnár Mária", "felhasznalonev": "mmaria", "admin": false },
+  { "nev": "Farkas Gábor", "felhasznalonev": "fgabor", "admin": false },
+  { "nev": "Balogh Judit", "felhasznalonev": "bjudit", "admin": false },
+  { "nev": "Boss", "felhasznalonev": "admin", "admin": true }
+]

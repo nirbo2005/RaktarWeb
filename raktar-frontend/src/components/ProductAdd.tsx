@@ -1,9 +1,11 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { addProduct } from "../services/api";
+import { useAuth } from "../context/AuthContext"; // 1. Importáljuk a context-et
 
 function ProductAdd() {
   const navigate = useNavigate();
+  const { user } = useAuth(); // 2. Kiszedjük a bejelentkezett felhasználót
 
   const [form, setForm] = useState({
     nev: "",
@@ -34,6 +36,12 @@ function ProductAdd() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
+    // 3. Ellenőrizzük, van-e user (biztonsági mentőöv)
+    if (!user) {
+      alert("Hiba: Nem sikerült azonosítani a felhasználót a naplózáshoz!");
+      return;
+    }
+
     await addProduct({
       nev: form.nev,
       gyarto: form.gyarto,
@@ -41,12 +49,12 @@ function ProductAdd() {
       ar: Number(form.ar),
       mennyiseg: Number(form.mennyiseg),
       parcella: form.parcella,
-    });
+    }, user.id); // 4. Átadjuk a user.id-t második paraméterként
 
     navigate("/");
   };
 
-  // Kiemelt stílus az input mezőknek a kód tisztasága érdekében
+  // Kiemelt stílus az input mezőknek
   const inputStyle = "w-full p-2.5 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block transition-all outline-none";
   const labelStyle = "block mb-2 text-sm font-medium text-gray-700";
 

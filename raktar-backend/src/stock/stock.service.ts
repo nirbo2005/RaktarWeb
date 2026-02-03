@@ -1,75 +1,52 @@
-//stock.service.ts
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from 'src/prisma.service';
 import { CreateStockDto } from './dto/create-stock.dto';
 import { UpdateStockDto } from './dto/update-stock.dto';
+import { AuditService } from '../audit/audit.service';
 
 @Injectable()
 export class StockService {
-  constructor(private prisma: PrismaService) {}
+  constructor(private prisma: PrismaService, private audit: AuditService) {}
 
-  // Find all stock items
   async findAll() {
-    return this.prisma.stock.findMany();
+    return this.prisma.stock.findMany({ where: { isDeleted: false } });
   }
 
-  // Find a single stock item by ID
-  async findOne(id: number) {
-    return this.prisma.stock.findUnique({
-      where: { id }, 
+  // ÚJ: A findOne mostantól opcionálisan a törölteket is megtalálja
+  async findOne(id: number, includeDeleted = false) {
+    const stock = await this.prisma.stock.findFirst({
+      where: includeDeleted ? { id } : { id, isDeleted: false },
     });
+    if (!stock) throw new NotFoundException(`Termék nem található!`);
+    return stock;
   }
 
-  // Create a new stock item
-  async create(data: CreateStockDto) {
-    try {
-      return await this.prisma.stock.create({
-        data,
-      });
-    } catch (error) {
-      throw new Error(`Error creating stock item: ${error.message}`);
-    }
+  async create(data: CreateStockDto, userId: number) {
+    const newStock = await this.prisma.stock.create({ data: { ...data, isDeleted: false } });
+    await this.audit.createLog(userId, 'CREATE', newStock.id, null, newStock);
+    return newStock;
   }
 
-  // Delete a stock item by ID
-  async delete(id: number) {
-    try {
-      return await this.prisma.stock.delete({
-        where: { id },
-      });
-    } catch (error) {
-      throw new Error(`Error deleting stock item: ${error.message}`);
-    }
+  async delete(id: number, userId: number) {
+    const oldData = await this.findOne(id);
+    const updated = await this.prisma.stock.update({ where: { id }, data: { isDeleted: true } });
+    await this.audit.createLog(userId, 'DELETE', id, oldData, null);
+    return updated;
   }
 
-  // Update a stock item by ID
-  async update(id: number, data: Partial<UpdateStockDto>) {
-    try {
-      return await this.prisma.stock.update({
-        where: { id },
-        data,
-      });
-    } catch (error) {
-      throw new Error(`Error updating stock item: ${error.message}`);
-    }
+  // ÚJ: Visszaállítás funkció
+  async restore(id: number, userId: number) {
+    const oldData = await this.findOne(id, true); // Itt engedjük a töröltet is
+    const restored = await this.prisma.stock.update({ where: { id }, data: { isDeleted: false } });
+    await this.audit.createLog(userId, 'RESTORE', id, { status: 'deleted' }, { status: 'active' });
+    return restored;
   }
 
-  // Create sample data (MintaAdat)
-  async createMintaAdat() {
-    try {
-      return await this.prisma.stock.create({
-        data: {
-          nev: 'Minta termék',
-          gyarto: 'Minta gyártó',
-          lejarat: new Date('2025-12-31'),
-          ar: 999,
-          mennyiseg: 100,
-          parcella: 'A1-1',
-        },
-      });
-    } catch (error) {
-      throw new Error(`Error creating sample stock item: ${error.message}`);
-    }
+  async update(id: number, data: Partial<UpdateStockDto>, userId: number) {
+    const oldData = await this.findOne(id);
+    const updated = await this.prisma.stock.update({ where: { id }, data });
+    await this.audit.createLog(userId, 'UPDATE', id, oldData, updated);
+    return updated;
   }
 }

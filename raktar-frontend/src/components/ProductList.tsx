@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { getProducts, deleteProduct } from "../services/api";
+import { useAuth } from "../context/AuthContext";
 import type { Product } from "../types/Product";
 
 type SortColumn = "nev" | "lejarat" | "mennyiseg";
@@ -11,6 +12,7 @@ function ProductList() {
   const [isAscending, setIsAscending] = useState(true);
 
   const navigate = useNavigate();
+  const { user } = useAuth();
 
   useEffect(() => {
     getProducts().then((data) => {
@@ -51,9 +53,16 @@ function ProductList() {
   }, [products, sortColumn, isAscending]);
 
   const handleDelete = async (id: number) => {
+    if (!user) return; // Plusz védelem
+
     if (window.confirm("Biztosan törölni szeretnéd ezt a terméket?")) {
-      await deleteProduct(id);
-      setProducts((prev) => prev.filter((p) => p.id !== id));
+      try {
+        await deleteProduct(id, user.id);
+        setProducts((prev) => prev.filter((p) => p.id !== id));
+      } catch (err) {
+        console.error("Hiba a törlés során:", err);
+        alert("Nem sikerült a törlés.");
+      }
     }
   };
 
@@ -74,13 +83,15 @@ function ProductList() {
       <div className="max-w-7xl mx-auto">
         
         <div className="flex justify-between items-center mb-8">
-          <h1 className="text-3xl font-bold text-gray-800">📦 Aktuális Raktárkészlet</h1>
-          <button 
-            onClick={() => navigate("/add")}
-            className="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2.5 rounded-xl font-semibold shadow-lg transition-all"
-          >
-            + Új termék
-          </button>
+          <h1 className="text-3xl font-bold text-gray-800 tracking-tight">📦 Aktuális Raktárkészlet</h1>
+          {user && (
+            <button 
+              onClick={() => navigate("/add")}
+              className="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2.5 rounded-xl font-semibold shadow-lg shadow-blue-200 transition-all active:scale-95"
+            >
+              + Új termék
+            </button>
+          )}
         </div>
 
         <div className="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden">
@@ -101,7 +112,8 @@ function ProductList() {
                     Mennyiség {sortColumn === "mennyiseg" && (isAscending ? "↑" : "↓")}
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Parcella</th>
-                  <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase">Műveletek</th>
+                  {/* CSAK HA BE VAN JELENTKEZVE: Fejléc oszlop */}
+                  {user && <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase">Műveletek</th>}
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-200">
@@ -113,7 +125,7 @@ function ProductList() {
                     <td className="px-6 py-4 whitespace-nowrap text-sm">{p.lejarat.toLocaleDateString()}</td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm font-semibold">{p.ar.toLocaleString()} Ft</td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                      <span className={`px-2.5 py-1 rounded-full text-xs ${p.mennyiseg < 10 ? 'bg-red-200' : 'bg-gray-100'}`}>
+                      <span className={`px-2.5 py-1 rounded-full text-xs ${p.mennyiseg < 10 ? 'bg-red-200 text-red-800' : 'bg-gray-100'}`}>
                         {p.mennyiseg} db
                       </span>
                     </td>
@@ -122,20 +134,23 @@ function ProductList() {
                             {p.parcella}
                         </span>
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium space-x-2">
-                      <button 
-                        onClick={() => navigate(`/modify/${p.id}`)}
-                        className="text-blue-600 hover:text-blue-900 bg-blue-50 px-3 py-1 rounded-md transition-colors"
-                      >
-                        Szerkesztés
-                      </button>
-                      <button 
-                        onClick={() => handleDelete(p.id)}
-                        className="text-red-600 hover:text-red-900 bg-red-50 px-3 py-1 rounded-md transition-colors"
-                      >
-                        Törlés
-                      </button>
-                    </td>
+                    {/* CSAK HA BE VAN JELENTKEZVE: Műveleti gombok */}
+                    {user && (
+                      <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium space-x-2">
+                        <button 
+                          onClick={() => navigate(`/modify/${p.id}`)}
+                          className="text-blue-600 hover:text-blue-900 bg-blue-50 px-3 py-1.5 rounded-lg transition-colors"
+                        >
+                          Szerkesztés
+                        </button>
+                        <button 
+                          onClick={() => handleDelete(p.id)}
+                          className="text-red-600 hover:text-red-900 bg-red-50 px-3 py-1.5 rounded-lg transition-colors"
+                        >
+                          Törlés
+                        </button>
+                      </td>
+                    )}
                   </tr>
                 ))}
               </tbody>
