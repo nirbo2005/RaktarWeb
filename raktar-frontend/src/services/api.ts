@@ -71,14 +71,14 @@ export async function addProduct(product: Omit<Product, "id">, userId: number) {
 }
 
 export async function updateProduct(
-  id: number,
-  product: Omit<Product, "id">,
+  id: number | string,
+  productData: Partial<Product>, // Partial-ra váltunk, hogy lehessen részleges
   userId: number,
 ) {
   const res = await fetch(`${BASE_URL}/stock/${id}`, {
-    method: "PUT",
+    method: "PUT", // Maradhat PUT, ha a backend azt várja, de a törzs már rugalmas
     headers: getHeaders(),
-    body: JSON.stringify({ ...product, userId }),
+    body: JSON.stringify({ ...productData, userId }),
   });
   return handleResponse(res);
 }

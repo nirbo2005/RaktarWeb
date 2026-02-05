@@ -35,7 +35,7 @@ export class StockService {
   async delete(id: number, userId: number) {
     const oldData = await this.findOne(id);
     const updated = await this.prisma.stock.update({
-      where: { id },
+      where: { id: Number(id) },
       data: { isDeleted: true },
     });
     await this.audit.createLog(userId, 'DELETE', id, oldData, null);
@@ -45,7 +45,7 @@ export class StockService {
   async restore(id: number, userId: number) {
     const oldData = await this.findOne(id, true);
     const restored = await this.prisma.stock.update({
-      where: { id },
+      where: { id: Number(id) },
       data: { isDeleted: false },
     });
     await this.audit.createLog(
@@ -60,8 +60,21 @@ export class StockService {
 
   async update(id: number, data: Partial<UpdateStockDto>, userId: number) {
     const oldData = await this.findOne(id);
-    const updated = await this.prisma.stock.update({ where: { id }, data });
-    await this.audit.createLog(userId, 'UPDATE', id, oldData, updated);
+    if (!oldData) {
+      throw new NotFoundException(`Termék (ID: ${id}) nem található az update-hez.`);
+    }
+
+    const updated = await this.prisma.stock.update({
+      where: { id: Number(id) },
+      data: data,
+    });
+
+    try {
+      await this.audit.createLog(userId, 'UPDATE', id, oldData, updated);
+    } catch (auditError) {
+      console.error("Audit naplózási hiba, de a mentés sikerült:", auditError);
+    }
+
     return updated;
   }
 }
