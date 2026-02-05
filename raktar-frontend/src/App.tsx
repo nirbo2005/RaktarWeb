@@ -7,7 +7,10 @@ import ProductModify from "./components/ProductModify";
 import ProductGridView from "./components/ProductGridView";
 import Login from "./components/Login";
 import Register from "./components/Register";
+import ProductDetails from "./components/ProductDetails";
 import Profile from "./components/Profile";
+import SearchResults from "./components/SearchResults";
+import ScannerView from "./components/ScannerView";
 
 function App() {
   return (
@@ -25,6 +28,9 @@ function App() {
               <Route path="/login" element={<Login />} />
               <Route path="/register" element={<Register />} />
               <Route path="/profile" element={<Profile />} />
+              <Route path="/scanner" element={<ScannerView />} />
+              <Route path="/search" element={<SearchResults />} />
+              <Route path="/product/:id" element={<ProductDetails />} />
             </Routes>
           </main>
         </div>

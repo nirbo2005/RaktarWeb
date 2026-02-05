@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { getProductById, updateProduct, restoreProduct } from "../services/api";
+import { getProductById, updateProduct, restoreProduct, deleteProduct } from "../services/api"; // HOZZÁADVA: deleteProduct
 import { useAuth } from "../context/AuthContext";
 
 function ProductModify() {
@@ -39,6 +39,19 @@ function ProductModify() {
       });
   }, [id, user, navigate]);
 
+  // HOZZÁADVA: Törlés kezelő függvény
+  const handleDelete = async () => {
+    if (!id || !user) return;
+    if (window.confirm("Biztosan törölni szeretnéd ezt a terméket?")) {
+      try {
+        await deleteProduct(Number(id), user.id);
+        navigate("/");
+      } catch (err) {
+        alert("Hiba történt a törlés során.");
+      }
+    }
+  };
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     if (name === "lejarat") {
@@ -74,6 +87,7 @@ function ProductModify() {
           ar: Number(form.ar),
           mennyiseg: Number(form.mennyiseg),
           parcella: form.parcella,
+          isDeleted: isDeleted,
         },
         user.id,
       );
@@ -83,8 +97,7 @@ function ProductModify() {
     }
   };
 
-  const inputStyle =
-    "w-full p-2.5 bg-white border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-indigo-500 focus:border-indigo-500 block transition-all outline-none shadow-sm";
+  const inputStyle = "w-full p-2.5 bg-white border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-indigo-500 focus:border-indigo-500 block transition-all outline-none shadow-sm";
   const labelStyle = "block mb-1.5 text-sm font-semibold text-gray-600";
 
   return (
@@ -94,12 +107,8 @@ function ProductModify() {
           <div className="flex items-center gap-3 text-amber-800">
             <span className="text-xl">⚠️</span>
             <div>
-              <p className="font-bold">
-                Ez a termék jelenleg törölt állapotban van!
-              </p>
-              <p className="text-xs">
-                Csak adminisztrátorként látod ezt az oldalt.
-              </p>
+              <p className="font-bold text-sm">Ez a termék jelenleg törölt állapotban van!</p>
+              <p className="text-xs">Csak adminisztrátorként látod ezt az oldalt.</p>
             </div>
           </div>
           <button
@@ -111,90 +120,59 @@ function ProductModify() {
         </div>
       )}
 
-      <div
-        className={`w-full max-w-2xl bg-white p-8 rounded-3xl shadow-2xl border ${isDeleted ? "border-amber-200" : "border-slate-100"}`}
-      >
-        <div className="flex items-center gap-4 mb-8">
-          <div className="p-3 bg-indigo-100 rounded-2xl">
-            <span className="text-2xl text-indigo-600 font-bold"># {id}</span>
+      <div className={`w-full max-w-2xl bg-white p-8 rounded-3xl shadow-2xl border ${isDeleted ? "border-amber-200" : "border-slate-100"}`}>
+        <div className="flex items-center justify-between mb-8">
+          <div className="flex items-center gap-4">
+            <div className="p-3 bg-indigo-100 rounded-2xl">
+              <span className="text-2xl text-indigo-600 font-bold"># {id}</span>
+            </div>
+            <div>
+              <h1 className="text-2xl font-extrabold text-gray-800 uppercase tracking-tight">Termék szerkesztése</h1>
+              <p className="text-gray-400 text-sm font-medium italic">{form.nev || "Betöltés..."}</p>
+            </div>
           </div>
-          <div>
-            <h1 className="text-2xl font-extrabold text-gray-800 uppercase tracking-tight">
-              Termék szerkesztése
-            </h1>
-            <p className="text-gray-400 text-sm font-medium italic">
-              {form.nev || "Betöltés..."}
-            </p>
-          </div>
+          
+          {/* Törlés gomb (csak ha nincs eleve törölve) */}
+          {!isDeleted && user && (
+            <button
+              type="button"
+              onClick={handleDelete}
+              className="p-3 text-red-500 hover:bg-red-50 rounded-2xl transition-colors group"
+              title="Termék végleges törlése"
+            >
+              🗑️
+            </button>
+          )}
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-6">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="md:col-span-2">
               <label className={labelStyle}>Termék megnevezése</label>
-              <input
-                name="nev"
-                value={form.nev}
-                onChange={handleChange}
-                className={inputStyle}
-                required
-              />
+              <input name="nev" value={form.nev} onChange={handleChange} className={inputStyle} required />
             </div>
             <div>
               <label className={labelStyle}>Gyártó vállalat</label>
-              <input
-                name="gyarto"
-                value={form.gyarto}
-                onChange={handleChange}
-                className={inputStyle}
-                required
-              />
+              <input name="gyarto" value={form.gyarto} onChange={handleChange} className={inputStyle} required />
             </div>
             <div>
               <label className={labelStyle}>Lejárati dátum</label>
-              <input
-                name="lejarat"
-                type="date"
-                className={inputStyle}
-                value={form.lejarat.toISOString().split("T")[0]}
-                onChange={handleChange}
-                required
-              />
+              <input name="lejarat" type="date" className={inputStyle} value={form.lejarat.toISOString().split("T")[0]} onChange={handleChange} required />
             </div>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 bg-indigo-50/50 p-4 rounded-2xl border border-indigo-100">
             <div>
               <label className={labelStyle}>Egységár (Ft)</label>
-              <input
-                name="ar"
-                type="number"
-                value={form.ar}
-                onChange={handleChange}
-                className={inputStyle}
-                required
-              />
+              <input name="ar" type="number" value={form.ar} onChange={handleChange} className={inputStyle} required />
             </div>
             <div>
               <label className={labelStyle}>Mennyiség</label>
-              <input
-                name="mennyiseg"
-                type="number"
-                value={form.mennyiseg}
-                onChange={handleChange}
-                className={inputStyle}
-                required
-              />
+              <input name="mennyiseg" type="number" value={form.mennyiseg} onChange={handleChange} className={inputStyle} required />
             </div>
             <div>
               <label className={labelStyle}>Parcella</label>
-              <input
-                name="parcella"
-                value={form.parcella}
-                onChange={handleChange}
-                className={inputStyle}
-                required
-              />
+              <input name="parcella" value={form.parcella} onChange={handleChange} className={inputStyle} required />
             </div>
           </div>
 
