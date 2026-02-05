@@ -6,5 +6,5 @@ export type Product = {
   ar: number;
   mennyiseg: number;
   parcella: string;
-  isDeleted: boolean; // EZT ADJUK HOZZÁ
+  isDeleted: boolean;
 };

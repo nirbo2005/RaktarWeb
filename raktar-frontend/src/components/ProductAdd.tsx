@@ -46,7 +46,7 @@ function ProductAdd() {
           ar: Number(form.ar),
           mennyiseg: Number(form.mennyiseg),
           parcella: form.parcella,
-          isDeleted: false, // JAVÍTÁS: Itt adjuk meg az alapértelmezett értéket
+          isDeleted: false,
         },
         user.id,
       );
@@ -58,12 +58,12 @@ function ProductAdd() {
 
   const inputStyle =
     "w-full p-3 bg-gray-50 dark:bg-slate-800/50 border border-gray-300 dark:border-slate-700 text-gray-900 dark:text-white text-sm rounded-2xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 block transition-all outline-none placeholder-gray-400";
-  const labelStyle = "block mb-2 text-xs font-black text-gray-700 dark:text-slate-400 uppercase tracking-widest";
+  const labelStyle =
+    "block mb-2 text-xs font-black text-gray-700 dark:text-slate-400 uppercase tracking-widest";
 
   return (
     <div className="flex items-center justify-center min-h-[80vh] transition-colors duration-500">
       <div className="w-full max-w-2xl bg-white dark:bg-slate-900/80 p-8 md:p-10 rounded-[3rem] shadow-2xl border border-gray-100 dark:border-slate-800 backdrop-blur-xl">
-        
         <div className="flex items-center justify-between mb-10">
           <h1 className="text-3xl font-black text-gray-800 dark:text-white italic uppercase tracking-tighter">
             📦 Új termék <span className="text-blue-600">rögzítése</span>

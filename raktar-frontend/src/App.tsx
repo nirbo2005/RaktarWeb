@@ -1,17 +1,17 @@
-import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
 import { useEffect, useState } from "react";
+import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
 import { AuthProvider } from "./context/AuthContext";
 import Navbar from "./components/Navbar";
 import ProductList from "./components/ProductList";
+import ProductDetails from "./components/ProductDetails";
 import ProductAdd from "./components/ProductAdd";
 import ProductModify from "./components/ProductModify";
 import ProductGridView from "./components/ProductGridView";
 import Login from "./components/Login";
 import Register from "./components/Register";
-import ProductDetails from "./components/ProductDetails";
 import Profile from "./components/Profile";
-import SearchResults from "./components/SearchResults";
 import ScannerView from "./components/ScannerView";
+import SearchResults from "./components/SearchResults";
 
 function ScrollToTop() {
   const { pathname, search } = useLocation();
@@ -24,7 +24,9 @@ function ScrollToTop() {
 }
 
 function App() {
-  const [isDark, setIsDark] = useState(() => localStorage.getItem("theme") === "dark");
+  const [isDark, setIsDark] = useState(
+    () => localStorage.getItem("theme") === "dark",
+  );
 
   useEffect(() => {
     if (isDark) {
@@ -40,12 +42,9 @@ function App() {
     <AuthProvider>
       <BrowserRouter>
         <ScrollToTop />
-        {/* A sötét mód alapbeállítása a fő div-en is látszik */}
         <div className="min-h-screen bg-gray-50 text-gray-900 dark:bg-slate-950 dark:text-slate-100 font-sans flex flex-col transition-colors duration-300">
           <Navbar />
-          
-          {/* Sötét mód gomb (Teszteléshez, teheted a Navbarba is) */}
-          <button 
+          <button
             onClick={() => setIsDark(!isDark)}
             className="fixed bottom-4 right-4 z-50 p-3 rounded-full bg-white dark:bg-slate-800 shadow-2xl border border-slate-200 dark:border-slate-700"
           >
@@ -55,6 +54,7 @@ function App() {
           <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 flex-grow w-full">
             <Routes>
               <Route path="/" element={<ProductList />} />
+              <Route path="/product/:id" element={<ProductDetails />} />
               <Route path="/add" element={<ProductAdd />} />
               <Route path="/modify/:id" element={<ProductModify />} />
               <Route path="/grid" element={<ProductGridView />} />
@@ -63,7 +63,6 @@ function App() {
               <Route path="/profile" element={<Profile />} />
               <Route path="/scanner" element={<ScannerView />} />
               <Route path="/search" element={<SearchResults />} />
-              <Route path="/product/:id" element={<ProductDetails />} />
             </Routes>
           </main>
         </div>

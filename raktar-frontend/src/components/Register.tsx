@@ -24,7 +24,6 @@ function Register() {
 
   return (
     <div className="min-h-[80vh] flex items-center justify-center transition-colors duration-500">
-      {/* Kártya sötét mód támogatással és üveg effektussal */}
       <div className="bg-white dark:bg-slate-900/80 p-8 rounded-[2rem] shadow-2xl w-full max-w-md border border-gray-100 dark:border-slate-800 backdrop-blur-xl">
         <h1 className="text-3xl font-black text-gray-800 dark:text-white mb-6 text-center italic uppercase tracking-tighter">
           Fiók létrehozása
@@ -58,7 +57,7 @@ function Register() {
             onChange={(e) => setForm({ ...form, jelszo: e.target.value })}
             required
           />
-          
+
           <button
             type="submit"
             className="w-full bg-blue-600 hover:bg-blue-500 text-white font-black py-4 rounded-2xl transition-all shadow-lg shadow-blue-600/20 active:scale-95 uppercase tracking-widest text-xs"
@@ -67,13 +66,12 @@ function Register() {
           </button>
         </form>
 
-        {/* Vissza a bejelentkezéshez szekció */}
         <div className="mt-8 pt-6 border-t border-gray-100 dark:border-slate-800 text-center">
           <p className="text-gray-500 dark:text-slate-400 text-sm font-medium mb-3">
             Már van fiókod?
           </p>
-          <Link 
-            to="/login" 
+          <Link
+            to="/login"
             className="text-blue-600 dark:text-blue-400 font-black uppercase text-xs tracking-widest hover:underline"
           >
             Vissza a bejelentkezéshez

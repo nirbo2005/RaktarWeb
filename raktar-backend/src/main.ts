@@ -29,7 +29,7 @@ async function bootstrap() {
   app.setViewEngine('ejs');
   const port = process.env.PORT ?? 3000;
   await app.listen(port, '0.0.0.0');
-  
+
   console.log(`🚀 Backend fut a következő címen: http://192.168.1.229:${port}`);
   console.log(`🌍 Hálózati elérés engedélyezve minden interfészen.`);
 }
