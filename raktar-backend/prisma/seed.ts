@@ -7,9 +7,12 @@ const prisma = new PrismaClient();
 
 async function main() {
   console.log('--- Seedelés megkezdése ---');
+
+  // 1. TERMÉKEK (STOCK) SZINKRONIZÁLÁSA
   const stockPath = path.join(__dirname, 'stock.json');
   const stockRaw = fs.readFileSync(stockPath, 'utf-8');
   const stocks = JSON.parse(stockRaw);
+
   for (const item of stocks) {
     await prisma.stock.upsert({
       where: { id: item.id },
@@ -33,27 +36,39 @@ async function main() {
     });
   }
   console.log(`✅ ${stocks.length} termék szinkronizálva.`);
+
+  // 2. FELHASZNÁLÓK (USER) SZINKRONIZÁLÁSA
   const usersPath = path.join(__dirname, 'users.json');
   const usersRaw = fs.readFileSync(usersPath, 'utf-8');
   const users = JSON.parse(usersRaw);
-  const plainPassword = '123456';
-  const hashedPassword = await bcrypt.hash(plainPassword, 10);
+
   for (const user of users) {
+    // Jelszó titkosítása - ha a JSON-ben van jelszó azt használja, ha nincs, akkor egy defaultot
+    const passwordToHash = user.jelszo || 'DefaultPass123!';
+    const hashedPassword = await bcrypt.hash(passwordToHash, 10);
+
     await prisma.user.upsert({
       where: { felhasznalonev: user.felhasznalonev },
       update: {
         nev: user.nev,
         admin: user.admin,
+        email: user.email,
+        telefonszam: user.telefonszam,
+        // Itt a jelszót nem frissítjük upsertnél, hogy ne írjuk felül 
+        // a user által már megváltoztatott jelszót véletlenül
       },
       create: {
         nev: user.nev,
         felhasznalonev: user.felhasznalonev,
         jelszo: hashedPassword,
         admin: user.admin,
+        email: user.email,
+        telefonszam: user.telefonszam,
+        isBanned: false,
       },
     });
   }
-  console.log(`✅ ${users.length} felhasználó szinkronizálva.`);
+  console.log(`✅ ${users.length} felhasználó szinkronizálva az új mezőkkel.`);
   console.log('--- Seedelés sikeresen befejeződött ---');
 }
 

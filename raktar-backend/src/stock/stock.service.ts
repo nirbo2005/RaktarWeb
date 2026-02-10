@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
 import { PrismaService } from 'src/prisma.service';
 import { CreateStockDto } from './dto/create-stock.dto';
 import { UpdateStockDto } from './dto/update-stock.dto';
@@ -13,7 +13,9 @@ export class StockService {
   ) {}
 
   async findAll() {
-    return this.prisma.stock.findMany({ where: { isDeleted: false } });
+    return this.prisma.stock.findMany({ 
+      where: { isDeleted: false } 
+    });
   }
 
   async findOne(id: number, includeDeleted = false) {
@@ -32,6 +34,16 @@ export class StockService {
     return newStock;
   }
 
+  async update(id: number, data: Partial<UpdateStockDto>, userId: number) {
+    const oldData = await this.findOne(id);
+    const updated = await this.prisma.stock.update({
+      where: { id: Number(id) },
+      data: data,
+    });
+    await this.audit.createLog(userId, 'UPDATE', id, oldData, updated);
+    return updated;
+  }
+
   async delete(id: number, userId: number) {
     const oldData = await this.findOne(id);
     const updated = await this.prisma.stock.update({
@@ -43,38 +55,40 @@ export class StockService {
   }
 
   async restore(id: number, userId: number) {
-    const oldData = await this.findOne(id, true);
     const restored = await this.prisma.stock.update({
       where: { id: Number(id) },
       data: { isDeleted: false },
     });
-    await this.audit.createLog(
-      userId,
-      'RESTORE',
-      id,
-      { status: 'deleted' },
-      { status: 'active' },
-    );
+    await this.audit.createLog(userId, 'RESTORE', id, { status: 'deleted' }, { status: 'active' });
     return restored;
   }
 
-  async update(id: number, data: Partial<UpdateStockDto>, userId: number) {
-    const oldData = await this.findOne(id);
-    if (!oldData) {
-      throw new NotFoundException(`Termék (ID: ${id}) nem található az update-hez.`);
-    }
-
-    const updated = await this.prisma.stock.update({
-      where: { id: Number(id) },
-      data: data,
+  /**
+   * Visszaállítás konkrét naplóbejegyzés alapján
+   */
+  async restoreFromLog(logId: number, userId: number) {
+    const log = await this.prisma.auditLog.findUnique({
+      where: { id: Number(logId) },
     });
 
-    try {
-      await this.audit.createLog(userId, 'UPDATE', id, oldData, updated);
-    } catch (auditError) {
-      console.error("Audit naplózási hiba, de a mentés sikerült:", auditError);
+    if (!log) throw new NotFoundException('Naplóbejegyzés nem található!');
+    if (!log.stockId) throw new BadRequestException('Nincs kapcsolódó termék!');
+
+    // TÖRLÉS VISSZAVONÁSA
+    if (log.muvelet === 'DELETE') {
+      return this.restore(log.stockId, userId);
     }
 
-    return updated;
+    // MÓDOSÍTÁS VISSZAVONÁSA (Visszaírjuk a régi adatokat)
+    if (log.muvelet === 'UPDATE' && log.regiAdat) {
+      const restored = await this.prisma.stock.update({
+        where: { id: log.stockId },
+        data: log.regiAdat as any,
+      });
+      await this.audit.createLog(userId, 'RESTORE', log.stockId, log.ujAdat, log.regiAdat);
+      return restored;
+    }
+
+    throw new BadRequestException('Ez a művelet nem vonható vissza!');
   }
 }

@@ -3,8 +3,8 @@ export type Product = {
   nev: string;
   gyarto: string;
   lejarat: Date;
-  ar: number;
+  ar: number;         // ÚJ/PÓTOLT: Az ár mező fontos az Audit Log "regiAdat/ujAdat" JSON-jéhez
   mennyiseg: number;
   parcella: string;
-  isDeleted: boolean;
+  isDeleted: boolean; // ÚJ: A logoknál látnunk kell, ha egy termék már nincs az aktív készletben
 };

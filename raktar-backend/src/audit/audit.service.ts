@@ -5,9 +5,52 @@ import { PrismaService } from '../prisma.service';
 export class AuditService {
   constructor(private prisma: PrismaService) {}
 
-  async findAll(userId: number, isAdmin: boolean) {
+  async findAll(query: {
+    userId?: number;
+    targetUserId?: number; // Admin szűréséhez: ki követte el?
+    isAdmin: boolean;
+    muvelet?: string;
+    stockId?: number;
+    startDate?: string;
+    endDate?: string;
+  }) {
+    const { userId, targetUserId, isAdmin, muvelet, stockId, startDate, endDate } = query;
+
+    const where: any = {};
+    
+    // Alap szűrő: Ha nem admin, csak a sajátját látja
+    if (!isAdmin) {
+      where.userId = userId;
+    } else if (targetUserId) {
+      // Admin szűrhet konkrét felhasználóra a frontendről érkező ID alapján
+      where.userId = Number(targetUserId);
+    }
+
+    // Művelet típus szűrés
+    if (muvelet) {
+      where.muvelet = muvelet;
+    }
+
+    // Konkrét termékre szűrés
+    if (stockId) {
+      where.stockId = Number(stockId);
+    }
+
+    // Idősáv szűrés
+    if (startDate || endDate) {
+      where.idopont = {};
+      if (startDate) {
+        where.idopont.gte = new Date(startDate);
+      }
+      if (endDate) {
+        const end = new Date(endDate);
+        end.setHours(23, 59, 59, 999);
+        where.idopont.lte = end;
+      }
+    }
+
     return this.prisma.auditLog.findMany({
-      where: isAdmin ? {} : { userId: userId },
+      where,
       include: {
         user: {
           select: { nev: true, felhasznalonev: true },

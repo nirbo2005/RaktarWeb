@@ -16,7 +16,21 @@ export class AuditController {
   async getLogs(
     @Param('userId', ParseIntPipe) userId: number,
     @Query('admin', ParseBoolPipe) admin: boolean,
+    // ÚJ: Szűrési paraméterek fogadása a URL-ből (pl. ?muvelet=UPDATE&startDate=2024-01-01)
+    @Query('muvelet') muvelet?: string,
+    @Query('stockId') stockId?: string,
+    @Query('targetUserId') targetUserId?: string,
+    @Query('startDate') startDate?: string,
+    @Query('endDate') endDate?: string,
   ) {
-    return this.auditService.findAll(userId, admin);
+    return this.auditService.findAll({
+      userId,
+      isAdmin: admin,
+      muvelet,
+      stockId: stockId ? +stockId : undefined,
+      targetUserId: targetUserId ? +targetUserId : undefined,
+      startDate,
+      endDate,
+    });
   }
 }

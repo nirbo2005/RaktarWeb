@@ -20,12 +20,16 @@ model Stock {
 }
 
 model User {
-  id             Int        @id @default(autoincrement())
+  id             Int             @id @default(autoincrement())
   nev            String
-  felhasznalonev String     @unique
+  felhasznalonev String          @unique
   jelszo         String
-  admin          Boolean    @default(false)
+  email          String?         @unique
+  telefonszam    String?
+  admin          Boolean         @default(false)
+  isBanned       Boolean         @default(false)
   logs           AuditLog[]
+  requests       ChangeRequest[]
 }
 
 model AuditLog {
@@ -38,4 +42,14 @@ model AuditLog {
   stock   Stock?   @relation(fields: [stockId], references: [id], onDelete: SetNull)
   regiAdat Json?
   ujAdat   Json?
+}
+
+model ChangeRequest {
+  id           Int      @id @default(autoincrement())
+  userId       Int
+  user         User     @relation(fields: [userId], references: [id])
+  tipus        String   
+  ujErtek      String   
+  statusz      String   @default("PENDING")
+  letrehozva   DateTime @default(now())
 }

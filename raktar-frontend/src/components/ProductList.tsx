@@ -1,9 +1,12 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { getProducts, deleteProduct } from "../services/api";
 import { useAuth } from "../context/AuthContext";
 import type { Product } from "../types/Product";
 import { QRCodeSVG } from "qrcode.react";
+import ExcelJS from "exceljs";
+import { saveAs } from "file-saver";
 
 type SortColumn = "nev" | "lejarat" | "mennyiseg";
 
@@ -32,6 +35,84 @@ function ProductList() {
       setProducts(data.map((p) => ({ ...p, lejarat: new Date(p.lejarat) })));
     });
   }, []);
+
+  // PROFESSZIONÁLIS EXCEL EXPORT (Színekkel és oszlopszélességgel)
+  const exportToExcel = async () => {
+    const workbook = new ExcelJS.Workbook();
+    const worksheet = workbook.addWorksheet("Raktárkészlet");
+
+    // Fejlécek meghatározása
+    const columns = [
+      { header: "Terméknév", key: "nev" },
+      { header: "Gyártó", key: "gyarto" },
+      { header: "Parcella", key: "parcella" },
+      { header: "Lejárat", key: "lejarat" },
+      { header: "Mennyiség (db)", key: "mennyiseg" },
+    ];
+
+    worksheet.columns = columns.map(col => ({ ...col, width: 15 }));
+
+    // Fejléc stílus (Félkövér, Szürke háttér)
+    worksheet.getRow(1).font = { bold: true, color: { argb: "FFFFFFFF" } };
+    worksheet.getRow(1).fill = {
+      type: "pattern",
+      pattern: "solid",
+      fgColor: { argb: "FF334155" }, // Slate-700
+    };
+
+    const now = new Date();
+    const oneWeekLater = new Date();
+    oneWeekLater.setDate(now.getDate() + 7);
+
+    // Adatok hozzáadása és színezése
+    filteredAndSortedProducts.forEach((p) => {
+      const row = worksheet.addRow({
+        nev: p.nev,
+        gyarto: p.gyarto,
+        parcella: p.parcella,
+        lejarat: p.lejarat.toLocaleDateString("hu-HU"),
+        mennyiseg: p.mennyiseg,
+      });
+
+      // Szabályok ellenőrzése (Ugyanaz, mint a CSS-ben)
+      const isExpired = p.lejarat <= now;
+      const isCriticalQty = p.mennyiseg < 10;
+      const isWarningDate = p.lejarat <= oneWeekLater;
+      const isLowStock = p.mennyiseg < 100;
+
+      // Piros riasztás (Lejárt vagy Kritikus mennyiség)
+      if (isExpired || isCriticalQty) {
+        row.eachCell((cell) => {
+          cell.fill = { type: "pattern", pattern: "solid", fgColor: { argb: "FFFEE2E2" } }; // Red-100
+          cell.font = { color: { argb: "FF991B1B" }, bold: true }; // Red-800
+        });
+      } 
+      // Sárga figyelmeztetés (Hamarosan lejár vagy kevés készlet)
+      else if (isWarningDate || isLowStock) {
+        row.eachCell((cell) => {
+          cell.fill = { type: "pattern", pattern: "solid", fgColor: { argb: "FFFEF3C7" } }; // Amber-100
+          cell.font = { color: { argb: "FF92400E" }, bold: true }; // Amber-800
+        });
+      }
+    });
+
+    // OSZLOPSZÉLESSÉG AUTOMATIKUS BEÁLLÍTÁSA
+    worksheet.columns.forEach((column: any) => {
+      let maxLength = column.header.length;
+      column.eachCell({ includeEmpty: true }, (cell: any) => {
+        const columnLength = cell.value ? cell.value.toString().length : 0;
+        if (columnLength > maxLength) {
+          maxLength = columnLength;
+        }
+      });
+      column.width = maxLength + 5; // Adunk hozzá egy kis "levegőt"
+    });
+
+    // Letöltés indítása
+    const buffer = await workbook.xlsx.writeBuffer();
+    const fileName = `raktar_export_${new Date().toISOString().split("T")[0]}.xlsx`;
+    saveAs(new Blob([buffer]), fileName);
+  };
 
   const handleSort = (column: SortColumn) => {
     if (column === sortColumn) {
@@ -118,6 +199,15 @@ function ProductList() {
             >
               {showAlertsOnly ? "🚨 Csak hibák" : "⚠️ Szűrés"}
             </button>
+
+            {user && (
+              <button
+                onClick={exportToExcel}
+                className="flex-1 md:flex-none bg-emerald-600 hover:bg-emerald-500 text-white px-6 py-4 rounded-2xl font-black uppercase text-xs tracking-widest shadow-lg shadow-emerald-500/30 transition-all active:scale-95 flex items-center justify-center gap-2"
+              >
+                📊 Excel Riport
+              </button>
+            )}
 
             {user && (
               <button

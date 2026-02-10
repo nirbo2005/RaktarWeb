@@ -15,7 +15,7 @@ import {
 import { StockService } from './stock.service';
 import { CreateStockDto } from './dto/create-stock.dto';
 import { UpdateStockDto } from './dto/update-stock.dto';
-import { ApiTags, ApiOperation, ApiQuery } from '@nestjs/swagger';
+import { ApiTags, ApiOperation } from '@nestjs/swagger';
 
 @ApiTags('stock')
 @Controller('stock')
@@ -65,12 +65,22 @@ export class StockController {
     return this.stockService.delete(id, userId);
   }
 
-  @ApiOperation({ summary: 'Törölt termék visszaállítása' })
+  @ApiOperation({ summary: 'Törölt termék visszaállítása ID alapján' })
   @Patch(':id/restore')
   async restore(
     @Param('id', ParseIntPipe) id: number,
     @Query('userId', ParseIntPipe) userId: number,
   ) {
     return this.stockService.restore(id, userId);
+  }
+
+  // ÚJ VÉGPONT A NAPLÓBÓL VALÓ VISSZAÁLLÍTÁSHOZ
+  @ApiOperation({ summary: 'Visszaállítás konkrét naplóbejegyzés alapján' })
+  @Post('restore-log/:logId')
+  async restoreFromLog(
+    @Param('logId', ParseIntPipe) logId: number,
+    @Query('userId', ParseIntPipe) userId: number,
+  ) {
+    return this.stockService.restoreFromLog(logId, userId);
   }
 }

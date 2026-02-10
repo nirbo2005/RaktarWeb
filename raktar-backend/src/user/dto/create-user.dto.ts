@@ -5,6 +5,7 @@ import {
   IsOptional,
   MinLength,
   MaxLength,
+  IsEmail, // Új import az email validáláshoz
 } from 'class-validator';
 
 export class CreateUserDto {
@@ -24,6 +25,14 @@ export class CreateUserDto {
   @IsNotEmpty({ message: 'A jelszó nem lehet üres!' })
   @MinLength(6, { message: 'A jelszónak legalább 6 karakternek kell lennie!' })
   jelszo: string;
+
+  @IsEmail({}, { message: 'Érvénytelen email cím formátum!' })
+  @IsOptional()
+  email?: string;
+
+  @IsString()
+  @IsOptional()
+  telefonszam?: string;
 
   @IsBoolean({ message: 'Az admin mező csak logikai érték lehet!' })
   @IsOptional()

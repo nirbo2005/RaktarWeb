@@ -3,4 +3,7 @@ export interface User {
   nev: string;
   felhasznalonev: string;
   admin: boolean;
+  email?: string;      // ÚJ
+  telefonszam?: string; // ÚJ
+  isBanned?: boolean;   // ÚJ (Admin felülethez)
 }

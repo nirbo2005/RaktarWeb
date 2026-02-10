@@ -1,13 +1,12 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
-import { login } from "../services/api";
+import { login as apiLogin } from "../services/api"; // Átnevezzük az importot, hogy ne ütközzön
 import { useAuth } from "../context/AuthContext";
 
 function Login() {
   const navigate = useNavigate();
-  const { loginUser } = useAuth();
+  const { login } = useAuth(); // A kontextusban 'login' a neve, nem 'loginUser'
   const [form, setForm] = useState({ felhasznalonev: "", jelszo: "" });
   const [error, setError] = useState("");
 
@@ -15,11 +14,20 @@ function Login() {
     e.preventDefault();
     setError("");
     try {
-      const data = await login(form.felhasznalonev, form.jelszo);
-      loginUser(data);
+      // Az API-t hívjuk meg (apiLogin)
+      const data = await apiLogin(form.felhasznalonev, form.jelszo);
+      
+      // A kontextus login függvényét hívjuk a kapott adatokkal
+      // A data tartalmazza az access_token-t és a user objektumot
+      login(data.access_token, data.user); 
+      
       navigate("/");
     } catch (err: any) {
-      setError("Hibás felhasználónév vagy jelszó!");
+      // Itt elkapjuk a specifikus hibaüzenetet is, ha a backend küld (pl. Tiltásnál)
+      const errorMsg = err.message?.includes("felfüggesztettük") 
+        ? err.message 
+        : "Hibás felhasználónév vagy jelszó!";
+      setError(errorMsg);
     }
   };
 
@@ -31,7 +39,7 @@ function Login() {
         </h1>
 
         {error && (
-          <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-900/50 rounded-xl py-3 mb-4 text-center">
+          <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-900/50 rounded-xl py-3 mb-4 text-center px-4">
             <p className="text-red-600 dark:text-red-400 text-sm font-bold">
               {error}
             </p>

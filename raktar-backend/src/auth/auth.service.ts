@@ -1,4 +1,4 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { Injectable, UnauthorizedException, ForbiddenException } from '@nestjs/common';
 import { UserService } from '../user/user.service';
 import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
@@ -17,11 +17,17 @@ export class AuthService {
       throw new UnauthorizedException('Hibás felhasználónév vagy jelszó!');
     }
 
+    // ÚJ: Ellenőrizzük, hogy a felhasználó ki van-e tiltva
+    if (user.isBanned) {
+      throw new ForbiddenException('A fiókodat felfüggesztettük. Kérjük, fordulj az adminisztrátorhoz!');
+    }
+
     const isMatch = await bcrypt.compare(jelszo, user.jelszo);
 
     if (!isMatch) {
       throw new UnauthorizedException('Hibás felhasználónév vagy jelszó!');
     }
+
     const payload = {
       sub: user.id,
       username: user.felhasznalonev,
@@ -34,6 +40,8 @@ export class AuthService {
         id: user.id,
         nev: user.nev,
         felhasznalonev: user.felhasznalonev,
+        email: user.email,        // ÚJ MEZŐ
+        telefonszam: user.telefonszam, // ÚJ MEZŐ
         admin: user.admin,
       },
     };
