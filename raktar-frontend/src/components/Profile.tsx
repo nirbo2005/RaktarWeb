@@ -78,28 +78,57 @@ const Profile = () => {
     }
   };
 
+  const requestAdminRank = async () => {
+    if (!user || user.admin) return;
+    if (!confirm("Biztosan igényelsz Adminisztrátori rangot? A kérelem az adminokhoz kerül jóváhagyásra.")) return;
+    setLoading(true);
+    try {
+      await submitChangeRequest({ 
+        userId: user.id, 
+        tipus: "RANG_MODOSITAS", 
+        ujErtek: "ADMIN" 
+      });
+      alert("Admin kérelem sikeresen beküldve!");
+    } catch (err: any) {
+      alert("Hiba: " + (err.message || "Nem sikerült a kérelmet elküldeni."));
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const handleUpdateSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setFormError(null);
     try {
+      // Ha nem admin és változott a név, beküldjük a kérést
       if (!user?.admin && profileForm.nev !== user?.nev) {
-        await submitChangeRequest({ userId: user!.id, tipus: "NEV_MODOSITAS", ujErtek: profileForm.nev });
+        await submitChangeRequest({ 
+          userId: user!.id, 
+          tipus: "NEV_MODOSITAS", 
+          ujErtek: profileForm.nev 
+        });
+        alert("A név módosítására vonatkozó kérelem beküldve az adminoknak!");
       }
+
       const updateData: any = { 
         felhasznalonev: profileForm.felhasznalonev, 
         email: profileForm.email, 
         telefonszam: profileForm.telefonszam 
       };
+
       if (profileForm.ujJelszo) {
         if (!profileForm.regiJelszo) throw new Error("A régi jelszó kötelező!");
         updateData.regiJelszo = profileForm.regiJelszo;
         updateData.ujJelszo = profileForm.ujJelszo;
       }
+
+      // Csak admin írhatja át közvetlenül a nevet
       if (user?.admin) updateData.nev = profileForm.nev;
+
       const updatedUser = await updateProfile(user!.id, updateData);
       setUser(updatedUser);
       setProfileForm(prev => ({ ...prev, regiJelszo: "", ujJelszo: "" }));
-      alert("Profil sikeresen frissítve!");
+      alert("Profil adatok sikeresen frissítve!");
     } catch (err: any) {
       setFormError(err.message || "Hiba történt a mentés során!");
     }
@@ -139,7 +168,6 @@ const Profile = () => {
   };
 
   const formatChangeDetailed = (log: AuditLog) => {
-    // 1. Speciális eset: Törlés visszavonása (RESTORE művelet, ahol a státusz változott)
     if (log.muvelet === "RESTORE" && log.regiAdat?.status === 'deleted') {
       return (
         <div className="flex flex-wrap items-center gap-2 bg-white dark:bg-slate-900/40 p-3 rounded-xl border border-slate-100 dark:border-slate-800 mt-2">
@@ -151,7 +179,6 @@ const Profile = () => {
       );
     }
 
-    // 2. Normál módosítás vagy egyéb visszaállítás (UPDATE vagy RESTORE mentett adatokkal)
     if ((log.muvelet !== "UPDATE" && log.muvelet !== "RESTORE") || !log.regiAdat || !log.ujAdat) return null;
 
     const labels: any = { 
@@ -160,7 +187,6 @@ const Profile = () => {
     };
     
     return Object.keys(log.ujAdat).map(key => {
-      // Csak akkor jelenítjük meg, ha az érték tényleg változott és nem a technikai 'status' mező az
       if (key !== 'status' && JSON.stringify(log.regiAdat[key]) !== JSON.stringify(log.ujAdat[key])) {
         let oldVal = log.regiAdat[key];
         let newVal = log.ujAdat[key];
@@ -217,8 +243,26 @@ const Profile = () => {
             <div className="p-8 border-t border-slate-100 dark:border-slate-800 animate-in slide-in-from-top-2">
               <form onSubmit={handleUpdateSubmit} className="space-y-6">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <div><label className={labelClass}>Felhasználónév</label><input type="text" value={profileForm.felhasznalonev} onChange={e => setProfileForm({...profileForm, felhasznalonev: e.target.value})} className={inputClass} /></div>
-                  <div><label className={labelClass}>Teljes név</label><input type="text" value={profileForm.nev} onChange={e => setProfileForm({...profileForm, nev: e.target.value})} className={inputClass} /></div>
+                  <div>
+                    <label className={labelClass}>Felhasználónév</label>
+                    <input type="text" value={profileForm.felhasznalonev} onChange={e => setProfileForm({...profileForm, felhasznalonev: e.target.value})} className={inputClass} />
+                  </div>
+                  <div>
+                    <label className={labelClass}>Teljes név</label>
+                    <div className="relative">
+                      <input type="text" value={profileForm.nev} onChange={e => setProfileForm({...profileForm, nev: e.target.value})} className={inputClass} />
+                      {!user.admin && (
+                        <button 
+                          type="button"
+                          onClick={() => handleUpdateSubmit({ preventDefault: () => {} } as any)}
+                          className="absolute right-2 top-1.5 bg-blue-600 text-white px-3 py-1.5 rounded-lg font-black text-[8px] uppercase hover:bg-blue-500 transition-all shadow-md"
+                          title="Névváltoztatás kérése"
+                        >
+                          Kérelem
+                        </button>
+                      )}
+                    </div>
+                  </div>
                   <div><label className={labelClass}>Email cím</label><input type="email" value={profileForm.email} onChange={e => setProfileForm({...profileForm, email: e.target.value})} className={inputClass} /></div>
                   <div><label className={labelClass}>Telefonszám</label><input type="text" value={profileForm.telefonszam} onChange={e => setProfileForm({...profileForm, telefonszam: e.target.value})} className={inputClass} /></div>
                   <div className="relative">
@@ -232,8 +276,21 @@ const Profile = () => {
                     <button type="button" onClick={() => setShowNewPass(!showNewPass)} className="absolute right-3 top-8 text-lg">{showNewPass ? "👁️" : "🙈"}</button>
                   </div>
                 </div>
+
                 {formError && <div className="text-red-600 text-[10px] font-black uppercase bg-red-50 dark:bg-red-900/10 p-3 rounded-xl border border-red-100">❌ {formError}</div>}
-                <button type="submit" className="w-full bg-blue-600 text-white p-4 rounded-xl font-black uppercase text-xs shadow-lg hover:bg-blue-500 transition-all">Saját adatok mentése</button>
+                
+                <div className="flex flex-col sm:flex-row gap-4">
+                  <button type="submit" className="flex-1 bg-blue-600 text-white p-4 rounded-xl font-black uppercase text-xs shadow-lg hover:bg-blue-500 transition-all">Saját adatok mentése</button>
+                  {!user.admin && (
+                    <button 
+                      type="button" 
+                      onClick={requestAdminRank}
+                      className="bg-indigo-600 text-white p-4 rounded-xl font-black uppercase text-xs shadow-lg hover:bg-indigo-500 transition-all border-2 border-white/10"
+                    >
+                      🛡️ Admin rang igénylése
+                    </button>
+                  )}
+                </div>
               </form>
             </div>
           )}
