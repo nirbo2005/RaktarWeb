@@ -154,7 +154,24 @@ export class UserService {
     });
   }
 
-  async remove(id: number) { 
-    return this.prisma.user.delete({ where: { id } });
+  // raktar-backend/src/user/user.service.ts
+
+async remove(id: number) {
+  try {
+    // Fizikai törlés (delete) helyett csak frissítjük (update) az adatokat
+    return await this.prisma.user.update({
+      where: { id },
+      data: {
+        nev: "Törölt felhasználó",
+        felhasznalonev: `torolt_${id}_${Math.floor(Math.random() * 1000)}`,
+        email: `deleted_${id}@raktar.local`,
+        telefonszam: "---",
+        isBanned: true, // Megakadályozza, hogy a "törölt" user belépjen
+      },
+    });
+  } catch (error) {
+    console.error("Hiba a felhasználó anonimizálása során:", error);
+    throw error;
   }
+}
 }
