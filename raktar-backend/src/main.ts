@@ -9,9 +9,10 @@ async function bootstrap() {
   // CORS beállítás - Hozzáadtam az összes lehetséges címedet
   app.enableCors({
     origin: [
-      'https://raktar-frontend.vercel.app', 
+      'https://raktar-web.vercel.app', 
+      'https://raktar-web-git-main-nirbo2005s-projects.vercel.app',
+      'https://raktar-6t7wbe395-nirbo2005s-projects.vercel.app',
       'https://olahnorbert.hu',
-      'https://raktarkezelo-frontend.vercel.app', // Ellenőrizd, mi a pontos Vercel címed!
       'http://localhost:5173' 
     ],
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',

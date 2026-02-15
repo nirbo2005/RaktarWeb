@@ -1,0 +1,27 @@
+# Minden node_modules kizárása (gyökér és almappák)
+node_modules/
+
+# Minden build kimenet kizárása
+dist/
+raktar-backend/dist/
+raktar-frontend/dist/
+
+# Környezeti változók (backend és frontend .env-ek is)
+.env
+.env.local
+raktar-backend/.env
+raktar-frontend/.env*
+
+# IDE és OS fájlok
+.vscode/
+raktar-backend/.vscode/
+.DS_Store
+Thumbs.db
+
+# TypeScript fordítási infók
+*.tsbuildinfo
+raktar-backend/tsconfig.build.tsbuildinfo
+
+# Prisma generált kliensek
+node_modules/.prisma/
+raktar-backend/node_modules/.prisma/
