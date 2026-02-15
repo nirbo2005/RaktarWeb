@@ -9,7 +9,7 @@ async function main() {
   console.log('--- Seedelés megkezdése ---');
 
   // 1. TERMÉKEK (STOCK) SZINKRONIZÁLÁSA
-  const stockPath = path.join(__dirname, 'stock.json');
+  const stockPath = path.join(process.cwd(), 'prisma', 'stock.json');
   const stockRaw = fs.readFileSync(stockPath, 'utf-8');
   const stocks = JSON.parse(stockRaw);
 
@@ -38,7 +38,7 @@ async function main() {
   console.log(`✅ ${stocks.length} termék szinkronizálva.`);
 
   // 2. FELHASZNÁLÓK (USER) SZINKRONIZÁLÁSA
-  const usersPath = path.join(__dirname, 'users.json');
+  const usersPath = path.join(process.cwd(), 'prisma', 'users.json');
   const usersRaw = fs.readFileSync(usersPath, 'utf-8');
   const users = JSON.parse(usersRaw);
 
