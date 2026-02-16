@@ -28,7 +28,7 @@ export class StockController {
     return this.stockService.findAll();
   }
 
-  @ApiOperation({ summary: 'Egy termék lekérése (adminoknak a törölteket is)' })
+  @ApiOperation({ summary: 'Egy termék lekérése' })
   @Get(':id')
   async getOne(
     @Param('id', ParseIntPipe) id: number,
@@ -37,7 +37,16 @@ export class StockController {
     return this.stockService.findOne(id, admin === 'true');
   }
 
-  @ApiOperation({ summary: 'Új termék létrehozása naplózással' })
+  @ApiOperation({ summary: 'Tömegeges törlés' })
+  @Post('bulk-delete')
+  async deleteMany(
+    @Body('ids') ids: number[],
+    @Body('userId', ParseIntPipe) userId: number,
+  ) {
+    return this.stockService.deleteMany(ids, userId);
+  }
+
+  @ApiOperation({ summary: 'Új termék létrehozása' })
   @Post()
   @UsePipes(new ValidationPipe({ whitelist: true, transform: true }))
   async create(@Body() body: CreateStockDto & { userId: number }) {
@@ -45,7 +54,7 @@ export class StockController {
     return this.stockService.create(stockData, userId);
   }
 
-  @ApiOperation({ summary: 'Termék módosítása naplózással' })
+  @ApiOperation({ summary: 'Termék módosítása' })
   @Put(':id')
   @UsePipes(new ValidationPipe({ whitelist: true, transform: true }))
   async update(
@@ -56,7 +65,7 @@ export class StockController {
     return this.stockService.update(id, stockData, userId);
   }
 
-  @ApiOperation({ summary: 'Termék puha törlése (Soft Delete)' })
+  @ApiOperation({ summary: 'Termék puha törlése' })
   @Delete(':id')
   async delete(
     @Param('id', ParseIntPipe) id: number,
@@ -65,7 +74,7 @@ export class StockController {
     return this.stockService.delete(id, userId);
   }
 
-  @ApiOperation({ summary: 'Törölt termék visszaállítása ID alapján' })
+  @ApiOperation({ summary: 'Törölt termék visszaállítása' })
   @Patch(':id/restore')
   async restore(
     @Param('id', ParseIntPipe) id: number,
@@ -74,8 +83,7 @@ export class StockController {
     return this.stockService.restore(id, userId);
   }
 
-  // ÚJ VÉGPONT A NAPLÓBÓL VALÓ VISSZAÁLLÍTÁSHOZ
-  @ApiOperation({ summary: 'Visszaállítás konkrét naplóbejegyzés alapján' })
+  @ApiOperation({ summary: 'Visszaállítás naplóból' })
   @Post('restore-log/:logId')
   async restoreFromLog(
     @Param('logId', ParseIntPipe) logId: number,

@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { getProducts, deleteProduct } from "../services/api";
+import { getProducts, deleteProduct, deleteManyProducts } from "../services/api";
 import { useAuth } from "../context/AuthContext";
 import type { Product } from "../types/Product";
 import { QRCodeSVG } from "qrcode.react";
@@ -26,6 +26,9 @@ function ProductList() {
   const [sortColumn, setSortColumn] = useState<SortColumn>("nev");
   const [isAscending, setIsAscending] = useState(true);
   const [showAlertsOnly, setShowAlertsOnly] = useState(false);
+  
+  // --- ÚJ: BULK SELECTION STATE ---
+  const [selectedIds, setSelectedIds] = useState<number[]>([]);
 
   const navigate = useNavigate();
   const { user } = useAuth();
@@ -36,12 +39,11 @@ function ProductList() {
     });
   }, []);
 
-  // PROFESSZIONÁLIS EXCEL EXPORT (Színekkel és oszlopszélességgel)
+  // PROFESSZIONÁLIS EXCEL EXPORT (Változatlanul hagytuk a designt)
   const exportToExcel = async () => {
     const workbook = new ExcelJS.Workbook();
     const worksheet = workbook.addWorksheet("Raktárkészlet");
 
-    // Fejlécek meghatározása
     const columns = [
       { header: "Terméknév", key: "nev" },
       { header: "Gyártó", key: "gyarto" },
@@ -51,20 +53,17 @@ function ProductList() {
     ];
 
     worksheet.columns = columns.map(col => ({ ...col, width: 15 }));
-
-    // Fejléc stílus (Félkövér, Szürke háttér)
     worksheet.getRow(1).font = { bold: true, color: { argb: "FFFFFFFF" } };
     worksheet.getRow(1).fill = {
       type: "pattern",
       pattern: "solid",
-      fgColor: { argb: "FF334155" }, // Slate-700
+      fgColor: { argb: "FF334155" },
     };
 
     const now = new Date();
     const oneWeekLater = new Date();
     oneWeekLater.setDate(now.getDate() + 7);
 
-    // Adatok hozzáadása és színezése
     filteredAndSortedProducts.forEach((p) => {
       const row = worksheet.addRow({
         nev: p.nev,
@@ -74,41 +73,33 @@ function ProductList() {
         mennyiseg: p.mennyiseg,
       });
 
-      // Szabályok ellenőrzése (Ugyanaz, mint a CSS-ben)
       const isExpired = p.lejarat <= now;
       const isCriticalQty = p.mennyiseg < 10;
       const isWarningDate = p.lejarat <= oneWeekLater;
       const isLowStock = p.mennyiseg < 100;
 
-      // Piros riasztás (Lejárt vagy Kritikus mennyiség)
       if (isExpired || isCriticalQty) {
         row.eachCell((cell) => {
-          cell.fill = { type: "pattern", pattern: "solid", fgColor: { argb: "FFFEE2E2" } }; // Red-100
-          cell.font = { color: { argb: "FF991B1B" }, bold: true }; // Red-800
+          cell.fill = { type: "pattern", pattern: "solid", fgColor: { argb: "FFFEE2E2" } };
+          cell.font = { color: { argb: "FF991B1B" }, bold: true };
         });
-      } 
-      // Sárga figyelmeztetés (Hamarosan lejár vagy kevés készlet)
-      else if (isWarningDate || isLowStock) {
+      } else if (isWarningDate || isLowStock) {
         row.eachCell((cell) => {
-          cell.fill = { type: "pattern", pattern: "solid", fgColor: { argb: "FFFEF3C7" } }; // Amber-100
-          cell.font = { color: { argb: "FF92400E" }, bold: true }; // Amber-800
+          cell.fill = { type: "pattern", pattern: "solid", fgColor: { argb: "FFFEF3C7" } };
+          cell.font = { color: { argb: "FF92400E" }, bold: true };
         });
       }
     });
 
-    // OSZLOPSZÉLESSÉG AUTOMATIKUS BEÁLLÍTÁSA
     worksheet.columns.forEach((column: any) => {
       let maxLength = column.header.length;
       column.eachCell({ includeEmpty: true }, (cell: any) => {
         const columnLength = cell.value ? cell.value.toString().length : 0;
-        if (columnLength > maxLength) {
-          maxLength = columnLength;
-        }
+        if (columnLength > maxLength) maxLength = columnLength;
       });
-      column.width = maxLength + 5; // Adunk hozzá egy kis "levegőt"
+      column.width = maxLength + 5;
     });
 
-    // Letöltés indítása
     const buffer = await workbook.xlsx.writeBuffer();
     const fileName = `raktar_export_${new Date().toISOString().split("T")[0]}.xlsx`;
     saveAs(new Blob([buffer]), fileName);
@@ -143,11 +134,40 @@ function ProductList() {
     return list;
   }, [products, sortColumn, isAscending, showAlertsOnly]);
 
+  // --- ÚJ: BULK MŰVELETEK LOGIKÁJA ---
+  const toggleSelect = (id: number) => {
+    setSelectedIds(prev => 
+      prev.includes(id) ? prev.filter(i => i !== id) : [...prev, id]
+    );
+  };
+
+  const toggleSelectAll = () => {
+    if (selectedIds.length === filteredAndSortedProducts.length) {
+      setSelectedIds([]);
+    } else {
+      setSelectedIds(filteredAndSortedProducts.map(p => p.id));
+    }
+  };
+
+  const handleBulkDelete = async () => {
+    if (!user || selectedIds.length === 0) return;
+    if (!window.confirm(`Biztosan törölni szeretnél ${selectedIds.length} kijelölt terméket?`)) return;
+
+    try {
+      await deleteManyProducts(selectedIds, user.id);
+      setProducts(prev => prev.filter(p => !selectedIds.includes(p.id)));
+      setSelectedIds([]);
+    } catch (err) {
+      alert("Hiba a tömeges törlés során.");
+    }
+  };
+
   const handleDelete = async (id: number) => {
     if (!user || !window.confirm("Biztosan törölni szeretnéd?")) return;
     try {
       await deleteProduct(id, user.id);
       setProducts((prev) => prev.filter((p) => p.id !== id));
+      setSelectedIds(prev => prev.filter(i => i !== id));
     } catch (err) {
       alert("Hiba a törlésnél.");
     }
@@ -175,6 +195,7 @@ function ProductList() {
   return (
     <div className="min-h-screen p-4 md:p-10 bg-slate-50 dark:bg-slate-950 transition-colors duration-300">
       <div className="max-w-7xl mx-auto">
+        {/* HEADER SECTION */}
         <div className="flex flex-col md:flex-row justify-between items-center gap-6 mb-12">
           <div
             className="flex items-center gap-4 group cursor-pointer"
@@ -189,6 +210,16 @@ function ProductList() {
           </div>
 
           <div className="flex flex-wrap md:flex-nowrap gap-4 w-full md:w-auto">
+            {/* ÚJ: TÖMEGES TÖRLÉS GOMB (Csak ha van kijelölés) */}
+            {selectedIds.length > 0 && (
+              <button
+                onClick={handleBulkDelete}
+                className="flex-1 md:flex-none bg-red-600 hover:bg-red-500 text-white px-6 py-4 rounded-2xl font-black uppercase text-xs tracking-widest shadow-lg shadow-red-600/30 transition-all active:scale-95 flex items-center justify-center gap-2 animate-in fade-in zoom-in duration-300"
+              >
+                🗑️ Törlés ({selectedIds.length})
+              </button>
+            )}
+
             <button
               onClick={() => setShowAlertsOnly(!showAlertsOnly)}
               className={`flex-1 md:flex-none px-6 py-4 rounded-2xl font-bold transition-all border-2 uppercase text-xs tracking-widest ${
@@ -220,12 +251,22 @@ function ProductList() {
           </div>
         </div>
 
+        {/* ASZTALI TÁBLÁZAT NÉZET */}
         {filteredAndSortedProducts.length > 0 ? (
           <>
             <div className="hidden lg:block bg-white dark:bg-slate-900 rounded-[2.5rem] border border-slate-200 dark:border-slate-800 shadow-xl overflow-hidden transition-all">
               <table className="w-full border-collapse text-left">
                 <thead>
                   <tr className="bg-slate-50 dark:bg-slate-800/50 text-slate-500 dark:text-slate-400 text-[10px] font-black uppercase tracking-[0.2em] border-b border-slate-200 dark:border-slate-800">
+                    {/* ÚJ: ÖSSZES KIJELÖLÉSE CHECKBOX */}
+                    <th className="p-6 text-center w-12">
+                      <input 
+                        type="checkbox" 
+                        className="w-4 h-4 rounded border-slate-300 text-blue-600 focus:ring-blue-500 cursor-pointer"
+                        checked={selectedIds.length === filteredAndSortedProducts.length && filteredAndSortedProducts.length > 0}
+                        onChange={toggleSelectAll}
+                      />
+                    </th>
                     <th className="p-6 text-center w-24">QR</th>
                     <th
                       className="p-6 cursor-pointer hover:text-blue-500 transition-colors"
@@ -255,8 +296,21 @@ function ProductList() {
                   {filteredAndSortedProducts.map((p) => (
                     <tr
                       key={p.id}
-                      className="hover:bg-blue-600/5 dark:hover:bg-blue-400/5 transition-colors group"
+                      className={`transition-colors group ${
+                        selectedIds.includes(p.id) 
+                          ? "bg-blue-600/10 dark:bg-blue-400/10" 
+                          : "hover:bg-blue-600/5 dark:hover:bg-blue-400/5"
+                      }`}
                     >
+                      {/* ÚJ: EGYEDI KIJELÖLÉS CHECKBOX */}
+                      <td className="p-6 text-center">
+                        <input 
+                          type="checkbox" 
+                          className="w-4 h-4 rounded border-slate-300 text-blue-600 focus:ring-blue-500 cursor-pointer"
+                          checked={selectedIds.includes(p.id)}
+                          onChange={() => toggleSelect(p.id)}
+                        />
+                      </td>
                       <td className="p-6 text-center">
                         <div className="inline-block bg-white p-1.5 rounded-xl border border-slate-100">
                           <QRCodeSVG value={p.id.toString()} size={35} />
@@ -323,17 +377,32 @@ function ProductList() {
               </table>
             </div>
 
+            {/* MOBIL KÁRTYA NÉZET */}
             <div className="lg:hidden grid grid-cols-1 sm:grid-cols-2 gap-6">
               {filteredAndSortedProducts.map((p) => (
                 <div
                   key={p.id}
-                  className="bg-white dark:bg-slate-900 rounded-[2rem] p-6 border border-slate-200 dark:border-slate-800 shadow-lg relative overflow-hidden transition-all"
+                  className={`rounded-[2rem] p-6 border shadow-lg relative overflow-hidden transition-all ${
+                    selectedIds.includes(p.id)
+                      ? "bg-blue-50 dark:bg-blue-900/40 border-blue-400"
+                      : "bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800"
+                  }`}
                 >
+                  {/* MOBIL CHECKBOX */}
+                  <div className="absolute top-4 right-4 z-10">
+                    <input 
+                      type="checkbox" 
+                      className="w-6 h-6 rounded border-slate-300 text-blue-600 focus:ring-blue-500 cursor-pointer"
+                      checked={selectedIds.includes(p.id)}
+                      onChange={() => toggleSelect(p.id)}
+                    />
+                  </div>
+
                   <div className="flex justify-between items-start mb-6">
                     <div className="bg-white p-2 rounded-xl shadow-sm border border-slate-100">
                       <QRCodeSVG value={p.id.toString()} size={50} />
                     </div>
-                    <div className="flex flex-col gap-2">
+                    <div className="flex flex-col gap-2 mr-8">
                       <span
                         className={`px-3 py-1 rounded-lg text-[10px] font-black border text-center transition-colors ${getDateStyles(p.lejarat)}`}
                       >
@@ -400,6 +469,7 @@ function ProductList() {
             </div>
           </>
         ) : (
+          /* ÜRES ÁLLAPOT (Minden polc rendben) */
           <div className="py-32 text-center bg-white dark:bg-slate-900 rounded-[3rem] border-2 border-dashed border-slate-200 dark:border-slate-800">
             <div className="text-6xl mb-4">✨</div>
             <h2 className="text-2xl font-black text-slate-800 dark:text-white uppercase tracking-tighter italic">

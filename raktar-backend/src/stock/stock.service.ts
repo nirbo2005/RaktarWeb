@@ -54,6 +54,28 @@ export class StockService {
     return updated;
   }
 
+  // --- ÚJ: TÖMEGES TÖRLÉS ---
+  async deleteMany(ids: number[], userId: number) {
+    const productsToDelete = await this.prisma.stock.findMany({
+      where: { id: { in: ids }, isDeleted: false },
+    });
+
+    const results = await this.prisma.$transaction(async (tx) => {
+      const updateResult = await tx.stock.updateMany({
+        where: { id: { in: ids } },
+        data: { isDeleted: true },
+      });
+
+      for (const product of productsToDelete) {
+        await this.audit.createLog(userId, 'DELETE', product.id, product, null);
+      }
+
+      return updateResult;
+    });
+
+    return results;
+  }
+
   async restore(id: number, userId: number) {
     const restored = await this.prisma.stock.update({
       where: { id: Number(id) },
@@ -63,9 +85,6 @@ export class StockService {
     return restored;
   }
 
-  /**
-   * Visszaállítás konkrét naplóbejegyzés alapján
-   */
   async restoreFromLog(logId: number, userId: number) {
     const log = await this.prisma.auditLog.findUnique({
       where: { id: Number(logId) },
@@ -74,12 +93,10 @@ export class StockService {
     if (!log) throw new NotFoundException('Naplóbejegyzés nem található!');
     if (!log.stockId) throw new BadRequestException('Nincs kapcsolódó termék!');
 
-    // TÖRLÉS VISSZAVONÁSA
     if (log.muvelet === 'DELETE') {
       return this.restore(log.stockId, userId);
     }
 
-    // MÓDOSÍTÁS VISSZAVONÁSA (Visszaírjuk a régi adatokat)
     if (log.muvelet === 'UPDATE' && log.regiAdat) {
       const restored = await this.prisma.stock.update({
         where: { id: log.stockId },
