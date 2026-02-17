@@ -1,3 +1,4 @@
+//raktar-frontend/src/components/ProductAdd.tsx
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { addProduct } from "../services/api";

@@ -1,3 +1,4 @@
+//raktar-backend/src/stock/dto/update-stock.dto.ts
 import { Type } from 'class-transformer';
 import {
   IsString,

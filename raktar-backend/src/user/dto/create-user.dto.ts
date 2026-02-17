@@ -1,3 +1,4 @@
+//raktar-backend/src/user/dto/create-user.dto.ts
 import {
   IsString,
   IsNotEmpty,
@@ -5,7 +6,7 @@ import {
   IsOptional,
   MinLength,
   MaxLength,
-  IsEmail, // Új import az email validáláshoz
+  IsEmail,
 } from 'class-validator';
 
 export class CreateUserDto {

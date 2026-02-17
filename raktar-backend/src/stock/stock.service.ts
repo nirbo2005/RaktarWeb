@@ -1,5 +1,10 @@
-/* eslint-disable @typescript-eslint/no-unsafe-member-access */
-import { Injectable, NotFoundException, BadRequestException, InternalServerErrorException } from '@nestjs/common';
+//raktar-backend/src/stock/stock.service.ts
+import {
+  Injectable,
+  NotFoundException,
+  BadRequestException,
+  InternalServerErrorException,
+} from '@nestjs/common';
 import { PrismaService } from 'src/prisma.service';
 import { CreateStockDto } from './dto/create-stock.dto';
 import { UpdateStockDto } from './dto/update-stock.dto';
@@ -13,8 +18,8 @@ export class StockService {
   ) {}
 
   async findAll() {
-    return this.prisma.stock.findMany({ 
-      where: { isDeleted: false } 
+    return this.prisma.stock.findMany({
+      where: { isDeleted: false },
     });
   }
 
@@ -44,40 +49,37 @@ export class StockService {
     return updated;
   }
 
-  // --- EGYEDI TÖRLÉS FRISSÍTVE ---
   async delete(id: number, userId: number) {
     const oldData = await this.findOne(id);
     const updated = await this.prisma.stock.update({
       where: { id: Number(id) },
-      data: { isDeleted: true }, // Boolean -> MySQL-nél 1 lesz
+      data: { isDeleted: true },
     });
-    await this.audit.createLog(userId, 'DELETE', id, oldData, { ...oldData, isDeleted: true });
+    await this.audit.createLog(userId, 'DELETE', id, oldData, {
+      ...oldData,
+      isDeleted: true,
+    });
     return updated;
   }
 
-  // --- TÖMEGES TÖRLÉS FRISSÍTVE ---
   async deleteMany(ids: number[], userId: number) {
-    if (!ids || ids.length === 0) throw new BadRequestException('Nincs ID megadva');
+    if (!ids || ids.length === 0)
+      throw new BadRequestException('Nincs ID megadva');
 
-    const numericIds = ids.map(id => Number(id));
+    const numericIds = ids.map((id) => Number(id));
 
     try {
-      // 1. Megkeressük az adatokat a naplóhoz a törlés ELŐTT
       const existingProducts = await this.prisma.stock.findMany({
-        where: { id: { in: numericIds } }
+        where: { id: { in: numericIds } },
       });
 
-      if (existingProducts.length === 0) throw new NotFoundException('Nem találhatók a termékek');
-
-      // 2. Tömeges frissítés tranzakcióban
+      if (existingProducts.length === 0)
+        throw new NotFoundException('Nem találhatók a termékek');
       const result = await this.prisma.$transaction(async (tx) => {
         const update = await tx.stock.updateMany({
           where: { id: { in: numericIds } },
           data: { isDeleted: true },
         });
-
-        // 3. Naplózás (ha az AuditService elszállna, a tranzakció is bukik - ezért itt manuálisan mentünk)
-        // A regiAdat és ujAdat mezőknek érvényes JSON-nek kell lenniük
         for (const product of existingProducts) {
           await tx.auditLog.create({
             data: {
@@ -85,8 +87,10 @@ export class StockService {
               muvelet: 'BULK_DELETE',
               stockId: product.id,
               regiAdat: JSON.parse(JSON.stringify(product)),
-              ujAdat: JSON.parse(JSON.stringify({ ...product, isDeleted: true }))
-            }
+              ujAdat: JSON.parse(
+                JSON.stringify({ ...product, isDeleted: true }),
+              ),
+            },
           });
         }
 
@@ -94,10 +98,11 @@ export class StockService {
       });
 
       return { success: true, count: result.count };
-
     } catch (error) {
-      console.error('RENDER ERROR LOG:', error); // Ezt fogod látni a Render dashboardon
-      throw new InternalServerErrorException('Hiba a tömeges törlés során: ' + error.message);
+      console.error('RENDER ERROR LOG:', error);
+      throw new InternalServerErrorException(
+        'Hiba a tömeges törlés során: ' + error.message,
+      );
     }
   }
 
@@ -106,7 +111,13 @@ export class StockService {
       where: { id: Number(id) },
       data: { isDeleted: false },
     });
-    await this.audit.createLog(userId, 'RESTORE', id, { status: 'deleted' }, { status: 'active' });
+    await this.audit.createLog(
+      userId,
+      'RESTORE',
+      id,
+      { status: 'deleted' },
+      { status: 'active' },
+    );
     return restored;
   }
 
@@ -127,7 +138,13 @@ export class StockService {
         where: { id: log.stockId },
         data: log.regiAdat as any,
       });
-      await this.audit.createLog(userId, 'RESTORE', log.stockId, log.ujAdat, log.regiAdat);
+      await this.audit.createLog(
+        userId,
+        'RESTORE',
+        log.stockId,
+        log.ujAdat,
+        log.regiAdat,
+      );
       return restored;
     }
 

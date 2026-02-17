@@ -1,7 +1,11 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
+//raktar-frontend/src/components/ProductList.tsx
 import { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { getProducts, deleteProduct, deleteManyProducts } from "../services/api";
+import {
+  getProducts,
+  deleteProduct,
+  deleteManyProducts,
+} from "../services/api";
 import { useAuth } from "../context/AuthContext";
 import type { Product } from "../types/Product";
 import { QRCodeSVG } from "qrcode.react";
@@ -26,8 +30,6 @@ function ProductList() {
   const [sortColumn, setSortColumn] = useState<SortColumn>("nev");
   const [isAscending, setIsAscending] = useState(true);
   const [showAlertsOnly, setShowAlertsOnly] = useState(false);
-  
-  // --- ÚJ: BULK SELECTION STATE ---
   const [selectedIds, setSelectedIds] = useState<number[]>([]);
 
   const navigate = useNavigate();
@@ -38,8 +40,6 @@ function ProductList() {
       setProducts(data.map((p) => ({ ...p, lejarat: new Date(p.lejarat) })));
     });
   }, []);
-
-  // PROFESSZIONÁLIS EXCEL EXPORT (Változatlanul hagytuk a designt)
   const exportToExcel = async () => {
     const workbook = new ExcelJS.Workbook();
     const worksheet = workbook.addWorksheet("Raktárkészlet");
@@ -52,7 +52,7 @@ function ProductList() {
       { header: "Mennyiség (db)", key: "mennyiseg" },
     ];
 
-    worksheet.columns = columns.map(col => ({ ...col, width: 15 }));
+    worksheet.columns = columns.map((col) => ({ ...col, width: 15 }));
     worksheet.getRow(1).font = { bold: true, color: { argb: "FFFFFFFF" } };
     worksheet.getRow(1).fill = {
       type: "pattern",
@@ -80,12 +80,20 @@ function ProductList() {
 
       if (isExpired || isCriticalQty) {
         row.eachCell((cell) => {
-          cell.fill = { type: "pattern", pattern: "solid", fgColor: { argb: "FFFEE2E2" } };
+          cell.fill = {
+            type: "pattern",
+            pattern: "solid",
+            fgColor: { argb: "FFFEE2E2" },
+          };
           cell.font = { color: { argb: "FF991B1B" }, bold: true };
         });
       } else if (isWarningDate || isLowStock) {
         row.eachCell((cell) => {
-          cell.fill = { type: "pattern", pattern: "solid", fgColor: { argb: "FFFEF3C7" } };
+          cell.fill = {
+            type: "pattern",
+            pattern: "solid",
+            fgColor: { argb: "FFFEF3C7" },
+          };
           cell.font = { color: { argb: "FF92400E" }, bold: true };
         });
       }
@@ -133,11 +141,9 @@ function ProductList() {
     });
     return list;
   }, [products, sortColumn, isAscending, showAlertsOnly]);
-
-  // --- ÚJ: BULK MŰVELETEK LOGIKÁJA ---
   const toggleSelect = (id: number) => {
-    setSelectedIds(prev => 
-      prev.includes(id) ? prev.filter(i => i !== id) : [...prev, id]
+    setSelectedIds((prev) =>
+      prev.includes(id) ? prev.filter((i) => i !== id) : [...prev, id],
     );
   };
 
@@ -145,17 +151,22 @@ function ProductList() {
     if (selectedIds.length === filteredAndSortedProducts.length) {
       setSelectedIds([]);
     } else {
-      setSelectedIds(filteredAndSortedProducts.map(p => p.id));
+      setSelectedIds(filteredAndSortedProducts.map((p) => p.id));
     }
   };
 
   const handleBulkDelete = async () => {
     if (!user || selectedIds.length === 0) return;
-    if (!window.confirm(`Biztosan törölni szeretnél ${selectedIds.length} kijelölt terméket?`)) return;
+    if (
+      !window.confirm(
+        `Biztosan törölni szeretnél ${selectedIds.length} kijelölt terméket?`,
+      )
+    )
+      return;
 
     try {
       await deleteManyProducts(selectedIds, user.id);
-      setProducts(prev => prev.filter(p => !selectedIds.includes(p.id)));
+      setProducts((prev) => prev.filter((p) => !selectedIds.includes(p.id)));
       setSelectedIds([]);
     } catch (err) {
       alert("Hiba a tömeges törlés során.");
@@ -167,7 +178,7 @@ function ProductList() {
     try {
       await deleteProduct(id, user.id);
       setProducts((prev) => prev.filter((p) => p.id !== id));
-      setSelectedIds(prev => prev.filter(i => i !== id));
+      setSelectedIds((prev) => prev.filter((i) => i !== id));
     } catch (err) {
       alert("Hiba a törlésnél.");
     }
@@ -195,7 +206,6 @@ function ProductList() {
   return (
     <div className="min-h-screen p-4 md:p-10 bg-slate-50 dark:bg-slate-950 transition-colors duration-300">
       <div className="max-w-7xl mx-auto">
-        {/* HEADER SECTION */}
         <div className="flex flex-col md:flex-row justify-between items-center gap-6 mb-12">
           <div
             className="flex items-center gap-4 group cursor-pointer"
@@ -210,7 +220,6 @@ function ProductList() {
           </div>
 
           <div className="flex flex-wrap md:flex-nowrap gap-4 w-full md:w-auto">
-            {/* ÚJ: TÖMEGES TÖRLÉS GOMB (Csak ha van kijelölés) */}
             {selectedIds.length > 0 && (
               <button
                 onClick={handleBulkDelete}
@@ -251,19 +260,21 @@ function ProductList() {
           </div>
         </div>
 
-        {/* ASZTALI TÁBLÁZAT NÉZET */}
         {filteredAndSortedProducts.length > 0 ? (
           <>
             <div className="hidden lg:block bg-white dark:bg-slate-900 rounded-[2.5rem] border border-slate-200 dark:border-slate-800 shadow-xl overflow-hidden transition-all">
               <table className="w-full border-collapse text-left">
                 <thead>
                   <tr className="bg-slate-50 dark:bg-slate-800/50 text-slate-500 dark:text-slate-400 text-[10px] font-black uppercase tracking-[0.2em] border-b border-slate-200 dark:border-slate-800">
-                    {/* ÚJ: ÖSSZES KIJELÖLÉSE CHECKBOX */}
                     <th className="p-6 text-center w-12">
-                      <input 
-                        type="checkbox" 
+                      <input
+                        type="checkbox"
                         className="w-4 h-4 rounded border-slate-300 text-blue-600 focus:ring-blue-500 cursor-pointer"
-                        checked={selectedIds.length === filteredAndSortedProducts.length && filteredAndSortedProducts.length > 0}
+                        checked={
+                          selectedIds.length ===
+                            filteredAndSortedProducts.length &&
+                          filteredAndSortedProducts.length > 0
+                        }
                         onChange={toggleSelectAll}
                       />
                     </th>
@@ -297,15 +308,14 @@ function ProductList() {
                     <tr
                       key={p.id}
                       className={`transition-colors group ${
-                        selectedIds.includes(p.id) 
-                          ? "bg-blue-600/10 dark:bg-blue-400/10" 
+                        selectedIds.includes(p.id)
+                          ? "bg-blue-600/10 dark:bg-blue-400/10"
                           : "hover:bg-blue-600/5 dark:hover:bg-blue-400/5"
                       }`}
                     >
-                      {/* ÚJ: EGYEDI KIJELÖLÉS CHECKBOX */}
                       <td className="p-6 text-center">
-                        <input 
-                          type="checkbox" 
+                        <input
+                          type="checkbox"
                           className="w-4 h-4 rounded border-slate-300 text-blue-600 focus:ring-blue-500 cursor-pointer"
                           checked={selectedIds.includes(p.id)}
                           onChange={() => toggleSelect(p.id)}
@@ -377,7 +387,6 @@ function ProductList() {
               </table>
             </div>
 
-            {/* MOBIL KÁRTYA NÉZET */}
             <div className="lg:hidden grid grid-cols-1 sm:grid-cols-2 gap-6">
               {filteredAndSortedProducts.map((p) => (
                 <div
@@ -388,10 +397,9 @@ function ProductList() {
                       : "bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800"
                   }`}
                 >
-                  {/* MOBIL CHECKBOX */}
                   <div className="absolute top-4 right-4 z-10">
-                    <input 
-                      type="checkbox" 
+                    <input
+                      type="checkbox"
                       className="w-6 h-6 rounded border-slate-300 text-blue-600 focus:ring-blue-500 cursor-pointer"
                       checked={selectedIds.includes(p.id)}
                       onChange={() => toggleSelect(p.id)}
@@ -469,7 +477,6 @@ function ProductList() {
             </div>
           </>
         ) : (
-          /* ÜRES ÁLLAPOT (Minden polc rendben) */
           <div className="py-32 text-center bg-white dark:bg-slate-900 rounded-[3rem] border-2 border-dashed border-slate-200 dark:border-slate-800">
             <div className="text-6xl mb-4">✨</div>
             <h2 className="text-2xl font-black text-slate-800 dark:text-white uppercase tracking-tighter italic">

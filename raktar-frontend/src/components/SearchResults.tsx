@@ -1,3 +1,4 @@
+//raktar-frontend/src/components/SearchResults.tsx
 import { useEffect, useState } from "react";
 import { useSearchParams, useNavigate } from "react-router-dom";
 import { getProducts } from "../services/api";

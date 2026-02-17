@@ -1,3 +1,4 @@
+//raktar-backend/src/audit/audit.service.ts
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma.service';
 
@@ -7,36 +8,38 @@ export class AuditService {
 
   async findAll(query: {
     userId?: number;
-    targetUserId?: number; // Admin szűréséhez: ki követte el?
+    targetUserId?: number;
     isAdmin: boolean;
     muvelet?: string;
     stockId?: number;
     startDate?: string;
     endDate?: string;
   }) {
-    const { userId, targetUserId, isAdmin, muvelet, stockId, startDate, endDate } = query;
+    const {
+      userId,
+      targetUserId,
+      isAdmin,
+      muvelet,
+      stockId,
+      startDate,
+      endDate,
+    } = query;
 
     const where: any = {};
-    
-    // Alap szűrő: Ha nem admin, csak a sajátját látja
     if (!isAdmin) {
       where.userId = userId;
     } else if (targetUserId) {
-      // Admin szűrhet konkrét felhasználóra a frontendről érkező ID alapján
       where.userId = Number(targetUserId);
     }
 
-    // Művelet típus szűrés
     if (muvelet) {
       where.muvelet = muvelet;
     }
 
-    // Konkrét termékre szűrés
     if (stockId) {
       where.stockId = Number(stockId);
     }
 
-    // Idősáv szűrés
     if (startDate || endDate) {
       where.idopont = {};
       if (startDate) {

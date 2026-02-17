@@ -1,7 +1,7 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
+//raktar-frontend/src/components/ProductModify.tsx
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { getProductById, updateProduct, restoreProduct } from "../services/api"; // Hozzáadva: restoreProduct
+import { getProductById, updateProduct, restoreProduct } from "../services/api";
 import { useAuth } from "../context/AuthContext";
 
 type ViewMode = "data" | "stock";

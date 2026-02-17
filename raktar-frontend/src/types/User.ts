@@ -1,9 +1,10 @@
+//raktar-frontend/src/types/User.ts
 export interface User {
   id: number;
   nev: string;
   felhasznalonev: string;
   admin: boolean;
-  email?: string;      // ÚJ
-  telefonszam?: string; // ÚJ
-  isBanned?: boolean;   // ÚJ (Admin felülethez)
+  email?: string;
+  telefonszam?: string;
+  isBanned?: boolean;
 }

@@ -1,4 +1,4 @@
-//stock.service.spec.ts
+//raktar-backend/src/stock/stock.service.spec.ts
 import { Test, TestingModule } from '@nestjs/testing';
 import { StockService } from './stock.service';
 

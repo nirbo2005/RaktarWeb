@@ -1,3 +1,4 @@
+//raktar-backend/prisma/seed.ts
 import { PrismaClient } from '@prisma/client';
 import * as fs from 'fs';
 import * as path from 'path';
@@ -7,8 +8,6 @@ const prisma = new PrismaClient();
 
 async function main() {
   console.log('--- Seedelés megkezdése ---');
-
-  // 1. TERMÉKEK (STOCK) SZINKRONIZÁLÁSA
   const stockPath = path.join(process.cwd(), 'prisma', 'stock.json');
   const stockRaw = fs.readFileSync(stockPath, 'utf-8');
   const stocks = JSON.parse(stockRaw);
@@ -36,14 +35,11 @@ async function main() {
     });
   }
   console.log(`✅ ${stocks.length} termék szinkronizálva.`);
-
-  // 2. FELHASZNÁLÓK (USER) SZINKRONIZÁLÁSA
   const usersPath = path.join(process.cwd(), 'prisma', 'users.json');
   const usersRaw = fs.readFileSync(usersPath, 'utf-8');
   const users = JSON.parse(usersRaw);
 
   for (const user of users) {
-    // Jelszó titkosítása - ha a JSON-ben van jelszó azt használja, ha nincs, akkor egy defaultot
     const passwordToHash = user.jelszo || 'DefaultPass123!';
     const hashedPassword = await bcrypt.hash(passwordToHash, 10);
 
@@ -54,8 +50,6 @@ async function main() {
         admin: user.admin,
         email: user.email,
         telefonszam: user.telefonszam,
-        // Itt a jelszót nem frissítjük upsertnél, hogy ne írjuk felül 
-        // a user által már megváltoztatott jelszót véletlenül
       },
       create: {
         nev: user.nev,

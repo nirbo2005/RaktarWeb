@@ -1,4 +1,9 @@
-import { Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
+//raktar-backend/src/user/user.service.ts
+import {
+  Injectable,
+  NotFoundException,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { PrismaService } from '../prisma.service';
 import * as bcrypt from 'bcrypt';
@@ -41,7 +46,7 @@ export class UserService {
       },
     });
   }
-  
+
   async findByUsername(felhasznalonev: string) {
     return this.prisma.user.findUnique({
       where: { felhasznalonev },
@@ -51,43 +56,35 @@ export class UserService {
   async findOne(id: number) {
     return this.prisma.user.findUnique({
       where: { id },
-      select: { 
-        id: true, 
-        nev: true, 
-        felhasznalonev: true, 
-        email: true, 
-        telefonszam: true, 
-        admin: true, 
-        isBanned: true 
+      select: {
+        id: true,
+        nev: true,
+        felhasznalonev: true,
+        email: true,
+        telefonszam: true,
+        admin: true,
+        isBanned: true,
       },
     });
   }
 
-  /**
-   * PROFIL MÓDOSÍTÁSA (Kezeli a saját profil és az adminisztrátori szerkesztés logikáját is)
-   */
   async updateProfile(id: number, data: any) {
     const user = await this.prisma.user.findUnique({ where: { id } });
     if (!user) throw new NotFoundException('Felhasználó nem található');
-
-    // 1. Prisma-idegen mezők kiszűrése (ujJelszo, regiJelszo eltávolítása a data-ból)
     const { ujJelszo, regiJelszo, ...validFields } = data;
     const updateData: any = { ...validFields };
 
-    // 2. JELSZÓ MÓDOSÍTÁS LOGIKÁJA
-    if (ujJelszo && ujJelszo.trim() !== "") {
-      // Ha nem admin módosít (vagyis regiJelszo érkezett), ellenőrizzük a régit
+    if (ujJelszo && ujJelszo.trim() !== '') {
       if (regiJelszo) {
         const isMatch = await bcrypt.compare(regiJelszo, user.jelszo);
-        if (!isMatch) throw new UnauthorizedException('A régi jelszó nem megfelelő!');
-      } 
-      // Ha nincs regiJelszo, feltételezzük az adminisztrátori felülírást (AuthGuard védi az endpointot)
-      
+        if (!isMatch)
+          throw new UnauthorizedException('A régi jelszó nem megfelelő!');
+      }
+
       const salt = await bcrypt.genSalt();
       updateData.jelszo = await bcrypt.hash(ujJelszo, salt);
     }
 
-    // 3. ADATBÁZIS FRISSÍTÉSE
     return this.prisma.user.update({
       where: { id },
       data: updateData,
@@ -98,8 +95,8 @@ export class UserService {
         email: true,
         telefonszam: true,
         admin: true,
-        isBanned: true
-      }
+        isBanned: true,
+      },
     });
   }
 
@@ -121,7 +118,9 @@ export class UserService {
   }
 
   async handleRequest(requestId: number, statusz: 'APPROVED' | 'REJECTED') {
-    const request = await this.prisma.changeRequest.findUnique({ where: { id: requestId } });
+    const request = await this.prisma.changeRequest.findUnique({
+      where: { id: requestId },
+    });
     if (!request) throw new NotFoundException('Kérelem nem található');
 
     if (statusz === 'APPROVED') {
@@ -154,24 +153,21 @@ export class UserService {
     });
   }
 
-  // raktar-backend/src/user/user.service.ts
-
-async remove(id: number) {
-  try {
-    // Fizikai törlés (delete) helyett csak frissítjük (update) az adatokat
-    return await this.prisma.user.update({
-      where: { id },
-      data: {
-        nev: "Törölt felhasználó",
-        felhasznalonev: `torolt_${id}_${Math.floor(Math.random() * 1000)}`,
-        email: `deleted_${id}@raktar.local`,
-        telefonszam: "---",
-        isBanned: true, // Megakadályozza, hogy a "törölt" user belépjen
-      },
-    });
-  } catch (error) {
-    console.error("Hiba a felhasználó anonimizálása során:", error);
-    throw error;
+  async remove(id: number) {
+    try {
+      return await this.prisma.user.update({
+        where: { id },
+        data: {
+          nev: 'Törölt felhasználó',
+          felhasznalonev: `torolt_${id}_${Math.floor(Math.random() * 1000)}`,
+          email: `deleted_${id}@raktar.local`,
+          telefonszam: '---',
+          isBanned: true,
+        },
+      });
+    } catch (error) {
+      console.error('Hiba a felhasználó anonimizálása során:', error);
+      throw error;
+    }
   }
-}
 }

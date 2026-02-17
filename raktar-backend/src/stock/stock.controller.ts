@@ -1,3 +1,4 @@
+//raktar-backend/src/stock/stock.controller.ts
 import {
   Body,
   Controller,

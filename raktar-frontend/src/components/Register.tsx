@@ -1,17 +1,16 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
-/* eslint-disable @typescript-eslint/no-explicit-any */
+//raktar-frontend/src/components/Register.tsx
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { register } from "../services/api";
 
 function Register() {
   const navigate = useNavigate();
-  const [form, setForm] = useState({ 
-    nev: "", 
-    felhasznalonev: "", 
+  const [form, setForm] = useState({
+    nev: "",
+    felhasznalonev: "",
     jelszo: "",
     email: "",
-    telefonszam: ""
+    telefonszam: "",
   });
   const [error, setError] = useState("");
 
@@ -24,13 +23,15 @@ function Register() {
       navigate("/login");
     } catch (err: any) {
       setError(
-        "Hiba a regisztráció során. Lehet, hogy már létezik ez a felhasználónév vagy email?"
+        "Hiba a regisztráció során. Lehet, hogy már létezik ez a felhasználónév vagy email?",
       );
     }
   };
 
-  const inputStyle = "w-full px-5 py-3 bg-gray-50 dark:bg-slate-800/50 border border-gray-300 dark:border-slate-700 rounded-2xl text-gray-900 dark:text-white placeholder-gray-400 focus:ring-2 focus:ring-blue-500 outline-none transition-all text-sm";
-  const labelStyle = "block mb-1.5 ml-2 text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest";
+  const inputStyle =
+    "w-full px-5 py-3 bg-gray-50 dark:bg-slate-800/50 border border-gray-300 dark:border-slate-700 rounded-2xl text-gray-900 dark:text-white placeholder-gray-400 focus:ring-2 focus:ring-blue-500 outline-none transition-all text-sm";
+  const labelStyle =
+    "block mb-1.5 ml-2 text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest";
 
   return (
     <div className="min-h-[80vh] flex items-center justify-center p-4 transition-colors duration-500">
@@ -62,7 +63,9 @@ function Register() {
               <input
                 className={inputStyle}
                 placeholder="kjanos88"
-                onChange={(e) => setForm({ ...form, felhasznalonev: e.target.value })}
+                onChange={(e) =>
+                  setForm({ ...form, felhasznalonev: e.target.value })
+                }
                 required
               />
             </div>
@@ -84,7 +87,9 @@ function Register() {
                 type="text"
                 className={inputStyle}
                 placeholder="+36 20 123 4567"
-                onChange={(e) => setForm({ ...form, telefonszam: e.target.value })}
+                onChange={(e) =>
+                  setForm({ ...form, telefonszam: e.target.value })
+                }
               />
             </div>
 

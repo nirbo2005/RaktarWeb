@@ -1,3 +1,4 @@
+//raktar-frontend/src/App.tsx
 import { useEffect, useState } from "react";
 import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
 import { AuthProvider } from "./context/AuthContext";

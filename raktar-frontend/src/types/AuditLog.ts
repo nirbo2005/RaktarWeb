@@ -1,3 +1,4 @@
+//raktar-frontend/src/types/AuditLog.ts
 export interface AuditLog {
   id: number;
   muvelet: "CREATE" | "UPDATE" | "DELETE" | "RESTORE";

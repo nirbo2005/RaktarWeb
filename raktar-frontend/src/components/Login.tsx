@@ -1,12 +1,12 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
+//raktar-frontend/src/components/Login.tsx
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
-import { login as apiLogin } from "../services/api"; // Átnevezzük az importot, hogy ne ütközzön
+import { login as apiLogin } from "../services/api";
 import { useAuth } from "../context/AuthContext";
 
 function Login() {
   const navigate = useNavigate();
-  const { login } = useAuth(); // A kontextusban 'login' a neve, nem 'loginUser'
+  const { login } = useAuth();
   const [form, setForm] = useState({ felhasznalonev: "", jelszo: "" });
   const [error, setError] = useState("");
 
@@ -14,18 +14,13 @@ function Login() {
     e.preventDefault();
     setError("");
     try {
-      // Az API-t hívjuk meg (apiLogin)
       const data = await apiLogin(form.felhasznalonev, form.jelszo);
-      
-      // A kontextus login függvényét hívjuk a kapott adatokkal
-      // A data tartalmazza az access_token-t és a user objektumot
-      login(data.access_token, data.user); 
-      
+      login(data.access_token, data.user);
+
       navigate("/");
     } catch (err: any) {
-      // Itt elkapjuk a specifikus hibaüzenetet is, ha a backend küld (pl. Tiltásnál)
-      const errorMsg = err.message?.includes("felfüggesztettük") 
-        ? err.message 
+      const errorMsg = err.message?.includes("felfüggesztettük")
+        ? err.message
         : "Hibás felhasználónév vagy jelszó!";
       setError(errorMsg);
     }
