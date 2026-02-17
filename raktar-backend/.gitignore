@@ -1,0 +1,31 @@
+# Dependency directories
+node_modules/
+dist/
+
+# Environment variables
+.env
+
+# NestJS build artifacts and logs
+npm-debug.log
+yarn-debug.log
+yarn-error.log
+.pnpm-debug.log
+/tsconfig.build.tsbuildinfo
+
+# Prisma artifacts
+# Kihagyjuk a generált klienst, mert azt a Render úgyis újragenerálja a buildnél
+node_modules/.prisma/
+
+# IDE settings
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS metadata
+.DS_Store
+Thumbs.db
+
+# Optional: TypeScript Maps (ha nem akarod látni őket GitHubon)
+*.js.map
+*.d.ts

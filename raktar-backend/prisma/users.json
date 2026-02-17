@@ -1,0 +1,101 @@
+[
+  { 
+    "nev": "Kovács János", 
+    "felhasznalonev": "kjanos", 
+    "jelszo": "123456",
+    "email": "kjanos@raktarweb.hu",
+    "telefonszam": "+36 20 123 4567",
+    "admin": false,
+    "isBanned": false
+  },
+  { 
+    "nev": "Nagy Ilona", 
+    "felhasznalonev": "nilona", 
+    "jelszo": "123456",
+    "email": "nilona@raktarweb.hu",
+    "telefonszam": "+36 30 234 5678",
+    "admin": false,
+    "isBanned": false
+  },
+  { 
+    "nev": "Szabó Péter", 
+    "felhasznalonev": "szpeter", 
+    "jelszo": "123456",
+    "email": "szpeter@raktarweb.hu",
+    "telefonszam": "+36 70 345 6789",
+    "admin": false,
+    "isBanned": false
+  },
+  { 
+    "nev": "Tóth Anikó", 
+    "felhasznalonev": "taniko", 
+    "jelszo": "123456",
+    "email": "taniko@raktarweb.hu",
+    "telefonszam": "+36 20 456 7890",
+    "admin": false,
+    "isBanned": false
+  },
+  { 
+    "nev": "Kiss László", 
+    "felhasznalonev": "klaszlo", 
+    "jelszo": "123456",
+    "email": "klaszlo@raktarweb.hu",
+    "telefonszam": "+36 30 567 8901",
+    "admin": false,
+    "isBanned": false
+  },
+  { 
+    "nev": "Horváth Éva", 
+    "felhasznalonev": "heva", 
+    "jelszo": "123456",
+    "email": "heva@raktarweb.hu",
+    "telefonszam": "+36 70 678 9012",
+    "admin": false,
+    "isBanned": false
+  },
+  { 
+    "nev": "Varga Zoltán", 
+    "felhasznalonev": "vzoltan", 
+    "jelszo": "123456",
+    "email": "vzoltan@raktarweb.hu",
+    "telefonszam": "+36 20 789 0123",
+    "admin": false,
+    "isBanned": false
+  },
+  { 
+    "nev": "Molnár Mária", 
+    "felhasznalonev": "mmaria", 
+    "jelszo": "123456",
+    "email": "mmaria@raktarweb.hu",
+    "telefonszam": "+36 30 890 1234",
+    "admin": false,
+    "isBanned": false
+  },
+  { 
+    "nev": "Farkas Gábor", 
+    "felhasznalonev": "fgabor", 
+    "jelszo": "123456",
+    "email": "fgabor@raktarweb.hu",
+    "telefonszam": "+36 70 901 2345",
+    "admin": false,
+    "isBanned": false
+  },
+  { 
+    "nev": "Balogh Judit", 
+    "felhasznalonev": "bjudit", 
+    "jelszo": "123456",
+    "email": "bjudit@raktarweb.hu",
+    "telefonszam": "+36 20 012 3456",
+    "admin": false,
+    "isBanned": false
+  },
+  { 
+    "nev": "Boss", 
+    "felhasznalonev": "admin", 
+    "jelszo": "123456",
+    "email": "admin@raktarweb.hu",
+    "telefonszam": "+36 1 999 9999",
+    "admin": true,
+    "isBanned": false
+  }
+]

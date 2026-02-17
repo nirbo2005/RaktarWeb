@@ -1,0 +1,130 @@
+body,
+nav,
+div,
+table,
+tr,
+td,
+h1,
+h2,
+h3,
+h4,
+p,
+span,
+input,
+button {
+  transition:
+    background-color 250ms ease-in-out,
+    color 250ms ease-in-out,
+    border-color 250ms ease-in-out,
+    box-shadow 250ms ease-in-out;
+}
+
+.product-grid-view {
+  font-family: inherit;
+}
+
+.parcella-valaszto {
+  margin-bottom: 1.5rem;
+}
+
+.parcella-row {
+  margin-bottom: 0.75rem;
+}
+
+.parcella-btn {
+  margin-right: 0.5rem;
+  margin-bottom: 0.5rem;
+  padding: 0.6rem 1.2rem;
+  cursor: pointer;
+  border: 1px solid #3b82f6;
+  border-radius: 0.75rem;
+  background-color: white;
+  color: #3b82f6;
+  font-weight: 800;
+  text-transform: uppercase;
+  font-size: 0.75rem;
+  letter-spacing: 0.05em;
+}
+
+.parcella-btn:hover {
+  background-color: #eff6ff;
+}
+
+.parcella-btn.active {
+  background-color: #3b82f6;
+  color: white;
+  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+}
+
+.dark .parcella-btn {
+  background-color: #0f172a;
+  border-color: #1e293b;
+  color: #94a3b8;
+}
+
+.dark .parcella-btn:hover {
+  background-color: #1e293b;
+  color: white;
+}
+
+.dark .parcella-btn.active {
+  background-color: #3b82f6;
+  border-color: #60a5fa;
+  color: white;
+}
+
+.polc-container {
+  display: flex;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+}
+
+.polc {
+  border: 1px solid #e2e8f0;
+  padding: 1.25rem;
+  border-radius: 1.5rem;
+  width: 240px;
+  background-color: white;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+.polc h4 {
+  margin-bottom: 0.75rem;
+  font-weight: 900;
+  text-transform: uppercase;
+  font-size: 0.875rem;
+  color: #1e293b;
+}
+
+.dark .polc {
+  background-color: rgba(30, 41, 59, 0.5);
+  border-color: #334155;
+  color: #f1f5f9;
+}
+
+.dark .polc h4 {
+  color: #3b82f6;
+}
+
+.product-table-container {
+  border-radius: 2rem;
+  overflow: hidden;
+}
+
+.danger,
+.error {
+  color: #ef4444;
+  font-weight: 800;
+}
+
+.warning {
+  color: #f59e0b;
+  font-weight: 700;
+}
+
+.backdrop-blur-md,
+.backdrop-blur-xl,
+.backdrop-blur-3xl {
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}

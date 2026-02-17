@@ -1,0 +1,56 @@
+generator client {
+  provider = "prisma-client-js"
+  engineType    = "binary"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model Stock {
+  id        Int        @id @default(autoincrement())
+  nev       String
+  gyarto    String
+  lejarat   DateTime
+  ar        Int
+  mennyiseg Int
+  parcella  String
+  isDeleted Boolean    @default(false)
+  logs      AuditLog[]
+}
+
+model User {
+  id             Int             @id @default(autoincrement())
+  nev            String
+  felhasznalonev String          @unique
+  jelszo         String
+  email          String?         @unique
+  telefonszam    String?
+  admin          Boolean         @default(false)
+  isBanned       Boolean         @default(false)
+  logs           AuditLog[]
+  requests       ChangeRequest[]
+}
+
+model AuditLog {
+  id      Int      @id @default(autoincrement())
+  idopont DateTime @default(now())
+  muvelet String
+  userId  Int
+  user    User     @relation(fields: [userId], references: [id])
+  stockId Int?
+  stock   Stock?   @relation(fields: [stockId], references: [id], onDelete: SetNull)
+  regiAdat Json?
+  ujAdat   Json?
+}
+
+model ChangeRequest {
+  id           Int      @id @default(autoincrement())
+  userId       Int
+  user         User     @relation(fields: [userId], references: [id])
+  tipus        String   
+  ujErtek      String   
+  statusz      String   @default("PENDING")
+  letrehozva   DateTime @default(now())
+}
