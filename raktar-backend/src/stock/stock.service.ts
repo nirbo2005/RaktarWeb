@@ -32,34 +32,50 @@ export class StockService {
   }
 
   async create(data: CreateStockDto, userId: number) {
-    const newStock = await this.prisma.stock.create({
-      data: { ...data, isDeleted: false },
+    return this.prisma.$transaction(async (tx) => {
+      const newStock = await tx.stock.create({
+        data: { ...data, isDeleted: false },
+      });
+      await this.audit.createLog(userId, 'CREATE', newStock.id, null, newStock, tx);
+      return newStock;
     });
-    await this.audit.createLog(userId, 'CREATE', newStock.id, null, newStock);
-    return newStock;
   }
 
   async update(id: number, data: Partial<UpdateStockDto>, userId: number) {
-    const oldData = await this.findOne(id);
-    const updated = await this.prisma.stock.update({
-      where: { id: Number(id) },
-      data: data,
+    return this.prisma.$transaction(async (tx) => {
+      const oldData = await tx.stock.findUnique({ where: { id: Number(id) } });
+      if (!oldData) throw new NotFoundException('Termék nem található!');
+
+      const updated = await tx.stock.update({
+        where: { id: Number(id) },
+        data: data,
+      });
+
+      await this.audit.createLog(userId, 'UPDATE', id, oldData, updated, tx);
+      return updated;
     });
-    await this.audit.createLog(userId, 'UPDATE', id, oldData, updated);
-    return updated;
   }
 
   async delete(id: number, userId: number) {
-    const oldData = await this.findOne(id);
-    const updated = await this.prisma.stock.update({
-      where: { id: Number(id) },
-      data: { isDeleted: true },
+    return this.prisma.$transaction(async (tx) => {
+      const oldData = await tx.stock.findUnique({ where: { id: Number(id) } });
+      if (!oldData) throw new NotFoundException('Termék nem található!');
+
+      const updated = await tx.stock.update({
+        where: { id: Number(id) },
+        data: { isDeleted: true },
+      });
+
+      await this.audit.createLog(
+        userId,
+        'DELETE',
+        id,
+        oldData,
+        { ...oldData, isDeleted: true },
+        tx,
+      );
+      return updated;
     });
-    await this.audit.createLog(userId, 'DELETE', id, oldData, {
-      ...oldData,
-      isDeleted: true,
-    });
-    return updated;
   }
 
   async deleteMany(ids: number[], userId: number) {
@@ -75,16 +91,22 @@ export class StockService {
 
       if (existingProducts.length === 0)
         throw new NotFoundException('Nem találhatók a termékek');
+
+      // 1. PONT JAVÍTÁSA: Logika szétválasztása
+      // Ha csak 1 elem van, akkor sima DELETE, ha több, akkor BULK_DELETE
+      const operationType = existingProducts.length > 1 ? 'BULK_DELETE' : 'DELETE';
+
       const result = await this.prisma.$transaction(async (tx) => {
         const update = await tx.stock.updateMany({
           where: { id: { in: numericIds } },
           data: { isDeleted: true },
         });
+
         for (const product of existingProducts) {
           await tx.auditLog.create({
             data: {
               userId: userId,
-              muvelet: 'BULK_DELETE',
+              muvelet: operationType, // A dinamikus típus használata
               stockId: product.id,
               regiAdat: JSON.parse(JSON.stringify(product)),
               ujAdat: JSON.parse(
@@ -99,7 +121,6 @@ export class StockService {
 
       return { success: true, count: result.count };
     } catch (error) {
-      console.error('RENDER ERROR LOG:', error);
       throw new InternalServerErrorException(
         'Hiba a tömeges törlés során: ' + error.message,
       );
@@ -107,18 +128,22 @@ export class StockService {
   }
 
   async restore(id: number, userId: number) {
-    const restored = await this.prisma.stock.update({
-      where: { id: Number(id) },
-      data: { isDeleted: false },
+    return this.prisma.$transaction(async (tx) => {
+      const restored = await tx.stock.update({
+        where: { id: Number(id) },
+        data: { isDeleted: false },
+      });
+
+      await this.audit.createLog(
+        userId,
+        'RESTORE',
+        id,
+        { status: 'deleted' },
+        { status: 'active' },
+        tx,
+      );
+      return restored;
     });
-    await this.audit.createLog(
-      userId,
-      'RESTORE',
-      id,
-      { status: 'deleted' },
-      { status: 'active' },
-    );
-    return restored;
   }
 
   async restoreFromLog(logId: number, userId: number) {
@@ -129,23 +154,28 @@ export class StockService {
     if (!log) throw new NotFoundException('Naplóbejegyzés nem található!');
     if (!log.stockId) throw new BadRequestException('Nincs kapcsolódó termék!');
 
-    if (log.muvelet === 'DELETE') {
+    // 2. PONT JAVÍTÁSA: A BULK_DELETE is visszavonható ugyanúgy, mint a sima DELETE
+    if (log.muvelet === 'DELETE' || log.muvelet === 'BULK_DELETE') {
       return this.restore(log.stockId, userId);
     }
 
     if (log.muvelet === 'UPDATE' && log.regiAdat) {
-      const restored = await this.prisma.stock.update({
-        where: { id: log.stockId },
-        data: log.regiAdat as any,
+      return this.prisma.$transaction(async (tx) => {
+        const restored = await tx.stock.update({
+          where: { id: log.stockId as number },
+          data: log.regiAdat as any,
+        });
+
+        await this.audit.createLog(
+          userId,
+          'RESTORE',
+          log.stockId as number,
+          log.ujAdat,
+          log.regiAdat,
+          tx,
+        );
+        return restored;
       });
-      await this.audit.createLog(
-        userId,
-        'RESTORE',
-        log.stockId,
-        log.ujAdat,
-        log.regiAdat,
-      );
-      return restored;
     }
 
     throw new BadRequestException('Ez a művelet nem vonható vissza!');

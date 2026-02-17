@@ -1,35 +1,29 @@
 //raktar-backend/src/audit/audit.service.ts
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma.service';
+import { GetLogsQueryDto } from './dto/get-logs-query.dto';
+import { Prisma } from '@prisma/client';
 
 @Injectable()
 export class AuditService {
   constructor(private prisma: PrismaService) {}
 
-  async findAll(query: {
-    userId?: number;
-    targetUserId?: number;
-    isAdmin: boolean;
-    muvelet?: string;
-    stockId?: number;
-    startDate?: string;
-    endDate?: string;
-  }) {
+  async findAll(userId: number, query: GetLogsQueryDto) {
     const {
-      userId,
       targetUserId,
-      isAdmin,
+      admin,
       muvelet,
       stockId,
       startDate,
       endDate,
     } = query;
 
-    const where: any = {};
-    if (!isAdmin) {
+    const where: Prisma.AuditLogWhereInput = {};
+
+    if (!admin) {
       where.userId = userId;
     } else if (targetUserId) {
-      where.userId = Number(targetUserId);
+      where.userId = targetUserId;
     }
 
     if (muvelet) {
@@ -37,18 +31,21 @@ export class AuditService {
     }
 
     if (stockId) {
-      where.stockId = Number(stockId);
+      where.stockId = stockId;
     }
 
     if (startDate || endDate) {
       where.idopont = {};
       if (startDate) {
-        where.idopont.gte = new Date(startDate);
+        const start = new Date(startDate);
+        if (!isNaN(start.getTime())) where.idopont.gte = start;
       }
       if (endDate) {
         const end = new Date(endDate);
-        end.setHours(23, 59, 59, 999);
-        where.idopont.lte = end;
+        if (!isNaN(end.getTime())) {
+          end.setHours(23, 59, 59, 999);
+          where.idopont.lte = end;
+        }
       }
     }
 
@@ -74,8 +71,10 @@ export class AuditService {
     stockId?: number,
     regiAdat?: any,
     ujAdat?: any,
+    tx?: Prisma.TransactionClient,
   ) {
-    return this.prisma.auditLog.create({
+    const prismaClient = tx || this.prisma;
+    return prismaClient.auditLog.create({
       data: {
         muvelet,
         userId,

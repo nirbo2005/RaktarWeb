@@ -6,7 +6,7 @@
     "install-all": "npm install && cd raktar-backend && npm install && cd ../raktar-frontend && npm install",
     "dev": "concurrently -n \"BACKEND,FRONTEND\" -c \"bgBlue,bgMagenta\" \"cd raktar-backend && npm run start:dev\" \"cd raktar-frontend && npm run dev -- --host\"",
     "init": "npm run install-all && cd raktar-backend && npx prisma generate && npx prisma migrate dev --name init && npx prisma db seed && cd .. && npm run dev",
-    "update": "cd raktar-backend && npx prisma migrate reset --force && npx prisma generate && npx prisma db seed && cd .. && npm run dev"
+    "update": "cd raktar-backend && npx prisma migrate reset --force && cd .. && npm run dev"
   },
   "repository": {
     "type": "git",

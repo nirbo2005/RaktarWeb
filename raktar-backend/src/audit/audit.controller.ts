@@ -5,32 +5,22 @@ import {
   Param,
   Query,
   ParseIntPipe,
-  ParseBoolPipe,
+  ValidationPipe,
+  UsePipes,
 } from '@nestjs/common';
 import { AuditService } from './audit.service';
+import { GetLogsQueryDto } from './dto/get-logs-query.dto';
 
 @Controller('audit')
 export class AuditController {
   constructor(private readonly auditService: AuditService) {}
 
   @Get('user/:userId')
+  @UsePipes(new ValidationPipe({ transform: true, whitelist: true }))
   async getLogs(
     @Param('userId', ParseIntPipe) userId: number,
-    @Query('admin', ParseBoolPipe) admin: boolean,
-    @Query('muvelet') muvelet?: string,
-    @Query('stockId') stockId?: string,
-    @Query('targetUserId') targetUserId?: string,
-    @Query('startDate') startDate?: string,
-    @Query('endDate') endDate?: string,
+    @Query() query: GetLogsQueryDto,
   ) {
-    return this.auditService.findAll({
-      userId,
-      isAdmin: admin,
-      muvelet,
-      stockId: stockId ? +stockId : undefined,
-      targetUserId: targetUserId ? +targetUserId : undefined,
-      startDate,
-      endDate,
-    });
+    return this.auditService.findAll(userId, query);
   }
 }

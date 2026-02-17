@@ -8,32 +8,39 @@ import {
   Put,
   Delete,
   Patch,
-  Query,
   ParseIntPipe,
+  UseInterceptors,
+  ClassSerializerInterceptor,
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
+import { UserEntity } from './entities/user.entity';
 
 @Controller('user')
 export class UserController {
   constructor(private readonly userService: UserService) {}
+
+  @UseInterceptors(ClassSerializerInterceptor)
   @Post('register')
-  create(@Body() createUserDto: CreateUserDto) {
+  async create(@Body() createUserDto: CreateUserDto): Promise<UserEntity> {
     return this.userService.create(createUserDto);
   }
 
+  @UseInterceptors(ClassSerializerInterceptor)
   @Get('all')
-  findAll() {
+  async findAll(): Promise<UserEntity[]> {
     return this.userService.findAll();
   }
 
+  @UseInterceptors(ClassSerializerInterceptor)
   @Get(':id')
-  findOne(@Param('id', ParseIntPipe) id: number) {
+  async findOne(@Param('id', ParseIntPipe) id: number): Promise<UserEntity> {
     return this.userService.findOne(id);
   }
 
+  @UseInterceptors(ClassSerializerInterceptor)
   @Put('update-profile/:id')
-  updateProfile(
+  async updateProfile(
     @Param('id', ParseIntPipe) id: number,
     @Body()
     updateData: {
@@ -41,13 +48,14 @@ export class UserController {
       jelszo?: string;
       email?: string;
       telefonszam?: string;
+      nev?: string;
     },
-  ) {
+  ): Promise<UserEntity> {
     return this.userService.updateProfile(id, updateData);
   }
 
   @Post('request-change')
-  createRequest(
+  async createRequest(
     @Body() body: { userId: number; tipus: string; ujErtek: string },
   ) {
     return this.userService.createChangeRequest(
@@ -58,25 +66,27 @@ export class UserController {
   }
 
   @Get('admin/pending-requests')
-  getPendingRequests() {
+  async getPendingRequests() {
     return this.userService.getPendingRequests();
   }
 
   @Patch('admin/handle-request/:requestId')
-  handleRequest(
+  async handleRequest(
     @Param('requestId', ParseIntPipe) requestId: number,
     @Body() body: { statusz: 'APPROVED' | 'REJECTED' },
   ) {
     return this.userService.handleRequest(requestId, body.statusz);
   }
 
+  @UseInterceptors(ClassSerializerInterceptor)
   @Patch('admin/toggle-ban/:id')
-  toggleBan(@Param('id', ParseIntPipe) id: number) {
+  async toggleBan(@Param('id', ParseIntPipe) id: number): Promise<UserEntity> {
     return this.userService.toggleBan(id);
   }
 
+  @UseInterceptors(ClassSerializerInterceptor)
   @Delete('admin/delete/:id')
-  remove(@Param('id', ParseIntPipe) id: number) {
+  async remove(@Param('id', ParseIntPipe) id: number): Promise<UserEntity> {
     return this.userService.remove(id);
   }
 }

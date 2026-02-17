@@ -1,5 +1,5 @@
 //raktar-frontend/src/components/Profile.tsx
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback, useMemo } from "react";
 import { useAuth } from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
 import {
@@ -15,11 +15,19 @@ import {
 } from "../services/api";
 import type { AuditLog, User } from "../types";
 
+// Kiterjesztett típus a csoportosításhoz
+type DisplayLog = AuditLog & {
+  isGroup?: boolean;
+  items?: AuditLog[];
+  count?: number;
+};
+
 const Profile = () => {
   const { user, logout, setUser } = useAuth();
   const navigate = useNavigate();
   const [openSection, setOpenSection] = useState<string | null>("details");
   const [loading, setLoading] = useState(false);
+  const [restoringGroup, setRestoringGroup] = useState(false); // Új state a csoportos loadinghoz
   const [formError, setFormError] = useState<string | null>(null);
   const [showOldPass, setShowOldPass] = useState(false);
   const [showNewPass, setShowNewPass] = useState(false);
@@ -53,12 +61,67 @@ const Profile = () => {
     targetUserId: "",
   });
 
+  // --- CSOPORTOSÍTÁSI LOGIKA ---
+  const groupedLogs = useMemo(() => {
+    const result: DisplayLog[] = [];
+    let currentGroup: DisplayLog | null = null;
+
+    logs.forEach((log) => {
+      // Csak a BULK_DELETE műveleteket csoportosítjuk
+      if (log.muvelet === "BULK_DELETE") {
+        // Ha már van nyitott csoport, és ez a log is oda tartozik (időben közel van és ugyanaz a user)
+        // Megengedünk 2 másodperc eltérést, mivel a loop a backendben időbe telik
+        const timeDiff = currentGroup
+          ? Math.abs(
+              new Date(currentGroup.idopont).getTime() -
+                new Date(log.idopont).getTime(),
+            )
+          : 0;
+
+        if (
+          currentGroup &&
+          currentGroup.userId === log.userId &&
+          timeDiff < 2000
+        ) {
+          currentGroup.items!.push(log);
+          currentGroup.count!++;
+        } else {
+          // Ha nincs nyitott csoport, vagy ez már egy új műveletsor
+          if (currentGroup) result.push(currentGroup);
+          currentGroup = {
+            ...log,
+            isGroup: true,
+            items: [log],
+            count: 1,
+          };
+        }
+      } else {
+        // Ha nem BULK_DELETE, lezárjuk az előző csoportot (ha volt) és hozzáadjuk a sima logot
+        if (currentGroup) {
+          result.push(currentGroup);
+          currentGroup = null;
+        }
+        result.push(log);
+      }
+    });
+
+    // A végén, ha maradt nyitott csoport
+    if (currentGroup) result.push(currentGroup);
+
+    return result;
+  }, [logs]);
+
   const loadData = useCallback(async () => {
     if (!user) return;
     setLoading(true);
     try {
-      const logData = await getAuditLogs(user.id, user.admin, logFilters);
+      const activeFilters = Object.fromEntries(
+        Object.entries(logFilters).filter(([_, value]) => value !== ""),
+      );
+
+      const logData = await getAuditLogs(user.id, user.admin, activeFilters);
       setLogs(logData);
+
       if (user.admin) {
         const [users, reqs] = await Promise.all([
           getAllUsers(),
@@ -78,6 +141,7 @@ const Profile = () => {
     loadData();
   }, [loadData]);
 
+  // --- EGYEDI VISSZAÁLLÍTÁS ---
   const handleRestore = async (e: React.MouseEvent, logId: number) => {
     e.stopPropagation();
     if (!user || !confirm("Biztosan visszaállítod ezt az állapotot?")) return;
@@ -90,6 +154,37 @@ const Profile = () => {
       alert("Hiba: " + (err.message || "A visszaállítás nem sikerült."));
     } finally {
       setLoading(false);
+    }
+  };
+
+  // --- CSOPORTOS VISSZAÁLLÍTÁS ---
+  const handleGroupRestore = async (e: React.MouseEvent, group: DisplayLog) => {
+    e.stopPropagation();
+    if (
+      !user ||
+      !group.items ||
+      !confirm(
+        `Biztosan visszaállítod mind a(z) ${group.count} törölt terméket?`,
+      )
+    )
+      return;
+
+    setRestoringGroup(true);
+    try {
+      // Párhuzamosan indítjuk a visszaállításokat a backend felé
+      // Ez hatékonyabb, mintha egyesével várnánk meg őket
+      await Promise.all(
+        group.items.map((item) => restoreAction(item.id, user.id)),
+      );
+      alert("A teljes csoport sikeresen visszaállítva!");
+      await loadData();
+    } catch (err: any) {
+      alert(
+        "Hiba történt a csoportos visszaállítás közben. Lehet, hogy néhány elem már nem létezik.",
+      );
+      await loadData(); // Újratöltjük, hogy lássuk mi sikerült
+    } finally {
+      setRestoringGroup(false);
     }
   };
 
@@ -309,6 +404,7 @@ const Profile = () => {
           {openSection === "details" && (
             <div className="p-8 border-t border-slate-100 dark:border-slate-800 animate-in slide-in-from-top-2">
               <form onSubmit={handleUpdateSubmit} className="space-y-6">
+                {/* ... (Profil form kódja változatlan) ... */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div>
                     <label className={labelClass}>Felhasználónév</label>
@@ -502,6 +598,7 @@ const Profile = () => {
                   <option value="CREATE">✨ Létrehozás</option>
                   <option value="UPDATE">📝 Módosítás</option>
                   <option value="DELETE">🗑️ Törlés</option>
+                  <option value="BULK_DELETE">🗑️ Tömeges Törlés</option>
                   <option value="RESTORE">♻️ Visszaállítás</option>
                 </select>
                 <input
@@ -529,78 +626,148 @@ const Profile = () => {
               </div>
 
               <div className="space-y-4 max-h-[600px] overflow-y-auto pr-2 custom-scrollbar">
-                {logs.map((log) => (
+                {groupedLogs.map((log, index) => (
                   <div
-                    key={log.id}
+                    key={log.isGroup ? `group-${index}` : log.id}
                     onClick={() =>
-                      log.stockId && navigate(`/product/${log.stockId}`)
+                      !log.isGroup &&
+                      log.stockId &&
+                      navigate(`/product/${log.stockId}`)
                     }
-                    className="p-6 bg-slate-50 dark:bg-slate-800/30 rounded-[1.5rem] border border-transparent hover:border-blue-200 transition-all cursor-pointer relative group"
+                    className={`p-6 rounded-[1.5rem] border border-transparent transition-all relative group ${
+                      log.isGroup
+                        ? "bg-red-50 dark:bg-red-900/10 border-red-200 dark:border-red-900/50"
+                        : "bg-slate-50 dark:bg-slate-800/30 hover:border-blue-200 cursor-pointer"
+                    }`}
                   >
-                    <div className="flex justify-between items-start mb-4">
-                      <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 rounded-xl bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center text-blue-600 font-black text-sm">
-                          {log.user?.nev?.charAt(0) || "?"}
-                        </div>
-                        <div>
-                          <p className="text-[10px] font-black uppercase text-blue-600 tracking-tight">
-                            {log.user?.nev || "Törölt user"} • @
-                            {log.user?.felhasznalonev || "---"}
-                          </p>
-                          <p className="text-base font-black dark:text-white">
-                            {log.stock?.nev || "Törölt termék"}
-                          </p>
-                        </div>
-                      </div>
-                      <div className="flex items-start gap-3">
-                        <div className="text-right">
-                          <span className="text-[10px] font-bold text-slate-400 block mb-1">
-                            {formatDate(log.idopont)}
-                          </span>
-                          <span
-                            className={`text-[9px] font-black px-2 py-0.5 rounded-lg uppercase ${
-                              log.muvelet === "DELETE"
-                                ? "bg-red-100 text-red-600"
-                                : log.muvelet === "CREATE"
-                                  ? "bg-green-100 text-green-600"
-                                  : log.muvelet === "RESTORE"
-                                    ? "bg-emerald-100 text-emerald-600"
-                                    : "bg-blue-100 text-blue-600"
-                            }`}
-                          >
-                            {log.muvelet === "UPDATE"
-                              ? "📝 MÓDOSÍTÁS"
-                              : log.muvelet === "DELETE"
-                                ? "🗑️ TÖRLÉS"
-                                : log.muvelet === "CREATE"
-                                  ? "✨ LÉTREHOZÁS"
-                                  : "♻️ VISSZAÁLLÍTÁS"}
-                          </span>
-                        </div>
-                        {user.admin &&
-                          (log.muvelet === "UPDATE" ||
-                            log.muvelet === "DELETE") && (
+                    {log.isGroup ? (
+                      // CSOPORTOS MEGJELENÍTÉS
+                      <div className="flex flex-col gap-4">
+                        <div className="flex justify-between items-start">
+                          <div className="flex items-center gap-3">
+                            <div className="w-12 h-12 rounded-2xl bg-red-100 dark:bg-red-900/40 flex items-center justify-center text-red-600 font-black text-lg shadow-inner">
+                              🗑️
+                            </div>
+                            <div>
+                              <p className="text-[10px] font-black uppercase text-red-600 tracking-tight">
+                                Tömeges Törlés ({log.count} elem)
+                              </p>
+                              <p className="text-base font-black dark:text-white">
+                                {formatDate(log.idopont)}
+                              </p>
+                              <p className="text-[10px] font-bold text-slate-400 mt-1">
+                                {log.user?.nev} (@{log.user?.felhasznalonev})
+                              </p>
+                            </div>
+                          </div>
+                          {user.admin && (
                             <button
-                              onClick={(e) => handleRestore(e, log.id)}
-                              className="bg-emerald-500 hover:bg-emerald-600 text-white p-2 rounded-xl shadow-lg shadow-emerald-500/20 transition-all active:scale-90"
-                              title="Visszaállítás erre az állapotra"
+                              onClick={(e) => handleGroupRestore(e, log)}
+                              disabled={restoringGroup}
+                              className="bg-emerald-500 hover:bg-emerald-600 text-white px-4 py-2.5 rounded-xl shadow-lg shadow-emerald-500/20 transition-all active:scale-95 flex items-center gap-2 font-black text-[10px] uppercase tracking-widest disabled:opacity-50"
                             >
-                              ♻️
+                              {restoringGroup
+                                ? "⏳ Visszaállítás..."
+                                : "♻️ Mind visszavonása"}
                             </button>
                           )}
+                        </div>
+                        <div className="pl-14">
+                          <details className="group/details">
+                            <summary className="text-xs font-bold text-slate-500 cursor-pointer hover:text-slate-800 dark:hover:text-slate-300 transition-colors select-none">
+                              Érintett termékek megjelenítése ({log.count} db) ▼
+                            </summary>
+                            <ul className="mt-3 space-y-1 bg-white/50 dark:bg-black/20 p-3 rounded-xl">
+                              {log.items?.map((item) => (
+                                <li
+                                  key={item.id}
+                                  className="text-xs flex justify-between items-center text-slate-700 dark:text-slate-300"
+                                >
+                                  <span>
+                                    •{" "}
+                                    <strong>
+                                      {item.stock?.nev || "Ismeretlen"}
+                                    </strong>
+                                  </span>
+                                  <span className="opacity-50 font-mono text-[10px]">
+                                    #{item.stockId}
+                                  </span>
+                                </li>
+                              ))}
+                            </ul>
+                          </details>
+                        </div>
                       </div>
-                    </div>
-                    <div className="ml-12">
-                      {log.muvelet === "UPDATE" || log.muvelet === "RESTORE" ? (
-                        formatChangeDetailed(log)
-                      ) : (
-                        <p className="text-sm text-slate-500 italic">
-                          {log.muvelet === "CREATE"
-                            ? "✨ Termék felvétele a készletbe."
-                            : "🗑️ Termék eltávolítása."}
-                        </p>
-                      )}
-                    </div>
+                    ) : (
+                      // EGYEDI MEGJELENÍTÉS (Marad a régi)
+                      <>
+                        <div className="flex justify-between items-start mb-4">
+                          <div className="flex items-center gap-3">
+                            <div className="w-10 h-10 rounded-xl bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center text-blue-600 font-black text-sm">
+                              {log.user?.nev?.charAt(0) || "?"}
+                            </div>
+                            <div>
+                              <p className="text-[10px] font-black uppercase text-blue-600 tracking-tight">
+                                {log.user?.nev || "Törölt user"} • @
+                                {log.user?.felhasznalonev || "---"}
+                              </p>
+                              <p className="text-base font-black dark:text-white">
+                                {log.stock?.nev || "Törölt termék"}
+                              </p>
+                            </div>
+                          </div>
+                          <div className="flex items-start gap-3">
+                            <div className="text-right">
+                              <span className="text-[10px] font-bold text-slate-400 block mb-1">
+                                {formatDate(log.idopont)}
+                              </span>
+                              <span
+                                className={`text-[9px] font-black px-2 py-0.5 rounded-lg uppercase ${
+                                  log.muvelet === "DELETE"
+                                    ? "bg-red-100 text-red-600"
+                                    : log.muvelet === "CREATE"
+                                      ? "bg-green-100 text-green-600"
+                                      : log.muvelet === "RESTORE"
+                                        ? "bg-emerald-100 text-emerald-600"
+                                        : "bg-blue-100 text-blue-600"
+                                }`}
+                              >
+                                {log.muvelet === "UPDATE"
+                                  ? "📝 MÓDOSÍTÁS"
+                                  : log.muvelet === "DELETE"
+                                    ? "🗑️ TÖRLÉS"
+                                    : log.muvelet === "CREATE"
+                                      ? "✨ LÉTREHOZÁS"
+                                      : "♻️ VISSZAÁLLÍTÁS"}
+                              </span>
+                            </div>
+                            {user.admin &&
+                              (log.muvelet === "UPDATE" ||
+                                log.muvelet === "DELETE") && (
+                                <button
+                                  onClick={(e) => handleRestore(e, log.id)}
+                                  className="bg-emerald-500 hover:bg-emerald-600 text-white p-2 rounded-xl shadow-lg shadow-emerald-500/20 transition-all active:scale-90"
+                                  title="Visszaállítás erre az állapotra"
+                                >
+                                  ♻️
+                                </button>
+                              )}
+                          </div>
+                        </div>
+                        <div className="ml-12">
+                          {log.muvelet === "UPDATE" ||
+                          log.muvelet === "RESTORE" ? (
+                            formatChangeDetailed(log)
+                          ) : (
+                            <p className="text-sm text-slate-500 italic">
+                              {log.muvelet === "CREATE"
+                                ? "✨ Termék felvétele a készletbe."
+                                : "🗑️ Termék eltávolítása."}
+                            </p>
+                          )}
+                        </div>
+                      </>
+                    )}
                   </div>
                 ))}
                 {logs.length === 0 && (

@@ -40,7 +40,7 @@ async function main() {
   const users = JSON.parse(usersRaw);
 
   for (const user of users) {
-    const passwordToHash = user.jelszo || 'DefaultPass123!';
+    const passwordToHash = user.jelszo || '123456';
     const hashedPassword = await bcrypt.hash(passwordToHash, 10);
 
     await prisma.user.upsert({

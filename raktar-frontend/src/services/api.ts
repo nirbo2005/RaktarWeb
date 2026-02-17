@@ -2,6 +2,7 @@
 import type { Product } from "../types/Product";
 
 const BASE_URL = import.meta.env.VITE_API_BASE_URL || "http://localhost:3000";
+
 function getHeaders() {
   const token = localStorage.getItem("token");
   return {
@@ -9,6 +10,7 @@ function getHeaders() {
     ...(token ? { Authorization: `Bearer ${token}` } : {}),
   };
 }
+
 async function handleResponse(res: Response) {
   if (!res.ok) {
     const errorText = await res.text();
@@ -111,10 +113,15 @@ export async function getAuditLogs(
   isAdmin: boolean,
   filters: any = {},
 ) {
-  const params = new URLSearchParams({
-    admin: isAdmin.toString(),
-    ...filters,
+  const params = new URLSearchParams();
+  params.append("admin", String(isAdmin));
+  Object.keys(filters).forEach((key) => {
+    const value = filters[key];
+    if (value !== undefined && value !== null && value !== "") {
+      params.append(key, String(value));
+    }
   });
+
   const res = await fetch(
     `${BASE_URL}/audit/user/${userId}?${params.toString()}`,
     {
