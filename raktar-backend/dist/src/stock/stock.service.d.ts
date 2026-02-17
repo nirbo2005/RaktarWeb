@@ -59,7 +59,6 @@ export declare class StockService {
     deleteMany(ids: number[], userId: number): Promise<{
         success: boolean;
         count: number;
-        message: string;
     }>;
     restore(id: number, userId: number): Promise<{
         id: number;

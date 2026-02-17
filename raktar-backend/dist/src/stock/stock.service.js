@@ -59,33 +59,39 @@ let StockService = class StockService {
         return updated;
     }
     async deleteMany(ids, userId) {
-        if (!ids || ids.length === 0) {
-            throw new common_1.BadRequestException('Nincs megadva törlendő azonosító!');
-        }
-        const numericIds = ids.map(id => Number(id)).filter(id => !isNaN(id));
-        const productsToDelete = await this.prisma.stock.findMany({
-            where: {
-                id: { in: numericIds },
-                isDeleted: false
-            },
-        });
-        if (productsToDelete.length === 0) {
-            throw new common_1.NotFoundException('A megadott termékek már törölve vannak vagy nem léteznek.');
-        }
-        return await this.prisma.$transaction(async (tx) => {
-            const updateResult = await tx.stock.updateMany({
-                where: { id: { in: productsToDelete.map(p => p.id) } },
-                data: { isDeleted: true },
+        if (!ids || ids.length === 0)
+            throw new common_1.BadRequestException('Nincs ID megadva');
+        const numericIds = ids.map(id => Number(id));
+        try {
+            const existingProducts = await this.prisma.stock.findMany({
+                where: { id: { in: numericIds } }
             });
-            for (const product of productsToDelete) {
-                await this.audit.createLog(userId, 'DELETE', product.id, product, { ...product, isDeleted: true });
-            }
-            return {
-                success: true,
-                count: updateResult.count,
-                message: `${updateResult.count} termék sikeresen törölve.`
-            };
-        });
+            if (existingProducts.length === 0)
+                throw new common_1.NotFoundException('Nem találhatók a termékek');
+            const result = await this.prisma.$transaction(async (tx) => {
+                const update = await tx.stock.updateMany({
+                    where: { id: { in: numericIds } },
+                    data: { isDeleted: true },
+                });
+                for (const product of existingProducts) {
+                    await tx.auditLog.create({
+                        data: {
+                            userId: userId,
+                            muvelet: 'BULK_DELETE',
+                            stockId: product.id,
+                            regiAdat: JSON.parse(JSON.stringify(product)),
+                            ujAdat: JSON.parse(JSON.stringify({ ...product, isDeleted: true }))
+                        }
+                    });
+                }
+                return update;
+            });
+            return { success: true, count: result.count };
+        }
+        catch (error) {
+            console.error('RENDER ERROR LOG:', error);
+            throw new common_1.InternalServerErrorException('Hiba a tömeges törlés során: ' + error.message);
+        }
     }
     async restore(id, userId) {
         const restored = await this.prisma.stock.update({

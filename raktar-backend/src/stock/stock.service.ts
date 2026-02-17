@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
-import { Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
+import { Injectable, NotFoundException, BadRequestException, InternalServerErrorException } from '@nestjs/common';
 import { PrismaService } from 'src/prisma.service';
 import { CreateStockDto } from './dto/create-stock.dto';
 import { UpdateStockDto } from './dto/update-stock.dto';
@@ -57,49 +57,48 @@ export class StockService {
 
   // --- TÖMEGES TÖRLÉS FRISSÍTVE ---
   async deleteMany(ids: number[], userId: number) {
-    if (!ids || ids.length === 0) {
-      throw new BadRequestException('Nincs megadva törlendő azonosító!');
-    }
+    if (!ids || ids.length === 0) throw new BadRequestException('Nincs ID megadva');
 
-    const numericIds = ids.map(id => Number(id)).filter(id => !isNaN(id));
+    const numericIds = ids.map(id => Number(id));
 
-    // 1. Lekérjük a termékeket a naplózáshoz
-    const productsToDelete = await this.prisma.stock.findMany({
-      where: { 
-        id: { in: numericIds },
-        isDeleted: false 
-      },
-    });
-
-    if (productsToDelete.length === 0) {
-      throw new NotFoundException('A megadott termékek már törölve vannak vagy nem léteznek.');
-    }
-
-    // 2. Tranzakció indítása
-    return await this.prisma.$transaction(async (tx) => {
-      // Tömeges státusz frissítés
-      const updateResult = await tx.stock.updateMany({
-        where: { id: { in: productsToDelete.map(p => p.id) } },
-        data: { isDeleted: true },
+    try {
+      // 1. Megkeressük az adatokat a naplóhoz a törlés ELŐTT
+      const existingProducts = await this.prisma.stock.findMany({
+        where: { id: { in: numericIds } }
       });
 
-      // Tömeges naplózás előkészítése/végrehajtása
-      for (const product of productsToDelete) {
-        await this.audit.createLog(
-          userId, 
-          'DELETE', 
-          product.id, 
-          product, 
-          { ...product, isDeleted: true }
-        );
-      }
+      if (existingProducts.length === 0) throw new NotFoundException('Nem találhatók a termékek');
 
-      return {
-        success: true,
-        count: updateResult.count,
-        message: `${updateResult.count} termék sikeresen törölve.`
-      };
-    });
+      // 2. Tömeges frissítés tranzakcióban
+      const result = await this.prisma.$transaction(async (tx) => {
+        const update = await tx.stock.updateMany({
+          where: { id: { in: numericIds } },
+          data: { isDeleted: true },
+        });
+
+        // 3. Naplózás (ha az AuditService elszállna, a tranzakció is bukik - ezért itt manuálisan mentünk)
+        // A regiAdat és ujAdat mezőknek érvényes JSON-nek kell lenniük
+        for (const product of existingProducts) {
+          await tx.auditLog.create({
+            data: {
+              userId: userId,
+              muvelet: 'BULK_DELETE',
+              stockId: product.id,
+              regiAdat: JSON.parse(JSON.stringify(product)),
+              ujAdat: JSON.parse(JSON.stringify({ ...product, isDeleted: true }))
+            }
+          });
+        }
+
+        return update;
+      });
+
+      return { success: true, count: result.count };
+
+    } catch (error) {
+      console.error('RENDER ERROR LOG:', error); // Ezt fogod látni a Render dashboardon
+      throw new InternalServerErrorException('Hiba a tömeges törlés során: ' + error.message);
+    }
   }
 
   async restore(id: number, userId: number) {

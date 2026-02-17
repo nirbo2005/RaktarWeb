@@ -27,7 +27,6 @@ export declare class StockController {
     deleteMany(ids: number[], userId: number): Promise<{
         success: boolean;
         count: number;
-        message: string;
     }>;
     create(body: CreateStockDto & {
         userId: number;
