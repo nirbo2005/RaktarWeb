@@ -40,7 +40,7 @@ const bcrypt = __importStar(require("bcrypt"));
 const prisma = new client_1.PrismaClient();
 async function main() {
     console.log('--- Seedelés megkezdése ---');
-    const stockPath = path.join(__dirname, 'stock.json');
+    const stockPath = path.join(process.cwd(), 'prisma', 'stock.json');
     const stockRaw = fs.readFileSync(stockPath, 'utf-8');
     const stocks = JSON.parse(stockRaw);
     for (const item of stocks) {
@@ -66,7 +66,7 @@ async function main() {
         });
     }
     console.log(`✅ ${stocks.length} termék szinkronizálva.`);
-    const usersPath = path.join(__dirname, 'users.json');
+    const usersPath = path.join(process.cwd(), 'prisma', 'users.json');
     const usersRaw = fs.readFileSync(usersPath, 'utf-8');
     const users = JSON.parse(usersRaw);
     for (const user of users) {

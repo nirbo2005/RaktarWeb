@@ -24,6 +24,11 @@ export declare class StockController {
         parcella: string;
         isDeleted: boolean;
     }>;
+    deleteMany(ids: number[], userId: number): Promise<{
+        success: boolean;
+        count: number;
+        message: string;
+    }>;
     create(body: CreateStockDto & {
         userId: number;
     }): Promise<{

@@ -55,8 +55,37 @@ let StockService = class StockService {
             where: { id: Number(id) },
             data: { isDeleted: true },
         });
-        await this.audit.createLog(userId, 'DELETE', id, oldData, null);
+        await this.audit.createLog(userId, 'DELETE', id, oldData, { ...oldData, isDeleted: true });
         return updated;
+    }
+    async deleteMany(ids, userId) {
+        if (!ids || ids.length === 0) {
+            throw new common_1.BadRequestException('Nincs megadva törlendő azonosító!');
+        }
+        const numericIds = ids.map(id => Number(id)).filter(id => !isNaN(id));
+        const productsToDelete = await this.prisma.stock.findMany({
+            where: {
+                id: { in: numericIds },
+                isDeleted: false
+            },
+        });
+        if (productsToDelete.length === 0) {
+            throw new common_1.NotFoundException('A megadott termékek már törölve vannak vagy nem léteznek.');
+        }
+        return await this.prisma.$transaction(async (tx) => {
+            const updateResult = await tx.stock.updateMany({
+                where: { id: { in: productsToDelete.map(p => p.id) } },
+                data: { isDeleted: true },
+            });
+            for (const product of productsToDelete) {
+                await this.audit.createLog(userId, 'DELETE', product.id, product, { ...product, isDeleted: true });
+            }
+            return {
+                success: true,
+                count: updateResult.count,
+                message: `${updateResult.count} termék sikeresen törölve.`
+            };
+        });
     }
     async restore(id, userId) {
         const restored = await this.prisma.stock.update({

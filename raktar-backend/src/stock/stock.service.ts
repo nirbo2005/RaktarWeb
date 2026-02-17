@@ -44,36 +44,62 @@ export class StockService {
     return updated;
   }
 
+  // --- EGYEDI TÖRLÉS FRISSÍTVE ---
   async delete(id: number, userId: number) {
     const oldData = await this.findOne(id);
     const updated = await this.prisma.stock.update({
       where: { id: Number(id) },
-      data: { isDeleted: true },
+      data: { isDeleted: true }, // Boolean -> MySQL-nél 1 lesz
     });
-    await this.audit.createLog(userId, 'DELETE', id, oldData, null);
+    await this.audit.createLog(userId, 'DELETE', id, oldData, { ...oldData, isDeleted: true });
     return updated;
   }
 
-  // --- ÚJ: TÖMEGES TÖRLÉS ---
+  // --- TÖMEGES TÖRLÉS FRISSÍTVE ---
   async deleteMany(ids: number[], userId: number) {
+    if (!ids || ids.length === 0) {
+      throw new BadRequestException('Nincs megadva törlendő azonosító!');
+    }
+
+    const numericIds = ids.map(id => Number(id)).filter(id => !isNaN(id));
+
+    // 1. Lekérjük a termékeket a naplózáshoz
     const productsToDelete = await this.prisma.stock.findMany({
-      where: { id: { in: ids }, isDeleted: false },
+      where: { 
+        id: { in: numericIds },
+        isDeleted: false 
+      },
     });
 
-    const results = await this.prisma.$transaction(async (tx) => {
+    if (productsToDelete.length === 0) {
+      throw new NotFoundException('A megadott termékek már törölve vannak vagy nem léteznek.');
+    }
+
+    // 2. Tranzakció indítása
+    return await this.prisma.$transaction(async (tx) => {
+      // Tömeges státusz frissítés
       const updateResult = await tx.stock.updateMany({
-        where: { id: { in: ids } },
+        where: { id: { in: productsToDelete.map(p => p.id) } },
         data: { isDeleted: true },
       });
 
+      // Tömeges naplózás előkészítése/végrehajtása
       for (const product of productsToDelete) {
-        await this.audit.createLog(userId, 'DELETE', product.id, product, null);
+        await this.audit.createLog(
+          userId, 
+          'DELETE', 
+          product.id, 
+          product, 
+          { ...product, isDeleted: true }
+        );
       }
 
-      return updateResult;
+      return {
+        success: true,
+        count: updateResult.count,
+        message: `${updateResult.count} termék sikeresen törölve.`
+      };
     });
-
-    return results;
   }
 
   async restore(id: number, userId: number) {

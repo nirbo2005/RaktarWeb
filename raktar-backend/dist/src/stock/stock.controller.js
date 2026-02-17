@@ -27,6 +27,9 @@ let StockController = class StockController {
     async getOne(id, admin) {
         return this.stockService.findOne(id, admin === 'true');
     }
+    async deleteMany(ids, userId) {
+        return this.stockService.deleteMany(ids, userId);
+    }
     async create(body) {
         const { userId, ...stockData } = body;
         return this.stockService.create(stockData, userId);
@@ -54,7 +57,7 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], StockController.prototype, "getAll", null);
 __decorate([
-    (0, swagger_1.ApiOperation)({ summary: 'Egy termék lekérése (adminoknak a törölteket is)' }),
+    (0, swagger_1.ApiOperation)({ summary: 'Egy termék lekérése' }),
     (0, common_1.Get)(':id'),
     __param(0, (0, common_1.Param)('id', common_1.ParseIntPipe)),
     __param(1, (0, common_1.Query)('admin')),
@@ -63,7 +66,16 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], StockController.prototype, "getOne", null);
 __decorate([
-    (0, swagger_1.ApiOperation)({ summary: 'Új termék létrehozása naplózással' }),
+    (0, swagger_1.ApiOperation)({ summary: 'Tömegeges törlés' }),
+    (0, common_1.Post)('bulk-delete'),
+    __param(0, (0, common_1.Body)('ids')),
+    __param(1, (0, common_1.Body)('userId', common_1.ParseIntPipe)),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Array, Number]),
+    __metadata("design:returntype", Promise)
+], StockController.prototype, "deleteMany", null);
+__decorate([
+    (0, swagger_1.ApiOperation)({ summary: 'Új termék létrehozása' }),
     (0, common_1.Post)(),
     (0, common_1.UsePipes)(new common_1.ValidationPipe({ whitelist: true, transform: true })),
     __param(0, (0, common_1.Body)()),
@@ -72,7 +84,7 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], StockController.prototype, "create", null);
 __decorate([
-    (0, swagger_1.ApiOperation)({ summary: 'Termék módosítása naplózással' }),
+    (0, swagger_1.ApiOperation)({ summary: 'Termék módosítása' }),
     (0, common_1.Put)(':id'),
     (0, common_1.UsePipes)(new common_1.ValidationPipe({ whitelist: true, transform: true })),
     __param(0, (0, common_1.Param)('id', common_1.ParseIntPipe)),
@@ -82,7 +94,7 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], StockController.prototype, "update", null);
 __decorate([
-    (0, swagger_1.ApiOperation)({ summary: 'Termék puha törlése (Soft Delete)' }),
+    (0, swagger_1.ApiOperation)({ summary: 'Termék puha törlése' }),
     (0, common_1.Delete)(':id'),
     __param(0, (0, common_1.Param)('id', common_1.ParseIntPipe)),
     __param(1, (0, common_1.Query)('userId', common_1.ParseIntPipe)),
@@ -91,7 +103,7 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], StockController.prototype, "delete", null);
 __decorate([
-    (0, swagger_1.ApiOperation)({ summary: 'Törölt termék visszaállítása ID alapján' }),
+    (0, swagger_1.ApiOperation)({ summary: 'Törölt termék visszaállítása' }),
     (0, common_1.Patch)(':id/restore'),
     __param(0, (0, common_1.Param)('id', common_1.ParseIntPipe)),
     __param(1, (0, common_1.Query)('userId', common_1.ParseIntPipe)),
@@ -100,7 +112,7 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], StockController.prototype, "restore", null);
 __decorate([
-    (0, swagger_1.ApiOperation)({ summary: 'Visszaállítás konkrét naplóbejegyzés alapján' }),
+    (0, swagger_1.ApiOperation)({ summary: 'Visszaállítás naplóból' }),
     (0, common_1.Post)('restore-log/:logId'),
     __param(0, (0, common_1.Param)('logId', common_1.ParseIntPipe)),
     __param(1, (0, common_1.Query)('userId', common_1.ParseIntPipe)),
