@@ -1,5 +1,4 @@
-//raktar-backend/prisma/seed.ts
-import { PrismaClient } from '@prisma/client';
+import { PrismaClient, Role } from '@prisma/client'; // Importáld a Role enumot is
 import * as fs from 'fs';
 import * as path from 'path';
 import * as bcrypt from 'bcrypt';
@@ -8,6 +7,8 @@ const prisma = new PrismaClient();
 
 async function main() {
   console.log('--- Seedelés megkezdése ---');
+
+  // Stock seedelés (változatlan)
   const stockPath = path.join(process.cwd(), 'prisma', 'stock.json');
   const stockRaw = fs.readFileSync(stockPath, 'utf-8');
   const stocks = JSON.parse(stockRaw);
@@ -35,6 +36,8 @@ async function main() {
     });
   }
   console.log(`✅ ${stocks.length} termék szinkronizálva.`);
+
+  // User seedelés - JAVÍTVA
   const usersPath = path.join(process.cwd(), 'prisma', 'users.json');
   const usersRaw = fs.readFileSync(usersPath, 'utf-8');
   const users = JSON.parse(usersRaw);
@@ -47,22 +50,23 @@ async function main() {
       where: { felhasznalonev: user.felhasznalonev },
       update: {
         nev: user.nev,
-        admin: user.admin,
+        rang: user.rang as Role, // admin helyett rang
         email: user.email,
         telefonszam: user.telefonszam,
+        isBanned: user.isBanned || false,
       },
       create: {
         nev: user.nev,
         felhasznalonev: user.felhasznalonev,
         jelszo: hashedPassword,
-        admin: user.admin,
+        rang: user.rang as Role, // admin helyett rang
         email: user.email,
         telefonszam: user.telefonszam,
-        isBanned: false,
+        isBanned: user.isBanned || false,
       },
     });
   }
-  console.log(`✅ ${users.length} felhasználó szinkronizálva az új mezőkkel.`);
+  console.log(`✅ ${users.length} felhasználó szinkronizálva az új rangokkal.`);
   console.log('--- Seedelés sikeresen befejeződött ---');
 }
 

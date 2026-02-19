@@ -1,4 +1,3 @@
-//raktar-frontend/src/components/ProductDetails.tsx
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { getProductById, deleteProduct } from "../services/api";
@@ -13,12 +12,17 @@ function ProductDetails() {
   const [loading, setLoading] = useState(true);
   const [isDeletedError, setIsDeletedError] = useState(false);
 
+  // Jogosultságok definiálása
+  const isAdmin = user?.rang === "ADMIN";
+  const canEdit = user?.rang === "KEZELO" || isAdmin;
+
   useEffect(() => {
     if (id) {
       setLoading(true);
-      getProductById(Number(id), user?.admin)
+      // user.admin helyett az isAdmin változót használjuk
+      getProductById(Number(id), isAdmin)
         .then((data) => {
-          if (data.isDeleted && !user?.admin) {
+          if (data.isDeleted && !isAdmin) {
             setIsDeletedError(true);
           } else {
             setProduct({ ...data, lejarat: new Date(data.lejarat) });
@@ -31,10 +35,10 @@ function ProductDetails() {
         })
         .finally(() => setLoading(false));
     }
-  }, [id, user]);
+  }, [id, user, isAdmin]);
 
   const handleDelete = async () => {
-    if (!user || !product) return;
+    if (!user || !product || !canEdit) return;
     if (window.confirm("Biztosan törölni szeretnéd ezt a terméket?")) {
       try {
         await deleteProduct(product.id, user.id);
@@ -193,13 +197,14 @@ function ProductDetails() {
             </div>
           </div>
 
-          {user && !(product as any).isDeleted && (
+          {/* GOMBOK SZŰRÉSE: Csak akkor láthatóak, ha canEdit (Kezelő+) és nem törölt a termék */}
+          {canEdit && !(product as any).isDeleted && (
             <div className="flex flex-col sm:flex-row gap-4 pt-6 border-t border-slate-50 dark:border-slate-800">
               <button
                 onClick={() => navigate(`/modify/${product.id}`)}
                 className="flex-1 bg-slate-900 dark:bg-blue-600 text-white py-4 rounded-2xl font-black hover:bg-slate-800 dark:hover:bg-blue-500 transition-all active:scale-95 shadow-lg shadow-blue-500/10 uppercase tracking-widest text-[10px]"
               >
-                Adatlap módosítása
+                Módosítás
               </button>
               <button
                 onClick={handleDelete}
@@ -210,7 +215,8 @@ function ProductDetails() {
             </div>
           )}
 
-          {user?.admin && (product as any).isDeleted && (
+          {/* ADMIN EXTRA: Törölt termék esetén csak az admin látja a gombot */}
+          {isAdmin && (product as any).isDeleted && (
             <button
               onClick={() => navigate(`/modify/${product.id}`)}
               className="w-full bg-amber-600 text-white py-4 rounded-2xl font-black hover:bg-amber-700 transition-all shadow-lg uppercase tracking-widest text-[10px]"

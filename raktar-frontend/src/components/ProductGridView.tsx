@@ -1,4 +1,3 @@
-//raktar-frontend/src/components/ProductGridView.tsx
 import React, { useEffect, useState } from "react";
 import { useSearchParams, useNavigate } from "react-router-dom";
 import { getProducts, updateProduct } from "../services/api";
@@ -21,6 +20,9 @@ const ProductGridView: React.FC = () => {
   const [productsByPolc, setProductsByPolc] = useState<ProductsByPolc>({});
   const [loading, setLoading] = useState<boolean>(false);
   const [draggedProductId, setDraggedProductId] = useState<number | null>(null);
+
+  // JOGOSULTSÁG: Csak Kezelő és Admin mozgathat terméket
+  const canMove = user && (user.rang === "KEZELO" || user.rang === "ADMIN");
 
   const loadProducts = async () => {
     setLoading(true);
@@ -52,6 +54,10 @@ const ProductGridView: React.FC = () => {
   }, [searchParams]);
 
   const handleDragStart = (e: React.DragEvent, productId: number) => {
+    if (!canMove) {
+      e.preventDefault();
+      return;
+    }
     setDraggedProductId(productId);
     e.dataTransfer.setData("productId", productId.toString());
     e.dataTransfer.effectAllowed = "move";
@@ -62,6 +68,8 @@ const ProductGridView: React.FC = () => {
     targetParcella: string,
   ) => {
     e.preventDefault();
+    if (!canMove) return; // Biztonsági gát
+
     const productIdStr = e.dataTransfer.getData("productId");
     if (!productIdStr || !user) return;
 
@@ -104,39 +112,19 @@ const ProductGridView: React.FC = () => {
     const badges = [];
     if (lejaratDate && lejaratDate <= now)
       badges.push(
-        <span
-          key="e1"
-          className="bg-red-600 text-white text-[8px] px-1.5 py-0.5 rounded font-black uppercase"
-        >
-          Lejárt
-        </span>,
+        <span key="e1" className="bg-red-600 text-white text-[8px] px-1.5 py-0.5 rounded font-black uppercase">Lejárt</span>
       );
     else if (lejaratDate && lejaratDate <= oneWeekLater)
       badges.push(
-        <span
-          key="e2"
-          className="bg-amber-500 text-white text-[8px] px-1.5 py-0.5 rounded font-black uppercase"
-        >
-          Lejárat
-        </span>,
+        <span key="e2" className="bg-amber-500 text-white text-[8px] px-1.5 py-0.5 rounded font-black uppercase">Lejárat</span>
       );
     if (product.mennyiseg < 10)
       badges.push(
-        <span
-          key="q1"
-          className="bg-red-600 text-white text-[8px] px-1.5 py-0.5 rounded font-black uppercase"
-        >
-          Kritikus
-        </span>,
+        <span key="q1" className="bg-red-600 text-white text-[8px] px-1.5 py-0.5 rounded font-black uppercase">Kritikus</span>
       );
     else if (product.mennyiseg < 100)
       badges.push(
-        <span
-          key="q2"
-          className="bg-amber-500 text-white text-[8px] px-1.5 py-0.5 rounded font-black uppercase"
-        >
-          Készlet
-        </span>,
+        <span key="q2" className="bg-amber-500 text-white text-[8px] px-1.5 py-0.5 rounded font-black uppercase">Készlet</span>
       );
 
     return badges.length > 0 ? (
@@ -188,14 +176,13 @@ const ProductGridView: React.FC = () => {
               Raktár áttekintés
             </h1>
             <p className="text-slate-500 dark:text-slate-400 text-sm italic">
-              Húzz egy terméket egy szektorra a váltáshoz, vagy egy polcra az
-              áthelyezéshez
+              {canMove 
+                ? "Húzz egy terméket egy szektorra a váltáshoz, vagy egy polcra az áthelyezéshez"
+                : "Válassz ki egy szektort a termékek megtekintéséhez"}
             </p>
           </div>
           {loading && (
-            <span className="animate-pulse text-blue-600 font-black text-xs uppercase">
-              Szinkronizálás...
-            </span>
+            <span className="animate-pulse text-blue-600 font-black text-xs uppercase">Szinkronizálás...</span>
           )}
         </header>
 
@@ -203,9 +190,7 @@ const ProductGridView: React.FC = () => {
           <div className="flex flex-col gap-6">
             {rows.map((row) => (
               <div key={row} className="flex gap-4 md:gap-8 items-center">
-                <span className="hidden sm:block w-12 font-black text-slate-200 dark:text-slate-800 text-4xl">
-                  {row}
-                </span>
+                <span className="hidden sm:block w-12 font-black text-slate-200 dark:text-slate-800 text-4xl">{row}</span>
                 <div className="grid grid-cols-5 gap-3 md:gap-5 w-full sm:w-auto">
                   {cols.map((col) => {
                     const baseParcella = `${row}${col}`;
@@ -214,20 +199,16 @@ const ProductGridView: React.FC = () => {
                       <button
                         key={baseParcella}
                         onClick={() => setSelectedParcella(baseParcella)}
-                        onDragEnter={() => setSelectedParcella(baseParcella)}
+                        onDragEnter={() => canMove && setSelectedParcella(baseParcella)}
                         onDragOver={(e) => {
+                          if (!canMove) return;
                           e.preventDefault();
                           e.currentTarget.classList.add("drag-over-sector");
                         }}
-                        onDragLeave={(e) =>
-                          e.currentTarget.classList.remove("drag-over-sector")
-                        }
-                        onDrop={(e) =>
-                          e.currentTarget.classList.remove("drag-over-sector")
-                        }
+                        onDragLeave={(e) => e.currentTarget.classList.remove("drag-over-sector")}
+                        onDrop={(e) => e.currentTarget.classList.remove("drag-over-sector")}
                         className={`aspect-square w-full sm:w-20 h-auto sm:h-20 rounded-2xl font-black transition-all duration-300 flex items-center justify-center border-2 text-base md:text-2xl
-                          ${
-                            isActive
+                          ${isActive
                               ? "bg-blue-600 border-blue-500 text-white scale-110 shadow-lg shadow-blue-500/30"
                               : "bg-slate-50 dark:bg-slate-800 border-slate-100 dark:border-slate-700 text-slate-400 dark:text-slate-500 hover:border-blue-400"
                           }`}
@@ -253,90 +234,73 @@ const ProductGridView: React.FC = () => {
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8">
-                {Array.from({ length: polcCount }, (_, i) => i + 1).map(
-                  (polcIndex) => {
-                    const polcName = `${selectedParcella}-${polcIndex}`;
-                    const products = productsByPolc[polcName];
-                    const isHighlightedShelf =
-                      searchParams.get("parcel") === polcName;
+                {Array.from({ length: polcCount }, (_, i) => i + 1).map((polcIndex) => {
+                  const polcName = `${selectedParcella}-${polcIndex}`;
+                  const products = productsByPolc[polcName];
+                  const isHighlightedShelf = searchParams.get("parcel") === polcName;
 
-                    return (
-                      <div
-                        key={polcName}
-                        id={`shelf-${polcName}`}
-                        onDragOver={(e) => {
-                          e.preventDefault();
-                          e.currentTarget.classList.add("drag-over-shelf");
-                        }}
-                        onDragLeave={(e) =>
-                          e.currentTarget.classList.remove("drag-over-shelf")
-                        }
-                        onDrop={(e) => {
-                          e.currentTarget.classList.remove("drag-over-shelf");
-                          handleDropOnShelf(e, polcName);
-                        }}
-                        className={`bg-white dark:bg-slate-900 rounded-[2.5rem] border border-slate-200 dark:border-slate-800 shadow-xl overflow-hidden flex flex-col transition-all
+                  return (
+                    <div
+                      key={polcName}
+                      id={`shelf-${polcName}`}
+                      onDragOver={(e) => {
+                        if (!canMove) return;
+                        e.preventDefault();
+                        e.currentTarget.classList.add("drag-over-shelf");
+                      }}
+                      onDragLeave={(e) => e.currentTarget.classList.remove("drag-over-shelf")}
+                      onDrop={(e) => {
+                        e.currentTarget.classList.remove("drag-over-shelf");
+                        handleDropOnShelf(e, polcName);
+                      }}
+                      className={`bg-white dark:bg-slate-900 rounded-[2.5rem] border border-slate-200 dark:border-slate-800 shadow-xl overflow-hidden flex flex-col transition-all
                         ${isHighlightedShelf ? "shake-shelf" : ""}`}
-                      >
-                        <div
-                          className={`p-4 text-center border-b transition-colors ${isHighlightedShelf ? "bg-blue-600 border-blue-500" : "bg-slate-800 dark:bg-slate-950 border-slate-700"}`}
-                        >
-                          <h4 className="text-white font-black uppercase tracking-widest italic text-xs">
-                            {polcIndex}. Polcszint
-                          </h4>
-                        </div>
-                        <div className="p-5 flex-grow min-h-[150px]">
-                          <ul className="space-y-4 h-full">
-                            {products && products.length > 0 ? (
-                              products.map((p) => (
-                                <li
-                                  key={p.id}
-                                  id={`product-card-${p.id}`}
-                                  draggable
-                                  onDragStart={(e) => handleDragStart(e, p.id)}
-                                  onClick={() => navigate(`/product/${p.id}`)}
-                                  className={`relative p-4 rounded-2xl border-2 text-sm font-bold shadow-sm cursor-grab active:cursor-grabbing transition-all active:scale-95
+                    >
+                      <div className={`p-4 text-center border-b transition-colors ${isHighlightedShelf ? "bg-blue-600 border-blue-500" : "bg-slate-800 dark:bg-slate-950 border-slate-700"}`}>
+                        <h4 className="text-white font-black uppercase tracking-widest italic text-xs">
+                          {polcIndex}. Polcszint
+                        </h4>
+                      </div>
+                      <div className="p-5 flex-grow min-h-[150px]">
+                        <ul className="space-y-4 h-full">
+                          {products && products.length > 0 ? (
+                            products.map((p) => (
+                              <li
+                                key={p.id}
+                                id={`product-card-${p.id}`}
+                                draggable={canMove || false} // Csak ha canMove, akkor húzható
+                                onDragStart={(e) => handleDragStart(e, p.id)}
+                                onClick={() => navigate(`/product/${p.id}`)}
+                                className={`relative p-4 rounded-2xl border-2 text-sm font-bold shadow-sm transition-all active:scale-95
+                                  ${canMove ? "cursor-grab active:cursor-grabbing" : "cursor-pointer"}
                                   ${getStatusClass(p)} 
                                   ${searchParams.get("productId") === p.id.toString() ? "shake-product shadow-lg" : "hover:border-blue-400 dark:hover:border-blue-600"}
                                   ${draggedProductId === p.id ? "opacity-40" : "opacity-100"}`}
-                                >
-                                  {renderBadges(p)}
-                                  <div className="flex flex-col gap-1">
-                                    <span className="truncate pr-4 font-black uppercase tracking-tight italic">
-                                      {p.nev}
-                                    </span>
-                                    <div className="flex justify-between items-center mt-2 border-t border-current border-opacity-10 pt-2">
-                                      <span className="text-[10px] uppercase opacity-60 font-black">
-                                        Mennyiség
-                                      </span>
-                                      <span className="font-black text-xs">
-                                        {p.mennyiseg} db
-                                      </span>
-                                    </div>
+                              >
+                                {renderBadges(p)}
+                                <div className="flex flex-col gap-1">
+                                  <span className="truncate pr-4 font-black uppercase tracking-tight italic">{p.nev}</span>
+                                  <div className="flex justify-between items-center mt-2 border-t border-current border-opacity-10 pt-2">
+                                    <span className="text-[10px] uppercase opacity-60 font-black">Mennyiség</span>
+                                    <span className="font-black text-xs">{p.mennyiseg} db</span>
                                   </div>
-                                </li>
-                              ))
-                            ) : (
-                              <li className="text-slate-300 dark:text-slate-700 text-center py-10 text-xs font-black uppercase tracking-widest italic">
-                                Üres
+                                </div>
                               </li>
-                            )}
-                          </ul>
-                        </div>
+                            ))
+                          ) : (
+                            <li className="text-slate-300 dark:text-slate-700 text-center py-10 text-xs font-black uppercase tracking-widest italic">Üres</li>
+                          )}
+                        </ul>
                       </div>
-                    );
-                  },
-                )}
+                    </div>
+                  );
+                })}
               </div>
             </div>
           ) : (
             <div className="text-center py-24 bg-white dark:bg-slate-900 rounded-[3rem] border-4 border-dashed border-slate-100 dark:border-slate-800 transition-colors">
-              <span className="text-7xl mb-6 block grayscale opacity-30">
-                📦
-              </span>
-              <p className="text-slate-400 dark:text-slate-600 text-xl font-black uppercase tracking-tighter italic">
-                Válassz ki egy szektort!
-              </p>
+              <span className="text-7xl mb-6 block grayscale opacity-30">📦</span>
+              <p className="text-slate-400 dark:text-slate-600 text-xl font-black uppercase tracking-tighter italic">Válassz ki egy szektort!</p>
             </div>
           )}
         </div>

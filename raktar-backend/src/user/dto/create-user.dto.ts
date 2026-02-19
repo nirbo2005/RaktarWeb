@@ -1,13 +1,13 @@
-//raktar-backend/src/user/dto/create-user.dto.ts
 import {
   IsString,
   IsNotEmpty,
-  IsBoolean,
   IsOptional,
   MinLength,
   MaxLength,
   IsEmail,
+  IsEnum,
 } from 'class-validator';
+import { Role } from '@prisma/client';
 
 export class CreateUserDto {
   @IsString({ message: 'A névnek szövegnek kell lennie!' })
@@ -35,7 +35,7 @@ export class CreateUserDto {
   @IsOptional()
   telefonszam?: string;
 
-  @IsBoolean({ message: 'Az admin mező csak logikai érték lehet!' })
+  @IsEnum(Role, { message: 'Érvénytelen rang!' })
   @IsOptional()
-  admin?: boolean;
+  rang?: Role;
 }

@@ -1,5 +1,5 @@
-//raktar-backend/src/user/dto/update-user.dto.ts
-import { IsString, IsOptional, IsEmail, MinLength, MaxLength } from 'class-validator';
+import { IsString, IsOptional, IsEmail, MinLength, MaxLength, IsEnum } from 'class-validator';
+import { Role } from '@prisma/client';
 
 export class UpdateUserDto {
   @IsString()
@@ -29,4 +29,8 @@ export class UpdateUserDto {
   @IsOptional()
   @MinLength(6)
   ujJelszo?: string;
+
+  @IsEnum(Role)
+  @IsOptional()
+  rang?: Role;
 }

@@ -1,4 +1,3 @@
-//raktar-frontend/src/components/ProductList.tsx
 import { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {
@@ -35,7 +34,7 @@ function ProductList() {
   const navigate = useNavigate();
   const { user } = useAuth();
 
-  // Jogosultság ellenőrzése
+  // Jogosultság ellenőrzése - Csak Kezelő és Admin
   const canEdit = user && (user.rang === "KEZELO" || user.rang === "ADMIN");
 
   useEffect(() => {
@@ -45,6 +44,7 @@ function ProductList() {
   }, []);
 
   const exportToExcel = async () => {
+    if (!canEdit) return; // Biztonsági gát
     const workbook = new ExcelJS.Workbook();
     const worksheet = workbook.addWorksheet("Raktárkészlet");
 
@@ -147,12 +147,14 @@ function ProductList() {
   }, [products, sortColumn, isAscending, showAlertsOnly]);
 
   const toggleSelect = (id: number) => {
+    if (!canEdit) return;
     setSelectedIds((prev) =>
       prev.includes(id) ? prev.filter((i) => i !== id) : [...prev, id],
     );
   };
 
   const toggleSelectAll = () => {
+    if (!canEdit) return;
     if (selectedIds.length === filteredAndSortedProducts.length) {
       setSelectedIds([]);
     } else {
@@ -161,7 +163,7 @@ function ProductList() {
   };
 
   const handleBulkDelete = async () => {
-    if (!user || selectedIds.length === 0) return;
+    if (!user || !canEdit || selectedIds.length === 0) return;
     if (
       !window.confirm(
         `Biztosan törölni szeretnél ${selectedIds.length} kijelölt terméket?`,
@@ -179,7 +181,7 @@ function ProductList() {
   };
 
   const handleDelete = async (id: number) => {
-    if (!user || !window.confirm("Biztosan törölni szeretnéd?")) return;
+    if (!user || !canEdit || !window.confirm("Biztosan törölni szeretnéd?")) return;
     try {
       await deleteProduct(id, user.id);
       setProducts((prev) => prev.filter((p) => p.id !== id));
@@ -234,18 +236,22 @@ function ProductList() {
               </button>
             )}
 
-            <button
-              onClick={() => setShowAlertsOnly(!showAlertsOnly)}
-              className={`flex-1 md:flex-none px-6 py-4 rounded-2xl font-bold transition-all border-2 uppercase text-xs tracking-widest ${
-                showAlertsOnly
-                  ? "bg-red-600 border-red-400 text-white shadow-lg shadow-red-600/30"
-                  : "bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-400 shadow-sm hover:border-blue-400"
-              }`}
-            >
-              {showAlertsOnly ? "🚨 Csak hibák" : "⚠️ Szűrés"}
-            </button>
+            {/* SZŰRÉS GOMB - Csak Kezelő és Admin látja */}
+            {canEdit && (
+              <button
+                onClick={() => setShowAlertsOnly(!showAlertsOnly)}
+                className={`flex-1 md:flex-none px-6 py-4 rounded-2xl font-bold transition-all border-2 uppercase text-xs tracking-widest ${
+                  showAlertsOnly
+                    ? "bg-red-600 border-red-400 text-white shadow-lg shadow-red-600/30"
+                    : "bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-400 shadow-sm hover:border-blue-400"
+                }`}
+              >
+                {showAlertsOnly ? "🚨 Csak hibák" : "⚠️ Szűrés"}
+              </button>
+            )}
 
-            {user && (
+            {/* EXCEL RIOPORT - Csak Kezelő és Admin látja */}
+            {canEdit && (
               <button
                 onClick={exportToExcel}
                 className="flex-1 md:flex-none bg-emerald-600 hover:bg-emerald-500 text-white px-6 py-4 rounded-2xl font-black uppercase text-xs tracking-widest shadow-lg shadow-emerald-500/30 transition-all active:scale-95 flex items-center justify-center gap-2"
@@ -272,17 +278,18 @@ function ProductList() {
                 <thead>
                   <tr className="bg-slate-50 dark:bg-slate-800/50 text-slate-500 dark:text-slate-400 text-[10px] font-black uppercase tracking-[0.2em] border-b border-slate-200 dark:border-slate-800">
                     <th className="p-6 text-center w-12">
-                      <input
-                        type="checkbox"
-                        className="w-4 h-4 rounded border-slate-300 text-blue-600 focus:ring-blue-500 cursor-pointer"
-                        checked={
-                          selectedIds.length ===
-                            filteredAndSortedProducts.length &&
-                          filteredAndSortedProducts.length > 0
-                        }
-                        onChange={toggleSelectAll}
-                        disabled={!canEdit}
-                      />
+                      {canEdit && (
+                        <input
+                          type="checkbox"
+                          className="w-4 h-4 rounded border-slate-300 text-blue-600 focus:ring-blue-500 cursor-pointer"
+                          checked={
+                            selectedIds.length ===
+                              filteredAndSortedProducts.length &&
+                            filteredAndSortedProducts.length > 0
+                          }
+                          onChange={toggleSelectAll}
+                        />
+                      )}
                     </th>
                     <th className="p-6 text-center w-24">QR</th>
                     <th
@@ -320,13 +327,14 @@ function ProductList() {
                       }`}
                     >
                       <td className="p-6 text-center">
-                        <input
-                          type="checkbox"
-                          className="w-4 h-4 rounded border-slate-300 text-blue-600 focus:ring-blue-500 cursor-pointer"
-                          checked={selectedIds.includes(p.id)}
-                          onChange={() => toggleSelect(p.id)}
-                          disabled={!canEdit}
-                        />
+                        {canEdit && (
+                          <input
+                            type="checkbox"
+                            className="w-4 h-4 rounded border-slate-300 text-blue-600 focus:ring-blue-500 cursor-pointer"
+                            checked={selectedIds.includes(p.id)}
+                            onChange={() => toggleSelect(p.id)}
+                          />
+                        )}
                       </td>
                       <td className="p-6 text-center">
                         <div className="inline-block bg-white p-1.5 rounded-xl border border-slate-100">

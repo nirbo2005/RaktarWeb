@@ -1,4 +1,3 @@
-//raktar-frontend/src/components/Profile.tsx
 import { useEffect, useState, useCallback, useMemo } from "react";
 import { useAuth } from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
@@ -36,10 +35,11 @@ const Profile = () => {
   const [pendingRequests, setPendingRequests] = useState<any[]>([]);
   const [editingUser, setEditingUser] = useState<User | null>(null);
 
-  // EZT ELLENŐRIZD: Csak egyszer szerepeljenek!
+  // Jogosultsági változók a rang alapú rendszerhez
   const isAdmin = user?.rang === "ADMIN";
   const isKezelo = user?.rang === "KEZELO";
 
+  // Visszaállítottuk a hiányzó profileForm state-et
   const [profileForm, setProfileForm] = useState({
     felhasznalonev: user?.felhasznalonev || "",
     nev: user?.nev || "",
@@ -58,6 +58,14 @@ const Profile = () => {
     rang: "NEZELODO",
   });
 
+  // Visszaállítottuk a hiányzó logFilters state-eket
+  const [logFilters, setLogFilters] = useState({
+    muvelet: "",
+    startDate: "",
+    endDate: "",
+    targetUserId: "",
+  });
+
   // --- CSOPORTOSÍTÁSI LOGIKA ---
   const groupedLogs = useMemo(() => {
     const result: DisplayLog[] = [];
@@ -66,8 +74,6 @@ const Profile = () => {
     logs.forEach((log) => {
       // Csak a BULK_DELETE műveleteket csoportosítjuk
       if (log.muvelet === "BULK_DELETE") {
-        // Ha már van nyitott csoport, és ez a log is oda tartozik (időben közel van és ugyanaz a user)
-        // Megengedünk 2 másodperc eltérést, mivel a loop a backendben időbe telik
         const timeDiff = currentGroup
           ? Math.abs(
               new Date(currentGroup.idopont).getTime() -
@@ -83,7 +89,6 @@ const Profile = () => {
           currentGroup.items!.push(log);
           currentGroup.count!++;
         } else {
-          // Ha nincs nyitott csoport, vagy ez már egy új műveletsor
           if (currentGroup) result.push(currentGroup);
           currentGroup = {
             ...log,
@@ -93,7 +98,6 @@ const Profile = () => {
           };
         }
       } else {
-        // Ha nem BULK_DELETE, lezárjuk az előző csoportot (ha volt) és hozzáadjuk a sima logot
         if (currentGroup) {
           result.push(currentGroup);
           currentGroup = null;
@@ -102,9 +106,7 @@ const Profile = () => {
       }
     });
 
-    // A végén, ha maradt nyitott csoport
     if (currentGroup) result.push(currentGroup);
-
     return result;
   }, [logs]);
 
@@ -116,6 +118,7 @@ const Profile = () => {
         Object.entries(logFilters).filter(([_, value]) => value !== ""),
       );
 
+      // getAuditLogs hívásánál az isAdmin flaget a rang alapján küldjük
       const logData = await getAuditLogs(user.id, isAdmin, activeFilters);
       setLogs(logData);
 
@@ -132,7 +135,7 @@ const Profile = () => {
     } finally {
       setLoading(false);
     }
-  }, [user, logFilters]);
+  }, [user, logFilters, isAdmin]);
 
   useEffect(() => {
     loadData();
@@ -168,8 +171,6 @@ const Profile = () => {
 
     setRestoringGroup(true);
     try {
-      // Párhuzamosan indítjuk a visszaállításokat a backend felé
-      // Ez hatékonyabb, mintha egyesével várnánk meg őket
       await Promise.all(
         group.items.map((item) => restoreAction(item.id, user.id)),
       );
@@ -179,17 +180,18 @@ const Profile = () => {
       alert(
         "Hiba történt a csoportos visszaállítás közben. Lehet, hogy néhány elem már nem létezik.",
       );
-      await loadData(); // Újratöltjük, hogy lássuk mi sikerült
+      await loadData();
     } finally {
       setRestoringGroup(false);
     }
   };
 
-  const requestRank = async () => {
-    if (!user || isAdmin) return;
+  // Átnevezve requestRank-re, hogy a gombok megtalálják
+  const requestRank = async (rankType: string) => {
+    if (!user || (rankType === "ADMIN" && isAdmin)) return;
     if (
       !confirm(
-        "Biztosan igényelsz Adminisztrátori rangot? A kérelem az adminokhoz kerül jóváhagyásra.",
+        `Biztosan igényelsz ${rankType} rangot? A kérelem az adminokhoz kerül jóváhagyásra.`,
       )
     )
       return;
@@ -198,9 +200,9 @@ const Profile = () => {
       await submitChangeRequest({
         userId: user.id,
         tipus: "RANG_MODOSITAS",
-        ujErtek: "ADMIN",
+        ujErtek: rankType,
       });
-      alert("Admin kérelem sikeresen beküldve!");
+      alert("Rang kérelem sikeresen beküldve!");
     } catch (err: any) {
       alert("Hiba: " + (err.message || "Nem sikerült a kérelmet elküldeni."));
     } finally {
@@ -212,7 +214,8 @@ const Profile = () => {
     e.preventDefault();
     setFormError(null);
     try {
-      if (!user?.admin && profileForm.nev !== user?.nev) {
+      // Itt a név változtatáshoz a rangot ellenőrizzük, nem az admin booleant
+      if (!isAdmin && profileForm.nev !== user?.nev) {
         await submitChangeRequest({
           userId: user!.id,
           tipus: "NEV_MODOSITAS",
@@ -232,11 +235,11 @@ const Profile = () => {
         updateData.regiJelszo = profileForm.regiJelszo;
         updateData.ujJelszo = profileForm.ujJelszo;
       }
-      if (user?.admin) updateData.nev = profileForm.nev;
+      if (isAdmin) updateData.nev = profileForm.nev;
 
       const updatedUser = await updateProfile(user!.id, updateData);
       setUser(updatedUser);
-      setProfileForm((prev) => ({ ...prev, regiJelszo: "", ujJelszo: "" }));
+      setProfileForm((prev: any) => ({ ...prev, regiJelszo: "", ujJelszo: "" }));
       alert("Profil adatok sikeresen frissítve!");
     } catch (err: any) {
       setFormError(err.message || "Hiba történt a mentés során!");
@@ -251,7 +254,7 @@ const Profile = () => {
       email: u.email || "",
       telefonszam: u.telefonszam || "",
       ujJelszo: "",
-      rang: u.rang, // u.admin helyett
+      rang: u.rang, // u.admin helyett az új mező
     });
   };
 
@@ -354,26 +357,51 @@ const Profile = () => {
 
   return (
     <div className="max-w-5xl mx-auto py-12 px-6 space-y-6 select-none">
-      <header className="bg-white dark:bg-slate-900 rounded-[2.5rem] shadow-2xl overflow-hidden border border-slate-100 dark:border-slate-800">
-        <div className="h-24 bg-gradient-to-r from-blue-600 to-indigo-700" />
-        <div className="px-10 pb-6 flex flex-col md:flex-row items-center gap-6 -mt-10">
-          <div className="w-20 h-20 bg-white dark:bg-slate-800 rounded-2xl shadow-xl flex items-center justify-center text-3xl border-4 border-white dark:border-slate-900 font-black italic text-blue-600 shadow-blue-500/10">
-            {user.nev.charAt(0)}
+      <header className="bg-white dark:bg-slate-900 rounded-[2.5rem] shadow-2xl overflow-hidden border border-slate-100 dark:border-slate-800 transition-all duration-500">
+        {/* Dekor sáv */}
+        <div className="h-32 bg-gradient-to-r from-blue-600 via-blue-700 to-indigo-800" />
+        
+        <div className="px-8 md:px-12 flex flex-col md:flex-row items-stretch gap-8 -mt-16">
+          
+          {/* Avatar - Fixen marad, ahol van */}
+          <div className="flex flex-col justify-end pb-4">
+            <div className="w-28 h-28 bg-white dark:bg-slate-800 rounded-3xl shadow-2xl flex items-center justify-center text-5xl border-8 border-white dark:border-slate-900 font-black italic text-blue-600 shadow-blue-500/20 z-10 shrink-0">
+              {user.nev.charAt(0)}
+            </div>
           </div>
-          <div className="flex-1 text-center md:text-left">
-            <h1 className="text-2xl font-black text-slate-900 dark:text-white uppercase italic">
-              {user.nev}
-            </h1>
-            <p className="text-slate-400 font-bold text-[10px] uppercase tracking-widest">
-              @{user.felhasznalonev} • {isAdmin ? "🛡️ Admin" : isKezelo ? "📦 Kezelő" : "👁️ Nézelődő"}
-            </p>
+
+          {/* Tartalom blokk: kettéosztjuk a magasságot */}
+          <div className="flex-1 flex flex-col">
+            
+            {/* 1. FELSŐ RÉSZ (Kék sáv alja) - Itt lakik a név */}
+            <div className="h-16 flex items-end pb-2">
+              <h1 className="text-2xl md:text-4xl font-black text-white uppercase italic tracking-tight drop-shadow-md">
+                {user.nev}
+              </h1>
+            </div>
+
+            {/* 2. ALSÓ RÉSZ (Sötét sáv közepe) - Itt laknak a badge-ek és a gomb */}
+            <div className="h-16 flex items-center justify-between">
+              {/* Badge-ek középen */}
+              <div className="flex flex-wrap items-center gap-3">
+                <span className="text-slate-400 font-bold text-[11px] uppercase tracking-widest bg-slate-800/60 px-3 py-1.5 rounded-xl border border-slate-700/50 backdrop-blur-sm">
+                  @{user.felhasznalonev}
+                </span>
+                <span className="text-blue-400 font-black text-[10px] uppercase tracking-wider bg-blue-900/30 px-3 py-1.5 rounded-xl border border-blue-800/50 backdrop-blur-sm">
+                  {isAdmin ? "🛡️ Admin" : isKezelo ? "📦 Kezelő" : "👁️ Nézelődő"}
+                </span>
+              </div>
+
+              {/* Kijelentkezés gomb középen */}
+              <button
+                onClick={logout}
+                className="bg-red-500 hover:bg-red-600 text-white px-6 py-2.5 rounded-2xl font-black text-[10px] uppercase tracking-widest transition-all active:scale-95 shadow-lg shadow-red-500/20 flex items-center gap-2 border border-red-400/20"
+              >
+                <span>🚪</span> Kijelentkezés
+              </button>
+            </div>
+
           </div>
-          <button
-            onClick={logout}
-            className="bg-red-500 hover:bg-red-600 text-white px-5 py-2 rounded-xl font-black text-[9px] uppercase tracking-widest transition-all active:scale-95 shadow-lg"
-          >
-            Kijelentkezés
-          </button>
         </div>
       </header>
 
@@ -401,7 +429,6 @@ const Profile = () => {
           {openSection === "details" && (
             <div className="p-8 border-t border-slate-100 dark:border-slate-800 animate-in slide-in-from-top-2">
               <form onSubmit={handleUpdateSubmit} className="space-y-6">
-                {/* ... (Profil form kódja változatlan) ... */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div>
                     <label className={labelClass}>Felhasználónév</label>
@@ -528,16 +555,27 @@ const Profile = () => {
                 )}
 
                 <div className="flex flex-col sm:flex-row gap-4">
-                  <button type="submit" className="flex-1 bg-blue-600 text-white p-4 rounded-xl font-black uppercase text-xs shadow-lg hover:bg-blue-500 transition-all">
+                  <button
+                    type="submit"
+                    className="flex-1 bg-blue-600 text-white p-4 rounded-xl font-black uppercase text-xs shadow-lg hover:bg-blue-500 transition-all"
+                  >
                     Saját adatok mentése
                   </button>
                   {user.rang === "NEZELODO" && (
-                    <button type="button" onClick={() => requestRank("KEZELO")} className="bg-indigo-600 text-white p-4 rounded-xl font-black uppercase text-xs shadow-lg">
+                    <button
+                      type="button"
+                      onClick={() => requestRank("KEZELO")}
+                      className="bg-indigo-600 text-white p-4 rounded-xl font-black uppercase text-xs shadow-lg hover:bg-indigo-500 transition-all border-2 border-white/10"
+                    >
                       🛡️ Kezelő rang igénylése
                     </button>
                   )}
                   {(user.rang === "NEZELODO" || user.rang === "KEZELO") && (
-                    <button type="button" onClick={() => requestRank("ADMIN")} className="bg-purple-600 text-white p-4 rounded-xl font-black uppercase text-xs shadow-lg">
+                    <button
+                      type="button"
+                      onClick={() => requestRank("ADMIN")}
+                      className="bg-purple-600 text-white p-4 rounded-xl font-black uppercase text-xs shadow-lg hover:bg-purple-500 transition-all border-2 border-white/10"
+                    >
                       🛡️ Admin rang igénylése
                     </button>
                   )}
@@ -655,7 +693,7 @@ const Profile = () => {
                               </p>
                             </div>
                           </div>
-                          {isAdmin && (
+                          {(isAdmin || isKezelo) && (
                             <button
                               onClick={(e) => handleGroupRestore(e, log)}
                               disabled={restoringGroup}
@@ -694,7 +732,7 @@ const Profile = () => {
                         </div>
                       </div>
                     ) : (
-                      // EGYEDI MEGJELENÍTÉS (Marad a régi)
+                      // EGYEDI MEGJELENÍTÉS
                       <>
                         <div className="flex justify-between items-start mb-4">
                           <div className="flex items-center gap-3">
@@ -736,7 +774,7 @@ const Profile = () => {
                                       : "♻️ VISSZAÁLLÍTÁS"}
                               </span>
                             </div>
-                            {user.admin &&
+                            {(isAdmin || isKezelo) &&
                               (log.muvelet === "UPDATE" ||
                                 log.muvelet === "DELETE") && (
                                 <button
@@ -884,7 +922,16 @@ const Profile = () => {
                       </div>
                       <div>
                         <label className={labelClass}>Rang</label>
-                        <select value={adminEditForm.rang} onChange={(e) => setAdminEditForm({ ...adminEditForm, rang: e.target.value })} className={inputClass}>
+                        <select
+                          value={adminEditForm.rang}
+                          onChange={(e) =>
+                            setAdminEditForm({
+                              ...adminEditForm,
+                              rang: e.target.value,
+                            })
+                          }
+                          className={inputClass}
+                        >
                           <option value="NEZELODO">👁️ Nézelődő</option>
                           <option value="KEZELO">📦 Kezelő</option>
                           <option value="ADMIN">🛡️ Adminisztrátor</option>
@@ -959,7 +1006,7 @@ const Profile = () => {
                         <div className="flex justify-between items-center">
                           <div>
                             <p className="font-black text-sm dark:text-white">
-                              {u.nev} {u.rang === 'ADMIN' ? '🛡️' : u.rang === 'KEZELO' ? '📦' : '👁️'}
+                              {u.nev} {u.rang === "ADMIN" ? "🛡️" : u.rang === "KEZELO" ? "📦" : "👁️"}
                             </p>
                             <p className="text-[10px] text-slate-500 font-bold">
                               {u.email}
