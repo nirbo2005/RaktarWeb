@@ -1,3 +1,4 @@
+//raktar-frontend/src/components/ProductDetails.tsx
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { getProductById, deleteProduct } from "../services/api";

@@ -12,6 +12,7 @@ import {
   UseInterceptors,
   ClassSerializerInterceptor,
   UseGuards,
+  SetMetadata,
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -21,21 +22,25 @@ import { RolesGuard } from '../auth/roles.guard';
 import { Roles } from '../auth/roles.decorator';
 import { Role } from '@prisma/client';
 
+// Segéd-dekorátor a publikus végpontokhoz
+export const IS_PUBLIC_KEY = 'isPublic';
+export const Public = () => SetMetadata(IS_PUBLIC_KEY, true);
+
 @Controller('user')
 @UseGuards(JwtAuthGuard, RolesGuard)
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
+  @Public() // Ez feloldja a JwtAuthGuard szigorítását
   @UseInterceptors(ClassSerializerInterceptor)
   @Post('register')
-  @Roles(Role.ADMIN) // Opcionális: csak admin regisztrálhat új usert? Vagy maradjon nyilvános?
   async create(@Body() createUserDto: CreateUserDto): Promise<UserEntity> {
     return this.userService.create(createUserDto);
   }
 
   @UseInterceptors(ClassSerializerInterceptor)
   @Get('all')
-  @Roles(Role.ADMIN) // Csak az admin láthatja az összes felhasználót
+  @Roles(Role.ADMIN)
   async findAll(): Promise<UserEntity[]> {
     return this.userService.findAll();
   }
@@ -52,8 +57,7 @@ export class UserController {
   @Roles(Role.NEZELODO, Role.KEZELO, Role.ADMIN)
   async updateProfile(
     @Param('id', ParseIntPipe) id: number,
-    @Body()
-    updateData: any,
+    @Body() updateData: any,
   ): Promise<UserEntity> {
     return this.userService.updateProfile(id, updateData);
   }

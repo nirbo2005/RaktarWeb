@@ -1,3 +1,4 @@
+//raktar-backend/prisma/seed.ts
 import { PrismaClient, Role } from '@prisma/client'; // Importáld a Role enumot is
 import * as fs from 'fs';
 import * as path from 'path';

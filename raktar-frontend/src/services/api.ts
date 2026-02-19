@@ -13,8 +13,20 @@ function getHeaders() {
 
 async function handleResponse(res: Response) {
   if (!res.ok) {
-    const errorText = await res.text();
-    throw new Error(`API Error ${res.status}: ${errorText}`);
+    let errorData;
+    try {
+      errorData = await res.json();
+    } catch (e) {
+      errorData = { message: "Ismeretlen hiba történt a szerveren." };
+    }
+    
+    // Ha a NestJS ValidationPipe hibaüzeneteket küld (tömbként vagy stringként)
+    const errorMessage = errorData.message || `API Error ${res.status}`;
+    
+    // Ez a hibaobjektum már a konkrét üzenetet fogja tartalmazni a frontend catch blokkjának
+    const error = new Error(Array.isArray(errorMessage) ? errorMessage[0] : errorMessage);
+    (error as any).response = { data: errorData };
+    throw error;
   }
   return res.json();
 }

@@ -10,12 +10,11 @@ import ProductModify from "./components/ProductModify";
 import ProductGridView from "./components/ProductGridView";
 import Login from "./components/Login";
 import Register from "./components/Register";
-import Profile from "./components/Profile";
+import Profile from "./components/Profile"
 import ScannerView from "./components/ScannerView";
 import SearchResults from "./components/SearchResults";
 import type { UserRole } from "./types/User";
 
-// ÚTVONALVÉDŐ KOMPONENS
 const ProtectedRoute = ({ allowedRoles }: { allowedRoles?: UserRole[] }) => {
   const { user, token } = useAuth();
 
@@ -25,6 +24,15 @@ const ProtectedRoute = ({ allowedRoles }: { allowedRoles?: UserRole[] }) => {
 
   if (allowedRoles && user && !allowedRoles.includes(user.rang)) {
     return <Navigate to="/" replace />;
+  }
+
+  return <Outlet />;
+};
+
+const PublicRoute = () => {
+  const { token } = useAuth();
+  if (token) {
+    return <Navigate to="/profile" replace />;
   }
 
   return <Outlet />;
@@ -71,11 +79,11 @@ function App() {
 
           <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 flex-grow w-full">
             <Routes>
-              {/* NYILVÁNOS ÚTVONALAK */}
-              <Route path="/login" element={<Login />} />
-              <Route path="/register" element={<Register />} />
+              <Route element={<PublicRoute />}>
+                <Route path="/login" element={<Login />} />
+                <Route path="/register" element={<Register />} />
+              </Route>
 
-              {/* MINDEN BEJELENTKEZETT FELHASZNÁLÓNAK (NÉZELŐDŐ+) */}
               <Route element={<ProtectedRoute />}>
                 <Route path="/" element={<ProductList />} />
                 <Route path="/product/:id" element={<ProductDetails />} />
@@ -85,13 +93,11 @@ function App() {
                 <Route path="/search" element={<SearchResults />} />
               </Route>
 
-              {/* CSAK KEZELŐKNEK ÉS ADMINOKNAK */}
               <Route element={<ProtectedRoute allowedRoles={["KEZELO", "ADMIN"]} />}>
                 <Route path="/add" element={<ProductAdd />} />
                 <Route path="/modify/:id" element={<ProductModify />} />
               </Route>
               
-              {/* ISMERETLEN ÚTVONAL -> HOME */}
               <Route path="*" element={<Navigate to="/" replace />} />
             </Routes>
           </main>

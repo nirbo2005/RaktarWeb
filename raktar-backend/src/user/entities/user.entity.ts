@@ -1,3 +1,4 @@
+//raktar-backend/src/user/entities/user.entity.ts
 import { Exclude } from 'class-transformer';
 import { Role } from '@prisma/client'; // Ez az import kell!
 
