@@ -17,6 +17,12 @@ function ProductModify() {
   const [isDeleted, setIsDeleted] = useState(false);
   const [inputValue, setInputValue] = useState<number>(0);
 
+  const [parcellaParts, setParcellaParts] = useState({
+    reszleg: "A",
+    sor: "1",
+    oszlop: "1"
+  });
+
   const [form, setForm] = useState({
     nev: "",
     gyarto: "",
@@ -28,7 +34,8 @@ function ProductModify() {
 
   useEffect(() => {
     if (!id || !user) return;
-    getProductById(Number(id), user.admin)
+    // user.admin helyett user.rang check
+    getProductById(Number(id), user.rang === "ADMIN")
       .then((data) => {
         setForm({
           nev: data.nev,
@@ -39,6 +46,16 @@ function ProductModify() {
           parcella: data.parcella,
         });
         setIsDeleted(data.isDeleted);
+
+        // Parcella szétbontása dropdownokhoz (pl "A1-1")
+        const match = data.parcella.match(/^([AB])([1-5])-([1-4])$/);
+        if (match) {
+          setParcellaParts({
+            reszleg: match[1],
+            sor: match[2],
+            oszlop: match[3]
+          });
+        }
       })
       .catch(() => navigate("/"));
   }, [id, user, navigate]);
@@ -76,8 +93,14 @@ function ProductModify() {
     }
   };
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
+    
+    if (["reszleg", "sor", "oszlop"].includes(name)) {
+      setParcellaParts(prev => ({ ...prev, [name]: value }));
+      return;
+    }
+
     if (name === "lejarat") {
       setForm((prev) => ({ ...prev, lejarat: new Date(value) }));
       return;
@@ -88,6 +111,9 @@ function ProductModify() {
   const handleDataSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!id || !user) return;
+
+    const parcellaString = `${parcellaParts.reszleg}${parcellaParts.sor}-${parcellaParts.oszlop}`;
+
     try {
       await updateProduct(
         Number(id),
@@ -95,6 +121,7 @@ function ProductModify() {
           ...form,
           ar: Number(form.ar),
           mennyiseg: Number(form.mennyiseg),
+          parcella: parcellaString,
           isDeleted,
         },
         user.id,
@@ -106,7 +133,7 @@ function ProductModify() {
   };
 
   const inputStyle =
-    "w-full p-3 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl focus:ring-2 focus:ring-blue-500 outline-none transition-all font-medium text-slate-900 dark:text-white text-center";
+    "w-full p-3 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl focus:ring-2 focus:ring-blue-500 outline-none transition-all font-medium text-slate-900 dark:text-white text-center appearance-none";
   const labelStyle =
     "block mb-2 text-xs font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest text-center transition-colors";
 
@@ -159,9 +186,7 @@ function ProductModify() {
         )}
 
         {viewMode === "stock" && (
-          <div
-            className={`space-y-8 animate-in fade-in duration-500 ${isDeleted ? "blur-sm grayscale opacity-50" : ""}`}
-          >
+          <div className={`space-y-8 animate-in fade-in duration-500 ${isDeleted ? "blur-sm grayscale opacity-50" : ""}`}>
             <div className="text-center">
               <h2 className="text-2xl md:text-3xl font-black text-slate-900 dark:text-white tracking-tighter uppercase italic transition-colors">
                 Készlet frissítése
@@ -177,9 +202,7 @@ function ProductModify() {
               </span>
               <span className="text-5xl md:text-6xl font-black text-slate-900 dark:text-white tracking-tighter">
                 {form.mennyiseg}{" "}
-                <span className="text-xl text-slate-400 font-medium lowercase">
-                  db
-                </span>
+                <span className="text-xl text-slate-400 font-medium lowercase">db</span>
               </span>
             </div>
 
@@ -206,25 +229,11 @@ function ProductModify() {
                 type="number"
                 min="0"
                 value={inputValue === 0 ? "" : inputValue}
-                onChange={(e) =>
-                  setInputValue(Math.abs(Number(e.target.value)))
-                }
+                onChange={(e) => setInputValue(Math.abs(Number(e.target.value)))}
                 placeholder="0"
                 className={inputStyle}
               />
             </div>
-
-            {inputValue > 0 && (
-              <div
-                className={`text-center px-6 py-3 rounded-2xl font-black uppercase text-xs tracking-widest animate-in zoom-in-95 ${stockMode === "add" ? "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400" : "bg-red-500/10 text-red-600 dark:text-red-400"}`}
-              >
-                Új készlet:{" "}
-                {stockMode === "add"
-                  ? form.mennyiseg + inputValue
-                  : form.mennyiseg - inputValue}{" "}
-                db
-              </div>
-            )}
 
             <div className="flex gap-4 pt-6 border-t border-slate-50 dark:border-slate-800 transition-colors">
               <button
@@ -245,91 +254,46 @@ function ProductModify() {
         )}
 
         {viewMode === "data" && (
-          <form
-            onSubmit={handleDataSubmit}
-            className={`space-y-6 animate-in fade-in duration-500 text-left ${isDeleted ? "blur-sm grayscale opacity-50" : ""}`}
-          >
+          <form onSubmit={handleDataSubmit} className={`space-y-6 animate-in fade-in duration-500 text-left ${isDeleted ? "blur-sm grayscale opacity-50" : ""}`}>
             <h2 className="text-2xl md:text-3xl font-black text-slate-900 dark:text-white tracking-tighter uppercase italic mb-8 transition-colors">
               Alapadatok módosítása
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="md:col-span-2">
-                <label className="block mb-2 text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest transition-colors">
-                  Termék neve
-                </label>
-                <input
-                  name="nev"
-                  value={form.nev}
-                  onChange={handleChange}
-                  className="w-full p-3 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl focus:ring-2 focus:ring-blue-500 outline-none transition-all font-medium text-slate-900 dark:text-white"
-                  required
-                />
+                <label className="block mb-2 text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest transition-colors">Termék neve</label>
+                <input name="nev" value={form.nev} onChange={handleChange} className={inputStyle} required />
               </div>
               <div>
-                <label className="block mb-2 text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest transition-colors">
-                  Gyártó
-                </label>
-                <input
-                  name="gyarto"
-                  value={form.gyarto}
-                  onChange={handleChange}
-                  className="w-full p-3 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl focus:ring-2 focus:ring-blue-500 outline-none transition-all font-medium text-slate-900 dark:text-white"
-                  required
-                />
+                <label className="block mb-2 text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest transition-colors">Gyártó</label>
+                <input name="gyarto" value={form.gyarto} onChange={handleChange} className={inputStyle} required />
               </div>
               <div>
-                <label className="block mb-2 text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest transition-colors">
-                  Lejárat
-                </label>
-                <input
-                  name="lejarat"
-                  type="date"
-                  value={form.lejarat.toISOString().split("T")[0]}
-                  onChange={handleChange}
-                  className="w-full p-3 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl focus:ring-2 focus:ring-blue-500 outline-none transition-all font-medium text-slate-900 dark:text-white"
-                  required
-                />
+                <label className="block mb-2 text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest transition-colors">Lejárat</label>
+                <input name="lejarat" type="date" value={form.lejarat.toISOString().split("T")[0]} onChange={handleChange} className={inputStyle} required />
               </div>
               <div>
-                <label className="block mb-2 text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest transition-colors">
-                  Ár (Ft)
-                </label>
-                <input
-                  name="ar"
-                  type="number"
-                  value={form.ar}
-                  onChange={handleChange}
-                  className="w-full p-3 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl focus:ring-2 focus:ring-blue-500 outline-none transition-all font-medium text-slate-900 dark:text-white"
-                  required
-                />
+                <label className="block mb-2 text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest transition-colors">Ár (Ft)</label>
+                <input name="ar" type="number" value={form.ar} onChange={handleChange} className={inputStyle} required />
               </div>
               <div>
-                <label className="block mb-2 text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest transition-colors">
-                  Parcella
-                </label>
-                <input
-                  name="parcella"
-                  value={form.parcella}
-                  onChange={handleChange}
-                  className="w-full p-3 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl focus:ring-2 focus:ring-blue-500 outline-none transition-all font-medium text-slate-900 dark:text-white"
-                  required
-                />
+                <label className="block mb-2 text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest transition-colors">Parcella</label>
+                <div className="grid grid-cols-3 gap-2">
+                    <select name="reszleg" className={inputStyle} onChange={handleChange} value={parcellaParts.reszleg}>
+                        <option value="A">A</option>
+                        <option value="B">B</option>
+                    </select>
+                    <select name="sor" className={inputStyle} onChange={handleChange} value={parcellaParts.sor}>
+                        {[1, 2, 3, 4, 5].map(n => <option key={n} value={n}>{n}</option>)}
+                    </select>
+                    <select name="oszlop" className={inputStyle} onChange={handleChange} value={parcellaParts.oszlop}>
+                        {[1, 2, 3, 4].map(n => <option key={n} value={n}>{n}</option>)}
+                    </select>
+                </div>
               </div>
             </div>
             <div className="flex gap-4 pt-6 border-t border-slate-50 dark:border-slate-800 transition-colors">
-              <button
-                type="button"
-                onClick={() => navigate(-1)}
-                className="flex-1 py-4 text-slate-400 dark:text-slate-500 font-black uppercase text-xs tracking-widest hover:text-slate-600 dark:hover:text-slate-300 transition-colors"
-              >
-                Mégse
-              </button>
-              <button
-                type="submit"
-                className="flex-[2] bg-indigo-600 text-white py-4 rounded-2xl font-black shadow-lg shadow-indigo-500/20 hover:bg-indigo-500 transition-all uppercase text-xs tracking-widest active:scale-95"
-              >
-                Adatok Mentése
-              </button>
+              <button type="button" onClick={() => navigate(-1)} className="flex-1 py-4 text-slate-400 dark:text-slate-500 font-black uppercase text-xs tracking-widest hover:text-slate-600 dark:hover:text-slate-300 transition-colors">Mégse</button>
+              <button type="submit" className="flex-[2] bg-indigo-600 text-white py-4 rounded-2xl font-black shadow-lg shadow-indigo-500/20 hover:bg-indigo-500 transition-all uppercase text-xs tracking-widest active:scale-95">Adatok Mentése</button>
             </div>
           </form>
         )}

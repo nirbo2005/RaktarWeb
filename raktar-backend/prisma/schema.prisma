@@ -1,12 +1,18 @@
-//raktar-backend/prisma/schema.prisma
 generator client {
-  provider = "prisma-client-js"
-  engineType    = "binary"
+  provider   = "prisma-client-js"
+  engineType = "binary"
 }
 
 datasource db {
   provider = "mysql"
   url      = env("DATABASE_URL")
+}
+
+// ÚJ: Rangok definiálása
+enum Role {
+  NEZELODO
+  KEZELO
+  ADMIN
 }
 
 model Stock {
@@ -28,7 +34,7 @@ model User {
   jelszo         String
   email          String?         @unique
   telefonszam    String?
-  admin          Boolean         @default(false)
+  rang           Role            @default(NEZELODO) // admin helyett rang
   isBanned       Boolean         @default(false)
   logs           AuditLog[]
   requests       ChangeRequest[]
@@ -47,11 +53,11 @@ model AuditLog {
 }
 
 model ChangeRequest {
-  id           Int      @id @default(autoincrement())
-  userId       Int
-  user         User     @relation(fields: [userId], references: [id])
-  tipus        String   
-  ujErtek      String   
-  statusz      String   @default("PENDING")
-  letrehozva   DateTime @default(now())
+  id         Int      @id @default(autoincrement())
+  userId     Int
+  user       User     @relation(fields: [userId], references: [id])
+  tipus      String
+  ujErtek    String
+  statusz    String   @default("PENDING")
+  letrehozva DateTime @default(now())
 }

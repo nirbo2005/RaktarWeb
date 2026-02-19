@@ -27,7 +27,7 @@ const Profile = () => {
   const navigate = useNavigate();
   const [openSection, setOpenSection] = useState<string | null>("details");
   const [loading, setLoading] = useState(false);
-  const [restoringGroup, setRestoringGroup] = useState(false); // Új state a csoportos loadinghoz
+  const [restoringGroup, setRestoringGroup] = useState(false);
   const [formError, setFormError] = useState<string | null>(null);
   const [showOldPass, setShowOldPass] = useState(false);
   const [showNewPass, setShowNewPass] = useState(false);
@@ -35,6 +35,10 @@ const Profile = () => {
   const [allUsers, setAllUsers] = useState<User[]>([]);
   const [pendingRequests, setPendingRequests] = useState<any[]>([]);
   const [editingUser, setEditingUser] = useState<User | null>(null);
+
+  // EZT ELLENŐRIZD: Csak egyszer szerepeljenek!
+  const isAdmin = user?.rang === "ADMIN";
+  const isKezelo = user?.rang === "KEZELO";
 
   const [profileForm, setProfileForm] = useState({
     felhasznalonev: user?.felhasznalonev || "",
@@ -51,14 +55,7 @@ const Profile = () => {
     email: "",
     telefonszam: "",
     ujJelszo: "",
-    admin: false,
-  });
-
-  const [logFilters, setLogFilters] = useState({
-    muvelet: "",
-    startDate: "",
-    endDate: "",
-    targetUserId: "",
+    rang: "NEZELODO",
   });
 
   // --- CSOPORTOSÍTÁSI LOGIKA ---
@@ -119,10 +116,10 @@ const Profile = () => {
         Object.entries(logFilters).filter(([_, value]) => value !== ""),
       );
 
-      const logData = await getAuditLogs(user.id, user.admin, activeFilters);
+      const logData = await getAuditLogs(user.id, isAdmin, activeFilters);
       setLogs(logData);
 
-      if (user.admin) {
+      if (isAdmin) {
         const [users, reqs] = await Promise.all([
           getAllUsers(),
           getPendingRequests(),
@@ -188,8 +185,8 @@ const Profile = () => {
     }
   };
 
-  const requestAdminRank = async () => {
-    if (!user || user.admin) return;
+  const requestRank = async () => {
+    if (!user || isAdmin) return;
     if (
       !confirm(
         "Biztosan igényelsz Adminisztrátori rangot? A kérelem az adminokhoz kerül jóváhagyásra.",
@@ -254,7 +251,7 @@ const Profile = () => {
       email: u.email || "",
       telefonszam: u.telefonszam || "",
       ujJelszo: "",
-      admin: u.admin,
+      rang: u.rang, // u.admin helyett
     });
   };
 
@@ -368,7 +365,7 @@ const Profile = () => {
               {user.nev}
             </h1>
             <p className="text-slate-400 font-bold text-[10px] uppercase tracking-widest">
-              @{user.felhasznalonev} • {user.admin ? "🛡️ Admin" : "📦 Kezelő"}
+              @{user.felhasznalonev} • {isAdmin ? "🛡️ Admin" : isKezelo ? "📦 Kezelő" : "👁️ Nézelődő"}
             </p>
           </div>
           <button
@@ -434,7 +431,7 @@ const Profile = () => {
                         }
                         className={inputClass}
                       />
-                      {!user.admin && (
+                      {!isAdmin && (
                         <button
                           type="button"
                           onClick={() =>
@@ -531,18 +528,16 @@ const Profile = () => {
                 )}
 
                 <div className="flex flex-col sm:flex-row gap-4">
-                  <button
-                    type="submit"
-                    className="flex-1 bg-blue-600 text-white p-4 rounded-xl font-black uppercase text-xs shadow-lg hover:bg-blue-500 transition-all"
-                  >
+                  <button type="submit" className="flex-1 bg-blue-600 text-white p-4 rounded-xl font-black uppercase text-xs shadow-lg hover:bg-blue-500 transition-all">
                     Saját adatok mentése
                   </button>
-                  {!user.admin && (
-                    <button
-                      type="button"
-                      onClick={requestAdminRank}
-                      className="bg-indigo-600 text-white p-4 rounded-xl font-black uppercase text-xs shadow-lg hover:bg-indigo-500 transition-all border-2 border-white/10"
-                    >
+                  {user.rang === "NEZELODO" && (
+                    <button type="button" onClick={() => requestRank("KEZELO")} className="bg-indigo-600 text-white p-4 rounded-xl font-black uppercase text-xs shadow-lg">
+                      🛡️ Kezelő rang igénylése
+                    </button>
+                  )}
+                  {(user.rang === "NEZELODO" || user.rang === "KEZELO") && (
+                    <button type="button" onClick={() => requestRank("ADMIN")} className="bg-purple-600 text-white p-4 rounded-xl font-black uppercase text-xs shadow-lg">
                       🛡️ Admin rang igénylése
                     </button>
                   )}
@@ -568,7 +563,7 @@ const Profile = () => {
           {openSection === "logs" && (
             <div className="p-6 border-t border-slate-100 dark:border-slate-800">
               <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-3 mb-8">
-                {user.admin && (
+                {isAdmin && (
                   <select
                     value={logFilters.targetUserId}
                     onChange={(e) =>
@@ -660,7 +655,7 @@ const Profile = () => {
                               </p>
                             </div>
                           </div>
-                          {user.admin && (
+                          {isAdmin && (
                             <button
                               onClick={(e) => handleGroupRestore(e, log)}
                               disabled={restoringGroup}
@@ -779,7 +774,7 @@ const Profile = () => {
             </div>
           )}
         </section>
-        {user.admin && (
+        {isAdmin && (
           <section className="bg-white dark:bg-slate-900 rounded-[2rem] border-2 border-indigo-600/20 shadow-lg shadow-indigo-500/5 overflow-hidden">
             <button
               onClick={() =>
@@ -889,18 +884,10 @@ const Profile = () => {
                       </div>
                       <div>
                         <label className={labelClass}>Rang</label>
-                        <select
-                          value={adminEditForm.admin ? "true" : "false"}
-                          onChange={(e) =>
-                            setAdminEditForm({
-                              ...adminEditForm,
-                              admin: e.target.value === "true",
-                            })
-                          }
-                          className={inputClass}
-                        >
-                          <option value="false">📦 Kezelő</option>
-                          <option value="true">🛡️ Adminisztrátor</option>
+                        <select value={adminEditForm.rang} onChange={(e) => setAdminEditForm({ ...adminEditForm, rang: e.target.value })} className={inputClass}>
+                          <option value="NEZELODO">👁️ Nézelődő</option>
+                          <option value="KEZELO">📦 Kezelő</option>
+                          <option value="ADMIN">🛡️ Adminisztrátor</option>
                         </select>
                       </div>
                       <button
@@ -972,7 +959,7 @@ const Profile = () => {
                         <div className="flex justify-between items-center">
                           <div>
                             <p className="font-black text-sm dark:text-white">
-                              {u.nev} {u.admin && "🛡️"}
+                              {u.nev} {u.rang === 'ADMIN' ? '🛡️' : u.rang === 'KEZELO' ? '📦' : '👁️'}
                             </p>
                             <p className="text-[10px] text-slate-500 font-bold">
                               {u.email}

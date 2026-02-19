@@ -1,7 +1,7 @@
 //raktar-frontend/src/App.tsx
 import { useEffect, useState } from "react";
-import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
-import { AuthProvider } from "./context/AuthContext";
+import { BrowserRouter, Routes, Route, useLocation, Navigate, Outlet } from "react-router-dom";
+import { AuthProvider, useAuth } from "./context/AuthContext";
 import Navbar from "./components/Navbar";
 import ProductList from "./components/ProductList";
 import ProductDetails from "./components/ProductDetails";
@@ -13,6 +13,22 @@ import Register from "./components/Register";
 import Profile from "./components/Profile";
 import ScannerView from "./components/ScannerView";
 import SearchResults from "./components/SearchResults";
+import type { UserRole } from "./types/User";
+
+// ÚTVONALVÉDŐ KOMPONENS
+const ProtectedRoute = ({ allowedRoles }: { allowedRoles?: UserRole[] }) => {
+  const { user, token } = useAuth();
+
+  if (!token) {
+    return <Navigate to="/login" replace />;
+  }
+
+  if (allowedRoles && user && !allowedRoles.includes(user.rang)) {
+    return <Navigate to="/" replace />;
+  }
+
+  return <Outlet />;
+};
 
 function ScrollToTop() {
   const { pathname, search } = useLocation();
@@ -45,6 +61,7 @@ function App() {
         <ScrollToTop />
         <div className="min-h-screen bg-gray-50 text-gray-900 dark:bg-slate-950 dark:text-slate-100 font-sans flex flex-col transition-colors duration-300">
           <Navbar />
+          
           <button
             onClick={() => setIsDark(!isDark)}
             className="fixed bottom-4 right-4 z-50 p-3 rounded-full bg-white dark:bg-slate-800 shadow-2xl border border-slate-200 dark:border-slate-700"
@@ -54,16 +71,28 @@ function App() {
 
           <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 flex-grow w-full">
             <Routes>
-              <Route path="/" element={<ProductList />} />
-              <Route path="/product/:id" element={<ProductDetails />} />
-              <Route path="/add" element={<ProductAdd />} />
-              <Route path="/modify/:id" element={<ProductModify />} />
-              <Route path="/grid" element={<ProductGridView />} />
+              {/* NYILVÁNOS ÚTVONALAK */}
               <Route path="/login" element={<Login />} />
               <Route path="/register" element={<Register />} />
-              <Route path="/profile" element={<Profile />} />
-              <Route path="/scanner" element={<ScannerView />} />
-              <Route path="/search" element={<SearchResults />} />
+
+              {/* MINDEN BEJELENTKEZETT FELHASZNÁLÓNAK (NÉZELŐDŐ+) */}
+              <Route element={<ProtectedRoute />}>
+                <Route path="/" element={<ProductList />} />
+                <Route path="/product/:id" element={<ProductDetails />} />
+                <Route path="/grid" element={<ProductGridView />} />
+                <Route path="/profile" element={<Profile />} />
+                <Route path="/scanner" element={<ScannerView />} />
+                <Route path="/search" element={<SearchResults />} />
+              </Route>
+
+              {/* CSAK KEZELŐKNEK ÉS ADMINOKNAK */}
+              <Route element={<ProtectedRoute allowedRoles={["KEZELO", "ADMIN"]} />}>
+                <Route path="/add" element={<ProductAdd />} />
+                <Route path="/modify/:id" element={<ProductModify />} />
+              </Route>
+              
+              {/* ISMERETLEN ÚTVONAL -> HOME */}
+              <Route path="*" element={<Navigate to="/" replace />} />
             </Routes>
           </main>
         </div>

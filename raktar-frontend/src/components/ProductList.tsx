@@ -35,11 +35,15 @@ function ProductList() {
   const navigate = useNavigate();
   const { user } = useAuth();
 
+  // Jogosultság ellenőrzése
+  const canEdit = user && (user.rang === "KEZELO" || user.rang === "ADMIN");
+
   useEffect(() => {
     getProducts().then((data) => {
       setProducts(data.map((p) => ({ ...p, lejarat: new Date(p.lejarat) })));
     });
   }, []);
+
   const exportToExcel = async () => {
     const workbook = new ExcelJS.Workbook();
     const worksheet = workbook.addWorksheet("Raktárkészlet");
@@ -141,6 +145,7 @@ function ProductList() {
     });
     return list;
   }, [products, sortColumn, isAscending, showAlertsOnly]);
+
   const toggleSelect = (id: number) => {
     setSelectedIds((prev) =>
       prev.includes(id) ? prev.filter((i) => i !== id) : [...prev, id],
@@ -220,7 +225,7 @@ function ProductList() {
           </div>
 
           <div className="flex flex-wrap md:flex-nowrap gap-4 w-full md:w-auto">
-            {selectedIds.length > 0 && (
+            {canEdit && selectedIds.length > 0 && (
               <button
                 onClick={handleBulkDelete}
                 className="flex-1 md:flex-none bg-red-600 hover:bg-red-500 text-white px-6 py-4 rounded-2xl font-black uppercase text-xs tracking-widest shadow-lg shadow-red-600/30 transition-all active:scale-95 flex items-center justify-center gap-2 animate-in fade-in zoom-in duration-300"
@@ -249,7 +254,7 @@ function ProductList() {
               </button>
             )}
 
-            {user && (
+            {canEdit && (
               <button
                 onClick={() => navigate("/add")}
                 className="flex-1 md:flex-none bg-blue-600 hover:bg-blue-500 text-white px-8 py-4 rounded-2xl font-black uppercase text-xs tracking-widest shadow-lg shadow-blue-500/30 transition-all active:scale-95 flex items-center justify-center gap-2"
@@ -276,6 +281,7 @@ function ProductList() {
                           filteredAndSortedProducts.length > 0
                         }
                         onChange={toggleSelectAll}
+                        disabled={!canEdit}
                       />
                     </th>
                     <th className="p-6 text-center w-24">QR</th>
@@ -300,7 +306,7 @@ function ProductList() {
                       Készlet{" "}
                       {sortColumn === "mennyiseg" && (isAscending ? "↑" : "↓")}
                     </th>
-                    {user && <th className="p-6 text-right">Művelet</th>}
+                    {canEdit && <th className="p-6 text-right">Művelet</th>}
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-slate-100 dark:divide-slate-800/50">
@@ -319,6 +325,7 @@ function ProductList() {
                           className="w-4 h-4 rounded border-slate-300 text-blue-600 focus:ring-blue-500 cursor-pointer"
                           checked={selectedIds.includes(p.id)}
                           onChange={() => toggleSelect(p.id)}
+                          disabled={!canEdit}
                         />
                       </td>
                       <td className="p-6 text-center">
@@ -363,7 +370,7 @@ function ProductList() {
                           {p.mennyiseg} db
                         </span>
                       </td>
-                      {user && (
+                      {canEdit && (
                         <td className="p-6 text-right">
                           <div className="flex justify-end gap-3">
                             <button
@@ -397,14 +404,16 @@ function ProductList() {
                       : "bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800"
                   }`}
                 >
-                  <div className="absolute top-4 right-4 z-10">
-                    <input
-                      type="checkbox"
-                      className="w-6 h-6 rounded border-slate-300 text-blue-600 focus:ring-blue-500 cursor-pointer"
-                      checked={selectedIds.includes(p.id)}
-                      onChange={() => toggleSelect(p.id)}
-                    />
-                  </div>
+                  {canEdit && (
+                    <div className="absolute top-4 right-4 z-10">
+                      <input
+                        type="checkbox"
+                        className="w-6 h-6 rounded border-slate-300 text-blue-600 focus:ring-blue-500 cursor-pointer"
+                        checked={selectedIds.includes(p.id)}
+                        onChange={() => toggleSelect(p.id)}
+                      />
+                    </div>
+                  )}
 
                   <div className="flex justify-between items-start mb-6">
                     <div className="bg-white p-2 rounded-xl shadow-sm border border-slate-100">
@@ -455,7 +464,7 @@ function ProductList() {
                     >
                       Részletek
                     </button>
-                    {user && (
+                    {canEdit && (
                       <>
                         <button
                           onClick={() => navigate(`/modify/${p.id}`)}

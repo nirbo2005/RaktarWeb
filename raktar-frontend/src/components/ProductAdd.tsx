@@ -7,17 +7,25 @@ import { useAuth } from "../context/AuthContext";
 function ProductAdd() {
   const navigate = useNavigate();
   const { user } = useAuth();
+  
+  // A parcella részeit külön kezeljük a könnyebb kezelhetőség érdekében
+  const [parcellaParts, setParcellaParts] = useState({
+    reszleg: "A",
+    sor: "1",
+    oszlop: "1"
+  });
+
   const [form, setForm] = useState({
     nev: "",
     gyarto: "",
     lejarat: new Date(),
     ar: 0,
     mennyiseg: 0,
-    parcella: "",
   });
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
+    
     if (name === "lejarat") {
       setForm((prev) => ({
         ...prev,
@@ -25,6 +33,12 @@ function ProductAdd() {
       }));
       return;
     }
+
+    if (["reszleg", "sor", "oszlop"].includes(name)) {
+      setParcellaParts(prev => ({ ...prev, [name]: value }));
+      return;
+    }
+
     setForm((prev) => ({
       ...prev,
       [name]: value,
@@ -38,6 +52,9 @@ function ProductAdd() {
       return;
     }
 
+    // Itt fűzzük össze a dropdown értékeket a kért formátumba: pl. "A1-1"
+    const parcellaString = `${parcellaParts.reszleg}${parcellaParts.sor}-${parcellaParts.oszlop}`;
+
     try {
       await addProduct(
         {
@@ -46,19 +63,19 @@ function ProductAdd() {
           lejarat: form.lejarat,
           ar: Number(form.ar),
           mennyiseg: Number(form.mennyiseg),
-          parcella: form.parcella,
+          parcella: parcellaString,
           isDeleted: false,
         },
         user.id,
       );
       navigate("/");
     } catch (error) {
-      alert("Hiba történt a termék hozzáadása során.");
+      alert("Hiba történt a termék hozzáadása során. Ellenőrizze az adatokat!");
     }
   };
 
   const inputStyle =
-    "w-full p-3 bg-gray-50 dark:bg-slate-800/50 border border-gray-300 dark:border-slate-700 text-gray-900 dark:text-white text-sm rounded-2xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 block transition-all outline-none placeholder-gray-400";
+    "w-full p-3 bg-gray-50 dark:bg-slate-800/50 border border-gray-300 dark:border-slate-700 text-gray-900 dark:text-white text-sm rounded-2xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 block transition-all outline-none placeholder-gray-400 appearance-none";
   const labelStyle =
     "block mb-2 text-xs font-black text-gray-700 dark:text-slate-400 uppercase tracking-widest";
 
@@ -114,15 +131,23 @@ function ProductAdd() {
                 required
               />
             </div>
+            
+            {/* PARCELLA DROPDOWN SZEKCIÓ */}
             <div>
               <label className={labelStyle}>Parcella / Helyszín</label>
-              <input
-                name="parcella"
-                placeholder="Pl. B2-4"
-                className={inputStyle}
-                onChange={handleChange}
-                required
-              />
+              <div className="grid grid-cols-3 gap-2">
+                <select name="reszleg" className={inputStyle} onChange={handleChange} value={parcellaParts.reszleg}>
+                  <option value="A">A</option>
+                  <option value="B">B</option>
+                </select>
+                <select name="sor" className={inputStyle} onChange={handleChange} value={parcellaParts.sor}>
+                  {[1, 2, 3, 4, 5].map(n => <option key={n} value={n}>{n}</option>)}
+                </select>
+                <select name="oszlop" className={inputStyle} onChange={handleChange} value={parcellaParts.oszlop}>
+                  {[1, 2, 3, 4].map(n => <option key={n} value={n}>{n}</option>)}
+                </select>
+              </div>
+              <p className="mt-2 text-[10px] text-gray-400 italic">Kijelölt hely: {parcellaParts.reszleg}{parcellaParts.sor}-{parcellaParts.oszlop}</p>
             </div>
           </div>
 

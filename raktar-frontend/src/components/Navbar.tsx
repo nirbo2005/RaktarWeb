@@ -61,6 +61,12 @@ function Navbar() {
     }
   };
 
+  const getRoleBadge = (role?: string) => {
+    if (role === "ADMIN") return "🛡️ Admin";
+    if (role === "KEZELO") return "📦 Kezelő";
+    return "👁️ Nézelődő";
+  };
+
   const isActive = (path: string) => location.pathname === path;
 
   const linkStyle = (path: string) => `
@@ -125,6 +131,7 @@ function Navbar() {
               📷 Beolvasás
             </Link>
           </div>
+
           <div className="flex-1 max-w-md relative mx-2" ref={searchRef}>
             <form onSubmit={handleSearchSubmit}>
               <div className="relative group">
@@ -165,6 +172,7 @@ function Navbar() {
               </div>
             )}
           </div>
+
           <div className="flex items-center gap-2 shrink-0">
             <div className="hidden md:flex items-center gap-3">
               <DarkModeToggle />
@@ -180,7 +188,7 @@ function Navbar() {
                         {user.nev}
                       </span>
                       <span className="text-[8px] text-slate-400 font-bold uppercase tracking-widest">
-                        {user.admin ? "🛡️ Admin" : "📦 Kezelő"}
+                        {getRoleBadge(user.rang)}
                       </span>
                     </div>
                   </Link>
@@ -209,7 +217,6 @@ function Navbar() {
                 </div>
               )}
             </div>
-
             {!user && (
               <div className="md:hidden flex items-center gap-2">
                 <DarkModeToggle />
@@ -244,7 +251,7 @@ function Navbar() {
           {user ? (
             <div className="space-y-2">
               <Link to="/profile" className={linkStyle("/profile")}>
-                👤 Profil ({user.nev})
+                👤 Profil ({user.nev}) - {getRoleBadge(user.rang)}
               </Link>
               <div className="flex items-center justify-between px-4 py-3 bg-slate-50 dark:bg-slate-900 rounded-xl border border-slate-100 dark:border-slate-800">
                 <span className="text-slate-500 dark:text-slate-400 font-bold text-sm">

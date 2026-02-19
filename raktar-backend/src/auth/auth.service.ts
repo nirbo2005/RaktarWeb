@@ -1,4 +1,3 @@
-//raktar-backend/src/auth/auth.service.ts
 import {
   Injectable,
   UnauthorizedException,
@@ -38,7 +37,7 @@ export class AuthService {
     const payload = {
       sub: user.id,
       username: user.felhasznalonev,
-      admin: user.admin,
+      rang: user.rang, // Payload frissítve
     };
 
     return {

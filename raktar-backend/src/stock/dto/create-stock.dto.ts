@@ -25,8 +25,8 @@ export class CreateStockDto {
 
   @IsString()
   @IsNotEmpty()
-  @Matches(/^[A-Z][0-9]+-[0-9]+$/, {
-    message: 'Parcella formátuma kötelezően: "X1-1", pl. "A1-1" vagy "B2-3".',
+  @Matches(/^[AB][1-5]-[1-4]$/, {
+    message: 'Parcella formátuma kötelezően: [Részleg(A-B)][Sor(1-5)]-[Oszlop(1-4)], pl. "A1-1" vagy "B5-4".',
   })
   parcella: string;
 }

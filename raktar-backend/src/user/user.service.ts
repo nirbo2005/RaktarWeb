@@ -8,6 +8,7 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { PrismaService } from '../prisma.service';
 import * as bcrypt from 'bcrypt';
 import { UserEntity } from './entities/user.entity';
+import { Role } from '@prisma/client';
 
 @Injectable()
 export class UserService {
@@ -17,11 +18,12 @@ export class UserService {
     const salt = await bcrypt.genSalt();
     const hashedJelszo = await bcrypt.hash(createUserDto.jelszo, salt);
 
+    // Az admin boolean helyett a rang enumot használjuk
     const user = await this.prisma.user.create({
       data: {
         ...createUserDto,
         jelszo: hashedJelszo,
-        admin: createUserDto.admin ?? false,
+        rang: createUserDto.rang || Role.NEZELODO, // Alapértelmezett a nézelődő
       },
     });
     return new UserEntity(user);
@@ -49,9 +51,11 @@ export class UserService {
   async updateProfile(id: number, data: any): Promise<UserEntity> {
     const user = await this.prisma.user.findUnique({ where: { id } });
     if (!user) throw new NotFoundException('Felhasználó nem található');
+
     const { ujJelszo, regiJelszo, ...validFields } = data;
     const updateData: any = { ...validFields };
 
+    // Jelszó módosítás logikája
     if (ujJelszo && ujJelszo.trim() !== '') {
       if (regiJelszo) {
         const isMatch = await bcrypt.compare(regiJelszo, user.jelszo);
@@ -99,10 +103,11 @@ export class UserService {
           where: { id: request.userId },
           data: { nev: request.ujErtek },
         });
-      } else if (request.tipus === 'ADMIN_KERELEM') {
+      } else if (request.tipus === 'RANG_MODOSITAS') {
+        // Rang módosítása Role enum alapján
         await this.prisma.user.update({
           where: { id: request.userId },
-          data: { admin: request.ujErtek === 'true' },
+          data: { rang: request.ujErtek as Role },
         });
       }
     }
@@ -125,6 +130,7 @@ export class UserService {
   }
 
   async remove(id: number): Promise<UserEntity> {
+    // Puha törlés és adatok anonimizálása
     const updated = await this.prisma.user.update({
       where: { id },
       data: {
