@@ -1,9 +1,18 @@
 //raktar-frontend/src/components/ScannerView.tsx
 import { useEffect, useState, useRef } from "react";
 import { Html5Qrcode } from "html5-qrcode";
-import { getProductById } from "../services/api";
+import { getProductById } from "../../services/api";
 import { useNavigate } from "react-router-dom";
-import type { Product } from "../types/Product";
+import type { Product } from "../../types/Product";
+import Swal from 'sweetalert2';
+
+const MySwal = Swal.mixin({
+  customClass: {
+    popup: 'rounded-[2.5rem] bg-white dark:bg-slate-900 text-slate-900 dark:text-white border border-slate-200 dark:border-slate-800 shadow-2xl font-sans',
+    confirmButton: 'bg-blue-600 hover:bg-blue-500 text-white px-8 py-3 rounded-2xl font-black uppercase text-xs tracking-widest transition-all active:scale-95 mx-2',
+  },
+  buttonsStyling: false,
+});
 
 function ScannerView() {
   const [product, setProduct] = useState<Product | null>(null);
@@ -43,15 +52,25 @@ function ScannerView() {
   }, []);
 
   const handleScanSuccess = async (decodedText: string) => {
-    const id = decodedText.includes(":")
-      ? decodedText.split(":")[1]
-      : decodedText;
+    // Kezeli a sima ID-t és a teljes URL-t is
+    let id: string;
+    if (decodedText.includes("/product/")) {
+      id = decodedText.split("/product/")[1];
+    } else if (decodedText.includes(":")) {
+      id = decodedText.split(":")[1];
+    } else {
+      id = decodedText;
+    }
 
     if (!isNaN(Number(id))) {
       await stopCamera();
       fetchProduct(Number(id));
     } else {
-      alert("Ez nem egy érvényes RaktárWeb QR kód!");
+      MySwal.fire({
+        icon: 'error',
+        title: 'Érvénytelen kód',
+        text: 'Ez nem egy érvényes RaktárWeb QR kód!',
+      });
     }
   };
 
@@ -64,8 +83,11 @@ function ScannerView() {
       const decodedText = await scannerRef.current.scanFile(file, true);
       handleScanSuccess(decodedText);
     } catch (err) {
-      console.error(err);
-      alert("Nem sikerült QR-kódot beolvasni erről a képről.");
+      MySwal.fire({
+        icon: 'warning',
+        title: 'Beolvasási hiba',
+        text: 'Nem sikerült QR-kódot felismerni a képen.',
+      });
     } finally {
       setLoading(false);
     }
@@ -87,8 +109,11 @@ function ScannerView() {
       const data = await getProductById(id);
       setProduct(data);
     } catch (err) {
-      alert("Termék nem található!");
-      window.location.reload();
+      MySwal.fire({
+        icon: 'error',
+        title: 'Nincs találat',
+        text: 'A keresett termék nem található a rendszerben.',
+      }).then(() => window.location.reload());
     } finally {
       setLoading(false);
     }
@@ -116,19 +141,10 @@ function ScannerView() {
 
           <label className="flex flex-col items-center justify-center w-full h-44 border-2 border-dashed border-slate-300 dark:border-blue-500/30 rounded-[2.5rem] bg-white dark:bg-slate-900 hover:bg-slate-50 dark:hover:bg-slate-800 transition-all cursor-pointer group">
             <div className="flex flex-col items-center justify-center">
-              <span className="text-5xl mb-3 group-hover:scale-110 transition-transform">
-                📂
-              </span>
-              <p className="text-xs font-black text-slate-600 dark:text-blue-400 uppercase tracking-widest">
-                Kép feltöltése
-              </p>
+              <span className="text-5xl mb-3 group-hover:scale-110 transition-transform">📂</span>
+              <p className="text-xs font-black text-slate-600 dark:text-blue-400 uppercase tracking-widest">Kép feltöltése</p>
             </div>
-            <input
-              type="file"
-              className="hidden"
-              accept="image/*"
-              onChange={handleFileUpload}
-            />
+            <input type="file" className="hidden" accept="image/*" onChange={handleFileUpload} />
           </label>
         </div>
       )}
@@ -136,21 +152,17 @@ function ScannerView() {
       {loading && (
         <div className="flex flex-col items-center gap-4 py-10">
           <div className="w-12 h-12 border-4 border-blue-600 border-t-transparent rounded-full animate-spin"></div>
-          <div className="text-blue-600 dark:text-blue-400 font-black tracking-[0.3em] uppercase text-[10px] animate-pulse">
-            Feldolgozás...
-          </div>
+          <div className="text-blue-600 dark:text-blue-400 font-black tracking-[0.3em] uppercase text-[10px] animate-pulse">Feldolgozás...</div>
         </div>
       )}
 
       {product && (
-        <div className="w-full max-w-md bg-white dark:bg-slate-900 text-slate-900 dark:text-white rounded-[3rem] p-10 shadow-2xl border border-slate-100 dark:border-slate-800 animate-in zoom-in duration-300">
+        <div className="w-full max-w-md bg-white dark:bg-slate-900 text-slate-900 dark:text-white rounded-[3rem] p-10 shadow-2xl border border-slate-100 dark:border-slate-800 animate-in zoom-in duration-300 text-left">
           <div className="flex justify-between items-start mb-4">
             <h2 className="text-3xl font-black text-blue-600 dark:text-blue-400 leading-tight italic uppercase tracking-tighter">
               {product.nev}
             </h2>
-            <span className="text-slate-300 dark:text-slate-600 font-mono text-xs font-bold">
-              #{product.id}
-            </span>
+            <span className="text-slate-300 dark:text-slate-600 font-mono text-xs font-bold">#{product.id}</span>
           </div>
           <p className="text-slate-400 dark:text-slate-500 font-black uppercase text-[10px] tracking-widest mb-8 border-b border-slate-50 dark:border-slate-800 pb-4">
             Gyártó: {product.gyarto}
@@ -158,49 +170,27 @@ function ScannerView() {
 
           <div className="space-y-6">
             <div className="flex justify-between items-center">
-              <span className="text-slate-400 dark:text-slate-500 font-black uppercase text-[10px] tracking-widest italic">
-                Helyszín
-              </span>
+              <span className="text-slate-400 dark:text-slate-500 font-black uppercase text-[10px] tracking-widest italic">Helyszín</span>
               <span className="font-black text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/30 px-5 py-2 rounded-xl uppercase text-lg border border-blue-100 dark:border-blue-500/20">
                 {product.parcella}
               </span>
             </div>
             <div className="flex justify-between items-center">
-              <span className="text-slate-400 dark:text-slate-500 font-black uppercase text-[10px] tracking-widest italic">
-                Készlet
-              </span>
-              <span className="font-black text-slate-800 dark:text-slate-200 text-2xl">
-                {product.mennyiseg} db
-              </span>
+              <span className="text-slate-400 dark:text-slate-500 font-black uppercase text-[10px] tracking-widest italic">Készlet</span>
+              <span className="font-black text-slate-800 dark:text-slate-200 text-2xl">{product.mennyiseg} db</span>
             </div>
           </div>
 
           <div className="flex flex-col gap-3 mt-10">
-            <button
-              onClick={() => navigate(`/product/${product.id}`)}
-              className="w-full bg-blue-600 hover:bg-blue-500 text-white py-4 rounded-2xl font-black shadow-lg shadow-blue-500/20 active:scale-95 transition-all uppercase tracking-widest text-xs"
-            >
-              Adatlap megnyitása
-            </button>
-            <button
-              onClick={() => window.location.reload()}
-              className="w-full bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 py-3 rounded-2xl font-black hover:bg-slate-200 dark:hover:bg-slate-700 transition-all uppercase text-[9px] tracking-[0.2em]"
-            >
-              🔄 Új beolvasás
-            </button>
+            <button onClick={() => navigate(`/product/${product.id}`)} className="w-full bg-blue-600 hover:bg-blue-500 text-white py-4 rounded-2xl font-black shadow-lg shadow-blue-500/20 active:scale-95 transition-all uppercase tracking-widest text-xs">Adatlap megnyitása</button>
+            <button onClick={() => window.location.reload()} className="w-full bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 py-3 rounded-2xl font-black hover:bg-slate-200 dark:hover:bg-slate-700 transition-all uppercase text-[9px] tracking-[0.2em]">🔄 Új beolvasás</button>
           </div>
         </div>
       )}
 
       {!loading && (
-        <button
-          onClick={() => navigate("/")}
-          className="mt-12 text-slate-400 dark:text-slate-600 hover:text-blue-500 transition-colors font-black uppercase text-[10px] tracking-[0.3em] flex items-center gap-3 group"
-        >
-          <span className="group-hover:-translate-x-1 transition-transform font-bold">
-            ←
-          </span>{" "}
-          Vissza a főoldalra
+        <button onClick={() => navigate("/")} className="mt-12 text-slate-400 dark:text-slate-600 hover:text-blue-500 transition-colors font-black uppercase text-[10px] tracking-[0.3em] flex items-center gap-3 group">
+          <span className="group-hover:-translate-x-1 transition-transform font-bold">←</span> Vissza a főoldalra
         </button>
       )}
     </div>

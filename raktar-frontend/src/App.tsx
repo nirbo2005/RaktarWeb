@@ -1,18 +1,20 @@
-//raktar-frontend/src/App.tsx
-import { useEffect, useState } from "react";
+import { useEffect, useState, type ReactNode } from "react";
 import { BrowserRouter, Routes, Route, useLocation, Navigate, Outlet } from "react-router-dom";
 import { AuthProvider, useAuth } from "./context/AuthContext";
-import Navbar from "./components/Navbar";
-import ProductList from "./components/ProductList";
-import ProductDetails from "./components/ProductDetails";
-import ProductAdd from "./components/ProductAdd";
-import ProductModify from "./components/ProductModify";
-import ProductGridView from "./components/ProductGridView";
-import Login from "./components/Login";
-import Register from "./components/Register";
-import Profile from "./components/Profile"
-import ScannerView from "./components/ScannerView";
-import SearchResults from "./components/SearchResults";
+
+import Navbar from "./components/Auxiliary/Navbar";
+import ScannerView from "./components/Auxiliary/ScannerView";
+import SearchResults from "./components/Auxiliary/SearchResults";
+import ProductList from "./components/Product/ProductList";
+import ProductDetails from "./components/Product/ProductDetails";
+import ProductAdd from "./components/Product/ProductAdd";
+import ProductModify from "./components/Product/ProductModify";
+import ProductGridView from "./components/Product/ProductGridView";
+import Login from "./components/Auth/Login";
+import Register from "./components/Auth/Register";
+import ForgotPassword from "./components/Auth/ForgotPassword";
+import ForceChangePassword from "./components/Auth/ForceChangePassword";
+import Profile from "./components/Profile";
 import type { UserRole } from "./types/User";
 
 const ProtectedRoute = ({ allowedRoles }: { allowedRoles?: UserRole[] }) => {
@@ -20,6 +22,10 @@ const ProtectedRoute = ({ allowedRoles }: { allowedRoles?: UserRole[] }) => {
 
   if (!token) {
     return <Navigate to="/login" replace />;
+  }
+
+  if (user?.mustChangePassword) {
+    return <Navigate to="/force-change-password" replace />;
   }
 
   if (allowedRoles && user && !allowedRoles.includes(user.rang)) {
@@ -30,8 +36,12 @@ const ProtectedRoute = ({ allowedRoles }: { allowedRoles?: UserRole[] }) => {
 };
 
 const PublicRoute = () => {
-  const { token } = useAuth();
+  const { token, user } = useAuth();
+  
   if (token) {
+    if (user?.mustChangePassword) {
+      return <Navigate to="/force-change-password" replace />;
+    }
     return <Navigate to="/profile" replace />;
   }
 
@@ -72,7 +82,8 @@ function App() {
           
           <button
             onClick={() => setIsDark(!isDark)}
-            className="fixed bottom-4 right-4 z-50 p-3 rounded-full bg-white dark:bg-slate-800 shadow-2xl border border-slate-200 dark:border-slate-700"
+            className="fixed bottom-4 right-4 z-50 p-3 rounded-full bg-white dark:bg-slate-800 shadow-2xl border border-slate-200 dark:border-slate-700 hover:scale-110 transition-transform"
+            title={isDark ? "Világos mód" : "Sötét mód"}
           >
             {isDark ? "☀️" : "🌙"}
           </button>
@@ -82,7 +93,14 @@ function App() {
               <Route element={<PublicRoute />}>
                 <Route path="/login" element={<Login />} />
                 <Route path="/register" element={<Register />} />
+                <Route path="/forgot-password" element={<ForgotPassword />} />
               </Route>
+
+              <Route path="/force-change-password" element={
+                <ForceChangeRoute>
+                  <ForceChangePassword />
+                </ForceChangeRoute>
+              } />
 
               <Route element={<ProtectedRoute />}>
                 <Route path="/" element={<ProductList />} />
@@ -106,5 +124,12 @@ function App() {
     </AuthProvider>
   );
 }
+
+const ForceChangeRoute = ({ children }: { children: ReactNode }) => {
+  const { token, user } = useAuth();
+  if (!token) return <Navigate to="/login" replace />;
+  if (user && !user.mustChangePassword) return <Navigate to="/" replace />;
+  return <>{children}</>;
+};
 
 export default App;

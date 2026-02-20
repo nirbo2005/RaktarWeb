@@ -4,21 +4,21 @@ import { AuthService } from './auth.service';
 import { AuthController } from './auth.controller';
 import { UserModule } from '../user/user.module';
 import { JwtModule } from '@nestjs/jwt';
-import { PassportModule } from '@nestjs/passport'; // ÚJ
-import { JwtStrategy } from './jwt.strategy'; // ÚJ
+import { PassportModule } from '@nestjs/passport';
+import { JwtStrategy } from './jwt.strategy';
+import { PrismaService } from '../prisma.service';
 
 @Module({
   imports: [
     UserModule,
-    PassportModule.register({ defaultStrategy: 'jwt' }), // ÚJ: Passport regisztrálása
+    PassportModule.register({ defaultStrategy: 'jwt' }),
     JwtModule.register({
       global: true,
-      secret: process.env.JWT_SECRET || 'secretKey', // Ügyelj rá, hogy egyezzen a strategy-vel!
+      secret: process.env.JWT_SECRET || 'secretKey',
       signOptions: { expiresIn: '1d' },
     }),
   ],
   controllers: [AuthController],
-  providers: [AuthService, JwtStrategy], // ÚJ: JwtStrategy hozzáadva a providerekhez
-  exports: [AuthService],
+  providers: [AuthService, JwtStrategy, PrismaService],
 })
 export class AuthModule {}

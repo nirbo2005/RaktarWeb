@@ -5,12 +5,33 @@ import {
   getProducts,
   deleteProduct,
   deleteManyProducts,
-} from "../services/api";
-import { useAuth } from "../context/AuthContext";
-import type { Product } from "../types/Product";
+} from "../../services/api";
+import { useAuth } from "../../context/AuthContext";
+import type { Product } from "../../types/Product";
 import { QRCodeSVG } from "qrcode.react";
 import ExcelJS from "exceljs";
 import { saveAs } from "file-saver";
+import Swal from 'sweetalert2';
+
+// Egyedi SweetAlert konfiguráció a rendszer stílusához
+const MySwal = Swal.mixin({
+  customClass: {
+    popup: 'rounded-[2.5rem] bg-white dark:bg-slate-900 text-slate-900 dark:text-white border border-slate-200 dark:border-slate-800 shadow-2xl font-sans',
+    confirmButton: 'bg-blue-600 hover:bg-blue-500 text-white px-8 py-3 rounded-2xl font-black uppercase text-xs tracking-widest transition-all active:scale-95 mx-2',
+    cancelButton: 'bg-slate-200 dark:bg-slate-800 text-slate-600 dark:text-slate-400 px-8 py-3 rounded-2xl font-black uppercase text-xs tracking-widest transition-all active:scale-95 mx-2',
+  },
+  buttonsStyling: false,
+});
+
+const toast = MySwal.mixin({
+  toast: true,
+  position: 'top-end',
+  showConfirmButton: false,
+  timer: 3000,
+  timerProgressBar: true,
+  background: 'rgb(15, 23, 42)',
+  color: '#fff'
+});
 
 type SortColumn = "nev" | "lejarat" | "mennyiseg";
 
@@ -35,17 +56,44 @@ function ProductList() {
   const navigate = useNavigate();
   const { user } = useAuth();
 
-  // Jogosultság ellenőrzése - Csak Kezelő és Admin
   const canEdit = user && (user.rang === "KEZELO" || user.rang === "ADMIN");
 
-  useEffect(() => {
+  const fetchProducts = () => {
     getProducts().then((data) => {
       setProducts(data.map((p) => ({ ...p, lejarat: new Date(p.lejarat) })));
     });
+  };
+
+  useEffect(() => {
+    fetchProducts();
   }, []);
 
+  // QR Kód nagyítása SweetAlert-tel
+  const handleShowQR = (p: Product) => {
+    const productUrl = `${window.location.origin}/product/${p.id}`;
+
+    MySwal.fire({
+      title: `<span class="uppercase font-black italic text-xl">${p.nev}</span>`,
+      html: `
+        <div class="flex flex-col items-center gap-6 p-4">
+          <div class="bg-white p-6 rounded-[2rem] shadow-inner border-4 border-slate-50">
+            <QRCodeSVG value="${productUrl}" size={250} level="H" includeMargin={true} />
+          </div>
+          <div className="text-center">
+             <p class="text-[10px] font-black text-blue-600 uppercase tracking-[0.2em] mb-1">Azonosító: #${p.id}</p>
+             <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest leading-tight">
+               Szkenneld be a mobiloddal az<br/>adatlap közvetlen eléréséhez!
+             </p>
+          </div>
+        </div>
+      `,
+      showConfirmButton: true,
+      confirmButtonText: 'Bezárás',
+    });
+  };
+
   const exportToExcel = async () => {
-    if (!canEdit) return; // Biztonsági gát
+    if (!canEdit) return;
     const workbook = new ExcelJS.Workbook();
     const worksheet = workbook.addWorksheet("Raktárkészlet");
 
@@ -59,11 +107,7 @@ function ProductList() {
 
     worksheet.columns = columns.map((col) => ({ ...col, width: 15 }));
     worksheet.getRow(1).font = { bold: true, color: { argb: "FFFFFFFF" } };
-    worksheet.getRow(1).fill = {
-      type: "pattern",
-      pattern: "solid",
-      fgColor: { argb: "FF334155" },
-    };
+    worksheet.getRow(1).fill = { type: "pattern", pattern: "solid", fgColor: { argb: "FF334155" } };
 
     const now = new Date();
     const oneWeekLater = new Date();
@@ -85,37 +129,69 @@ function ProductList() {
 
       if (isExpired || isCriticalQty) {
         row.eachCell((cell) => {
-          cell.fill = {
-            type: "pattern",
-            pattern: "solid",
-            fgColor: { argb: "FFFEE2E2" },
-          };
+          cell.fill = { type: "pattern", pattern: "solid", fgColor: { argb: "FFFEE2E2" } };
           cell.font = { color: { argb: "FF991B1B" }, bold: true };
         });
       } else if (isWarningDate || isLowStock) {
         row.eachCell((cell) => {
-          cell.fill = {
-            type: "pattern",
-            pattern: "solid",
-            fgColor: { argb: "FFFEF3C7" },
-          };
+          cell.fill = { type: "pattern", pattern: "solid", fgColor: { argb: "FFFEF3C7" } };
           cell.font = { color: { argb: "FF92400E" }, bold: true };
         });
       }
     });
 
-    worksheet.columns.forEach((column: any) => {
-      let maxLength = column.header.length;
-      column.eachCell({ includeEmpty: true }, (cell: any) => {
-        const columnLength = cell.value ? cell.value.toString().length : 0;
-        if (columnLength > maxLength) maxLength = columnLength;
-      });
-      column.width = maxLength + 5;
+    const buffer = await workbook.xlsx.writeBuffer();
+    saveAs(new Blob([buffer]), `raktar_export_${new Date().toISOString().split("T")[0]}.xlsx`);
+    toast.fire({ icon: 'success', title: 'Excel riport sikeresen legenerálva! 📊' });
+  };
+
+  const handleBulkDelete = async () => {
+    if (!user || !canEdit || selectedIds.length === 0) return;
+
+    const result = await MySwal.fire({
+      title: 'Tömeges törlés',
+      text: `Biztosan törölni szeretnél ${selectedIds.length} kijelölt terméket?`,
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Igen, törlöm őket!',
+      cancelButtonText: 'Mégse',
+      reverseButtons: true
     });
 
-    const buffer = await workbook.xlsx.writeBuffer();
-    const fileName = `raktar_export_${new Date().toISOString().split("T")[0]}.xlsx`;
-    saveAs(new Blob([buffer]), fileName);
+    if (result.isConfirmed) {
+      try {
+        await deleteManyProducts(selectedIds, user.id);
+        setProducts((prev) => prev.filter((p) => !selectedIds.includes(p.id)));
+        setSelectedIds([]);
+        toast.fire({ icon: 'success', title: 'A kijelölt tételek törlésre kerültek.' });
+      } catch (err) {
+        MySwal.fire('Hiba', 'Hiba történt a tömeges törlés során.', 'error');
+      }
+    }
+  };
+
+  const handleDelete = async (id: number) => {
+    if (!user || !canEdit) return;
+
+    const result = await MySwal.fire({
+      title: 'Termék törlése',
+      text: "Biztosan törölni szeretnéd ezt a terméket? Ez a művelet naplózásra kerül.",
+      icon: 'question',
+      showCancelButton: true,
+      confirmButtonText: 'Törlés',
+      cancelButtonText: 'Mégse'
+    });
+
+    if (result.isConfirmed) {
+      try {
+        await deleteProduct(id, user.id);
+        setProducts((prev) => prev.filter((p) => p.id !== id));
+        setSelectedIds((prev) => prev.filter((i) => i !== id));
+        toast.fire({ icon: 'success', title: 'Termék törölve.' });
+      } catch (err) {
+        MySwal.fire('Hiba', 'Nem sikerült a termék törlése.', 'error');
+      }
+    }
   };
 
   const handleSort = (column: SortColumn) => {
@@ -163,35 +239,6 @@ function ProductList() {
     }
   };
 
-  const handleBulkDelete = async () => {
-    if (!user || !canEdit || selectedIds.length === 0) return;
-    if (
-      !window.confirm(
-        `Biztosan törölni szeretnél ${selectedIds.length} kijelölt terméket?`,
-      )
-    )
-      return;
-
-    try {
-      await deleteManyProducts(selectedIds, user.id);
-      setProducts((prev) => prev.filter((p) => !selectedIds.includes(p.id)));
-      setSelectedIds([]);
-    } catch (err) {
-      alert("Hiba a tömeges törlés során.");
-    }
-  };
-
-  const handleDelete = async (id: number) => {
-    if (!user || !canEdit || !window.confirm("Biztosan törölni szeretnéd?")) return;
-    try {
-      await deleteProduct(id, user.id);
-      setProducts((prev) => prev.filter((p) => p.id !== id));
-      setSelectedIds((prev) => prev.filter((i) => i !== id));
-    } catch (err) {
-      alert("Hiba a törlésnél.");
-    }
-  };
-
   const getDateStyles = (lejarat: Date) => {
     const now = new Date();
     const oneWeek = new Date();
@@ -214,7 +261,7 @@ function ProductList() {
   return (
     <div className="min-h-screen p-4 md:p-10 bg-slate-50 dark:bg-slate-950 transition-colors duration-300">
       <div className="max-w-7xl mx-auto">
-        <div className="flex flex-col md:flex-row justify-between items-center gap-6 mb-12">
+        <div className="flex flex-col md:flex-row justify-between items-center gap-6 mb-12 text-left">
           <div
             className="flex items-center gap-4 group cursor-pointer"
             onClick={() => navigate("/")}
@@ -237,7 +284,6 @@ function ProductList() {
               </button>
             )}
 
-            {/* SZŰRÉS GOMB - Csak Kezelő és Admin látja */}
             {canEdit && (
               <button
                 onClick={() => setShowAlertsOnly(!showAlertsOnly)}
@@ -251,7 +297,6 @@ function ProductList() {
               </button>
             )}
 
-            {/* EXCEL RIOPORT - Csak Kezelő és Admin látja */}
             {canEdit && (
               <button
                 onClick={exportToExcel}
@@ -274,7 +319,7 @@ function ProductList() {
 
         {filteredAndSortedProducts.length > 0 ? (
           <>
-            <div className="hidden lg:block bg-white dark:bg-slate-900 rounded-[2.5rem] border border-slate-200 dark:border-slate-800 shadow-xl overflow-hidden transition-all">
+            <div className="hidden lg:block bg-white dark:bg-slate-900 rounded-[2.5rem] border border-slate-200 dark:border-slate-800 shadow-xl overflow-hidden transition-all text-left">
               <table className="w-full border-collapse text-left">
                 <thead>
                   <tr className="bg-slate-50 dark:bg-slate-800/50 text-slate-500 dark:text-slate-400 text-[10px] font-black uppercase tracking-[0.2em] border-b border-slate-200 dark:border-slate-800">
@@ -338,7 +383,10 @@ function ProductList() {
                         )}
                       </td>
                       <td className="p-6 text-center">
-                        <div className="inline-block bg-white p-1.5 rounded-xl border border-slate-100">
+                        <div 
+                          className="inline-block bg-white p-1.5 rounded-xl border border-slate-100 cursor-zoom-in hover:scale-110 transition-transform active:scale-95 shadow-sm"
+                          onClick={() => handleShowQR(p)}
+                        >
                           <QRCodeSVG value={p.id.toString()} size={35} />
                         </div>
                       </td>
@@ -403,7 +451,7 @@ function ProductList() {
               </table>
             </div>
 
-            <div className="lg:hidden grid grid-cols-1 sm:grid-cols-2 gap-6">
+            <div className="lg:hidden grid grid-cols-1 sm:grid-cols-2 gap-6 text-left">
               {filteredAndSortedProducts.map((p) => (
                 <div
                   key={p.id}
@@ -425,7 +473,10 @@ function ProductList() {
                   )}
 
                   <div className="flex justify-between items-start mb-6">
-                    <div className="bg-white p-2 rounded-xl shadow-sm border border-slate-100">
+                    <div 
+                      className="bg-white p-2 rounded-xl shadow-sm border border-slate-100 cursor-zoom-in active:scale-95 transition-transform"
+                      onClick={() => handleShowQR(p)}
+                    >
                       <QRCodeSVG value={p.id.toString()} size={50} />
                     </div>
                     <div className="flex flex-col gap-2 mr-8">
@@ -495,7 +546,7 @@ function ProductList() {
             </div>
           </>
         ) : (
-          <div className="py-32 text-center bg-white dark:bg-slate-900 rounded-[3rem] border-2 border-dashed border-slate-200 dark:border-slate-800">
+          <div className="py-32 text-center bg-white dark:bg-slate-900 rounded-[2.5rem] border-2 border-dashed border-slate-200 dark:border-slate-800">
             <div className="text-6xl mb-4">✨</div>
             <h2 className="text-2xl font-black text-slate-800 dark:text-white uppercase tracking-tighter italic">
               Minden polc rendben

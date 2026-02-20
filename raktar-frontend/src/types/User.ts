@@ -5,8 +5,9 @@ export interface User {
   id: number;
   nev: string;
   felhasznalonev: string;
-  rang: UserRole; // boolean admin helyett
+  rang: UserRole;
   email?: string;
   telefonszam?: string;
   isBanned?: boolean;
+  mustChangePassword?: boolean;
 }

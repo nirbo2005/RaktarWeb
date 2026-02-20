@@ -1,11 +1,29 @@
-//raktar-frontend/src/components/Register.tsx
+//raktar-frontend/src/components/Auth/Register.tsx
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
-import { register } from "../services/api";
+import { register } from "../../services/api";
 import PhoneInput from 'react-phone-input-2';
 import 'react-phone-input-2/lib/style.css';
 import hu from 'react-phone-input-2/lang/hu.json';
 import Swal from 'sweetalert2';
+
+const MySwal = Swal.mixin({
+  customClass: {
+    popup: 'rounded-[2.5rem] bg-white dark:bg-slate-900 text-slate-900 dark:text-white border border-slate-200 dark:border-slate-800 shadow-2xl font-sans',
+    confirmButton: 'bg-blue-600 hover:bg-blue-500 text-white px-8 py-3 rounded-2xl font-black uppercase text-xs tracking-widest transition-all active:scale-95 mx-2',
+  },
+  buttonsStyling: false,
+});
+
+const toast = MySwal.mixin({
+  toast: true,
+  position: 'top-end',
+  showConfirmButton: false,
+  timer: 3000,
+  timerProgressBar: true,
+  background: 'rgb(15, 23, 42)',
+  color: '#fff'
+});
 
 function Register() {
   const navigate = useNavigate();
@@ -36,7 +54,6 @@ function Register() {
         if (!/\S+@\S+\.\S+/.test(value)) error = "Érvénytelen email formátum!";
         break;
       case "telefonszam":
-        // A PhoneInput-ban a hívókód miatt a hossz minimum 3-4 (pl +36)
         if (!value || value.length < 5) error = "A telefonszám megadása kötelező!";
         break;
       case "jelszo":
@@ -51,7 +68,6 @@ function Register() {
     e.preventDefault();
     setGeneralError("");
 
-    // Végső ellenőrzés: minden mező ki van-e töltve és nincs-e hiba
     const hasEmptyFields = !form.nev || !form.felhasznalonev || !form.email || !form.jelszo || !form.telefonszam;
     const hasErrors = Object.values(fieldErrors).some(err => err !== "");
 
@@ -61,7 +77,6 @@ function Register() {
     }
     
     try {
-      // Telefonszám prefix biztosítása
       const submitData = {
         ...form,
         telefonszam: form.telefonszam.startsWith('+') ? form.telefonszam : `+${form.telefonszam}`
@@ -69,20 +84,23 @@ function Register() {
 
       await register(submitData);
       
-      Swal.fire({
+      await toast.fire({
         icon: 'success',
-        title: 'Sikeres regisztráció!',
-        text: 'Most már bejelentkezhetsz.',
-        timer: 3000,
-        showConfirmButton: false,
-        background: '#0f172a',
-        color: '#fff'
+        title: 'Sikeres regisztráció! ✨',
+        text: 'Most már bejelentkezhetsz.'
       });
       
       navigate("/login");
     } catch (err: any) {
-      // A javított handleResponse-ból érkező konkrét hibaüzenet megjelenítése
-      setGeneralError(err.message || "Hiba a regisztráció során.");
+      const errorMsg = err.message || "Hiba a regisztráció során.";
+      setGeneralError(errorMsg);
+
+      MySwal.fire({
+        icon: 'error',
+        title: 'Hiba történt',
+        text: errorMsg,
+        confirmButtonText: 'Értem'
+      });
     }
   };
 
@@ -92,12 +110,12 @@ function Register() {
     ${fieldErrors[fieldName] ? "border-red-500 shadow-[0_0_10px_rgba(239,68,68,0.1)]" : "border-gray-300 dark:border-slate-700"}
   `;
   
-  const labelStyle = "block mb-1.5 ml-2 text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest";
-  const errorStyle = "text-[9px] text-red-500 font-bold mt-1 ml-2 uppercase tracking-tighter animate-in fade-in slide-in-from-left-1";
+  const labelStyle = "block mb-1.5 ml-2 text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest text-left";
+  const errorStyle = "text-[9px] text-red-500 font-bold mt-1 ml-2 uppercase tracking-tighter animate-in fade-in slide-in-from-left-1 text-left";
 
   return (
     <div className="min-h-[90vh] flex items-center justify-center p-4">
-      <div className="bg-white dark:bg-slate-900 p-8 rounded-[2.5rem] shadow-2xl w-full max-w-md border border-gray-100 dark:border-slate-800 backdrop-blur-xl">
+      <div className="bg-white dark:bg-slate-900 p-8 rounded-[2.5rem] shadow-2xl w-full max-w-md border border-gray-100 dark:border-slate-800 backdrop-blur-xl transition-colors">
         <h1 className="text-3xl font-black text-gray-800 dark:text-white mb-6 text-center italic uppercase tracking-tighter">
           Fiók létrehozása
         </h1>
@@ -110,7 +128,6 @@ function Register() {
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="grid grid-cols-1 gap-4">
-            {/* Teljes Név */}
             <div>
               <label className={labelStyle}>Teljes Név *</label>
               <input
@@ -124,7 +141,6 @@ function Register() {
               {fieldErrors.nev && <p className={errorStyle}>❌ {fieldErrors.nev}</p>}
             </div>
 
-            {/* Felhasználónév */}
             <div>
               <label className={labelStyle}>Felhasználónév *</label>
               <input
@@ -138,7 +154,6 @@ function Register() {
               {fieldErrors.felhasznalonev && <p className={errorStyle}>❌ {fieldErrors.felhasznalonev}</p>}
             </div>
 
-            {/* Email */}
             <div>
               <label className={labelStyle}>Email cím *</label>
               <input
@@ -153,7 +168,6 @@ function Register() {
               {fieldErrors.email && <p className={errorStyle}>❌ {fieldErrors.email}</p>}
             </div>
 
-            {/* Telefonszám */}
             <div>
               <label className={labelStyle}>Telefonszám (Nemzetközi) *</label>
               <PhoneInput
@@ -162,6 +176,7 @@ function Register() {
                 onChange={(phone) => setForm({ ...form, telefonszam: phone })}
                 onBlur={() => validateField("telefonszam", form.telefonszam)}
                 localization={hu}
+                masks={{ hu: '.. ... ....' }} /* ÚJ MASZK: a helyes tagoláshoz */
                 countryCodeEditable={false}
                 enableSearch={true}
                 searchPlaceholder="Keresés..."
@@ -174,7 +189,6 @@ function Register() {
               {fieldErrors.telefonszam && <p className={errorStyle}>❌ {fieldErrors.telefonszam}</p>}
             </div>
 
-            {/* Jelszó */}
             <div>
               <label className={labelStyle}>Jelszó *</label>
               <input
@@ -209,7 +223,7 @@ function Register() {
       </div>
 
       <style>{`
-        .phone-container-reg { width: 100% !important; }
+        .phone-container-reg { width: 100% !important; text-align: left; }
         .phone-input-reg { 
           width: 100% !important; height: 46px !important; border-radius: 1rem !important;
           border: 1px solid rgb(226 232 240) !important; background: rgb(249 250 251) !important;
@@ -221,10 +235,27 @@ function Register() {
         }
         .phone-input-reg:focus { border-color: rgb(37 99 235) !important; }
         
+        /* GOMB HÁTTÉR JAVÍTÁSA */
         .phone-button-reg { 
           background: transparent !important; border: none !important; 
           border-radius: 1rem 0 0 1rem !important; width: 48px !important;
         }
+        .phone-container-reg .flag-dropdown,
+        .phone-container-reg .selected-flag {
+          background: transparent !important;
+        }
+        .phone-container-reg .selected-flag:hover, 
+        .phone-container-reg .selected-flag:focus,
+        .phone-container-reg .flag-dropdown.open .selected-flag {
+          background: rgba(0, 0, 0, 0.05) !important;
+        }
+        .dark .phone-container-reg .selected-flag:hover, 
+        .dark .phone-container-reg .selected-flag:focus,
+        .dark .phone-container-reg .flag-dropdown.open .selected-flag {
+          background: rgba(255, 255, 255, 0.05) !important;
+        }
+        /* --- */
+
         .phone-dropdown-reg { 
           background: white !important; border-radius: 1rem !important; color: #111827 !important;
           box-shadow: 0 10px 25px -5px rgba(0,0,0,0.1) !important;
@@ -232,6 +263,7 @@ function Register() {
         .dark .phone-dropdown-reg { 
           background: rgb(15, 23, 42) !important; color: white !important; border-color: rgb(51 65 85) !important;
         }
+        .dark .country-list { background: rgb(15, 23, 42) !important; }
         .dark .phone-dropdown-reg .country:hover { background: rgb(30, 41, 59) !important; }
         .dark .phone-dropdown-reg .search { background: rgb(15, 23, 42) !important; }
         .dark .phone-dropdown-reg .search-box { background: rgb(30, 41, 59) !important; color: white !important; border-color: rgb(51 65 85) !important; }

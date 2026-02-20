@@ -1,14 +1,32 @@
 //raktar-frontend/src/components/ProductAdd.tsx
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { addProduct } from "../services/api";
-import { useAuth } from "../context/AuthContext";
+import { addProduct } from "../../services/api";
+import { useAuth } from "../../context/AuthContext";
+import Swal from 'sweetalert2';
+
+const MySwal = Swal.mixin({
+  customClass: {
+    popup: 'rounded-[2.5rem] bg-white dark:bg-slate-900 text-slate-900 dark:text-white border border-slate-200 dark:border-slate-800 shadow-2xl font-sans',
+    confirmButton: 'bg-blue-600 hover:bg-blue-500 text-white px-8 py-3 rounded-2xl font-black uppercase text-xs tracking-widest transition-all active:scale-95 mx-2',
+  },
+  buttonsStyling: false,
+});
+
+const toast = MySwal.mixin({
+  toast: true,
+  position: 'top-end',
+  showConfirmButton: false,
+  timer: 2000,
+  timerProgressBar: true,
+  background: 'rgb(15, 23, 42)',
+  color: '#fff'
+});
 
 function ProductAdd() {
   const navigate = useNavigate();
   const { user } = useAuth();
   
-  // A parcella részeit külön kezeljük a könnyebb kezelhetőség érdekében
   const [parcellaParts, setParcellaParts] = useState({
     reszleg: "A",
     sor: "1",
@@ -48,11 +66,14 @@ function ProductAdd() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!user) {
-      alert("Hiba: Nem sikerült azonosítani a felhasználót a naplózáshoz!");
+      MySwal.fire({
+        icon: 'error',
+        title: 'Hiba!',
+        text: 'Nem sikerült azonosítani a felhasználót. Jelentkezzen be újra!',
+      });
       return;
     }
 
-    // Itt fűzzük össze a dropdown értékeket a kért formátumba: pl. "A1-1"
     const parcellaString = `${parcellaParts.reszleg}${parcellaParts.sor}-${parcellaParts.oszlop}`;
 
     try {
@@ -68,9 +89,19 @@ function ProductAdd() {
         },
         user.id,
       );
+
+      await toast.fire({
+        icon: 'success',
+        title: 'Termék sikeresen rögzítve! ✨'
+      });
+
       navigate("/");
     } catch (error) {
-      alert("Hiba történt a termék hozzáadása során. Ellenőrizze az adatokat!");
+      MySwal.fire({
+        icon: 'error',
+        title: 'Mentési hiba',
+        text: 'Ellenőrizze az adatokat és próbálja újra!',
+      });
     }
   };
 
@@ -82,7 +113,7 @@ function ProductAdd() {
   return (
     <div className="flex items-center justify-center min-h-[80vh] transition-colors duration-500">
       <div className="w-full max-w-2xl bg-white dark:bg-slate-900/80 p-8 md:p-10 rounded-[3rem] shadow-2xl border border-gray-100 dark:border-slate-800 backdrop-blur-xl">
-        <div className="flex items-center justify-between mb-10">
+        <div className="flex items-center justify-between mb-10 text-left">
           <h1 className="text-3xl font-black text-gray-800 dark:text-white italic uppercase tracking-tighter">
             📦 Új termék <span className="text-blue-600">rögzítése</span>
           </h1>
@@ -95,7 +126,7 @@ function ProductAdd() {
           </button>
         </div>
 
-        <form onSubmit={handleSubmit} className="space-y-6">
+        <form onSubmit={handleSubmit} className="space-y-6 text-left">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
               <label className={labelStyle}>Termék név</label>
@@ -132,7 +163,6 @@ function ProductAdd() {
               />
             </div>
             
-            {/* PARCELLA DROPDOWN SZEKCIÓ */}
             <div>
               <label className={labelStyle}>Parcella / Helyszín</label>
               <div className="grid grid-cols-3 gap-2">
@@ -147,7 +177,7 @@ function ProductAdd() {
                   {[1, 2, 3, 4].map(n => <option key={n} value={n}>{n}</option>)}
                 </select>
               </div>
-              <p className="mt-2 text-[10px] text-gray-400 italic">Kijelölt hely: {parcellaParts.reszleg}{parcellaParts.sor}-{parcellaParts.oszlop}</p>
+              <p className="mt-2 text-[10px] text-gray-400 italic font-bold uppercase tracking-tighter">Kijelölt hely: {parcellaParts.reszleg}{parcellaParts.sor}-{parcellaParts.oszlop}</p>
             </div>
           </div>
 

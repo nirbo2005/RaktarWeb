@@ -40,6 +40,26 @@ export async function login(felhasznalonev: string, jelszo: string) {
   return handleResponse(res);
 }
 
+// ÚJ: Elfelejtett jelszó kérelem
+export async function forgotPassword(data: { felhasznalonev: string; email: string; telefonszam: string }) {
+  const res = await fetch(`${BASE_URL}/auth/forgot-password`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(data),
+  });
+  return handleResponse(res);
+}
+
+// ÚJ: Kötelező jelszócsere
+export async function forceChangePassword(data: { felhasznalonev: string; ideiglenesJelszo: string; ujJelszo: string }) {
+  const res = await fetch(`${BASE_URL}/auth/force-change-password`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(data),
+  });
+  return handleResponse(res);
+}
+
 export async function register(userData: {
   nev: string;
   felhasznalonev: string;
@@ -126,7 +146,6 @@ export async function getAuditLogs(
   filters: any = {},
 ) {
   const params = new URLSearchParams();
-  // A backend továbbra is várhatja az 'admin' query paramétert a logika elágaztatásához
   params.append("admin", String(isAdmin));
   Object.keys(filters).forEach((key) => {
     const value = filters[key];
@@ -153,7 +172,6 @@ export async function getProductById(
   id: number | string,
   isAdmin: boolean = false,
 ): Promise<Product & { isDeleted: boolean }> {
-  // A backend ezen a végponton is használja az 'admin' query-t a törölt termékek megjelenítéséhez
   const res = await fetch(`${BASE_URL}/stock/${id}?admin=${isAdmin}`, {
     headers: getHeaders(),
   });

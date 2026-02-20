@@ -1,9 +1,29 @@
 //raktar-frontend/src/components/ProductDetails.tsx
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { getProductById, deleteProduct } from "../services/api";
-import { useAuth } from "../context/AuthContext";
-import type { Product } from "../types/Product";
+import { getProductById, deleteProduct } from "../../services/api";
+import { useAuth } from "../../context/AuthContext";
+import type { Product } from "../../types/Product";
+import Swal from 'sweetalert2';
+
+const MySwal = Swal.mixin({
+  customClass: {
+    popup: 'rounded-[2.5rem] bg-white dark:bg-slate-900 text-slate-900 dark:text-white border border-slate-200 dark:border-slate-800 shadow-2xl font-sans',
+    confirmButton: 'bg-red-600 hover:bg-red-500 text-white px-8 py-3 rounded-2xl font-black uppercase text-xs tracking-widest transition-all active:scale-95 mx-2',
+    cancelButton: 'bg-slate-200 dark:bg-slate-800 text-slate-600 dark:text-slate-400 px-8 py-3 rounded-2xl font-black uppercase text-xs tracking-widest transition-all active:scale-95 mx-2',
+  },
+  buttonsStyling: false,
+});
+
+const toast = MySwal.mixin({
+  toast: true,
+  position: 'top-end',
+  showConfirmButton: false,
+  timer: 2000,
+  timerProgressBar: true,
+  background: 'rgb(15, 23, 42)',
+  color: '#fff'
+});
 
 function ProductDetails() {
   const { id } = useParams();
@@ -13,14 +33,12 @@ function ProductDetails() {
   const [loading, setLoading] = useState(true);
   const [isDeletedError, setIsDeletedError] = useState(false);
 
-  // Jogosultságok definiálása
   const isAdmin = user?.rang === "ADMIN";
   const canEdit = user?.rang === "KEZELO" || isAdmin;
 
   useEffect(() => {
     if (id) {
       setLoading(true);
-      // user.admin helyett az isAdmin változót használjuk
       getProductById(Number(id), isAdmin)
         .then((data) => {
           if (data.isDeleted && !isAdmin) {
@@ -40,12 +58,33 @@ function ProductDetails() {
 
   const handleDelete = async () => {
     if (!user || !product || !canEdit) return;
-    if (window.confirm("Biztosan törölni szeretnéd ezt a terméket?")) {
+
+    const result = await MySwal.fire({
+      title: 'Biztos vagy benne?',
+      text: `A(z) "${product.nev}" termék törlésre kerül a rendszerből!`,
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Igen, törlöm!',
+      cancelButtonText: 'Mégse',
+      reverseButtons: true
+    });
+
+    if (result.isConfirmed) {
       try {
         await deleteProduct(product.id, user.id);
+        
+        await toast.fire({
+          icon: 'success',
+          title: 'Termék törölve! 🗑️'
+        });
+
         navigate("/");
       } catch (err) {
-        alert("Hiba a törlés során.");
+        MySwal.fire({
+          icon: 'error',
+          title: 'Hoppá...',
+          text: 'Hiba történt a törlés során. Kérjük, próbálja újra!',
+        });
       }
     }
   };
@@ -75,7 +114,7 @@ function ProductDetails() {
       <div className="min-h-screen bg-slate-50 dark:bg-slate-950 flex items-center justify-center transition-colors duration-300">
         <div className="flex flex-col items-center gap-4">
           <div className="w-12 h-12 border-4 border-blue-600 border-t-transparent rounded-full animate-spin"></div>
-          <p className="text-blue-600 font-black tracking-widest uppercase text-xs">
+          <p className="text-blue-600 font-black tracking-widest uppercase text-xs text-center">
             Adatok lekérése...
           </p>
         </div>
@@ -88,10 +127,10 @@ function ProductDetails() {
       <div className="min-h-screen bg-slate-50 dark:bg-slate-950 flex items-center justify-center p-6 transition-colors duration-300">
         <div className="max-w-md w-full bg-white dark:bg-slate-900 rounded-[3rem] p-10 shadow-2xl text-center border border-slate-200 dark:border-slate-800 transition-all">
           <div className="text-8xl mb-6">🏜️</div>
-          <h1 className="text-3xl font-black text-slate-900 dark:text-white mb-4 tracking-tighter uppercase italic">
+          <h1 className="text-3xl font-black text-slate-900 dark:text-white mb-4 tracking-tighter uppercase italic text-center">
             Nincs ilyen termék
           </h1>
-          <p className="text-slate-400 dark:text-slate-500 mb-8 font-bold uppercase text-xs tracking-widest leading-relaxed">
+          <p className="text-slate-400 dark:text-slate-500 mb-8 font-bold uppercase text-xs tracking-widest leading-relaxed text-center">
             Úgy tűnik, a keresett tétel nem található vagy törlésre került.
           </p>
           <button
@@ -121,7 +160,7 @@ function ProductDetails() {
           >
             <span className="text-lg">←</span> Vissza
           </button>
-          <h1 className="text-4xl md:text-5xl font-black tracking-tighter uppercase italic leading-tight">
+          <h1 className="text-4xl md:text-5xl font-black tracking-tighter uppercase italic leading-tight text-left">
             {product.nev}
           </h1>
           <p className="opacity-80 font-black uppercase text-xs tracking-[0.2em] mt-2 border-t border-white/20 pt-2 inline-block">
@@ -151,7 +190,7 @@ function ProductDetails() {
             </div>
 
             <div
-              className={`p-6 rounded-3xl border transition-colors ${getStockStyle(product.mennyiseg)}`}
+              className={`p-6 rounded-3xl border transition-colors ${getStockStyle(product.mennyiseg)} text-left`}
             >
               <span className="opacity-60 text-[10px] font-black uppercase block mb-1 tracking-widest">
                 Aktuális készlet
@@ -169,7 +208,7 @@ function ProductDetails() {
               )}
             </div>
 
-            <div className="bg-slate-50 dark:bg-slate-800/50 p-6 rounded-3xl border border-slate-100 dark:border-slate-700 transition-all">
+            <div className="bg-slate-50 dark:bg-slate-800/50 p-6 rounded-3xl border border-slate-100 dark:border-slate-700 transition-all text-left">
               <span className="text-slate-400 dark:text-slate-500 text-[10px] font-black uppercase block mb-1 tracking-widest">
                 Egységár
               </span>
@@ -179,7 +218,7 @@ function ProductDetails() {
             </div>
 
             <div
-              className={`p-6 rounded-3xl border transition-colors ${getLejaratStyle(product.lejarat)}`}
+              className={`p-6 rounded-3xl border transition-colors ${getLejaratStyle(product.lejarat)} text-left`}
             >
               <span className="opacity-60 text-[10px] font-black uppercase block mb-1 tracking-widest">
                 Szavatossági idő
@@ -198,7 +237,6 @@ function ProductDetails() {
             </div>
           </div>
 
-          {/* GOMBOK SZŰRÉSE: Csak akkor láthatóak, ha canEdit (Kezelő+) és nem törölt a termék */}
           {canEdit && !(product as any).isDeleted && (
             <div className="flex flex-col sm:flex-row gap-4 pt-6 border-t border-slate-50 dark:border-slate-800">
               <button
@@ -216,7 +254,6 @@ function ProductDetails() {
             </div>
           )}
 
-          {/* ADMIN EXTRA: Törölt termék esetén csak az admin látja a gombot */}
           {isAdmin && (product as any).isDeleted && (
             <button
               onClick={() => navigate(`/modify/${product.id}`)}

@@ -1,9 +1,23 @@
 //raktar-frontend/src/components/ProductGridView.tsx
 import React, { useEffect, useState } from "react";
 import { useSearchParams, useNavigate } from "react-router-dom";
-import { getProducts, updateProduct } from "../services/api";
-import { useAuth } from "../context/AuthContext";
-import type { Product } from "../types/Product";
+import { getProducts, updateProduct } from "../../services/api";
+import { useAuth } from "../../context/AuthContext";
+import type { Product } from "../../types/Product";
+import Swal from 'sweetalert2';
+
+const toast = Swal.mixin({
+  toast: true,
+  position: 'top-end',
+  showConfirmButton: false,
+  timer: 3000,
+  timerProgressBar: true,
+  background: 'rgb(15, 23, 42)',
+  color: '#fff',
+  customClass: {
+    popup: 'rounded-2xl border border-slate-700 shadow-2xl'
+  }
+});
 
 const rows = ["A", "B"];
 const cols = [1, 2, 3, 4, 5];
@@ -22,7 +36,6 @@ const ProductGridView: React.FC = () => {
   const [loading, setLoading] = useState<boolean>(false);
   const [draggedProductId, setDraggedProductId] = useState<number | null>(null);
 
-  // JOGOSULTSÁG: Csak Kezelő és Admin mozgathat terméket
   const canMove = user && (user.rang === "KEZELO" || user.rang === "ADMIN");
 
   const loadProducts = async () => {
@@ -69,12 +82,17 @@ const ProductGridView: React.FC = () => {
     targetParcella: string,
   ) => {
     e.preventDefault();
-    if (!canMove) return; // Biztonsági gát
+    if (!canMove) return;
 
     const productIdStr = e.dataTransfer.getData("productId");
     if (!productIdStr || !user) return;
 
     const productId = parseInt(productIdStr, 10);
+    
+    const draggedProduct = Object.values(productsByPolc)
+      .flat()
+      .find(p => p.id === productId);
+
     setLoading(true);
     try {
       await updateProduct(
@@ -82,10 +100,22 @@ const ProductGridView: React.FC = () => {
         { parcella: targetParcella } as any,
         Number(user.id),
       );
+      toast.fire({
+        icon: 'success',
+        title: `"${draggedProduct?.nev || 'Termék'}" áthelyezve a(z) ${targetParcella} parcellába! 📦`
+      });
+
       await loadProducts();
     } catch (err) {
       console.error("Áthelyezési hiba:", err);
-      alert("Nem sikerült az áthelyezés.");
+      Swal.fire({
+        icon: 'error',
+        title: 'Hiba!',
+        text: 'Nem sikerült az áthelyezés.',
+        background: 'rgb(15, 23, 42)',
+        color: '#fff',
+        confirmButtonColor: '#3b82f6'
+      });
     } finally {
       setLoading(false);
       setDraggedProductId(null);
@@ -112,21 +142,14 @@ const ProductGridView: React.FC = () => {
     const lejaratDate = product.lejarat ? new Date(product.lejarat) : null;
     const badges = [];
     if (lejaratDate && lejaratDate <= now)
-      badges.push(
-        <span key="e1" className="bg-red-600 text-white text-[8px] px-1.5 py-0.5 rounded font-black uppercase">Lejárt</span>
-      );
+      badges.push(<span key="e1" className="bg-red-600 text-white text-[8px] px-1.5 py-0.5 rounded font-black uppercase">Lejárt</span>);
     else if (lejaratDate && lejaratDate <= oneWeekLater)
-      badges.push(
-        <span key="e2" className="bg-amber-500 text-white text-[8px] px-1.5 py-0.5 rounded font-black uppercase">Lejárat</span>
-      );
+      badges.push(<span key="e2" className="bg-amber-500 text-white text-[8px] px-1.5 py-0.5 rounded font-black uppercase">Lejárat</span>);
+    
     if (product.mennyiseg < 10)
-      badges.push(
-        <span key="q1" className="bg-red-600 text-white text-[8px] px-1.5 py-0.5 rounded font-black uppercase">Kritikus</span>
-      );
+      badges.push(<span key="q1" className="bg-red-600 text-white text-[8px] px-1.5 py-0.5 rounded font-black uppercase">Kritikus</span>);
     else if (product.mennyiseg < 100)
-      badges.push(
-        <span key="q2" className="bg-amber-500 text-white text-[8px] px-1.5 py-0.5 rounded font-black uppercase">Készlet</span>
-      );
+      badges.push(<span key="q2" className="bg-amber-500 text-white text-[8px] px-1.5 py-0.5 rounded font-black uppercase">Készlet</span>);
 
     return badges.length > 0 ? (
       <div className="absolute -top-2 -right-2 flex flex-col gap-1 items-end z-20">
@@ -171,7 +194,7 @@ const ProductGridView: React.FC = () => {
       `}</style>
 
       <div className="max-w-6xl mx-auto">
-        <header className="mb-8 border-b border-slate-200 dark:border-slate-800 pb-4 flex justify-between items-center">
+        <header className="mb-8 border-b border-slate-200 dark:border-slate-800 pb-4 flex justify-between items-center text-left">
           <div>
             <h1 className="text-2xl md:text-3xl font-black text-slate-900 dark:text-white uppercase italic tracking-tighter transition-colors">
               Raktár áttekintés
@@ -190,7 +213,7 @@ const ProductGridView: React.FC = () => {
         <div className="bg-white dark:bg-slate-900 p-4 md:p-8 rounded-[2.5rem] shadow-xl border border-slate-200 dark:border-slate-800 mb-10 transition-colors">
           <div className="flex flex-col gap-6">
             {rows.map((row) => (
-              <div key={row} className="flex gap-4 md:gap-8 items-center">
+              <div key={row} className="flex gap-4 md:gap-8 items-center text-left">
                 <span className="hidden sm:block w-12 font-black text-slate-200 dark:text-slate-800 text-4xl">{row}</span>
                 <div className="grid grid-cols-5 gap-3 md:gap-5 w-full sm:w-auto">
                   {cols.map((col) => {
@@ -224,7 +247,7 @@ const ProductGridView: React.FC = () => {
           </div>
         </div>
 
-        <div id="shelves-container" className="scroll-mt-24">
+        <div id="shelves-container" className="scroll-mt-24 text-left">
           {selectedParcella ? (
             <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
               <div className="flex items-center gap-4 mb-10">
@@ -269,10 +292,10 @@ const ProductGridView: React.FC = () => {
                               <li
                                 key={p.id}
                                 id={`product-card-${p.id}`}
-                                draggable={canMove || false} // Csak ha canMove, akkor húzható
+                                draggable={canMove || false}
                                 onDragStart={(e) => handleDragStart(e, p.id)}
                                 onClick={() => navigate(`/product/${p.id}`)}
-                                className={`relative p-4 rounded-2xl border-2 text-sm font-bold shadow-sm transition-all active:scale-95
+                                className={`relative p-4 rounded-2xl border-2 text-sm font-bold shadow-sm transition-all active:scale-95 text-left
                                   ${canMove ? "cursor-grab active:cursor-grabbing" : "cursor-pointer"}
                                   ${getStatusClass(p)} 
                                   ${searchParams.get("productId") === p.id.toString() ? "shake-product shadow-lg" : "hover:border-blue-400 dark:hover:border-blue-600"}

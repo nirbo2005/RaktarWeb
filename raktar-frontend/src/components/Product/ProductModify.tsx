@@ -1,8 +1,28 @@
 //raktar-frontend/src/components/ProductModify.tsx
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { getProductById, updateProduct, restoreProduct } from "../services/api";
-import { useAuth } from "../context/AuthContext";
+import { getProductById, updateProduct, restoreProduct } from "../../services/api";
+import { useAuth } from "../../context/AuthContext";
+import Swal from 'sweetalert2';
+
+const MySwal = Swal.mixin({
+  customClass: {
+    popup: 'rounded-[2.5rem] bg-white dark:bg-slate-900 text-slate-900 dark:text-white border border-slate-200 dark:border-slate-800 shadow-2xl font-sans',
+    confirmButton: 'bg-blue-600 hover:bg-blue-500 text-white px-8 py-3 rounded-2xl font-black uppercase text-xs tracking-widest transition-all active:scale-95 mx-2',
+    cancelButton: 'bg-slate-200 dark:bg-slate-800 text-slate-600 dark:text-slate-400 px-8 py-3 rounded-2xl font-black uppercase text-xs tracking-widest transition-all active:scale-95 mx-2',
+  },
+  buttonsStyling: false,
+});
+
+const toast = MySwal.mixin({
+  toast: true,
+  position: 'top-end',
+  showConfirmButton: false,
+  timer: 2000,
+  timerProgressBar: true,
+  background: 'rgb(15, 23, 42)',
+  color: '#fff'
+});
 
 type ViewMode = "data" | "stock";
 type StockMode = "add" | "remove";
@@ -12,10 +32,8 @@ function ProductModify() {
   const navigate = useNavigate();
   const { user } = useAuth();
 
-  // Jogosultságok definiálása
   const isAdmin = user?.rang === "ADMIN";
   const isKezelo = user?.rang === "KEZELO";
-  // Aki nem Nézelődő, az láthatja az Adatok fület (mivel a Kezelő is állíthat parcellát)
   const canSeeDataTab = isAdmin || isKezelo;
 
   const [viewMode, setViewMode] = useState<ViewMode>("stock");
@@ -41,7 +59,6 @@ function ProductModify() {
   useEffect(() => {
     if (!id || !user) return;
     
-    // Ha Nézelődő akarna ide jönni, dobjuk ki
     if (!canSeeDataTab && viewMode === "data") {
       setViewMode("stock");
     }
@@ -72,13 +89,29 @@ function ProductModify() {
 
   const handleRestore = async () => {
     if (!id || !user) return;
-    if (window.confirm("Biztosan vissza szeretnéd állítani ezt a terméket?")) {
+    
+    const result = await MySwal.fire({
+      title: 'Visszaállítás?',
+      text: "A termék újra elérhető lesz a készletben.",
+      icon: 'question',
+      showCancelButton: true,
+      confirmButtonText: 'Igen, állítsd vissza',
+      cancelButtonText: 'Mégse'
+    });
+
+    if (result.isConfirmed) {
       try {
         await restoreProduct(Number(id), user.id);
         setIsDeleted(false);
-        alert("Termék sikeresen visszaállítva!");
+        await MySwal.fire({
+          icon: 'success',
+          title: 'Visszaállítva!',
+          text: 'A termék sikeresen újraaktiválva.',
+          timer: 2000,
+          showConfirmButton: false
+        });
       } catch (err) {
-        alert("Hiba a visszaállítás során.");
+        MySwal.fire('Hiba!', 'Sikertelen visszaállítás.', 'error');
       }
     }
   };
@@ -87,19 +120,31 @@ function ProductModify() {
     if (!id || !user) return;
     const change = stockMode === "add" ? inputValue : -inputValue;
     const newQuantity = form.mennyiseg + change;
+    
     if (newQuantity < 0) {
-      alert("Hiba: A készlet nem mehet nulla alá!");
+      MySwal.fire({
+        icon: 'error',
+        title: 'Készlethiba',
+        text: 'A készlet nem mehet nulla alá!',
+      });
       return;
     }
+
     try {
       await updateProduct(
         Number(id),
         { ...form, mennyiseg: newQuantity, isDeleted },
         user.id,
       );
+      
+      await toast.fire({
+        icon: 'success',
+        title: `Készlet frissítve: ${newQuantity} db`
+      });
+
       navigate(`/product/${id}`);
     } catch (err) {
-      alert("Hiba történt a mentés során.");
+      MySwal.fire('Hiba!', 'Nem sikerült elmenteni a módosítást.', 'error');
     }
   };
 
@@ -136,9 +181,15 @@ function ProductModify() {
         },
         user.id,
       );
+      
+      await toast.fire({
+        icon: 'success',
+        title: 'Adatok sikeresen mentve! ✨'
+      });
+
       navigate(`/product/${id}`);
     } catch (err) {
-      alert("Hiba a mentésnél.");
+      MySwal.fire('Hiba!', 'Sikertelen mentés.', 'error');
     }
   };
 
@@ -174,8 +225,8 @@ function ProductModify() {
             <div className="bg-white dark:bg-slate-900 p-8 rounded-[2.5rem] shadow-2xl border border-red-500/30 max-w-sm">
               <span className="text-5xl mb-4 block">🗑️</span>
               <h2 className="text-2xl font-black text-red-600 dark:text-red-500 uppercase italic tracking-tighter mb-2">Termék törölve</h2>
-              <button onClick={handleRestore} className="w-full bg-blue-600 text-white py-4 rounded-2xl font-black shadow-xl mb-4">Visszaállítás</button>
-              <button onClick={() => navigate("/")} className="w-full text-slate-400 font-black uppercase text-[10px]">Vissza a listához</button>
+              <button onClick={handleRestore} className="w-full bg-blue-600 text-white py-4 rounded-2xl font-black shadow-xl mb-4 transition-all active:scale-95">Visszaállítás</button>
+              <button onClick={() => navigate("/")} className="w-full text-slate-400 font-black uppercase text-[10px] tracking-widest">Vissza a listához</button>
             </div>
           </div>
         )}
@@ -190,16 +241,16 @@ function ProductModify() {
               <span className="text-5xl md:text-6xl font-black dark:text-white">{form.mennyiseg} <span className="text-xl text-slate-400 font-medium">db</span></span>
             </div>
             <div className="flex gap-4 max-w-xs mx-auto">
-              <button onClick={() => setStockMode("add")} className={`flex-1 py-4 rounded-2xl font-black text-2xl border-2 ${stockMode === "add" ? "bg-emerald-600 border-emerald-500 text-white shadow-lg" : "bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-400"}`}>+</button>
-              <button onClick={() => setStockMode("remove")} className={`flex-1 py-4 rounded-2xl font-black text-2xl border-2 ${stockMode === "remove" ? "bg-red-600 border-red-500 text-white shadow-lg" : "bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-400"}`}>-</button>
+              <button onClick={() => setStockMode("add")} className={`flex-1 py-4 rounded-2xl font-black text-2xl border-2 transition-all ${stockMode === "add" ? "bg-emerald-600 border-emerald-500 text-white shadow-lg" : "bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-400"}`}>+</button>
+              <button onClick={() => setStockMode("remove")} className={`flex-1 py-4 rounded-2xl font-black text-2xl border-2 transition-all ${stockMode === "remove" ? "bg-red-600 border-red-500 text-white shadow-lg" : "bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-400"}`}>-</button>
             </div>
             <div className="max-w-xs mx-auto">
-              <label className={labelStyle}>Mennyiség</label>
+              <label className={labelStyle}>Módosítás mértéke</label>
               <input type="number" min="0" value={inputValue === 0 ? "" : inputValue} onChange={(e) => setInputValue(Math.abs(Number(e.target.value)))} placeholder="0" className={inputStyle} />
             </div>
             <div className="flex gap-4 pt-6 border-t dark:border-slate-800">
               <button onClick={() => navigate(-1)} className="flex-1 py-4 text-slate-400 font-black uppercase text-xs">Mégse</button>
-              <button onClick={handleStockUpdate} disabled={inputValue === 0} className="flex-[2] bg-blue-600 text-white py-4 rounded-2xl font-black shadow-lg">Mentés</button>
+              <button onClick={handleStockUpdate} disabled={inputValue === 0} className="flex-[2] bg-blue-600 text-white py-4 rounded-2xl font-black shadow-lg shadow-blue-500/20 active:scale-95 transition-all">Készlet Mentése</button>
             </div>
           </div>
         )}
@@ -225,7 +276,6 @@ function ProductModify() {
                 <input name="ar" type="number" value={form.ar} onChange={handleChange} className={inputStyle} disabled={!isAdmin} required />
               </div>
               <div>
-                {/* PARCELLA - A Kezelő is módosíthatja! */}
                 <label className={labelStyle}>Parcella (Áthelyezés)</label>
                 <div className="grid grid-cols-3 gap-2">
                     <select name="reszleg" className={inputStyle} onChange={handleChange} value={parcellaParts.reszleg}>
@@ -243,7 +293,7 @@ function ProductModify() {
             </div>
             <div className="flex gap-4 pt-6 border-t dark:border-slate-800">
               <button type="button" onClick={() => navigate(-1)} className="flex-1 py-4 text-slate-400 font-black uppercase text-xs">Mégse</button>
-              <button type="submit" className="flex-[2] bg-indigo-600 text-white py-4 rounded-2xl font-black shadow-lg uppercase text-xs">Változtatások Mentése</button>
+              <button type="submit" className="flex-[2] bg-indigo-600 text-white py-4 rounded-2xl font-black shadow-lg shadow-indigo-500/20 active:scale-95 transition-all uppercase text-xs">Változtatások Mentése</button>
             </div>
           </form>
         )}

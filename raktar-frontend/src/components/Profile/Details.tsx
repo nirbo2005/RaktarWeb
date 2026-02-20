@@ -157,6 +157,7 @@ const Details = () => {
               }}
               onBlur={() => validateField("telefonszam", profileForm.telefonszam)}
               localization={hu}
+              masks={{ hu: '.. ... ....' }}
               countryCodeEditable={false} 
               enableSearch={true}
               searchPlaceholder="Keresés..."
@@ -228,11 +229,28 @@ const Details = () => {
         .dark .phone-input-field { 
           background: rgb(30 41 59) !important; border-color: rgb(51 65 85) !important; color: white !important;
         }
+
+        /* GOMB HÁTTÉR JAVÍTÁSA */
         .phone-dropdown-btn { 
           background: transparent !important; border: none !important; 
           border-radius: 0.75rem 0 0 0.75rem !important; width: 48px !important;
         }
-        .dark .selected-flag { background: transparent !important; border-radius: 0.75rem 0 0 0.75rem !important; }
+        .phone-container .flag-dropdown,
+        .phone-container .selected-flag {
+          background: transparent !important;
+        }
+        .phone-container .selected-flag:hover, 
+        .phone-container .selected-flag:focus,
+        .phone-container .flag-dropdown.open .selected-flag {
+          background: rgba(0, 0, 0, 0.05) !important;
+        }
+        .dark .phone-container .selected-flag:hover, 
+        .dark .phone-container .selected-flag:focus,
+        .dark .phone-container .flag-dropdown.open .selected-flag {
+          background: rgba(255, 255, 255, 0.05) !important;
+        }
+        /* --- */
+
         .phone-dropdown-list { 
           background: white !important; border-radius: 1rem !important; 
           box-shadow: 0 10px 25px -5px rgba(0,0,0,0.1) !important; border: 1px solid #eee !important;

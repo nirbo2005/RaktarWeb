@@ -9,7 +9,6 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-// ÚJ: Rangok definiálása
 enum Role {
   NEZELODO
   KEZELO
@@ -29,26 +28,27 @@ model Stock {
 }
 
 model User {
-  id             Int             @id @default(autoincrement())
-  nev            String
-  felhasznalonev String          @unique
-  jelszo         String
-  email          String?         @unique
-  telefonszam    String?
-  rang           Role            @default(NEZELODO) // admin helyett rang
-  isBanned       Boolean         @default(false)
-  logs           AuditLog[]
-  requests       ChangeRequest[]
+  id                 Int             @id @default(autoincrement())
+  nev                String
+  felhasznalonev     String          @unique
+  jelszo             String
+  email              String?         @unique
+  telefonszam        String?
+  rang               Role            @default(NEZELODO)
+  isBanned           Boolean         @default(false)
+  mustChangePassword Boolean         @default(false)
+  logs               AuditLog[]
+  requests           ChangeRequest[]
 }
 
 model AuditLog {
-  id      Int      @id @default(autoincrement())
-  idopont DateTime @default(now())
-  muvelet String
-  userId  Int
-  user    User     @relation(fields: [userId], references: [id])
-  stockId Int?
-  stock   Stock?   @relation(fields: [stockId], references: [id], onDelete: SetNull)
+  id       Int      @id @default(autoincrement())
+  idopont  DateTime @default(now())
+  muvelet  String
+  userId   Int
+  user     User     @relation(fields: [userId], references: [id])
+  stockId  Int?
+  stock    Stock?   @relation(fields: [stockId], references: [id], onDelete: SetNull)
   regiAdat Json?
   ujAdat   Json?
 }

@@ -171,6 +171,7 @@ const Admin = ({ allUsers, pendingRequests, onRefresh }: Props) => {
                 value={adminEditForm.telefonszam}
                 onChange={phone => setAdminEditForm({ ...adminEditForm, telefonszam: phone })}
                 localization={hu}
+                masks={{ hu: '.. ... ....' }} /* ÚJ MASZK BEÁLLÍTÁS */
                 countryCodeEditable={false}
                 enableSearch={true}
                 searchPlaceholder="Keresés..."
@@ -194,6 +195,7 @@ const Admin = ({ allUsers, pendingRequests, onRefresh }: Props) => {
         </div>
       )}
 
+      {/* RÉSZLETEK ÉS LISTÁK... */}
       <div className="space-y-3">
         <h3 className="text-[10px] font-black uppercase tracking-widest text-slate-400 border-b border-slate-100 dark:border-slate-800 pb-2">Várakozó kérelmek</h3>
         {pendingRequests.length === 0 && <p className="text-center py-4 text-slate-400 italic text-sm">Nincs várakozó kérelem.</p>}
@@ -247,18 +249,38 @@ const Admin = ({ allUsers, pendingRequests, onRefresh }: Props) => {
         .dark .phone-input-field { 
           background: rgb(30 41 59) !important; border-color: rgb(51 65 85) !important; color: white !important;
         }
+
+        /* GOMB HÁTTÉR JAVÍTÁSA */
         .phone-dropdown-btn { 
-          background: transparent !important; border: none !important; border-radius: 0.75rem 0 0 0.75rem !important; width: 48px !important;
+          background: transparent !important; border: none !important; 
+          border-radius: 0.75rem 0 0 0.75rem !important; width: 48px !important;
         }
-        .dark .selected-flag { background: transparent !important; border-radius: 0.75rem 0 0 0.75rem !important; }
+        .phone-container .flag-dropdown,
+        .phone-container .selected-flag {
+          background: transparent !important;
+        }
+        .phone-container .selected-flag:hover, 
+        .phone-container .selected-flag:focus,
+        .phone-container .flag-dropdown.open .selected-flag {
+          background: rgba(0, 0, 0, 0.05) !important;
+        }
+        .dark .phone-container .selected-flag:hover, 
+        .dark .phone-container .selected-flag:focus,
+        .dark .phone-container .flag-dropdown.open .selected-flag {
+          background: rgba(255, 255, 255, 0.05) !important;
+        }
+        /* --- */
+
         .phone-dropdown-list { 
-          background: white !important; border-radius: 1rem !important; border: 1px solid #eee !important;
-          box-shadow: 0 10px 25px -5px rgba(0,0,0,0.1) !important; color: #111827 !important;
-          z-index: 9999 !important;
+          background: white !important; border-radius: 1rem !important; 
+          box-shadow: 0 10px 25px -5px rgba(0,0,0,0.1) !important; border: 1px solid #eee !important;
+          z-index: 50 !important;
         }
         .dark .phone-dropdown-list { background: rgb(15 23 42) !important; border-color: rgb(51 65 85) !important; color: white !important; }
-        .dark .phone-dropdown-list .search-box { background: rgb(30 41 59) !important; color: white !important; border: 1px solid rgb(51 65 85) !important; }
+        .dark .search-box { background: rgb(30 41 59) !important; color: white !important; border: 1px solid rgb(51 65 85) !important; }
         .dark .phone-dropdown-list .country:hover { background: rgb(30 41 59) !important; }
+        .phone-dropdown-list::-webkit-scrollbar { width: 6px; }
+        .phone-dropdown-list::-webkit-scrollbar-thumb { background: #444; border-radius: 10px; }
       `}</style>
     </div>
   );
