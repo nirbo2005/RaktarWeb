@@ -1,0 +1,26 @@
+# Node csomagok (BÁRHOL is legyenek a projektben: frontend, backend, stb.)
+node_modules/
+
+# Környezeti változók (SOHA ne töltsd fel a jelszavakat GitHubra!)
+.env
+.env.*
+!.env.example
+
+# Build, dist mappák és logok
+dist/
+build/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# OS specifikus fájlok (Windows / Mac szemetek)
+.DS_Store
+Thumbs.db
+
+# Prisma SQLite vagy helyi adatbázis fájlok (ha lennének)
+*.db
+*.db-journal
+
+# IDE mappák (VS Code)
+.vscode/
