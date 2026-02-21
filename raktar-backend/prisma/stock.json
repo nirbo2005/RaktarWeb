@@ -1,0 +1,1145 @@
+[
+  {
+    "id": 1,
+    "nev": "Tej 3.5%",
+    "gyarto": "Mizo",
+    "lejarat": "2026-03-14T00:00:00.000Z",
+    "ar": 449,
+    "mennyiseg": 400,
+    "parcella": "B3-2"
+  },
+  {
+    "id": 2,
+    "nev": "Kenyér fehér",
+    "gyarto": "Pékműhely",
+    "lejarat": "2026-04-01T00:00:00.000Z",
+    "ar": 599,
+    "mennyiseg": 300,
+    "parcella": "A3-1"
+  },
+  {
+    "id": 3,
+    "nev": "Tojás 10 db",
+    "gyarto": "Biofarm",
+    "lejarat": "2026-05-12T00:00:00.000Z",
+    "ar": 899,
+    "mennyiseg": 200,
+    "parcella": "B5-3"
+  },
+  {
+    "id": 4,
+    "nev": "Csirkemell filé",
+    "gyarto": "Bonafarm",
+    "lejarat": "2026-03-25T00:00:00.000Z",
+    "ar": 1999,
+    "mennyiseg": 120,
+    "parcella": "B2-4"
+  },
+  {
+    "id": 5,
+    "nev": "Alma Golden",
+    "gyarto": "Gyümölcsös Kert",
+    "lejarat": "2026-06-10T00:00:00.000Z",
+    "ar": 499,
+    "mennyiseg": 500,
+    "parcella": "A5-1"
+  },
+  {
+    "id": 6,
+    "nev": "Banán",
+    "gyarto": "Délker",
+    "lejarat": "2026-04-22T00:00:00.000Z",
+    "ar": 349,
+    "mennyiseg": 80,
+    "parcella": "A1-2"
+  },
+  {
+    "id": 7,
+    "nev": "Tejföl 20%",
+    "gyarto": "Mizo",
+    "lejarat": "2026-05-30T00:00:00.000Z",
+    "ar": 299,
+    "mennyiseg": 500,
+    "parcella": "B4-3"
+  },
+  {
+    "id": 8,
+    "nev": "Vaj",
+    "gyarto": "Pilos",
+    "lejarat": "2026-07-15T00:00:00.000Z",
+    "ar": 1299,
+    "mennyiseg": 500,
+    "parcella": "B5-2"
+  },
+  {
+    "id": 9,
+    "nev": "Sajt trappista",
+    "gyarto": "Pannonia",
+    "lejarat": "2026-06-05T00:00:00.000Z",
+    "ar": 1499,
+    "mennyiseg": 500,
+    "parcella": "A4-1"
+  },
+  {
+    "id": 10,
+    "nev": "Paradicsom",
+    "gyarto": "Zöldségfarm",
+    "lejarat": "2026-03-10T00:00:00.000Z",
+    "ar": 799,
+    "mennyiseg": 300,
+    "parcella": "A3-4"
+  },
+  {
+    "id": 11,
+    "nev": "Uborka",
+    "gyarto": "Zöldségfarm",
+    "lejarat": "2026-03-12T00:00:00.000Z",
+    "ar": 499,
+    "mennyiseg": 180,
+    "parcella": "A5-2"
+  },
+  {
+    "id": 12,
+    "nev": "Paprika zöld",
+    "gyarto": "Zöldségfarm",
+    "lejarat": "2026-04-18T00:00:00.000Z",
+    "ar": 699,
+    "mennyiseg": 90,
+    "parcella": "B2-1"
+  },
+  {
+    "id": 13,
+    "nev": "Krumpli",
+    "gyarto": "Zöldségfarm",
+    "lejarat": "2026-07-31T00:00:00.000Z",
+    "ar": 299,
+    "mennyiseg": 800,
+    "parcella": "B4-3"
+  },
+  {
+    "id": 14,
+    "nev": "Répa",
+    "gyarto": "Zöldségfarm",
+    "lejarat": "2026-06-20T00:00:00.000Z",
+    "ar": 399,
+    "mennyiseg": 350,
+    "parcella": "A2-2"
+  },
+  {
+    "id": 15,
+    "nev": "Hagyma",
+    "gyarto": "Zöldségfarm",
+    "lejarat": "2026-05-25T00:00:00.000Z",
+    "ar": 199,
+    "mennyiseg": 750,
+    "parcella": "B1-1"
+  },
+  {
+    "id": 16,
+    "nev": "Főtt kukorica",
+    "gyarto": "Bonduelle",
+    "lejarat": "2026-04-30T00:00:00.000Z",
+    "ar": 599,
+    "mennyiseg": 100,
+    "parcella": "A4-4"
+  },
+  {
+    "id": 17,
+    "nev": "Konzerv bab",
+    "gyarto": "Bonduelle",
+    "lejarat": "2026-07-10T00:00:00.000Z",
+    "ar": 499,
+    "mennyiseg": 450,
+    "parcella": "B3-2"
+  },
+  {
+    "id": 18,
+    "nev": "Konzerv borsó",
+    "gyarto": "Bonduelle",
+    "lejarat": "2026-06-15T00:00:00.000Z",
+    "ar": 499,
+    "mennyiseg": 600,
+    "parcella": "A5-1"
+  },
+  {
+    "id": 19,
+    "nev": "Rizs",
+    "gyarto": "Nasi Goreng",
+    "lejarat": "2026-07-20T00:00:00.000Z",
+    "ar": 899,
+    "mennyiseg": 700,
+    "parcella": "B5-3"
+  },
+  {
+    "id": 20,
+    "nev": "Tészta spagetti",
+    "gyarto": "Barilla",
+    "lejarat": "2026-08-01T00:00:00.000Z",
+    "ar": 699,
+    "mennyiseg": 550,
+    "parcella": "A2-2"
+  },
+  {
+    "id": 21,
+    "nev": "Olaj napraforgó",
+    "gyarto": "Olio",
+    "lejarat": "2026-05-10T00:00:00.000Z",
+    "ar": 1299,
+    "mennyiseg": 320,
+    "parcella": "A3-1"
+  },
+  {
+    "id": 22,
+    "nev": "Cukor",
+    "gyarto": "Délker",
+    "lejarat": "2026-06-25T00:00:00.000Z",
+    "ar": 499,
+    "mennyiseg": 500,
+    "parcella": "B4-3"
+  },
+  {
+    "id": 23,
+    "nev": "Só",
+    "gyarto": "Morsó",
+    "lejarat": "2026-07-31T00:00:00.000Z",
+    "ar": 199,
+    "mennyiseg": 1000,
+    "parcella": "A4-2"
+  },
+  {
+    "id": 24,
+    "nev": "Kávé",
+    "gyarto": "Jacobs",
+    "lejarat": "2026-04-05T00:00:00.000Z",
+    "ar": 1999,
+    "mennyiseg": 90,
+    "parcella": "B3-1"
+  },
+  {
+    "id": 25,
+    "nev": "Tea fekete",
+    "gyarto": "Pickwick",
+    "lejarat": "2026-05-20T00:00:00.000Z",
+    "ar": 599,
+    "mennyiseg": 130,
+    "parcella": "A5-4"
+  },
+  {
+    "id": 26,
+    "nev": "Méz",
+    "gyarto": "Mézesmanna",
+    "lejarat": "2026-06-30T00:00:00.000Z",
+    "ar": 1499,
+    "mennyiseg": 230,
+    "parcella": "A2-2"
+  },
+  {
+    "id": 27,
+    "nev": "Müzli",
+    "gyarto": "Nestlé",
+    "lejarat": "2026-04-15T00:00:00.000Z",
+    "ar": 999,
+    "mennyiseg": 120,
+    "parcella": "B5-1"
+  },
+  {
+    "id": 28,
+    "nev": "Pékáru kifli",
+    "gyarto": "Pékműhely",
+    "lejarat": "2026-03-20T00:00:00.000Z",
+    "ar": 199,
+    "mennyiseg": 500,
+    "parcella": "A4-4"
+  },
+  {
+    "id": 29,
+    "nev": "Pékáru zsemle",
+    "gyarto": "Pékműhely",
+    "lejarat": "2026-03-22T00:00:00.000Z",
+    "ar": 199,
+    "mennyiseg": 350,
+    "parcella": "B2-2"
+  },
+  {
+    "id": 30,
+    "nev": "Pékáru bagett",
+    "gyarto": "Pékműhely",
+    "lejarat": "2026-03-25T00:00:00.000Z",
+    "ar": 299,
+    "mennyiseg": 700,
+    "parcella": "A3-1"
+  },
+  {
+    "id": 31,
+    "nev": "Margarin",
+    "gyarto": "Rama",
+    "lejarat": "2026-05-05T00:00:00.000Z",
+    "ar": 799,
+    "mennyiseg": 250,
+    "parcella": "B3-3"
+  },
+  {
+    "id": 32,
+    "nev": "Juhtúró",
+    "gyarto": "Magyar Juhtúró",
+    "lejarat": "2026-04-10T00:00:00.000Z",
+    "ar": 1299,
+    "mennyiseg": 80,
+    "parcella": "A1-2"
+  },
+  {
+    "id": 33,
+    "nev": "Túró",
+    "gyarto": "Mizo",
+    "lejarat": "2026-05-15T00:00:00.000Z",
+    "ar": 899,
+    "mennyiseg": 400,
+    "parcella": "B2-1"
+  },
+  {
+    "id": 34,
+    "nev": "Tej 1.5%",
+    "gyarto": "Mizo",
+    "lejarat": "2026-03-18T00:00:00.000Z",
+    "ar": 329,
+    "mennyiseg": 600,
+    "parcella": "B4-4"
+  },
+  {
+    "id": 35,
+    "nev": "Jogurt natúr",
+    "gyarto": "Danone",
+    "lejarat": "2026-04-12T00:00:00.000Z",
+    "ar": 249,
+    "mennyiseg": 150,
+    "parcella": "A5-3"
+  },
+  {
+    "id": 36,
+    "nev": "Kefir",
+    "gyarto": "Mizo",
+    "lejarat": "2026-05-08T00:00:00.000Z",
+    "ar": 279,
+    "mennyiseg": 90,
+    "parcella": "A4-2"
+  },
+  {
+    "id": 37,
+    "nev": "Sajt edami",
+    "gyarto": "Pannonia",
+    "lejarat": "2026-06-22T00:00:00.000Z",
+    "ar": 1399,
+    "mennyiseg": 1000,
+    "parcella": "B3-1"
+  },
+  {
+    "id": 38,
+    "nev": "Szalámi",
+    "gyarto": "Pick",
+    "lejarat": "2026-07-05T00:00:00.000Z",
+    "ar": 2999,
+    "mennyiseg": 230,
+    "parcella": "A2-4"
+  },
+  {
+    "id": 39,
+    "nev": "Sonka",
+    "gyarto": "Herz",
+    "lejarat": "2026-04-25T00:00:00.000Z",
+    "ar": 1899,
+    "mennyiseg": 75,
+    "parcella": "B1-2"
+  },
+  {
+    "id": 40,
+    "nev": "Kolbász",
+    "gyarto": "Gyulai",
+    "lejarat": "2026-05-18T00:00:00.000Z",
+    "ar": 1599,
+    "mennyiseg": 500,
+    "parcella": "B5-3"
+  },
+  {
+    "id": 41,
+    "nev": "Virsli",
+    "gyarto": "Frankfurti",
+    "lejarat": "2026-06-12T00:00:00.000Z",
+    "ar": 999,
+    "mennyiseg": 650,
+    "parcella": "A3-4"
+  },
+  {
+    "id": 42,
+    "nev": "Hal filé",
+    "gyarto": "Oceanic",
+    "lejarat": "2026-07-25T00:00:00.000Z",
+    "ar": 2499,
+    "mennyiseg": 320,
+    "parcella": "B3-2"
+  },
+  {
+    "id": 43,
+    "nev": "Rák",
+    "gyarto": "Seafood",
+    "lejarat": "2026-05-28T00:00:00.000Z",
+    "ar": 2999,
+    "mennyiseg": 100,
+    "parcella": "A1-1"
+  },
+  {
+    "id": 44,
+    "nev": "Tintahal",
+    "gyarto": "Oceanic",
+    "lejarat": "2026-06-18T00:00:00.000Z",
+    "ar": 2799,
+    "mennyiseg": 540,
+    "parcella": "B4-3"
+  },
+  {
+    "id": 45,
+    "nev": "Lazac",
+    "gyarto": "Norwegian",
+    "lejarat": "2026-07-08T00:00:00.000Z",
+    "ar": 3499,
+    "mennyiseg": 220,
+    "parcella": "A5-2"
+  },
+  {
+    "id": 46,
+    "nev": "Tonhal konzerv",
+    "gyarto": "Rio Mare",
+    "lejarat": "2026-04-20T00:00:00.000Z",
+    "ar": 899,
+    "mennyiseg": 450,
+    "parcella": "A3-1"
+  },
+  {
+    "id": 47,
+    "nev": "Teljes kiőrlésű penne tészta",
+    "gyarto": "Don Francesco",
+    "lejarat": "2026-04-15T00:00:00.000Z",
+    "ar": 500,
+    "mennyiseg": 300,
+    "parcella": "A4-3"
+  },
+  {
+    "id": 48,
+    "nev": "Marha comb darabolt",
+    "gyarto": "Auchan Kedvenc",
+    "lejarat": "2026-03-20T00:00:00.000Z",
+    "ar": 2500,
+    "mennyiseg": 600,
+    "parcella": "B2-1"
+  },
+  {
+    "id": 49,
+    "nev": "100% almalé",
+    "gyarto": "Rauch Happy Day",
+    "lejarat": "2026-05-10T00:00:00.000Z",
+    "ar": 400,
+    "mennyiseg": 800,
+    "parcella": "A5-2"
+  },
+  {
+    "id": 50,
+    "nev": "Babgulyás konzerv",
+    "gyarto": "Házias Ízek",
+    "lejarat": "2026-06-05T00:00:00.000Z",
+    "ar": 800,
+    "mennyiseg": 450,
+    "parcella": "B3-4"
+  },
+  {
+    "id": 51,
+    "nev": "Piskótadesszert tejes krémmel",
+    "gyarto": "Kinder Paradiso",
+    "lejarat": "2026-04-25T00:00:00.000Z",
+    "ar": 300,
+    "mennyiseg": 95,
+    "parcella": "A1-2"
+  },
+  {
+    "id": 52,
+    "nev": "Rozsos kenyér",
+    "gyarto": "Vándor",
+    "lejarat": "2026-03-15T00:00:00.000Z",
+    "ar": 500,
+    "mennyiseg": 700,
+    "parcella": "A4-1"
+  },
+  {
+    "id": 53,
+    "nev": "Szemes pörkölt kávé",
+    "gyarto": "Caffe Degli Agneli",
+    "lejarat": "2026-07-01T00:00:00.000Z",
+    "ar": 3000,
+    "mennyiseg": 130,
+    "parcella": "B4-3"
+  },
+  {
+    "id": 54,
+    "nev": "Szeletelt trappista sajt",
+    "gyarto": "Tolle",
+    "lejarat": "2026-05-20T00:00:00.000Z",
+    "ar": 1500,
+    "mennyiseg": 870,
+    "parcella": "B2-2"
+  },
+  {
+    "id": 55,
+    "nev": "Marha gulyáshús",
+    "gyarto": "Auchan Kedvenc",
+    "lejarat": "2026-04-10T00:00:00.000Z",
+    "ar": 2600,
+    "mennyiseg": 550,
+    "parcella": "B5-1"
+  },
+  {
+    "id": 56,
+    "nev": "Kókuszital UHT",
+    "gyarto": "Joya Barista",
+    "lejarat": "2026-06-15T00:00:00.000Z",
+    "ar": 700,
+    "mennyiseg": 200,
+    "parcella": "A3-3"
+  },
+  {
+    "id": 57,
+    "nev": "Szénhidrátcsökkentett cipó",
+    "gyarto": "Ceres NewLine",
+    "lejarat": "2026-03-30T00:00:00.000Z",
+    "ar": 600,
+    "mennyiseg": 750,
+    "parcella": "A4-2"
+  },
+  {
+    "id": 58,
+    "nev": "Szűrt almaital",
+    "gyarto": "Szobi",
+    "lejarat": "2026-03-25T00:00:00.000Z",
+    "ar": 400,
+    "mennyiseg": 300,
+    "parcella": "A3-1"
+  },
+  {
+    "id": 59,
+    "nev": "Rostos őszibarack ital",
+    "gyarto": "Szobi",
+    "lejarat": "2026-05-15T00:00:00.000Z",
+    "ar": 400,
+    "mennyiseg": 900,
+    "parcella": "B2-2"
+  },
+  {
+    "id": 60,
+    "nev": "Szűrt fehérszőlő ital",
+    "gyarto": "Szobi",
+    "lejarat": "2026-04-05T00:00:00.000Z",
+    "ar": 400,
+    "mennyiseg": 650,
+    "parcella": "A5-4"
+  },
+  {
+    "id": 61,
+    "nev": "Élőflórás tejföl 25%",
+    "gyarto": "Auchan Collection",
+    "lejarat": "2026-06-30T00:00:00.000Z",
+    "ar": 500,
+    "mennyiseg": 500,
+    "parcella": "B4-2"
+  },
+  {
+    "id": 62,
+    "nev": "Szalámi",
+    "gyarto": "Pick",
+    "lejarat": "2026-07-05T00:00:00.000Z",
+    "ar": 2999,
+    "mennyiseg": 270,
+    "parcella": "A2-3"
+  },
+  {
+    "id": 63,
+    "nev": "Sonka",
+    "gyarto": "Herz",
+    "lejarat": "2026-04-25T00:00:00.000Z",
+    "ar": 1899,
+    "mennyiseg": 150,
+    "parcella": "B3-1"
+  },
+  {
+    "id": 64,
+    "nev": "Kolbász",
+    "gyarto": "Gyulai",
+    "lejarat": "2026-05-18T00:00:00.000Z",
+    "ar": 1599,
+    "mennyiseg": 800,
+    "parcella": "A4-2"
+  },
+  {
+    "id": 65,
+    "nev": "Hal filé",
+    "gyarto": "Oceanic",
+    "lejarat": "2026-07-25T00:00:00.000Z",
+    "ar": 2499,
+    "mennyiseg": 120,
+    "parcella": "B5-3"
+  },
+  {
+    "id": 66,
+    "nev": "Rák",
+    "gyarto": "Seafood",
+    "lejarat": "2026-05-28T00:00:00.000Z",
+    "ar": 2999,
+    "mennyiseg": 430,
+    "parcella": "A1-1"
+  },
+  {
+    "id": 67,
+    "nev": "Tintahal",
+    "gyarto": "Oceanic",
+    "lejarat": "2026-06-18T00:00:00.000Z",
+    "ar": 2799,
+    "mennyiseg": 450,
+    "parcella": "B2-3"
+  },
+  {
+    "id": 68,
+    "nev": "Lazac",
+    "gyarto": "Norwegian",
+    "lejarat": "2026-07-08T00:00:00.000Z",
+    "ar": 3499,
+    "mennyiseg": 120,
+    "parcella": "A3-2"
+  },
+  {
+    "id": 69,
+    "nev": "Tonhal konzerv",
+    "gyarto": "Rio Mare",
+    "lejarat": "2026-04-20T00:00:00.000Z",
+    "ar": 899,
+    "mennyiseg": 500,
+    "parcella": "B1-1"
+  },
+  {
+    "id": 70,
+    "nev": "Szardínia konzerv",
+    "gyarto": "Nixe",
+    "lejarat": "2026-05-22T00:00:00.000Z",
+    "ar": 699,
+    "mennyiseg": 300,
+    "parcella": "A5-2"
+  },
+  {
+    "id": 71,
+    "nev": "Füstölt makréla",
+    "gyarto": "Oceanic",
+    "lejarat": "2026-06-30T00:00:00.000Z",
+    "ar": 1999,
+    "mennyiseg": 700,
+    "parcella": "B4-3"
+  },
+  {
+    "id": 72,
+    "nev": "Heringfilé paradicsomos",
+    "gyarto": "EvraFish",
+    "lejarat": "2026-07-15T00:00:00.000Z",
+    "ar": 799,
+    "mennyiseg": 250,
+    "parcella": "A3-4"
+  },
+  {
+    "id": 73,
+    "nev": "Fagyasztott garnélarák",
+    "gyarto": "Seafood",
+    "lejarat": "2026-05-10T00:00:00.000Z",
+    "ar": 3499,
+    "mennyiseg": 600,
+    "parcella": "B5-2"
+  },
+  {
+    "id": 74,
+    "nev": "Füstölt lazac szeletek",
+    "gyarto": "Norwegian",
+    "lejarat": "2026-06-05T00:00:00.000Z",
+    "ar": 3999,
+    "mennyiseg": 150,
+    "parcella": "A1-3"
+  },
+  {
+    "id": 75,
+    "nev": "Fagyasztott tintahal karikák",
+    "gyarto": "Oceanic",
+    "lejarat": "2026-07-20T00:00:00.000Z",
+    "ar": 2999,
+    "mennyiseg": 450,
+    "parcella": "B2-4"
+  },
+  {
+    "id": 76,
+    "nev": "Füstölt pisztráng",
+    "gyarto": "FreshFish",
+    "lejarat": "2026-05-25T00:00:00.000Z",
+    "ar": 2499,
+    "mennyiseg": 320,
+    "parcella": "A3-1"
+  },
+  {
+    "id": 77,
+    "nev": "Fagyasztott tőkehal filé",
+    "gyarto": "Oceanic",
+    "lejarat": "2026-06-18T00:00:00.000Z",
+    "ar": 2799,
+    "mennyiseg": 500,
+    "parcella": "B4-3"
+  },
+  {
+    "id": 78,
+    "nev": "Füstölt angolna",
+    "gyarto": "Seafood",
+    "lejarat": "2026-07-05T00:00:00.000Z",
+    "ar": 3499,
+    "mennyiseg": 90,
+    "parcella": "A2-1"
+  },
+  {
+    "id": 79,
+    "nev": "Fagyasztott kagylóhús",
+    "gyarto": "Oceanic",
+    "lejarat": "2026-05-15T00:00:00.000Z",
+    "ar": 3199,
+    "mennyiseg": 1000,
+    "parcella": "B5-4"
+  },
+  {
+    "id": 80,
+    "nev": "Füstölt hering",
+    "gyarto": "FreshFish",
+    "lejarat": "2026-06-10T00:00:00.000Z",
+    "ar": 2299,
+    "mennyiseg": 800,
+    "parcella": "A3-2"
+  },
+  {
+    "id": 81,
+    "nev": "Fagyasztott polip",
+    "gyarto": "Seafood",
+    "lejarat": "2026-07-25T00:00:00.000Z",
+    "ar": 3699,
+    "mennyiseg": 540,
+    "parcella": "B1-3"
+  },
+  {
+    "id": 82,
+    "nev": "Füstölt sprotni",
+    "gyarto": "Oceanic",
+    "lejarat": "2026-05-30T00:00:00.000Z",
+    "ar": 1899,
+    "mennyiseg": 130,
+    "parcella": "A4-1"
+  },
+  {
+    "id": 83,
+    "nev": "Fagyasztott lazac steak",
+    "gyarto": "Norwegian",
+    "lejarat": "2026-06-20T00:00:00.000Z",
+    "ar": 3999,
+    "mennyiseg": 220,
+    "parcella": "B2-2"
+  },
+  {
+    "id": 84,
+    "nev": "Füstölt tőkehal",
+    "gyarto": "FreshFish",
+    "lejarat": "2026-07-10T00:00:00.000Z",
+    "ar": 2599,
+    "mennyiseg": 450,
+    "parcella": "A1-4"
+  },
+  {
+    "id": 85,
+    "nev": "Kukoricapehely",
+    "gyarto": "Kelloggs",
+    "lejarat": "2026-08-10T00:00:00.000Z",
+    "ar": 899,
+    "mennyiseg": 870,
+    "parcella": "B3-1"
+  },
+  {
+    "id": 86,
+    "nev": "Csokoládé tej",
+    "gyarto": "Milka",
+    "lejarat": "2026-07-15T00:00:00.000Z",
+    "ar": 799,
+    "mennyiseg": 600,
+    "parcella": "A5-2"
+  },
+  {
+    "id": 87,
+    "nev": "Gabonapehely",
+    "gyarto": "Nestlé",
+    "lejarat": "2026-06-05T00:00:00.000Z",
+    "ar": 999,
+    "mennyiseg": 350,
+    "parcella": "B2-3"
+  },
+  {
+    "id": 88,
+    "nev": "Instant kakaó",
+    "gyarto": "Nesquik",
+    "lejarat": "2026-05-22T00:00:00.000Z",
+    "ar": 699,
+    "mennyiseg": 250,
+    "parcella": "A3-4"
+  },
+  {
+    "id": 89,
+    "nev": "Keksz csokis",
+    "gyarto": "Győri Édes",
+    "lejarat": "2026-04-30T00:00:00.000Z",
+    "ar": 499,
+    "mennyiseg": 700,
+    "parcella": "B5-1"
+  },
+  {
+    "id": 90,
+    "nev": "Mogyorókrém",
+    "gyarto": "Nutella",
+    "lejarat": "2026-09-12T00:00:00.000Z",
+    "ar": 1599,
+    "mennyiseg": 150,
+    "parcella": "A2-2"
+  },
+  {
+    "id": 91,
+    "nev": "Kávékapszula",
+    "gyarto": "Nespresso",
+    "lejarat": "2026-11-01T00:00:00.000Z",
+    "ar": 2999,
+    "mennyiseg": 500,
+    "parcella": "B4-2"
+  },
+  {
+    "id": 92,
+    "nev": "Kókusztej",
+    "gyarto": "Alpro",
+    "lejarat": "2026-10-18T00:00:00.000Z",
+    "ar": 899,
+    "mennyiseg": 900,
+    "parcella": "A4-1"
+  },
+  {
+    "id": 93,
+    "nev": "Mandulaital",
+    "gyarto": "Alpro",
+    "lejarat": "2026-09-25T00:00:00.000Z",
+    "ar": 799,
+    "mennyiseg": 650,
+    "parcella": "B5-2"
+  },
+  {
+    "id": 94,
+    "nev": "Laktózmentes tej",
+    "gyarto": "Mizo",
+    "lejarat": "2026-08-05T00:00:00.000Z",
+    "ar": 699,
+    "mennyiseg": 120,
+    "parcella": "A1-3"
+  },
+  {
+    "id": 95,
+    "nev": "Vegán sajt",
+    "gyarto": "Violife",
+    "lejarat": "2026-11-16T00:00:00.000Z",
+    "ar": 1399,
+    "mennyiseg": 1000,
+    "parcella": "B3-4"
+  },
+  {
+    "id": 96,
+    "nev": "Barna rizs",
+    "gyarto": "BioNature",
+    "lejarat": "2026-09-10T00:00:00.000Z",
+    "ar": 1199,
+    "mennyiseg": 550,
+    "parcella": "A4-3"
+  },
+  {
+    "id": 97,
+    "nev": "Földimogyoró",
+    "gyarto": "Délker",
+    "lejarat": "2026-06-30T00:00:00.000Z",
+    "ar": 599,
+    "mennyiseg": 320,
+    "parcella": "A1-1"
+  },
+  {
+    "id": 98,
+    "nev": "Kesudió",
+    "gyarto": "Naturfood",
+    "lejarat": "2026-05-15T00:00:00.000Z",
+    "ar": 1499,
+    "mennyiseg": 250,
+    "parcella": "B2-4"
+  },
+  {
+    "id": 99,
+    "nev": "Szárított áfonya",
+    "gyarto": "Naturfood",
+    "lejarat": "2026-10-08T00:00:00.000Z",
+    "ar": 1299,
+    "mennyiseg": 500,
+    "parcella": "A4-2"
+  },
+  {
+    "id": 100,
+    "nev": "Mandula",
+    "gyarto": "Naturfood",
+    "lejarat": "2026-11-20T00:00:00.000Z",
+    "ar": 1899,
+    "mennyiseg": 750,
+    "parcella": "B5-3"
+  },
+  {
+    "id": 101,
+    "nev": "Vegán joghurt",
+    "gyarto": "Alpro",
+    "lejarat": "2026-07-10T00:00:00.000Z",
+    "ar": 799,
+    "mennyiseg": 100,
+    "parcella": "A1-4"
+  },
+  {
+    "id": 102,
+    "nev": "Növényi vaj",
+    "gyarto": "Flora",
+    "lejarat": "2026-08-30T00:00:00.000Z",
+    "ar": 899,
+    "mennyiseg": 600,
+    "parcella": "B2-2"
+  },
+  {
+    "id": 103,
+    "nev": "Szójaszósz",
+    "gyarto": "Kikkoman",
+    "lejarat": "2026-12-15T00:00:00.000Z",
+    "ar": 1299,
+    "mennyiseg": 400,
+    "parcella": "A3-1"
+  },
+  {
+    "id": 104,
+    "nev": "Chiliszósz",
+    "gyarto": "Tabasco",
+    "lejarat": "2026-11-05T00:00:00.000Z",
+    "ar": 999,
+    "mennyiseg": 150,
+    "parcella": "B5-3"
+  },
+  {
+    "id": 105,
+    "nev": "Majonéz",
+    "gyarto": "Hellmanns",
+    "lejarat": "2026-10-10T00:00:00.000Z",
+    "ar": 999,
+    "mennyiseg": 350,
+    "parcella": "A1-2"
+  },
+  {
+    "id": 106,
+    "nev": "Ketchup",
+    "gyarto": "Heinz",
+    "lejarat": "2026-09-15T00:00:00.000Z",
+    "ar": 799,
+    "mennyiseg": 900,
+    "parcella": "B2-1"
+  },
+  {
+    "id": 107,
+    "nev": "Mustár",
+    "gyarto": "Globus",
+    "lejarat": "2026-08-05T00:00:00.000Z",
+    "ar": 499,
+    "mennyiseg": 275,
+    "parcella": "A3-4"
+  },
+  {
+    "id": 108,
+    "nev": "Olívaolaj",
+    "gyarto": "Bertolli",
+    "lejarat": "2026-07-20T00:00:00.000Z",
+    "ar": 2499,
+    "mennyiseg": 1000,
+    "parcella": "B4-3"
+  },
+  {
+    "id": 109,
+    "nev": "Balsamico ecet",
+    "gyarto": "Ponti",
+    "lejarat": "2026-06-10T00:00:00.000Z",
+    "ar": 1599,
+    "mennyiseg": 500,
+    "parcella": "A1-1"
+  },
+  {
+    "id": 110,
+    "nev": "Leveskocka",
+    "gyarto": "Knorr",
+    "lejarat": "2026-10-30T00:00:00.000Z",
+    "ar": 699,
+    "mennyiseg": 650,
+    "parcella": "B2-4"
+  },
+  {
+    "id": 111,
+    "nev": "Instant leves",
+    "gyarto": "Maggi",
+    "lejarat": "2026-09-20T00:00:00.000Z",
+    "ar": 599,
+    "mennyiseg": 750,
+    "parcella": "A3-2"
+  },
+  {
+    "id": 112,
+    "nev": "Zabpehely",
+    "gyarto": "BioNature",
+    "lejarat": "2026-07-05T00:00:00.000Z",
+    "ar": 699,
+    "mennyiseg": 850,
+    "parcella": "B4-3"
+  },
+  {
+    "id": 113,
+    "nev": "Szezámmag",
+    "gyarto": "Naturfood",
+    "lejarat": "2026-05-22T00:00:00.000Z",
+    "ar": 499,
+    "mennyiseg": 120,
+    "parcella": "A1-2"
+  },
+  {
+    "id": 114,
+    "nev": "Napraforgómag",
+    "gyarto": "Naturfood",
+    "lejarat": "2026-04-30T00:00:00.000Z",
+    "ar": 599,
+    "mennyiseg": 560,
+    "parcella": "B3-3"
+  },
+  {
+    "id": 115,
+    "nev": "Lenmag",
+    "gyarto": "BioNature",
+    "lejarat": "2026-03-18T00:00:00.000Z",
+    "ar": 499,
+    "mennyiseg": 420,
+    "parcella": "A2-4"
+  },
+  {
+    "id": 116,
+    "nev": "Chia mag",
+    "gyarto": "Naturfood",
+    "lejarat": "2026-02-25T00:00:00.000Z",
+    "ar": 899,
+    "mennyiseg": 990,
+    "parcella": "B4-1"
+  },
+  {
+    "id": 117,
+    "nev": "Kókuszreszelék",
+    "gyarto": "Délker",
+    "lejarat": "2026-06-30T00:00:00.000Z",
+    "ar": 499,
+    "mennyiseg": 200,
+    "parcella": "A3-3"
+  },
+  {
+    "id": 118,
+    "nev": "Aszalt szilva",
+    "gyarto": "Naturfood",
+    "lejarat": "2026-05-18T00:00:00.000Z",
+    "ar": 1299,
+    "mennyiseg": 700,
+    "parcella": "B2-4"
+  },
+  {
+    "id": 119,
+    "nev": "Aszalt barack",
+    "gyarto": "Naturfood",
+    "lejarat": "2026-04-10T00:00:00.000Z",
+    "ar": 1399,
+    "mennyiseg": 430,
+    "parcella": "A4-2"
+  },
+  {
+    "id": 120,
+    "nev": "Mazsola",
+    "gyarto": "Délker",
+    "lejarat": "2026-03-20T00:00:00.000Z",
+    "ar": 599,
+    "mennyiseg": 380,
+    "parcella": "B4-3"
+  },
+  {
+    "id": 121,
+    "nev": "Csicseriborsó",
+    "gyarto": "BioNature",
+    "lejarat": "2026-09-12T00:00:00.000Z",
+    "ar": 799,
+    "mennyiseg": 950,
+    "parcella": "A1-4"
+  },
+  {
+    "id": 122,
+    "nev": "Lencse",
+    "gyarto": "Délker",
+    "lejarat": "2026-08-25T00:00:00.000Z",
+    "ar": 699,
+    "mennyiseg": 620,
+    "parcella": "B2-2"
+  },
+  {
+    "id": 123,
+    "nev": "Barnarizs",
+    "gyarto": "BioNature",
+    "lejarat": "2026-07-18T00:00:00.000Z",
+    "ar": 1199,
+    "mennyiseg": 830,
+    "parcella": "A3-3"
+  },
+  {
+    "id": 124,
+    "nev": "Couscous",
+    "gyarto": "BioNature",
+    "lejarat": "2026-06-30T00:00:00.000Z",
+    "ar": 899,
+    "mennyiseg": 440,
+    "parcella": "B4-1"
+  },
+  {
+    "id": 125,
+    "nev": "Quinoa",
+    "gyarto": "Rapunzel",
+    "lejarat": "2026-05-10T00:00:00.000Z",
+    "ar": 1999,
+    "mennyiseg": 210,
+    "parcella": "A5-2"
+  },
+  {
+    "id": 126,
+    "nev": "Bulgur",
+    "gyarto": "Naturfood",
+    "lejarat": "2026-04-15T00:00:00.000Z",
+    "ar": 999,
+    "mennyiseg": 780,
+    "parcella": "B2-3"
+  },
+  {
+    "id": 127,
+    "nev": "Hajdina",
+    "gyarto": "BioNature",
+    "lejarat": "2026-03-05T00:00:00.000Z",
+    "ar": 899,
+    "mennyiseg": 500,
+    "parcella": "A3-4"
+  }
+]
