@@ -1,12 +1,23 @@
-//raktar-frontend/src/components/ProductGridView.tsx
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState, useRef, useCallback } from "react";
 import { useSearchParams, useNavigate } from "react-router-dom";
-import { getProducts, updateProduct } from "../../services/api";
+import { getProducts, updateBatch, createBatch, sortWarehouse } from "../../services/api";
 import { useAuth } from "../../context/AuthContext";
-import type { Product } from "../../types/Product";
+import type { Batch } from "../../types/Batch";
+import socket from "../../services/socket"; // WebSocket import
 import Swal from 'sweetalert2';
 
-const toast = Swal.mixin({
+const MySwal = Swal.mixin({
+  customClass: {
+    popup: 'rounded-[2.5rem] bg-white dark:bg-slate-900 text-slate-900 dark:text-white border border-slate-200 dark:border-slate-800 shadow-2xl font-sans',
+    confirmButton: 'bg-blue-600 hover:bg-blue-500 text-white px-8 py-3 rounded-2xl font-black uppercase text-xs tracking-widest transition-all active:scale-95 mx-2',
+    cancelButton: 'bg-slate-200 dark:bg-slate-800 text-slate-600 dark:text-slate-400 px-8 py-3 rounded-2xl font-black uppercase text-xs tracking-widest transition-all active:scale-95 mx-2',
+  },
+  buttonsStyling: false,
+  focusConfirm: false,
+  allowOutsideClick: false
+});
+
+const toast = MySwal.mixin({
   toast: true,
   position: 'top-end',
   showConfirmButton: false,
@@ -19,162 +30,227 @@ const toast = Swal.mixin({
   }
 });
 
-const rows = ["A", "B"];
+const rows = ["A", "B", "C", "D"];
 const cols = [1, 2, 3, 4, 5];
 const polcCount = 4;
+const MAX_SHELF_WEIGHT = 2000;
 
-interface ProductsByPolc {
-  [polc: string]: Product[];
+type BatchWithProductInfo = Batch & { 
+  productNev: string; 
+  productGyarto: string; 
+  minimumKeszlet: number; 
+  suly: number; 
+  productId: number 
+};
+
+interface BatchesByPolc {
+  [polc: string]: BatchWithProductInfo[];
 }
 
 const ProductGridView: React.FC = () => {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
   const { user } = useAuth();
+  
+  // JAVÍTÁS: Deklaráljuk a TypeScript által hiányolt változókat a searchParams-ból
+  const targetProductId = searchParams.get("productId");
+  const targetParcelName = searchParams.get("parcel");
+
   const [selectedParcella, setSelectedParcella] = useState<string | null>(null);
-  const [productsByPolc, setProductsByPolc] = useState<ProductsByPolc>({});
+  const [batchesByPolc, setBatchesByPolc] = useState<BatchesByPolc>({});
   const [loading, setLoading] = useState<boolean>(false);
-  const [draggedProductId, setDraggedProductId] = useState<number | null>(null);
+  const [draggedBatchId, setDraggedBatchId] = useState<number | null>(null);
+  const [activeHighlight, setActiveHighlight] = useState<boolean>(false);
 
   const highlightedProductRef = useRef<HTMLLIElement | null>(null);
+  const isAdmin = user?.rang === "ADMIN";
+  const canMove = !!(user && (user.rang === "KEZELO" || isAdmin));
+  
+  const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
 
-  const canMove = user && (user.rang === "KEZELO" || user.rang === "ADMIN");
-
-  const loadProducts = async () => {
-    setLoading(true);
+  // Memoizált betöltés az élő frissítésekhez
+  const loadProductsAndBatches = useCallback(async (showLoading = true) => {
+    if (showLoading) setLoading(true);
     try {
       const products = await getProducts();
-      const byPolc: ProductsByPolc = {};
+      const byPolc: BatchesByPolc = {};
+      
       products.forEach((p) => {
-        if (!byPolc[p.parcella]) byPolc[p.parcella] = [];
-        byPolc[p.parcella].push(p);
+        if (p.batches) {
+          p.batches.forEach(b => {
+            if (!byPolc[b.parcella]) byPolc[b.parcella] = [];
+            byPolc[b.parcella].push({
+              ...b,
+              productId: p.id,
+              productNev: p.nev,
+              productGyarto: p.gyarto,
+              minimumKeszlet: p.minimumKeszlet,
+              suly: p.suly
+            });
+          });
+        }
       });
-      setProductsByPolc(byPolc);
+      setBatchesByPolc(byPolc);
     } catch (err: any) {
-      console.error("Hiba:", err);
+      console.error("Hiba az adatok betöltésekor:", err);
     } finally {
-      setLoading(false);
+      if (showLoading) setLoading(false);
     }
-  };
-
-  useEffect(() => {
-    loadProducts();
   }, []);
 
   useEffect(() => {
-    const parcelParam = searchParams.get("parcel");
-    if (parcelParam) {
-      const base = parcelParam.split("-")[0];
-      setSelectedParcella(base);
-    }
-  }, [searchParams]);
+    loadProductsAndBatches();
+
+    // JAVÍTÁS: WebSocket figyelő bekötése (Élő szinkronhoz)
+    socket.on("products_updated", () => {
+      console.log("Raktár térkép frissítése...");
+      loadProductsAndBatches(false); // Frissítés a háttérben töltőképernyő nélkül
+    });
+
+    return () => {
+      socket.off("products_updated");
+    };
+  }, [loadProductsAndBatches]);
 
   useEffect(() => {
-    if (highlightedProductRef.current) {
-      setTimeout(() => {
-        highlightedProductRef.current?.scrollIntoView({
-          behavior: "smooth",
-          block: "center",
-        });
-      }, 300);
+    const parcelParam = searchParams.get("parcel");
+    if (parcelParam) setSelectedParcella(parcelParam.split("-")[0]);
+    
+    if (parcelParam || targetProductId) {
+      setActiveHighlight(true);
+      const timer = window.setTimeout(() => setActiveHighlight(false), 3500);
+      return () => window.clearTimeout(timer);
     }
-  }, [selectedParcella, productsByPolc]);
+  }, [searchParams, targetProductId]);
 
-  const handleDragStart = (e: React.DragEvent, productId: number) => {
-    if (!canMove) {
-      e.preventDefault();
+  useEffect(() => {
+    if (activeHighlight && highlightedProductRef.current) {
+      setTimeout(() => {
+        highlightedProductRef.current?.scrollIntoView({ behavior: "smooth", block: "center" });
+      }, 500);
+    }
+  }, [selectedParcella, batchesByPolc, activeHighlight]);
+
+  const performMove = async (batchId: number, targetParcella: string) => {
+    const draggedBatch = Object.values(batchesByPolc).flat().find(b => b.id === batchId);
+    if (!draggedBatch || draggedBatch.parcella === targetParcella) {
+      setDraggedBatchId(null);
       return;
     }
-    setDraggedProductId(productId);
-    e.dataTransfer.setData("productId", productId.toString());
-    e.dataTransfer.effectAllowed = "move";
+
+    const currentWeightOnTarget = (batchesByPolc[targetParcella] || []).reduce((s, b) => s + (b.mennyiseg * b.suly), 0);
+    const availableWeight = MAX_SHELF_WEIGHT - currentWeightOnTarget;
+    const maxFitting = Math.floor(availableWeight / draggedBatch.suly);
+    const absoluteMax = Math.min(draggedBatch.mennyiseg, maxFitting);
+
+    if (maxFitting <= 0) {
+      MySwal.fire({ title: 'Súlystop! 🛑', text: `A(z) ${targetParcella} polc megtelt.`, icon: 'error' });
+      setDraggedBatchId(null);
+      return;
+    }
+
+    const { value: moveQuantity, isConfirmed } = await MySwal.fire({
+      title: 'Mennyit szeretnél áthelyezni?',
+      html: `
+        <div class="flex flex-col gap-6 p-2 text-left">
+          ${draggedBatch.mennyiseg > maxFitting ? `
+            <div class="bg-red-50 dark:bg-red-900/30 border border-red-200 dark:border-red-800 p-3 rounded-xl text-red-700 dark:text-red-400 text-[10px] font-black uppercase tracking-tighter">
+              ⚠️ SÚLYSTOP: A polcra már csak maximum ${maxFitting} db fér el a ${draggedBatch.mennyiseg} darabból!
+            </div>
+          ` : ''}
+          
+          <div class="flex items-center gap-4">
+            <input type="range" id="swal-range" class="flex-grow h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-blue-600" 
+              min="1" max="${absoluteMax}" value="${absoluteMax}">
+            <input type="number" id="swal-input" class="w-24 p-2 border-2 border-slate-200 dark:border-slate-700 rounded-xl bg-slate-50 dark:bg-slate-800 font-black text-center" 
+              min="1" max="${absoluteMax}" value="${absoluteMax}">
+          </div>
+
+          <div class="grid grid-cols-4 gap-2">
+            ${[0.25, 0.50, 0.75, 1.00].map(pct => `
+              <button type="button" class="pct-btn bg-slate-100 dark:bg-slate-800 p-2 rounded-lg text-[10px] font-black hover:bg-blue-600 hover:text-white transition-colors" 
+                data-val="${Math.max(1, Math.floor(absoluteMax * pct))}">${pct * 100}%</button>
+            `).join('')}
+          </div>
+        </div>
+      `,
+      didOpen: () => {
+        const range = document.getElementById('swal-range') as HTMLInputElement;
+        const input = document.getElementById('swal-input') as HTMLInputElement;
+        const pctBtns = document.querySelectorAll('.pct-btn');
+
+        const updateValues = (val: number) => {
+          const v = Math.min(Math.max(1, val), absoluteMax);
+          range.value = v.toString();
+          input.value = v.toString();
+        };
+
+        range.addEventListener('input', () => updateValues(parseInt(range.value)));
+        input.addEventListener('input', () => updateValues(parseInt(input.value)));
+        pctBtns.forEach(btn => {
+          btn.addEventListener('click', () => updateValues(parseInt((btn as HTMLElement).dataset.val || "1")));
+        });
+      },
+      preConfirm: () => {
+        const val = parseInt((document.getElementById('swal-input') as HTMLInputElement).value);
+        if (isNaN(val) || val < 1 || val > absoluteMax) {
+          Swal.showValidationMessage(`Kérlek 1 és ${absoluteMax} közötti számot adj meg!`);
+          return false;
+        }
+        return val;
+      },
+      showCancelButton: true,
+      confirmButtonText: '📦 Áthelyezés',
+      cancelButtonText: 'Mégse'
+    });
+
+    if (isConfirmed && moveQuantity) {
+      setLoading(true);
+      try {
+        if (moveQuantity === draggedBatch.mennyiseg) {
+          await updateBatch(batchId, { parcella: targetParcella }, user!.id);
+        } else {
+          await updateBatch(batchId, { mennyiseg: draggedBatch.mennyiseg - moveQuantity }, user!.id);
+          await createBatch({ productId: draggedBatch.productId, parcella: targetParcella, mennyiseg: moveQuantity, lejarat: draggedBatch.lejarat }, user!.id);
+        }
+        toast.fire({ icon: 'success', title: 'Sikeres áthelyezés!' });
+        await loadProductsAndBatches();
+      } catch (err: any) {
+        MySwal.fire('Hiba', err.message, 'error');
+      } finally {
+        setLoading(false);
+      }
+    }
+    setDraggedBatchId(null);
   };
 
-  const handleDropOnShelf = async (
-    e: React.DragEvent,
-    targetParcella: string,
-  ) => {
-    e.preventDefault();
-    if (!canMove) return;
+  const handleDragStart = (e: React.DragEvent, batchId: number) => {
+    if (!canMove || isMobile) return e.preventDefault();
+    setDraggedBatchId(batchId);
+    e.dataTransfer.setData("batchId", batchId.toString());
+  };
 
-    const productIdStr = e.dataTransfer.getData("productId");
-    if (!productIdStr || !user) return;
-
-    const productId = parseInt(productIdStr, 10);
-    
-    const draggedProduct = Object.values(productsByPolc)
-      .flat()
-      .find(p => p.id === productId);
-
-    setLoading(true);
-    try {
-      await updateProduct(
-        productId,
-        { parcella: targetParcella } as any,
-        Number(user.id),
-      );
-      toast.fire({
-        icon: 'success',
-        title: `"${draggedProduct?.nev || 'Termék'}" áthelyezve a(z) ${targetParcella} parcellába! 📦`
-      });
-
-      await loadProducts();
-    } catch (err) {
-      console.error("Áthelyezési hiba:", err);
-      Swal.fire({
-        icon: 'error',
-        title: 'Hiba!',
-        text: 'Nem sikerült az áthelyezés.',
-        background: 'rgb(15, 23, 42)',
-        color: '#fff',
-        confirmButtonColor: '#3b82f6'
-      });
-    } finally {
-      setLoading(false);
-      setDraggedProductId(null);
+  const handleSortClick = async () => {
+    if (!isAdmin || !user) return;
+    const res = await MySwal.fire({
+      title: 'Raktár rendezése?',
+      text: "Kategória szerinti optimalizálás.",
+      icon: 'question',
+      showCancelButton: true,
+      confirmButtonText: 'Indítás'
+    });
+    if (res.isConfirmed) {
+      setLoading(true);
+      try {
+        await sortWarehouse(user.id);
+        await loadProductsAndBatches();
+        toast.fire({ icon: 'success', title: 'Raktár optimalizálva!' });
+      } catch (err: any) { MySwal.fire('Hiba', err.message, 'error'); } finally { setLoading(false); }
     }
   };
 
-  const getStatusClass = (product: Product) => {
-    const now = new Date();
-    const oneWeekLater = new Date();
-    oneWeekLater.setDate(now.getDate() + 7);
-    const lejaratDate = product.lejarat ? new Date(product.lejarat) : null;
-
-    if ((lejaratDate && lejaratDate <= now) || product.mennyiseg < 10)
-      return "bg-red-50 dark:bg-red-900/20 text-red-700 dark:text-red-400 border-red-200 dark:border-red-900/50";
-    if ((lejaratDate && lejaratDate <= oneWeekLater) || product.mennyiseg < 100)
-      return "bg-amber-50 dark:bg-amber-900/20 text-amber-700 dark:text-amber-400 border-amber-200 dark:border-amber-900/50";
-    return "bg-white dark:bg-slate-800 text-emerald-700 dark:text-emerald-400 border-emerald-100 dark:border-emerald-900/30";
-  };
-
-  const renderBadges = (product: Product) => {
-    const now = new Date();
-    const oneWeekLater = new Date();
-    oneWeekLater.setDate(now.getDate() + 7);
-    const lejaratDate = product.lejarat ? new Date(product.lejarat) : null;
-    const badges = [];
-    if (lejaratDate && lejaratDate <= now)
-      badges.push(<span key="e1" className="bg-red-600 text-white text-[8px] px-1.5 py-0.5 rounded font-black uppercase">Lejárt</span>);
-    else if (lejaratDate && lejaratDate <= oneWeekLater)
-      badges.push(<span key="e2" className="bg-amber-500 text-white text-[8px] px-1.5 py-0.5 rounded font-black uppercase">Lejárat</span>);
-    
-    if (product.mennyiseg < 10)
-      badges.push(<span key="q1" className="bg-red-600 text-white text-[8px] px-1.5 py-0.5 rounded font-black uppercase">Kritikus</span>);
-    else if (product.mennyiseg < 100)
-      badges.push(<span key="q2" className="bg-amber-500 text-white text-[8px] px-1.5 py-0.5 rounded font-black uppercase">Készlet</span>);
-
-    return badges.length > 0 ? (
-      <div className="absolute -top-2 -right-2 flex flex-col gap-1 items-end z-20">
-        {badges}
-      </div>
-    ) : null;
-  };
-
-  const targetProductId = searchParams.get("productId");
-
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-slate-950 p-4 md:p-6 transition-colors duration-300">
+    <div className="min-h-screen bg-slate-50 dark:bg-slate-950 p-4 md:p-6 transition-colors duration-300 text-left">
       <style>{`
         @keyframes shake {
           0% { transform: translateX(0); }
@@ -183,168 +259,108 @@ const ProductGridView: React.FC = () => {
           75% { transform: translateX(-6px) rotate(-1deg); }
           100% { transform: translateX(0); }
         }
-        .shake-shelf {
-          animation: shake 0.6s cubic-bezier(.36,.07,.19,.97) both;
-          animation-iteration-count: 2;
-          border-color: #3b82f6 !important;
-          border-width: 4px !important;
-        }
-        .shake-product {
-          animation: shake 0.5s cubic-bezier(.36,.07,.19,.97) both;
-          animation-delay: 0.5s; /* Kevesebb delay, hogy hamarabb rázkódjon miután odagörgetett */
-          animation-iteration-count: 3; /* Egy extra rázkódás a hatás kedvéért */
-          border-color: #3b82f6 !important;
-          transform: scale(1.05);
-        }
-        .drag-over-sector {
-          background-color: #3b82f6 !important;
-          color: white !important;
-          border-color: #2563eb !important;
-          transform: scale(1.1);
-        }
-        .drag-over-shelf {
-          border-color: #3b82f6 !important;
-          background-color: rgba(59, 130, 246, 0.1) !important;
-        }
+        .shake-shelf { animation: shake 0.6s both; border-color: #3b82f6 !important; border-width: 3px !important; }
+        .shake-product { animation: shake 0.5s both; animation-delay: 0.4s; border-color: #3b82f6 !important; transform: scale(1.05); }
+        .drag-over-shelf { background-color: rgba(59, 130, 246, 0.1) !important; border-color: #3b82f6 !important; border-width: 3px !important; }
       `}</style>
 
-      <div className="max-w-6xl mx-auto">
-        <header className="mb-8 border-b border-slate-200 dark:border-slate-800 pb-4 flex justify-between items-center text-left">
+      <div className="max-w-7xl mx-auto">
+        <header className="mb-8 border-b border-slate-200 dark:border-slate-800 pb-6 flex justify-between items-end">
           <div>
-            <h1 className="text-2xl md:text-3xl font-black text-slate-900 dark:text-white uppercase italic tracking-tighter transition-colors">
-              Raktár áttekintés
-            </h1>
-            <p className="text-slate-500 dark:text-slate-400 text-sm italic">
-              {canMove 
-                ? "Húzz egy terméket egy szektorra a váltáshoz, vagy egy polcra az áthelyezéshez"
-                : "Válassz ki egy szektort a termékek megtekintéséhez"}
-            </p>
+            <h1 className="text-3xl font-black text-slate-900 dark:text-white uppercase italic tracking-tighter">Raktár Térkép</h1>
+            <p className="text-slate-500 dark:text-slate-400 text-sm italic tracking-wide">Interaktív készletkezelés</p>
           </div>
-          {loading && (
-            <span className="animate-pulse text-blue-600 font-black text-xs uppercase">Szinkronizálás...</span>
-          )}
+          <div className="flex gap-4 items-center">
+            {loading && <span className="animate-pulse text-blue-600 font-black text-[10px] uppercase">Művelet folyamatban...</span>}
+            {isAdmin && (
+              <button onClick={handleSortClick} className="bg-indigo-600 text-white px-6 py-2.5 rounded-2xl font-black uppercase text-[10px] tracking-widest shadow-lg active:scale-95 transition-transform">
+                🪄 Rendezés
+              </button>
+            )}
+          </div>
         </header>
 
-        <div className="bg-white dark:bg-slate-900 p-4 md:p-8 rounded-[2.5rem] shadow-xl border border-slate-200 dark:border-slate-800 mb-10 transition-colors">
-          <div className="flex flex-col gap-6">
-            {rows.map((row) => (
-              <div key={row} className="flex gap-4 md:gap-8 items-center text-left">
-                <span className="hidden sm:block w-12 font-black text-slate-200 dark:text-slate-800 text-4xl">{row}</span>
-                <div className="grid grid-cols-5 gap-3 md:gap-5 w-full sm:w-auto">
-                  {cols.map((col) => {
-                    const baseParcella = `${row}${col}`;
-                    const isActive = selectedParcella === baseParcella;
-                    return (
-                      <button
-                        key={baseParcella}
-                        onClick={() => setSelectedParcella(baseParcella)}
-                        onDragEnter={() => canMove && setSelectedParcella(baseParcella)}
-                        onDragOver={(e) => {
-                          if (!canMove) return;
-                          e.preventDefault();
-                          e.currentTarget.classList.add("drag-over-sector");
-                        }}
-                        onDragLeave={(e) => e.currentTarget.classList.remove("drag-over-sector")}
-                        onDrop={(e) => e.currentTarget.classList.remove("drag-over-sector")}
-                        className={`aspect-square w-full sm:w-20 h-auto sm:h-20 rounded-2xl font-black transition-all duration-300 flex items-center justify-center border-2 text-base md:text-2xl
-                          ${isActive
-                              ? "bg-blue-600 border-blue-500 text-white scale-110 shadow-lg shadow-blue-500/30"
-                              : "bg-slate-50 dark:bg-slate-800 border-slate-100 dark:border-slate-700 text-slate-400 dark:text-slate-500 hover:border-blue-400"
-                          }`}
-                      >
-                        {baseParcella}
-                      </button>
-                    );
-                  })}
-                </div>
-              </div>
-            ))}
-          </div>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-10">
+          {rows.map(row => (
+            <div key={row} className="flex flex-col gap-2">
+               <span className="font-black text-slate-300 dark:text-slate-800 text-xs uppercase pl-2">{row} SZEKTOR</span>
+               <div className="flex gap-2">
+                 {cols.map(col => {
+                   const name = `${row}${col}`;
+                   return (
+                     <button key={name} onClick={() => setSelectedParcella(name)}
+                       className={`flex-1 py-4 rounded-2xl font-black transition-all border-2 
+                         ${selectedParcella === name ? 'bg-blue-600 border-blue-500 text-white shadow-xl scale-105' : 'bg-white dark:bg-slate-900 border-slate-100 dark:border-slate-800 text-slate-400 hover:border-blue-400'}`}>
+                       {name}
+                     </button>
+                   );
+                 })}
+               </div>
+            </div>
+          ))}
         </div>
 
-        <div id="shelves-container" className="scroll-mt-24 text-left">
+        <div className="text-left pb-20">
           {selectedParcella ? (
-            <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
-              <div className="flex items-center gap-4 mb-10">
-                <div className="h-10 w-2 bg-blue-600 rounded-full shadow-lg shadow-blue-500/20"></div>
-                <h3 className="text-2xl md:text-4xl font-black text-slate-900 dark:text-white tracking-tighter italic uppercase">
-                  {selectedParcella} szektor
-                </h3>
-              </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+              {Array.from({ length: polcCount }, (_, i) => i + 1).map(idx => {
+                const polcName = `${selectedParcella}-${idx}`;
+                const shelfBatches = batchesByPolc[polcName] || [];
+                const weight = shelfBatches.reduce((s, b) => s + (b.mennyiseg * b.suly), 0);
+                const isTargetShelf = activeHighlight && targetParcelName === polcName;
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8">
-                {Array.from({ length: polcCount }, (_, i) => i + 1).map((polcIndex) => {
-                  const polcName = `${selectedParcella}-${polcIndex}`;
-                  const products = productsByPolc[polcName];
-                  const isHighlightedShelf = searchParams.get("parcel") === polcName;
-
-                  return (
-                    <div
-                      key={polcName}
-                      id={`shelf-${polcName}`}
-                      onDragOver={(e) => {
-                        if (!canMove) return;
-                        e.preventDefault();
-                        e.currentTarget.classList.add("drag-over-shelf");
-                      }}
-                      onDragLeave={(e) => e.currentTarget.classList.remove("drag-over-shelf")}
-                      onDrop={(e) => {
-                        e.currentTarget.classList.remove("drag-over-shelf");
-                        handleDropOnShelf(e, polcName);
-                      }}
-                      className={`bg-white dark:bg-slate-900 rounded-[2.5rem] border border-slate-200 dark:border-slate-800 shadow-xl overflow-hidden flex flex-col transition-all
-                        ${isHighlightedShelf ? "shake-shelf" : ""}`}
-                    >
-                      <div className={`p-4 text-center border-b transition-colors ${isHighlightedShelf ? "bg-blue-600 border-blue-500" : "bg-slate-800 dark:bg-slate-950 border-slate-700"}`}>
-                        <h4 className="text-white font-black uppercase tracking-widest italic text-xs">
-                          {polcIndex}. Polcszint
-                        </h4>
-                      </div>
-                      <div className="p-5 flex-grow min-h-[150px]">
-                        <ul className="space-y-4 h-full">
-                          {products && products.length > 0 ? (
-                            products.map((p) => {
-                              const isTargetProduct = targetProductId === p.id.toString();
-                              
-                              return (
-                                <li
-                                  key={p.id}
-                                  id={`product-card-${p.id}`}
-                                  ref={isTargetProduct ? highlightedProductRef : null}
-                                  draggable={canMove || false}
-                                  onDragStart={(e) => handleDragStart(e, p.id)}
-                                  onClick={() => navigate(`/product/${p.id}`)}
-                                  className={`relative p-4 rounded-2xl border-2 text-sm font-bold shadow-sm transition-all active:scale-95 text-left
-                                    ${canMove ? "cursor-grab active:cursor-grabbing" : "cursor-pointer"}
-                                    ${getStatusClass(p)} 
-                                    ${isTargetProduct ? "shake-product shadow-blue-500/30 shadow-xl z-10" : "hover:border-blue-400 dark:hover:border-blue-600"}
-                                    ${draggedProductId === p.id ? "opacity-40" : "opacity-100"}`}
-                                >
-                                  {renderBadges(p)}
-                                  <div className="flex flex-col gap-1">
-                                    <span className="truncate pr-4 font-black uppercase tracking-tight italic">{p.nev}</span>
-                                    <div className="flex justify-between items-center mt-2 border-t border-current border-opacity-10 pt-2">
-                                      <span className="text-[10px] uppercase opacity-60 font-black">Mennyiség</span>
-                                      <span className="font-black text-xs">{p.mennyiseg} db</span>
-                                    </div>
-                                  </div>
-                                </li>
-                              )
-                            })
-                          ) : (
-                            <li className="text-slate-300 dark:text-slate-700 text-center py-10 text-xs font-black uppercase tracking-widest italic">Üres</li>
-                          )}
-                        </ul>
-                      </div>
+                return (
+                  <div key={polcName} data-shelf-name={polcName}
+                    onDragOver={e => { e.preventDefault(); !isMobile && e.currentTarget.classList.add('drag-over-shelf'); }}
+                    onDragLeave={e => !isMobile && e.currentTarget.classList.remove('drag-over-shelf')}
+                    onDrop={e => {
+                      if (isMobile) return;
+                      e.preventDefault();
+                      e.currentTarget.classList.remove('drag-over-shelf');
+                      const bId = parseInt(e.dataTransfer.getData("batchId"), 10);
+                      if (bId) performMove(bId, polcName);
+                    }}
+                    className={`bg-white dark:bg-slate-900 rounded-[2.5rem] border-2 shadow-sm flex flex-col min-h-[300px] transition-all
+                      ${isTargetShelf ? 'shake-shelf shadow-blue-500/20' : 'border-slate-200 dark:border-slate-800'}`}>
+                    <div className="p-5 border-b dark:border-slate-800 bg-slate-50 dark:bg-slate-950/50 rounded-t-[2.5rem]">
+                       <div className="flex justify-between items-center mb-2">
+                         <span className="font-black italic uppercase text-xs dark:text-white tracking-widest">{polcName}</span>
+                         <span className={`text-[10px] font-black px-2 py-0.5 rounded ${weight > 1800 ? 'bg-red-500 text-white' : 'text-slate-500'}`}>
+                           {weight.toFixed(0)} / {MAX_SHELF_WEIGHT} KG
+                         </span>
+                       </div>
+                       <div className="w-full h-1.5 bg-slate-200 dark:bg-slate-800 rounded-full overflow-hidden">
+                          <div className={`h-full transition-all duration-500 ${weight > 1800 ? 'bg-red-500' : 'bg-blue-500'}`} style={{ width: `${(weight / MAX_SHELF_WEIGHT) * 100}%` }} />
+                       </div>
                     </div>
-                  );
-                })}
-              </div>
+                    <ul className="p-4 space-y-3 flex-grow">
+                      {shelfBatches.map(b => {
+                        const isTargetBatch = activeHighlight && targetProductId === b.productId.toString();
+                        return (
+                          <li key={b.id} 
+                            draggable={canMove && !isMobile} 
+                            ref={isTargetBatch ? highlightedProductRef : null}
+                            onDragStart={e => handleDragStart(e, b.id)}
+                            onClick={() => navigate(`/product/${b.productId}`)}
+                            className={`p-4 rounded-2xl border-2 cursor-pointer transition-all bg-white dark:bg-slate-800
+                              ${draggedBatchId === b.id ? 'opacity-30 border-blue-500 scale-95' : isTargetBatch ? 'shake-product border-blue-500 bg-blue-50/50 dark:bg-blue-900/20' : 'border-slate-100 dark:border-slate-800 hover:border-blue-400'}`}>
+                            <div className="font-black text-[11px] uppercase truncate mb-1 dark:text-white tracking-tight italic">{b.productNev}</div>
+                            <div className="flex justify-between items-center text-[10px] font-bold text-slate-500">
+                               <span className="bg-slate-100 dark:bg-slate-700 px-1.5 py-0.5 rounded text-blue-600 dark:text-blue-400">{b.mennyiseg} DB</span>
+                               <span className="italic">{(b.mennyiseg * b.suly).toFixed(1)} KG</span>
+                            </div>
+                          </li>
+                        );
+                      })}
+                      {shelfBatches.length === 0 && <li className="text-slate-300 dark:text-slate-700 text-[10px] font-black uppercase text-center py-10 tracking-widest italic opacity-50">Üres polc</li>}
+                    </ul>
+                  </div>
+                );
+              })}
             </div>
           ) : (
-            <div className="text-center py-24 bg-white dark:bg-slate-900 rounded-[3rem] border-4 border-dashed border-slate-100 dark:border-slate-800 transition-colors">
-              <span className="text-7xl mb-6 block grayscale opacity-30">📦</span>
-              <p className="text-slate-400 dark:text-slate-600 text-xl font-black uppercase tracking-tighter italic">Válassz ki egy szektort!</p>
+            <div className="py-20 text-center bg-white dark:bg-slate-900 rounded-[3rem] border-2 border-dashed dark:border-slate-800 transition-all">
+                <p className="text-slate-400 font-black uppercase tracking-widest italic text-xs">Válassz szektort az áttekintéshez</p>
             </div>
           )}
         </div>

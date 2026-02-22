@@ -1,0 +1,2456 @@
+[
+  {
+    "nev": "Csiszológép (Bosch special edition 0)",
+    "gyarto": "Bosch",
+    "kategoria": "BARKACS",
+    "beszerzesiAr": 17007,
+    "eladasiAr": 25213,
+    "suly": 3.27,
+    "minimumKeszlet": 45,
+    "batches": [
+      { "parcella": "A3-1", "mennyiseg": 39, "lejarat": null },
+      { "parcella": "B3-4", "mennyiseg": 76, "lejarat": null }
+    ]
+  },
+  {
+    "nev": "Golyóstoll (Parker special edition 1)",
+    "gyarto": "Parker",
+    "kategoria": "IRODASZER",
+    "beszerzesiAr": 14857,
+    "eladasiAr": 25815,
+    "suly": 0.1,
+    "minimumKeszlet": 19,
+    "batches": []
+  },
+  {
+    "nev": "Teniszütő (Kipsta special edition 2)",
+    "gyarto": "Kipsta",
+    "kategoria": "SPORT",
+    "beszerzesiAr": 82976,
+    "eladasiAr": 134108,
+    "suly": 0.8,
+    "minimumKeszlet": 32,
+    "batches": [
+      { "parcella": "D3-2", "mennyiseg": 96, "lejarat": null },
+      { "parcella": "A4-4", "mennyiseg": 19, "lejarat": null }
+    ]
+  },
+  {
+    "nev": "Kézfertőtlenítő (Richter special edition 3)",
+    "gyarto": "Richter",
+    "kategoria": "EGESZSEGUGY",
+    "beszerzesiAr": 72587,
+    "eladasiAr": 87268,
+    "suly": 0.5,
+    "minimumKeszlet": 49,
+    "batches": []
+  },
+  {
+    "nev": "Távirányítós autó (Hasbro special edition 4)",
+    "gyarto": "Hasbro",
+    "kategoria": "JATEK",
+    "beszerzesiAr": 51918,
+    "eladasiAr": 67184,
+    "suly": 1.73,
+    "minimumKeszlet": 16,
+    "batches": [
+      { "parcella": "B3-2", "mennyiseg": 88, "lejarat": null }
+    ]
+  },
+  {
+    "nev": "Könyvespolc (JYSK special edition 5)",
+    "gyarto": "JYSK",
+    "kategoria": "BUTOR",
+    "beszerzesiAr": 105804,
+    "eladasiAr": 149997,
+    "suly": 10.4,
+    "minimumKeszlet": 35,
+    "batches": [
+      { "parcella": "C4-3", "mennyiseg": 7, "lejarat": null }
+    ]
+  },
+  {
+    "nev": "Sajt trappista (Mizo special edition 6)",
+    "gyarto": "Mizo",
+    "kategoria": "ELELMISZER",
+    "beszerzesiAr": 2983,
+    "eladasiAr": 5201,
+    "suly": 1.27,
+    "minimumKeszlet": 15,
+    "batches": [
+      { "parcella": "D2-3", "mennyiseg": 84, "lejarat": "2026-12-31T22:09:23.848188Z" }
+    ]
+  },
+  {
+    "nev": "Iratrendező (Victoria special edition 7)",
+    "gyarto": "Victoria",
+    "kategoria": "IRODASZER",
+    "beszerzesiAr": 53965,
+    "eladasiAr": 77123,
+    "suly": 0.92,
+    "minimumKeszlet": 27,
+    "batches": [
+      { "parcella": "A4-1", "mennyiseg": 13, "lejarat": null },
+      { "parcella": "D2-4", "mennyiseg": 92, "lejarat": null }
+    ]
+  },
+  {
+    "nev": "Íróasztal (IKEA special edition 8)",
+    "gyarto": "IKEA",
+    "kategoria": "BUTOR",
+    "beszerzesiAr": 70828,
+    "eladasiAr": 96080,
+    "suly": 16.93,
+    "minimumKeszlet": 9,
+    "batches": [
+      { "parcella": "D3-4", "mennyiseg": 26, "lejarat": null },
+      { "parcella": "C3-2", "mennyiseg": 51, "lejarat": null }
+    ]
+  },
+  {
+    "nev": "Ablaktörlő lapát (Michelin special edition 9)",
+    "gyarto": "Michelin",
+    "kategoria": "AUTO_MOTOR",
+    "beszerzesiAr": 17605,
+    "eladasiAr": 30338,
+    "suly": 0.74,
+    "minimumKeszlet": 13,
+    "batches": [
+      { "parcella": "B2-3", "mennyiseg": 78, "lejarat": null }
+    ]
+  },
+  {
+    "nev": "Távirányítós autó (Lego special edition 10)",
+    "gyarto": "Lego",
+    "kategoria": "JATEK",
+    "beszerzesiAr": 478,
+    "eladasiAr": 726,
+    "suly": 0.46,
+    "minimumKeszlet": 25,
+    "batches": [
+      { "parcella": "D5-4", "mennyiseg": 29, "lejarat": null },
+      { "parcella": "C2-4", "mennyiseg": 48, "lejarat": null }
+    ]
+  },
+  {
+    "nev": "Gyerekkönyv (Libri special edition 11)",
+    "gyarto": "Libri",
+    "kategoria": "KONYVEK",
+    "beszerzesiAr": 23882,
+    "eladasiAr": 37700,
+    "suly": 0.85,
+    "minimumKeszlet": 19,
+    "batches": [
+      { "parcella": "D1-1", "mennyiseg": 19, "lejarat": null },
+      { "parcella": "D1-3", "mennyiseg": 88, "lejarat": null }
+    ]
+  },
+  {
+    "nev": "Vitamin C 1000mg (Pfizer special edition 12)",
+    "gyarto": "Pfizer",
+    "kategoria": "EGESZSEGUGY",
+    "beszerzesiAr": 28491,
+    "eladasiAr": 46361,
+    "suly": 0.1,
+    "minimumKeszlet": 11,
+    "batches": [
+      { "parcella": "B5-3", "mennyiseg": 61, "lejarat": "2027-01-12T22:09:23.848530Z" },
+      { "parcella": "C2-2", "mennyiseg": 62, "lejarat": "2026-08-27T22:09:23.848554Z" }
+    ]
+  },
+  {
+    "nev": "Jógamatrac (Decathlon special edition 13)",
+    "gyarto": "Decathlon",
+    "kategoria": "SPORT",
+    "beszerzesiAr": 134604,
+    "eladasiAr": 222712,
+    "suly": 1.58,
+    "minimumKeszlet": 16,
+    "batches": [
+      { "parcella": "B1-2", "mennyiseg": 53, "lejarat": null },
+      { "parcella": "B5-1", "mennyiseg": 48, "lejarat": null },
+      { "parcella": "D2-2", "mennyiseg": 84, "lejarat": null }
+    ]
+  },
+  {
+    "nev": "Puzzle 1000 db (Hasbro special edition 14)",
+    "gyarto": "Hasbro",
+    "kategoria": "JATEK",
+    "beszerzesiAr": 146150,
+    "eladasiAr": 199408,
+    "suly": 0.56,
+    "minimumKeszlet": 11,
+    "batches": [
+      { "parcella": "B4-4", "mennyiseg": 15, "lejarat": null }
+    ]
+  },
+  {
+    "nev": "Serpenyő 24cm (Electrolux special edition 15)",
+    "gyarto": "Electrolux",
+    "kategoria": "HAZTARTAS",
+    "beszerzesiAr": 125884,
+    "eladasiAr": 219507,
+    "suly": 1.08,
+    "minimumKeszlet": 46,
+    "batches": [
+      { "parcella": "A5-1", "mennyiseg": 44, "lejarat": null }
+    ]
+  },
+  {
+    "nev": "Akkumulátor 72Ah (Michelin special edition 16)",
+    "gyarto": "Michelin",
+    "kategoria": "AUTO_MOTOR",
+    "beszerzesiAr": 24570,
+    "eladasiAr": 31239,
+    "suly": 14.96,
+    "minimumKeszlet": 11,
+    "batches": [
+      { "parcella": "D5-1", "mennyiseg": 26, "lejarat": null }
+    ]
+  },
+  {
+    "nev": "Vállfa szett (RaktárWeb Brand special edition 17)",
+    "gyarto": "RaktárWeb Brand",
+    "kategoria": "EGYEB",
+    "beszerzesiAr": 139674,
+    "eladasiAr": 211835,
+    "suly": 0.57,
+    "minimumKeszlet": 25,
+    "batches": [
+      { "parcella": "A5-2", "mennyiseg": 97, "lejarat": null },
+      { "parcella": "B3-3", "mennyiseg": 59, "lejarat": null },
+      { "parcella": "A2-4", "mennyiseg": 99, "lejarat": null }
+    ]
+  },
+  {
+    "nev": "Irodai szék (IKEA special edition 18)",
+    "gyarto": "IKEA",
+    "kategoria": "BUTOR",
+    "beszerzesiAr": 25412,
+    "eladasiAr": 34899,
+    "suly": 16.28,
+    "minimumKeszlet": 37,
+    "batches": []
+  },
+  {
+    "nev": "Porszívó (Philips special edition 19)",
+    "gyarto": "Philips",
+    "kategoria": "HAZTARTAS",
+    "beszerzesiAr": 98438,
+    "eladasiAr": 168963,
+    "suly": 6.18,
+    "minimumKeszlet": 12,
+    "batches": [
+      { "parcella": "D2-1", "mennyiseg": 56, "lejarat": null }
+    ]
+  },
+  {
+    "nev": "Mérőszalag 5m (Makita special edition 20)",
+    "gyarto": "Makita",
+    "kategoria": "BARKACS",
+    "beszerzesiAr": 33772,
+    "eladasiAr": 46230,
+    "suly": 0.4,
+    "minimumKeszlet": 46,
+    "batches": [
+      { "parcella": "A2-2", "mennyiseg": 2, "lejarat": null },
+      { "parcella": "A2-3", "mennyiseg": 33, "lejarat": null }
+    ]
+  },
+  {
+    "nev": "HDMI kábel (Dell special edition 21)",
+    "gyarto": "Dell",
+    "kategoria": "ELEKTRONIKA",
+    "beszerzesiAr": 77906,
+    "eladasiAr": 123326,
+    "suly": 0.2,
+    "minimumKeszlet": 23,
+    "batches": [
+      { "parcella": "C1-4", "mennyiseg": 57, "lejarat": null },
+      { "parcella": "A4-4", "mennyiseg": 73, "lejarat": null }
+    ]
+  },
+  {
+    "nev": "Sajt trappista (Pékműhely special edition 22)",
+    "gyarto": "Pékműhely",
+    "kategoria": "ELELMISZER",
+    "beszerzesiAr": 19104,
+    "eladasiAr": 33484,
+    "suly": 1.8,
+    "minimumKeszlet": 14,
+    "batches": [
+      { "parcella": "A4-2", "mennyiseg": 56, "lejarat": "2027-01-27T22:09:23.848841Z" }
+    ]
+  },
+  {
+    "nev": "Vitamin C 1000mg (Richter special edition 23)",
+    "gyarto": "Richter",
+    "kategoria": "EGESZSEGUGY",
+    "beszerzesiAr": 76537,
+    "eladasiAr": 125641,
+    "suly": 0.1,
+    "minimumKeszlet": 27,
+    "batches": [
+      { "parcella": "D5-1", "mennyiseg": 79, "lejarat": "2026-06-02T22:09:23.848882Z" },
+      { "parcella": "B1-4", "mennyiseg": 12, "lejarat": "2026-11-24T22:09:23.848903Z" }
+    ]
+  },
+  {
+    "nev": "Levegőszűrő (Castrol special edition 24)",
+    "gyarto": "Castrol",
+    "kategoria": "AUTO_MOTOR",
+    "beszerzesiAr": 86033,
+    "eladasiAr": 120343,
+    "suly": 0.5,
+    "minimumKeszlet": 9,
+    "batches": [
+      { "parcella": "C4-4", "mennyiseg": 36, "lejarat": null }
+    ]
+  },
+  {
+    "nev": "Billentyűzet (HP special edition 25)",
+    "gyarto": "HP",
+    "kategoria": "ELEKTRONIKA",
+    "beszerzesiAr": 100969,
+    "eladasiAr": 128316,
+    "suly": 0.65,
+    "minimumKeszlet": 16,
+    "batches": [
+      { "parcella": "B2-4", "mennyiseg": 99, "lejarat": null },
+      { "parcella": "B1-4", "mennyiseg": 58, "lejarat": null }
+    ]
+  },
+  {
+    "nev": "Folyékony szappan (L'Oréal special edition 26)",
+    "gyarto": "L'Oréal",
+    "kategoria": "KOZMETIKA",
+    "beszerzesiAr": 138265,
+    "eladasiAr": 208143,
+    "suly": 0.5,
+    "minimumKeszlet": 20,
+    "batches": [
+      { "parcella": "C5-3", "mennyiseg": 45, "lejarat": "2027-01-17T22:09:23.849010Z" },
+      { "parcella": "D2-4", "mennyiseg": 19, "lejarat": "2027-01-20T22:09:23.849033Z" }
+    ]
+  },
+  {
+    "nev": "Babzsákfotel (Herman Miller special edition 27)",
+    "gyarto": "Herman Miller",
+    "kategoria": "BUTOR",
+    "beszerzesiAr": 22189,
+    "eladasiAr": 29707,
+    "suly": 5.38,
+    "minimumKeszlet": 25,
+    "batches": [
+      { "parcella": "B3-2", "mennyiseg": 49, "lejarat": null },
+      { "parcella": "C2-1", "mennyiseg": 26, "lejarat": null },
+      { "parcella": "B2-3", "mennyiseg": 17, "lejarat": null }
+    ]
+  },
+  {
+    "nev": "Mosókapszula (CleanPro special edition 28)",
+    "gyarto": "CleanPro",
+    "kategoria": "VEGYSZER",
+    "beszerzesiAr": 123900,
+    "eladasiAr": 162613,
+    "suly": 1.43,
+    "minimumKeszlet": 48,
+    "batches": [
+      { "parcella": "B5-3", "mennyiseg": 34, "lejarat": "2026-09-02T22:09:23.849116Z" },
+      { "parcella": "A5-2", "mennyiseg": 91, "lejarat": "2027-01-08T22:09:23.849129Z" }
+    ]
+  },
+  {
+    "nev": "Elsősegély készlet (Pfizer special edition 29)",
+    "gyarto": "Pfizer",
+    "kategoria": "EGESZSEGUGY",
+    "beszerzesiAr": 24780,
+    "eladasiAr": 40560,
+    "suly": 1.47,
+    "minimumKeszlet": 11,
+    "batches": [
+      { "parcella": "B3-3", "mennyiseg": 21, "lejarat": "2027-03-22T22:09:23.849146Z" }
+    ]
+  },
+  {
+    "nev": "Könyvespolc (IKEA special edition 30)",
+    "gyarto": "IKEA",
+    "kategoria": "BUTOR",
+    "beszerzesiAr": 38799,
+    "eladasiAr": 51036,
+    "suly": 8.81,
+    "minimumKeszlet": 41,
+    "batches": [
+      { "parcella": "C3-3", "mennyiseg": 72, "lejarat": null },
+      { "parcella": "A1-4", "mennyiseg": 17, "lejarat": null },
+      { "parcella": "C1-4", "mennyiseg": 40, "lejarat": null }
+    ]
+  },
+  {
+    "nev": "Ablaktörlő lapát (Castrol special edition 31)",
+    "gyarto": "Castrol",
+    "kategoria": "AUTO_MOTOR",
+    "beszerzesiAr": 72096,
+    "eladasiAr": 117366,
+    "suly": 0.48,
+    "minimumKeszlet": 24,
+    "batches": [
+      { "parcella": "B2-1", "mennyiseg": 21, "lejarat": null }
+    ]
+  },
+  {
+    "nev": "Mosókapszula (Cillit Bang special edition 32)",
+    "gyarto": "Cillit Bang",
+    "kategoria": "VEGYSZER",
+    "beszerzesiAr": 134843,
+    "eladasiAr": 220671,
+    "suly": 1.5,
+    "minimumKeszlet": 10,
+    "batches": []
+  },
+  {
+    "nev": "Mosókapszula (Jar special edition 33)",
+    "gyarto": "Jar",
+    "kategoria": "VEGYSZER",
+    "beszerzesiAr": 41207,
+    "eladasiAr": 71730,
+    "suly": 1.4,
+    "minimumKeszlet": 44,
+    "batches": [
+      { "parcella": "D3-4", "mennyiseg": 80, "lejarat": "2026-08-21T22:09:23.849203Z" }
+    ]
+  },
+  {
+    "nev": "HDMI kábel (Apple special edition 34)",
+    "gyarto": "Apple",
+    "kategoria": "ELEKTRONIKA",
+    "beszerzesiAr": 33452,
+    "eladasiAr": 51262,
+    "suly": 0.2,
+    "minimumKeszlet": 12,
+    "batches": [
+      { "parcella": "A3-1", "mennyiseg": 92, "lejarat": null }
+    ]
+  },
+  {
+    "nev": "Zokni 3 pár (Nike special edition 35)",
+    "gyarto": "Nike",
+    "kategoria": "RUHAZAT",
+    "beszerzesiAr": 88588,
+    "eladasiAr": 144882,
+    "suly": 0.1,
+    "minimumKeszlet": 41,
+    "batches": [
+      { "parcella": "A5-2", "mennyiseg": 24, "lejarat": null }
+    ]
+  },
+  {
+    "nev": "Konyhai mérleg (Philips special edition 36)",
+    "gyarto": "Philips",
+    "kategoria": "HAZTARTAS",
+    "beszerzesiAr": 9124,
+    "eladasiAr": 15508,
+    "suly": 0.8,
+    "minimumKeszlet": 35,
+    "batches": [
+      { "parcella": "B2-1", "mennyiseg": 59, "lejarat": null },
+      { "parcella": "A5-4", "mennyiseg": 88, "lejarat": null },
+      { "parcella": "A3-2", "mennyiseg": 3, "lejarat": null }
+    ]
+  },
+  {
+    "nev": "Okostelefon S21 (Apple special edition 37)",
+    "gyarto": "Apple",
+    "kategoria": "ELEKTRONIKA",
+    "beszerzesiAr": 86330,
+    "eladasiAr": 133951,
+    "suly": 0.2,
+    "minimumKeszlet": 7,
+    "batches": [
+      { "parcella": "A3-4", "mennyiseg": 44, "lejarat": null }
+    ]
+  },
+  {
+    "nev": "Kenyér fehér (Nestlé special edition 38)",
+    "gyarto": "Nestlé",
+    "kategoria": "ELELMISZER",
+    "beszerzesiAr": 32792,
+    "eladasiAr": 55046,
+    "suly": 0.5,
+    "minimumKeszlet": 39,
+    "batches": [
+      { "parcella": "D4-1", "mennyiseg": 74, "lejarat": "2026-10-21T22:09:23.849296Z" }
+    ]
+  },
+  {
+    "nev": "Arckrém (Dove special edition 39)",
+    "gyarto": "Dove",
+    "kategoria": "KOZMETIKA",
+    "beszerzesiAr": 20323,
+    "eladasiAr": 28687,
+    "suly": 0.1,
+    "minimumKeszlet": 22,
+    "batches": []
+  },
+  {
+    "nev": "Billentyűzet (Lenovo special edition 40)",
+    "gyarto": "Lenovo",
+    "kategoria": "ELEKTRONIKA",
+    "beszerzesiAr": 74802,
+    "eladasiAr": 111641,
+    "suly": 0.6,
+    "minimumKeszlet": 28,
+    "batches": [
+      { "parcella": "A3-3", "mennyiseg": 34, "lejarat": null }
+    ]
+  },
+  {
+    "nev": "Nyomtatópapír 500 lap (Faber-Castell special edition 41)",
+    "gyarto": "Faber-Castell",
+    "kategoria": "IRODASZER",
+    "beszerzesiAr": 13422,
+    "eladasiAr": 22259,
+    "suly": 2.34,
+    "minimumKeszlet": 18,
+    "batches": [
+      { "parcella": "B2-1", "mennyiseg": 22, "lejarat": null },
+      { "parcella": "C3-4", "mennyiseg": 65, "lejarat": null }
+    ]
+  },
+  {
+    "nev": "Iratrendező (Esselte special edition 42)",
+    "gyarto": "Esselte",
+    "kategoria": "IRODASZER",
+    "beszerzesiAr": 127439,
+    "eladasiAr": 205847,
+    "suly": 0.5,
+    "minimumKeszlet": 9,
+    "batches": [
+      { "parcella": "D3-3", "mennyiseg": 70, "lejarat": null }
+    ]
+  },
+  {
+    "nev": "Farmer nadrág (Levi's special edition 43)",
+    "gyarto": "Levi's",
+    "kategoria": "RUHAZAT",
+    "beszerzesiAr": 70627,
+    "eladasiAr": 91747,
+    "suly": 0.6,
+    "minimumKeszlet": 42,
+    "batches": [
+      { "parcella": "C2-2", "mennyiseg": 40, "lejarat": null },
+      { "parcella": "D2-2", "mennyiseg": 43, "lejarat": null },
+      { "parcella": "C3-4", "mennyiseg": 66, "lejarat": null }
+    ]
+  },
+  {
+    "nev": "Kapucnis pulóver (Adidas special edition 44)",
+    "gyarto": "Adidas",
+    "kategoria": "RUHAZAT",
+    "beszerzesiAr": 25486,
+    "eladasiAr": 35154,
+    "suly": 0.6,
+    "minimumKeszlet": 15,
+    "batches": [
+      { "parcella": "A2-2", "mennyiseg": 76, "lejarat": null }
+    ]
+  },
+  {
+    "nev": "Lázmérő (Richter special edition 45)",
+    "gyarto": "Richter",
+    "kategoria": "EGESZSEGUGY",
+    "beszerzesiAr": 34520,
+    "eladasiAr": 47995,
+    "suly": 0.1,
+    "minimumKeszlet": 39,
+    "batches": [
+      { "parcella": "D5-1", "mennyiseg": 76, "lejarat": "2026-05-16T22:09:23.849471Z" },
+      { "parcella": "D2-2", "mennyiseg": 89, "lejarat": "2026-10-12T22:09:23.849485Z" }
+    ]
+  },
+  {
+    "nev": "Elem AA 4db (Generic Co special edition 46)",
+    "gyarto": "Generic Co",
+    "kategoria": "EGYEB",
+    "beszerzesiAr": 21423,
+    "eladasiAr": 32284,
+    "suly": 0.1,
+    "minimumKeszlet": 44,
+    "batches": [
+      { "parcella": "D1-1", "mennyiseg": 81, "lejarat": null },
+      { "parcella": "C4-2", "mennyiseg": 16, "lejarat": null }
+    ]
+  },
+  {
+    "nev": "Éjjeli lámpa (JYSK special edition 47)",
+    "gyarto": "JYSK",
+    "kategoria": "BUTOR",
+    "beszerzesiAr": 5627,
+    "eladasiAr": 9984,
+    "suly": 0.53,
+    "minimumKeszlet": 17,
+    "batches": [
+      { "parcella": "B4-3", "mennyiseg": 88, "lejarat": null }
+    ]
+  },
+  {
+    "nev": "Plüss maci (Mattel special edition 48)",
+    "gyarto": "Mattel",
+    "kategoria": "JATEK",
+    "beszerzesiAr": 129195,
+    "eladasiAr": 227771,
+    "suly": 0.4,
+    "minimumKeszlet": 31,
+    "batches": [
+      { "parcella": "A5-1", "mennyiseg": 5, "lejarat": null },
+      { "parcella": "D3-1", "mennyiseg": 53, "lejarat": null },
+      { "parcella": "D4-2", "mennyiseg": 66, "lejarat": null }
+    ]
+  },
+  {
+    "nev": "Mérőszalag 5m (Makita special edition 49)",
+    "gyarto": "Makita",
+    "kategoria": "BARKACS",
+    "beszerzesiAr": 131614,
+    "eladasiAr": 193895,
+    "suly": 0.4,
+    "minimumKeszlet": 40,
+    "batches": [
+      { "parcella": "A1-3", "mennyiseg": 29, "lejarat": null }
+    ]
+  },
+  {
+    "nev": "Tej 3.5% (Danone special edition 50)",
+    "gyarto": "Danone",
+    "kategoria": "ELELMISZER",
+    "beszerzesiAr": 52027,
+    "eladasiAr": 63294,
+    "suly": 1.05,
+    "minimumKeszlet": 43,
+    "batches": [
+      { "parcella": "D3-4", "mennyiseg": 54, "lejarat": "2026-04-30T22:09:23.849619Z" },
+      { "parcella": "A5-4", "mennyiseg": 48, "lejarat": "2026-12-15T22:09:23.849631Z" }
+    ]
+  },
+  {
+    "nev": "Iratrendező (Parker special edition 51)",
+    "gyarto": "Parker",
+    "kategoria": "IRODASZER",
+    "beszerzesiAr": 111097,
+    "eladasiAr": 161962,
+    "suly": 0.8,
+    "minimumKeszlet": 13,
+    "batches": [
+      { "parcella": "A5-1", "mennyiseg": 21, "lejarat": null },
+      { "parcella": "C1-1", "mennyiseg": 83, "lejarat": null }
+    ]
+  },
+  {
+    "nev": "Jógamatrac (Kipsta special edition 52)",
+    "gyarto": "Kipsta",
+    "kategoria": "SPORT",
+    "beszerzesiAr": 6115,
+    "eladasiAr": 8074,
+    "suly": 1.2,
+    "minimumKeszlet": 38,
+    "batches": [
+      { "parcella": "D2-3", "mennyiseg": 24, "lejarat": null },
+      { "parcella": "C1-4", "mennyiseg": 81, "lejarat": null }
+    ]
+  },
+  {
+    "nev": "Hátizsák 20L (Kipsta special edition 53)",
+    "gyarto": "Kipsta",
+    "kategoria": "SPORT",
+    "beszerzesiAr": 114641,
+    "eladasiAr": 198223,
+    "suly": 0.8,
+    "minimumKeszlet": 25,
+    "batches": [
+      { "parcella": "D5-2", "mennyiseg": 29, "lejarat": null },
+      { "parcella": "D2-1", "mennyiseg": 74, "lejarat": null }
+    ]
+  },
+  {
+    "nev": "Vállfa szett (Generic Co special edition 54)",
+    "gyarto": "Generic Co",
+    "kategoria": "EGYEB",
+    "beszerzesiAr": 25703,
+    "eladasiAr": 37335,
+    "suly": 0.5,
+    "minimumKeszlet": 44,
+    "batches": [
+      { "parcella": "C2-1", "mennyiseg": 64, "lejarat": null }
+    ]
+  },
+  {
+    "nev": "Banán (Bonafarm special edition 55)",
+    "gyarto": "Bonafarm",
+    "kategoria": "ELELMISZER",
+    "beszerzesiAr": 119345,
+    "eladasiAr": 154540,
+    "suly": 1.0,
+    "minimumKeszlet": 6,
+    "batches": []
+  },
+  {
+    "nev": "Vízforraló (Tefal special edition 56)",
+    "gyarto": "Tefal",
+    "kategoria": "HAZTARTAS",
+    "beszerzesiAr": 145808,
+    "eladasiAr": 235846,
+    "suly": 0.8,
+    "minimumKeszlet": 42,
+    "batches": [
+      { "parcella": "C4-2", "mennyiseg": 31, "lejarat": null }
+    ]
+  },
+  {
+    "nev": "Motorolaj 5W30 (Michelin special edition 57)",
+    "gyarto": "Michelin",
+    "kategoria": "AUTO_MOTOR",
+    "beszerzesiAr": 136620,
+    "eladasiAr": 226214,
+    "suly": 4.8,
+    "minimumKeszlet": 33,
+    "batches": [
+      { "parcella": "A3-3", "mennyiseg": 23, "lejarat": null }
+    ]
+  },
+  {
+    "nev": "Gemkapocs 100db (Esselte special edition 58)",
+    "gyarto": "Esselte",
+    "kategoria": "IRODASZER",
+    "beszerzesiAr": 72657,
+    "eladasiAr": 101199,
+    "suly": 0.1,
+    "minimumKeszlet": 22,
+    "batches": [
+      { "parcella": "D4-1", "mennyiseg": 21, "lejarat": null },
+      { "parcella": "D5-1", "mennyiseg": 52, "lejarat": null }
+    ]
+  },
+  {
+    "nev": "Gyerekkönyv (Európa special edition 59)",
+    "gyarto": "Európa",
+    "kategoria": "KONYVEK",
+    "beszerzesiAr": 107047,
+    "eladasiAr": 143727,
+    "suly": 0.4,
+    "minimumKeszlet": 14,
+    "batches": []
+  },
+  {
+    "nev": "Féktárcsa (Bosch special edition 60)",
+    "gyarto": "Bosch",
+    "kategoria": "AUTO_MOTOR",
+    "beszerzesiAr": 142747,
+    "eladasiAr": 179695,
+    "suly": 4.5,
+    "minimumKeszlet": 9,
+    "batches": []
+  },
+  {
+    "nev": "Elsősegély készlet (Richter special edition 61)",
+    "gyarto": "Richter",
+    "kategoria": "EGESZSEGUGY",
+    "beszerzesiAr": 31323,
+    "eladasiAr": 51834,
+    "suly": 0.5,
+    "minimumKeszlet": 5,
+    "batches": [
+      { "parcella": "B3-1", "mennyiseg": 27, "lejarat": "2026-12-18T22:09:23.849846Z" }
+    ]
+  },
+  {
+    "nev": "Íróasztal (IKEA special edition 62)",
+    "gyarto": "IKEA",
+    "kategoria": "BUTOR",
+    "beszerzesiAr": 116022,
+    "eladasiAr": 193061,
+    "suly": 19.78,
+    "minimumKeszlet": 42,
+    "batches": [
+      { "parcella": "C3-3", "mennyiseg": 94, "lejarat": null },
+      { "parcella": "A3-1", "mennyiseg": 24, "lejarat": null }
+    ]
+  },
+  {
+    "nev": "Fúrógép (Einhell special edition 63)",
+    "gyarto": "Einhell",
+    "kategoria": "BARKACS",
+    "beszerzesiAr": 30306,
+    "eladasiAr": 37269,
+    "suly": 2.2,
+    "minimumKeszlet": 45,
+    "batches": [
+      { "parcella": "C1-2", "mennyiseg": 82, "lejarat": null },
+      { "parcella": "C1-3", "mennyiseg": 96, "lejarat": null }
+    ]
+  },
+  {
+    "nev": "Nyomtatópapír 500 lap (Esselte special edition 64)",
+    "gyarto": "Esselte",
+    "kategoria": "IRODASZER",
+    "beszerzesiAr": 35133,
+    "eladasiAr": 52929,
+    "suly": 2.5,
+    "minimumKeszlet": 31,
+    "batches": [
+      { "parcella": "C3-1", "mennyiseg": 46, "lejarat": null }
+    ]
+  },
+  {
+    "nev": "WC tisztító (Jar special edition 65)",
+    "gyarto": "Jar",
+    "kategoria": "VEGYSZER",
+    "beszerzesiAr": 83300,
+    "eladasiAr": 136540,
+    "suly": 1.2,
+    "minimumKeszlet": 32,
+    "batches": [
+      { "parcella": "C2-4", "mennyiseg": 98, "lejarat": "2027-06-10T22:09:23.849946Z" }
+    ]
+  },
+  {
+    "nev": "Vitamin C 1000mg (Richter special edition 66)",
+    "gyarto": "Richter",
+    "kategoria": "EGESZSEGUGY",
+    "beszerzesiAr": 113868,
+    "eladasiAr": 197222,
+    "suly": 0.1,
+    "minimumKeszlet": 23,
+    "batches": [
+      { "parcella": "C2-3", "mennyiseg": 70, "lejarat": "2027-01-10T22:09:23.849971Z" },
+      { "parcella": "A4-3", "mennyiseg": 99, "lejarat": "2026-05-13T22:09:23.849981Z" }
+    ]
+  },
+  {
+    "nev": "Könyvespolc (IKEA special edition 67)",
+    "gyarto": "IKEA",
+    "kategoria": "BUTOR",
+    "beszerzesiAr": 123973,
+    "eladasiAr": 195319,
+    "suly": 8.84,
+    "minimumKeszlet": 43,
+    "batches": [
+      { "parcella": "B1-1", "mennyiseg": 27, "lejarat": null },
+      { "parcella": "B4-3", "mennyiseg": 10, "lejarat": null }
+    ]
+  },
+  {
+    "nev": "Fúrógép (Makita special edition 68)",
+    "gyarto": "Makita",
+    "kategoria": "BARKACS",
+    "beszerzesiAr": 26203,
+    "eladasiAr": 40909,
+    "suly": 1.8,
+    "minimumKeszlet": 20,
+    "batches": [
+      { "parcella": "B5-2", "mennyiseg": 69, "lejarat": null },
+      { "parcella": "D3-4", "mennyiseg": 88, "lejarat": null }
+    ]
+  },
+  {
+    "nev": "Csirkemell filé (Nestlé special edition 69)",
+    "gyarto": "Nestlé",
+    "kategoria": "ELELMISZER",
+    "beszerzesiAr": 12760,
+    "eladasiAr": 18603,
+    "suly": 1.0,
+    "minimumKeszlet": 28,
+    "batches": [
+      { "parcella": "C5-3", "mennyiseg": 24, "lejarat": "2026-12-02T22:09:23.850059Z" },
+      { "parcella": "D3-4", "mennyiseg": 89, "lejarat": "2026-10-06T22:09:23.850074Z" }
+    ]
+  },
+  {
+    "nev": "Féktárcsa (Bosch special edition 70)",
+    "gyarto": "Bosch",
+    "kategoria": "AUTO_MOTOR",
+    "beszerzesiAr": 101607,
+    "eladasiAr": 138267,
+    "suly": 4.5,
+    "minimumKeszlet": 8,
+    "batches": []
+  },
+  {
+    "nev": "Hátizsák 20L (Decathlon special edition 71)",
+    "gyarto": "Decathlon",
+    "kategoria": "SPORT",
+    "beszerzesiAr": 1729,
+    "eladasiAr": 2876,
+    "suly": 0.6,
+    "minimumKeszlet": 23,
+    "batches": [
+      { "parcella": "B4-1", "mennyiseg": 18, "lejarat": null },
+      { "parcella": "C3-4", "mennyiseg": 81, "lejarat": null }
+    ]
+  },
+  {
+    "nev": "Futócipő (Kipsta special edition 72)",
+    "gyarto": "Kipsta",
+    "kategoria": "SPORT",
+    "beszerzesiAr": 17051,
+    "eladasiAr": 23071,
+    "suly": 0.8,
+    "minimumKeszlet": 48,
+    "batches": [
+      { "parcella": "C3-3", "mennyiseg": 22, "lejarat": null },
+      { "parcella": "B1-4", "mennyiseg": 92, "lejarat": null },
+      { "parcella": "D2-1", "mennyiseg": 92, "lejarat": null }
+    ]
+  },
+  {
+    "nev": "Öblítő 2L (Ariel special edition 73)",
+    "gyarto": "Ariel",
+    "kategoria": "VEGYSZER",
+    "beszerzesiAr": 56564,
+    "eladasiAr": 84850,
+    "suly": 2.1,
+    "minimumKeszlet": 42,
+    "batches": [
+      { "parcella": "A4-1", "mennyiseg": 68, "lejarat": "2026-09-07T22:09:23.850166Z" }
+    ]
+  },
+  {
+    "nev": "Gyerekkönyv (Libri special edition 74)",
+    "gyarto": "Libri",
+    "kategoria": "KONYVEK",
+    "beszerzesiAr": 137693,
+    "eladasiAr": 246127,
+    "suly": 0.4,
+    "minimumKeszlet": 28,
+    "batches": []
+  },
+  {
+    "nev": "Sampon 400ml (Nivea special edition 75)",
+    "gyarto": "Nivea",
+    "kategoria": "KOZMETIKA",
+    "beszerzesiAr": 115636,
+    "eladasiAr": 162999,
+    "suly": 0.45,
+    "minimumKeszlet": 7,
+    "batches": [
+      { "parcella": "C4-3", "mennyiseg": 24, "lejarat": "2026-06-02T22:09:23.850196Z" },
+      { "parcella": "B5-1", "mennyiseg": 10, "lejarat": "2027-02-25T22:09:23.850204Z" }
+    ]
+  },
+  {
+    "nev": "Billentyűzet (Sony special edition 76)",
+    "gyarto": "Sony",
+    "kategoria": "ELEKTRONIKA",
+    "beszerzesiAr": 133804,
+    "eladasiAr": 233666,
+    "suly": 0.6,
+    "minimumKeszlet": 30,
+    "batches": [
+      { "parcella": "B3-1", "mennyiseg": 5, "lejarat": null },
+      { "parcella": "B1-1", "mennyiseg": 71, "lejarat": null }
+    ]
+  },
+  {
+    "nev": "WC tisztító (Ariel special edition 77)",
+    "gyarto": "Ariel",
+    "kategoria": "VEGYSZER",
+    "beszerzesiAr": 146876,
+    "eladasiAr": 241226,
+    "suly": 1.2,
+    "minimumKeszlet": 7,
+    "batches": [
+      { "parcella": "C1-4", "mennyiseg": 39, "lejarat": "2026-06-03T22:09:23.850257Z" }
+    ]
+  },
+  {
+    "nev": "Jógamatrac (Quechua special edition 78)",
+    "gyarto": "Quechua",
+    "kategoria": "SPORT",
+    "beszerzesiAr": 130898,
+    "eladasiAr": 171102,
+    "suly": 1.2,
+    "minimumKeszlet": 6,
+    "batches": [
+      { "parcella": "B2-3", "mennyiseg": 13, "lejarat": null },
+      { "parcella": "C4-1", "mennyiseg": 79, "lejarat": null },
+      { "parcella": "D5-4", "mennyiseg": 18, "lejarat": null }
+    ]
+  },
+  {
+    "nev": "Íróasztal (IKEA special edition 79)",
+    "gyarto": "IKEA",
+    "kategoria": "BUTOR",
+    "beszerzesiAr": 47317,
+    "eladasiAr": 81638,
+    "suly": 18.26,
+    "minimumKeszlet": 8,
+    "batches": [
+      { "parcella": "A2-3", "mennyiseg": 42, "lejarat": null },
+      { "parcella": "A3-4", "mennyiseg": 81, "lejarat": null }
+    ]
+  },
+  {
+    "nev": "Krimi regény (Helikon special edition 80)",
+    "gyarto": "Helikon",
+    "kategoria": "KONYVEK",
+    "beszerzesiAr": 108571,
+    "eladasiAr": 137510,
+    "suly": 0.5,
+    "minimumKeszlet": 13,
+    "batches": [
+      { "parcella": "C3-1", "mennyiseg": 63, "lejarat": null },
+      { "parcella": "D4-1", "mennyiseg": 92, "lejarat": null },
+      { "parcella": "C5-3", "mennyiseg": 25, "lejarat": null }
+    ]
+  },
+  {
+    "nev": "Krimi regény (Európa special edition 81)",
+    "gyarto": "Európa",
+    "kategoria": "KONYVEK",
+    "beszerzesiAr": 111372,
+    "eladasiAr": 145851,
+    "suly": 0.5,
+    "minimumKeszlet": 43,
+    "batches": [
+      { "parcella": "C1-1", "mennyiseg": 95, "lejarat": null },
+      { "parcella": "A4-1", "mennyiseg": 20, "lejarat": null }
+    ]
+  },
+  {
+    "nev": "Motorolaj 5W30 (Bosch special edition 82)",
+    "gyarto": "Bosch",
+    "kategoria": "AUTO_MOTOR",
+    "beszerzesiAr": 44091,
+    "eladasiAr": 69527,
+    "suly": 4.8,
+    "minimumKeszlet": 40,
+    "batches": [
+      { "parcella": "D3-1", "mennyiseg": 80, "lejarat": null },
+      { "parcella": "A2-4", "mennyiseg": 67, "lejarat": null }
+    ]
+  },
+  {
+    "nev": "Okostelefon S21 (Apple special edition 83)",
+    "gyarto": "Apple",
+    "kategoria": "ELEKTRONIKA",
+    "beszerzesiAr": 39749,
+    "eladasiAr": 52851,
+    "suly": 0.2,
+    "minimumKeszlet": 40,
+    "batches": [
+      { "parcella": "A2-3", "mennyiseg": 83, "lejarat": null },
+      { "parcella": "B3-2", "mennyiseg": 71, "lejarat": null }
+    ]
+  },
+  {
+    "nev": "Mosókapszula (Cillit Bang special edition 84)",
+    "gyarto": "Cillit Bang",
+    "kategoria": "VEGYSZER",
+    "beszerzesiAr": 127747,
+    "eladasiAr": 195964,
+    "suly": 1.5,
+    "minimumKeszlet": 27,
+    "batches": [
+      { "parcella": "A3-3", "mennyiseg": 100, "lejarat": "2027-03-11T22:09:23.851578Z" }
+    ]
+  },
+  {
+    "nev": "Zsíroldó spray (Domestos special edition 85)",
+    "gyarto": "Domestos",
+    "kategoria": "VEGYSZER",
+    "beszerzesiAr": 144703,
+    "eladasiAr": 184977,
+    "suly": 0.8,
+    "minimumKeszlet": 25,
+    "batches": [
+      { "parcella": "D5-3", "mennyiseg": 62, "lejarat": "2026-05-26T22:09:23.851617Z" },
+      { "parcella": "A3-1", "mennyiseg": 91, "lejarat": "2026-04-12T22:09:23.851630Z" }
+    ]
+  },
+  {
+    "nev": "Alma Golden (Mizo special edition 86)",
+    "gyarto": "Mizo",
+    "kategoria": "ELELMISZER",
+    "beszerzesiAr": 18592,
+    "eladasiAr": 23067,
+    "suly": 0.2,
+    "minimumKeszlet": 12,
+    "batches": [
+      { "parcella": "C4-3", "mennyiseg": 13, "lejarat": "2027-02-28T22:09:23.851648Z" }
+    ]
+  },
+  {
+    "nev": "Csiszológép (Bosch special edition 87)",
+    "gyarto": "Bosch",
+    "kategoria": "BARKACS",
+    "beszerzesiAr": 292,
+    "eladasiAr": 441,
+    "suly": 2.8,
+    "minimumKeszlet": 24,
+    "batches": [
+      { "parcella": "B5-3", "mennyiseg": 2, "lejarat": null }
+    ]
+  },
+  {
+    "nev": "Alma Golden (Nestlé special edition 88)",
+    "gyarto": "Nestlé",
+    "kategoria": "ELELMISZER",
+    "beszerzesiAr": 78209,
+    "eladasiAr": 98503,
+    "suly": 0.2,
+    "minimumKeszlet": 36,
+    "batches": [
+      { "parcella": "B2-3", "mennyiseg": 94, "lejarat": "2026-05-15T22:09:23.851677Z" }
+    ]
+  },
+  {
+    "nev": "Társasjáték (Mattel special edition 89)",
+    "gyarto": "Mattel",
+    "kategoria": "JATEK",
+    "beszerzesiAr": 139945,
+    "eladasiAr": 174658,
+    "suly": 1.2,
+    "minimumKeszlet": 47,
+    "batches": []
+  },
+  {
+    "nev": "Mosókapszula (Ariel special edition 90)",
+    "gyarto": "Ariel",
+    "kategoria": "VEGYSZER",
+    "beszerzesiAr": 105177,
+    "eladasiAr": 131431,
+    "suly": 1.5,
+    "minimumKeszlet": 5,
+    "batches": [
+      { "parcella": "B4-1", "mennyiseg": 36, "lejarat": "2026-07-16T22:09:23.851700Z" }
+    ]
+  },
+  {
+    "nev": "Kapucnis pulóver (Nike special edition 91)",
+    "gyarto": "Nike",
+    "kategoria": "RUHAZAT",
+    "beszerzesiAr": 78582,
+    "eladasiAr": 124213,
+    "suly": 0.6,
+    "minimumKeszlet": 45,
+    "batches": [
+      { "parcella": "D3-2", "mennyiseg": 6, "lejarat": null }
+    ]
+  },
+  {
+    "nev": "Ablaktörlő lapát (Bosch special edition 92)",
+    "gyarto": "Bosch",
+    "kategoria": "AUTO_MOTOR",
+    "beszerzesiAr": 117164,
+    "eladasiAr": 192398,
+    "suly": 0.5,
+    "minimumKeszlet": 7,
+    "batches": [
+      { "parcella": "B5-3", "mennyiseg": 82, "lejarat": null }
+    ]
+  },
+  {
+    "nev": "Billentyűzet (Sony special edition 93)",
+    "gyarto": "Sony",
+    "kategoria": "ELEKTRONIKA",
+    "beszerzesiAr": 40127,
+    "eladasiAr": 61439,
+    "suly": 0.7,
+    "minimumKeszlet": 23,
+    "batches": [
+      { "parcella": "A5-3", "mennyiseg": 34, "lejarat": null },
+      { "parcella": "D3-3", "mennyiseg": 40, "lejarat": null },
+      { "parcella": "A5-4", "mennyiseg": 14, "lejarat": null }
+    ]
+  },
+  {
+    "nev": "Elsősegély készlet (Bayer special edition 94)",
+    "gyarto": "Bayer",
+    "kategoria": "EGESZSEGUGY",
+    "beszerzesiAr": 106482,
+    "eladasiAr": 184051,
+    "suly": 1.2,
+    "minimumKeszlet": 24,
+    "batches": [
+      { "parcella": "C1-2", "mennyiseg": 94, "lejarat": "2027-02-05T22:09:23.851812Z" }
+    ]
+  },
+  {
+    "nev": "Történelmi atlasz (Európa special edition 95)",
+    "gyarto": "Európa",
+    "kategoria": "KONYVEK",
+    "beszerzesiAr": 82440,
+    "eladasiAr": 104332,
+    "suly": 1.2,
+    "minimumKeszlet": 38,
+    "batches": []
+  },
+  {
+    "nev": "Építőkocka készlet (Lego special edition 96)",
+    "gyarto": "Lego",
+    "kategoria": "JATEK",
+    "beszerzesiAr": 104983,
+    "eladasiAr": 157251,
+    "suly": 1.5,
+    "minimumKeszlet": 35,
+    "batches": [
+      { "parcella": "D1-2", "mennyiseg": 17, "lejarat": null }
+    ]
+  },
+  {
+    "nev": "Motorolaj 5W30 (Continental special edition 97)",
+    "gyarto": "Continental",
+    "kategoria": "AUTO_MOTOR",
+    "beszerzesiAr": 74448,
+    "eladasiAr": 107331,
+    "suly": 4.5,
+    "minimumKeszlet": 49,
+    "batches": [
+      { "parcella": "D4-3", "mennyiseg": 78, "lejarat": null },
+      { "parcella": "D3-1", "mennyiseg": 71, "lejarat": null },
+      { "parcella": "B2-4", "mennyiseg": 21, "lejarat": null }
+    ]
+  },
+  {
+    "nev": "Ablaktörlő lapát (Michelin special edition 98)",
+    "gyarto": "Michelin",
+    "kategoria": "AUTO_MOTOR",
+    "beszerzesiAr": 47418,
+    "eladasiAr": 64565,
+    "suly": 0.5,
+    "minimumKeszlet": 9,
+    "batches": [
+      { "parcella": "C2-2", "mennyiseg": 45, "lejarat": null }
+    ]
+  },
+  {
+    "nev": "Íróasztal (JYSK special edition 99)",
+    "gyarto": "JYSK",
+    "kategoria": "BUTOR",
+    "beszerzesiAr": 32207,
+    "eladasiAr": 40632,
+    "suly": 18.73,
+    "minimumKeszlet": 11,
+    "batches": [
+      { "parcella": "B1-2", "mennyiseg": 42, "lejarat": null }
+    ]
+  },
+  {
+    "nev": "Levegőszűrő (Bosch special edition 100)",
+    "gyarto": "Bosch",
+    "kategoria": "AUTO_MOTOR",
+    "beszerzesiAr": 133240,
+    "eladasiAr": 207957,
+    "suly": 0.8,
+    "minimumKeszlet": 30,
+    "batches": [
+      { "parcella": "D4-2", "mennyiseg": 41, "lejarat": null }
+    ]
+  },
+  {
+    "nev": "Esőkabát (Nike special edition 101)",
+    "gyarto": "Nike",
+    "kategoria": "RUHAZAT",
+    "beszerzesiAr": 128018,
+    "eladasiAr": 202045,
+    "suly": 0.6,
+    "minimumKeszlet": 22,
+    "batches": [
+      { "parcella": "A5-3", "mennyiseg": 69, "lejarat": null },
+      { "parcella": "A2-4", "mennyiseg": 48, "lejarat": null }
+    ]
+  },
+  {
+    "nev": "Sci-fi antológia (Európa special edition 102)",
+    "gyarto": "Európa",
+    "kategoria": "KONYVEK",
+    "beszerzesiAr": 48309,
+    "eladasiAr": 59812,
+    "suly": 0.5,
+    "minimumKeszlet": 18,
+    "batches": [
+      { "parcella": "B5-1", "mennyiseg": 82, "lejarat": null }
+    ]
+  },
+  {
+    "nev": "Plüss maci (Mattel special edition 103)",
+    "gyarto": "Mattel",
+    "kategoria": "JATEK",
+    "beszerzesiAr": 46242,
+    "eladasiAr": 64973,
+    "suly": 0.4,
+    "minimumKeszlet": 23,
+    "batches": [
+      { "parcella": "C4-4", "mennyiseg": 85, "lejarat": null }
+    ]
+  },
+  {
+    "nev": "Esernyő (Generic Co special edition 104)",
+    "gyarto": "Generic Co",
+    "kategoria": "EGYEB",
+    "beszerzesiAr": 117050,
+    "eladasiAr": 169587,
+    "suly": 0.6,
+    "minimumKeszlet": 19,
+    "batches": [
+      { "parcella": "A4-1", "mennyiseg": 82, "lejarat": null }
+    ]
+  },
+  {
+    "nev": "Okostelefon S21 (HP special edition 105)",
+    "gyarto": "HP",
+    "kategoria": "ELEKTRONIKA",
+    "beszerzesiAr": 104575,
+    "eladasiAr": 176954,
+    "suly": 0.2,
+    "minimumKeszlet": 18,
+    "batches": [
+      { "parcella": "C3-2", "mennyiseg": 29, "lejarat": null }
+    ]
+  },
+  {
+    "nev": "Babzsákfotel (Herman Miller special edition 106)",
+    "gyarto": "Herman Miller",
+    "kategoria": "BUTOR",
+    "beszerzesiAr": 58164,
+    "eladasiAr": 104376,
+    "suly": 5.07,
+    "minimumKeszlet": 15,
+    "batches": [
+      { "parcella": "C4-2", "mennyiseg": 98, "lejarat": null },
+      { "parcella": "C5-4", "mennyiseg": 1, "lejarat": null }
+    ]
+  },
+  {
+    "nev": "Póló pamut (Adidas special edition 107)",
+    "gyarto": "Adidas",
+    "kategoria": "RUHAZAT",
+    "beszerzesiAr": 119935,
+    "eladasiAr": 156826,
+    "suly": 0.2,
+    "minimumKeszlet": 15,
+    "batches": [
+      { "parcella": "B4-3", "mennyiseg": 55, "lejarat": null },
+      { "parcella": "D4-2", "mennyiseg": 71, "lejarat": null },
+      { "parcella": "A3-2", "mennyiseg": 26, "lejarat": null }
+    ]
+  },
+  {
+    "nev": "Fúrógép (Bosch special edition 108)",
+    "gyarto": "Bosch",
+    "kategoria": "BARKACS",
+    "beszerzesiAr": 68132,
+    "eladasiAr": 95720,
+    "suly": 2.2,
+    "minimumKeszlet": 14,
+    "batches": [
+      { "parcella": "B2-1", "mennyiseg": 29, "lejarat": null }
+    ]
+  },
+  {
+    "nev": "Gemkapocs 100db (Esselte special edition 109)",
+    "gyarto": "Esselte",
+    "kategoria": "IRODASZER",
+    "beszerzesiAr": 17418,
+    "eladasiAr": 26647,
+    "suly": 0.1,
+    "minimumKeszlet": 14,
+    "batches": [
+      { "parcella": "C4-4", "mennyiseg": 31, "lejarat": null }
+    ]
+  },
+  {
+    "nev": "Dezodor spray (Old Spice special edition 110)",
+    "gyarto": "Old Spice",
+    "kategoria": "KOZMETIKA",
+    "beszerzesiAr": 142364,
+    "eladasiAr": 230463,
+    "suly": 0.2,
+    "minimumKeszlet": 35,
+    "batches": [
+      { "parcella": "A2-3", "mennyiseg": 83, "lejarat": "2026-07-10T22:09:23.852126Z" }
+    ]
+  },
+  {
+    "nev": "Babzsákfotel (JYSK special edition 111)",
+    "gyarto": "JYSK",
+    "kategoria": "BUTOR",
+    "beszerzesiAr": 85578,
+    "eladasiAr": 125593,
+    "suly": 5.87,
+    "minimumKeszlet": 25,
+    "batches": [
+      { "parcella": "A1-3", "mennyiseg": 24, "lejarat": null }
+    ]
+  },
+  {
+    "nev": "Tojás 10 db (Pékműhely special edition 112)",
+    "gyarto": "Pékműhely",
+    "kategoria": "ELELMISZER",
+    "beszerzesiAr": 48053,
+    "eladasiAr": 65157,
+    "suly": 0.5,
+    "minimumKeszlet": 20,
+    "batches": [
+      { "parcella": "D5-4", "mennyiseg": 18, "lejarat": "2027-06-21T22:09:23.852193Z" }
+    ]
+  },
+  {
+    "nev": "Levegőszűrő (Castrol special edition 113)",
+    "gyarto": "Castrol",
+    "kategoria": "AUTO_MOTOR",
+    "beszerzesiAr": 35820,
+    "eladasiAr": 45573,
+    "suly": 0.5,
+    "minimumKeszlet": 38,
+    "batches": []
+  },
+  {
+    "nev": "Távirányítós autó (Hasbro special edition 114)",
+    "gyarto": "Hasbro",
+    "kategoria": "JATEK",
+    "beszerzesiAr": 144701,
+    "eladasiAr": 197361,
+    "suly": 1.0,
+    "minimumKeszlet": 23,
+    "batches": [
+      { "parcella": "C5-3", "mennyiseg": 73, "lejarat": null }
+    ]
+  },
+  {
+    "nev": "Porszívó (Tefal special edition 115)",
+    "gyarto": "Tefal",
+    "kategoria": "HAZTARTAS",
+    "beszerzesiAr": 22962,
+    "eladasiAr": 30988,
+    "suly": 6.19,
+    "minimumKeszlet": 45,
+    "batches": [
+      { "parcella": "B5-1", "mennyiseg": 74, "lejarat": null },
+      { "parcella": "C5-3", "mennyiseg": 21, "lejarat": null }
+    ]
+  },
+  {
+    "nev": "Irodai szék (IKEA special edition 116)",
+    "gyarto": "IKEA",
+    "kategoria": "BUTOR",
+    "beszerzesiAr": 14414,
+    "eladasiAr": 25386,
+    "suly": 15.53,
+    "minimumKeszlet": 5,
+    "batches": []
+  },
+  {
+    "nev": "Ablaktörlő lapát (Bosch special edition 117)",
+    "gyarto": "Bosch",
+    "kategoria": "AUTO_MOTOR",
+    "beszerzesiAr": 6831,
+    "eladasiAr": 9493,
+    "suly": 0.5,
+    "minimumKeszlet": 25,
+    "batches": [
+      { "parcella": "C5-4", "mennyiseg": 66, "lejarat": null }
+    ]
+  },
+  {
+    "nev": "Vízforraló (Philips special edition 118)",
+    "gyarto": "Philips",
+    "kategoria": "HAZTARTAS",
+    "beszerzesiAr": 109644,
+    "eladasiAr": 141740,
+    "suly": 0.8,
+    "minimumKeszlet": 30,
+    "batches": [
+      { "parcella": "B5-4", "mennyiseg": 18, "lejarat": null }
+    ]
+  },
+  {
+    "nev": "Tej 3.5% (Biofarm special edition 119)",
+    "gyarto": "Biofarm",
+    "kategoria": "ELELMISZER",
+    "beszerzesiAr": 34319,
+    "eladasiAr": 59419,
+    "suly": 1.0,
+    "minimumKeszlet": 32,
+    "batches": [
+      { "parcella": "A5-2", "mennyiseg": 75, "lejarat": "2027-05-11T22:09:23.852313Z" }
+    ]
+  },
+  {
+    "nev": "Zokni 3 pár (Nike special edition 120)",
+    "gyarto": "Nike",
+    "kategoria": "RUHAZAT",
+    "beszerzesiAr": 66853,
+    "eladasiAr": 107123,
+    "suly": 0.1,
+    "minimumKeszlet": 26,
+    "batches": []
+  },
+  {
+    "nev": "Gemkapocs 100db (Parker special edition 121)",
+    "gyarto": "Parker",
+    "kategoria": "IRODASZER",
+    "beszerzesiAr": 88619,
+    "eladasiAr": 139776,
+    "suly": 0.1,
+    "minimumKeszlet": 10,
+    "batches": [
+      { "parcella": "A4-2", "mennyiseg": 70, "lejarat": null },
+      { "parcella": "A1-4", "mennyiseg": 90, "lejarat": null }
+    ]
+  },
+  {
+    "nev": "Kulcstartó (RaktárWeb Brand special edition 122)",
+    "gyarto": "RaktárWeb Brand",
+    "kategoria": "EGYEB",
+    "beszerzesiAr": 22636,
+    "eladasiAr": 40429,
+    "suly": 0.1,
+    "minimumKeszlet": 25,
+    "batches": [
+      { "parcella": "A5-1", "mennyiseg": 10, "lejarat": null }
+    ]
+  },
+  {
+    "nev": "Történelmi atlasz (Helikon special edition 123)",
+    "gyarto": "Helikon",
+    "kategoria": "KONYVEK",
+    "beszerzesiAr": 96479,
+    "eladasiAr": 131265,
+    "suly": 1.2,
+    "minimumKeszlet": 43,
+    "batches": [
+      { "parcella": "C2-4", "mennyiseg": 80, "lejarat": null }
+    ]
+  },
+  {
+    "nev": "Kulcstartó (RaktárWeb Brand special edition 124)",
+    "gyarto": "RaktárWeb Brand",
+    "kategoria": "EGYEB",
+    "beszerzesiAr": 66848,
+    "eladasiAr": 111806,
+    "suly": 0.1,
+    "minimumKeszlet": 44,
+    "batches": [
+      { "parcella": "B4-3", "mennyiseg": 81, "lejarat": null }
+    ]
+  },
+  {
+    "nev": "Teniszütő (Kipsta special edition 125)",
+    "gyarto": "Kipsta",
+    "kategoria": "SPORT",
+    "beszerzesiAr": 117837,
+    "eladasiAr": 154065,
+    "suly": 0.3,
+    "minimumKeszlet": 9,
+    "batches": [
+      { "parcella": "D5-2", "mennyiseg": 59, "lejarat": null },
+      { "parcella": "B3-4", "mennyiseg": 27, "lejarat": null }
+    ]
+  },
+  {
+    "nev": "Motorolaj 5W30 (Castrol special edition 126)",
+    "gyarto": "Castrol",
+    "kategoria": "AUTO_MOTOR",
+    "beszerzesiAr": 5159,
+    "eladasiAr": 7754,
+    "suly": 4.56,
+    "minimumKeszlet": 50,
+    "batches": []
+  },
+  {
+    "nev": "Elem AA 4db (RaktárWeb Brand special edition 127)",
+    "gyarto": "RaktárWeb Brand",
+    "kategoria": "EGYEB",
+    "beszerzesiAr": 57579,
+    "eladasiAr": 76340,
+    "suly": 0.1,
+    "minimumKeszlet": 38,
+    "batches": [
+      { "parcella": "C2-4", "mennyiseg": 66, "lejarat": null }
+    ]
+  },
+  {
+    "nev": "Íróasztal (IKEA special edition 128)",
+    "gyarto": "IKEA",
+    "kategoria": "BUTOR",
+    "beszerzesiAr": 123771,
+    "eladasiAr": 162783,
+    "suly": 21.02,
+    "minimumKeszlet": 16,
+    "batches": [
+      { "parcella": "A4-1", "mennyiseg": 79, "lejarat": null }
+    ]
+  },
+  {
+    "nev": "Fúrógép (Makita special edition 129)",
+    "gyarto": "Makita",
+    "kategoria": "BARKACS",
+    "beszerzesiAr": 121143,
+    "eladasiAr": 177407,
+    "suly": 1.8,
+    "minimumKeszlet": 40,
+    "batches": [
+      { "parcella": "B2-4", "mennyiseg": 41, "lejarat": null }
+    ]
+  },
+  {
+    "nev": "Gyerekkönyv (Európa special edition 130)",
+    "gyarto": "Európa",
+    "kategoria": "KONYVEK",
+    "beszerzesiAr": 33240,
+    "eladasiAr": 43820,
+    "suly": 0.5,
+    "minimumKeszlet": 11,
+    "batches": [
+      { "parcella": "A3-3", "mennyiseg": 21, "lejarat": null },
+      { "parcella": "A2-4", "mennyiseg": 17, "lejarat": null },
+      { "parcella": "D5-3", "mennyiseg": 22, "lejarat": null }
+    ]
+  },
+  {
+    "nev": "Folyékony szappan (Nivea special edition 131)",
+    "gyarto": "Nivea",
+    "kategoria": "KOZMETIKA",
+    "beszerzesiAr": 130896,
+    "eladasiAr": 164488,
+    "suly": 0.5,
+    "minimumKeszlet": 5,
+    "batches": [
+      { "parcella": "C5-2", "mennyiseg": 72, "lejarat": "2026-12-27T22:09:23.852532Z" }
+    ]
+  },
+  {
+    "nev": "Kapucnis pulóver (H&M special edition 132)",
+    "gyarto": "H&M",
+    "kategoria": "RUHAZAT",
+    "beszerzesiAr": 40185,
+    "eladasiAr": 61365,
+    "suly": 0.6,
+    "minimumKeszlet": 10,
+    "batches": [
+      { "parcella": "A4-1", "mennyiseg": 93, "lejarat": null },
+      { "parcella": "A4-2", "mennyiseg": 42, "lejarat": null }
+    ]
+  },
+  {
+    "nev": "Fúrógép (Einhell special edition 133)",
+    "gyarto": "Einhell",
+    "kategoria": "BARKACS",
+    "beszerzesiAr": 144956,
+    "eladasiAr": 254482,
+    "suly": 2.2,
+    "minimumKeszlet": 25,
+    "batches": [
+      { "parcella": "B5-2", "mennyiseg": 35, "lejarat": null }
+    ]
+  },
+  {
+    "nev": "Golyóstoll (Esselte special edition 134)",
+    "gyarto": "Esselte",
+    "kategoria": "IRODASZER",
+    "beszerzesiAr": 90645,
+    "eladasiAr": 158341,
+    "suly": 0.1,
+    "minimumKeszlet": 40,
+    "batches": [
+      { "parcella": "B4-3", "mennyiseg": 17, "lejarat": null }
+    ]
+  },
+  {
+    "nev": "Vállfa szett (RaktárWeb Brand special edition 135)",
+    "gyarto": "RaktárWeb Brand",
+    "kategoria": "EGYEB",
+    "beszerzesiAr": 29053,
+    "eladasiAr": 49938,
+    "suly": 0.2,
+    "minimumKeszlet": 38,
+    "batches": [
+      { "parcella": "A4-4", "mennyiseg": 89, "lejarat": null },
+      { "parcella": "D4-1", "mennyiseg": 56, "lejarat": null }
+    ]
+  },
+  {
+    "nev": "Kenyér fehér (Bonafarm special edition 136)",
+    "gyarto": "Bonafarm",
+    "kategoria": "ELELMISZER",
+    "beszerzesiAr": 109901,
+    "eladasiAr": 152805,
+    "suly": 0.5,
+    "minimumKeszlet": 43,
+    "batches": [
+      { "parcella": "D2-2", "mennyiseg": 100, "lejarat": "2027-07-05T22:09:23.852632Z" }
+    ]
+  },
+  {
+    "nev": "Kapucnis pulóver (Adidas special edition 137)",
+    "gyarto": "Adidas",
+    "kategoria": "RUHAZAT",
+    "beszerzesiAr": 29028,
+    "eladasiAr": 48002,
+    "suly": 0.6,
+    "minimumKeszlet": 19,
+    "batches": [
+      { "parcella": "D1-4", "mennyiseg": 76, "lejarat": null },
+      { "parcella": "D3-2", "mennyiseg": 51, "lejarat": null },
+      { "parcella": "A5-2", "mennyiseg": 74, "lejarat": null }
+    ]
+  },
+  {
+    "nev": "Társasjáték (Hasbro special edition 138)",
+    "gyarto": "Hasbro",
+    "kategoria": "JATEK",
+    "beszerzesiAr": 86960,
+    "eladasiAr": 139432,
+    "suly": 0.8,
+    "minimumKeszlet": 8,
+    "batches": [
+      { "parcella": "D1-3", "mennyiseg": 91, "lejarat": null },
+      { "parcella": "B4-2", "mennyiseg": 74, "lejarat": null }
+    ]
+  },
+  {
+    "nev": "Okostelefon S21 (Apple special edition 139)",
+    "gyarto": "Apple",
+    "kategoria": "ELEKTRONIKA",
+    "beszerzesiAr": 79132,
+    "eladasiAr": 121151,
+    "suly": 0.2,
+    "minimumKeszlet": 32,
+    "batches": [
+      { "parcella": "D4-2", "mennyiseg": 40, "lejarat": null }
+    ]
+  },
+  {
+    "nev": "Mosókapszula (Jar special edition 140)",
+    "gyarto": "Jar",
+    "kategoria": "VEGYSZER",
+    "beszerzesiAr": 12254,
+    "eladasiAr": 18980,
+    "suly": 1.5,
+    "minimumKeszlet": 6,
+    "batches": []
+  },
+  {
+    "nev": "Billentyűzet (Dell special edition 141)",
+    "gyarto": "Dell",
+    "kategoria": "ELEKTRONIKA",
+    "beszerzesiAr": 25334,
+    "eladasiAr": 39198,
+    "suly": 0.7,
+    "minimumKeszlet": 9,
+    "batches": [
+      { "parcella": "A2-4", "mennyiseg": 76, "lejarat": null },
+      { "parcella": "B1-2", "mennyiseg": 97, "lejarat": null }
+    ]
+  },
+  {
+    "nev": "Fúrógép (Black+Decker special edition 142)",
+    "gyarto": "Black+Decker",
+    "kategoria": "BARKACS",
+    "beszerzesiAr": 123375,
+    "eladasiAr": 197339,
+    "suly": 1.8,
+    "minimumKeszlet": 25,
+    "batches": [
+      { "parcella": "A1-3", "mennyiseg": 56, "lejarat": null }
+    ]
+  },
+  {
+    "nev": "Motorolaj 5W30 (Castrol special edition 143)",
+    "gyarto": "Castrol",
+    "kategoria": "AUTO_MOTOR",
+    "beszerzesiAr": 147702,
+    "eladasiAr": 213951,
+    "suly": 4.8,
+    "minimumKeszlet": 47,
+    "batches": [
+      { "parcella": "A1-1", "mennyiseg": 7, "lejarat": null }
+    ]
+  },
+  {
+    "nev": "Monitor 27 inch (Apple special edition 144)",
+    "gyarto": "Apple",
+    "kategoria": "ELEKTRONIKA",
+    "beszerzesiAr": 44644,
+    "eladasiAr": 73537,
+    "suly": 4.8,
+    "minimumKeszlet": 7,
+    "batches": [
+      { "parcella": "A5-2", "mennyiseg": 12, "lejarat": null }
+    ]
+  },
+  {
+    "nev": "Billentyűzet (Dell special edition 145)",
+    "gyarto": "Dell",
+    "kategoria": "ELEKTRONIKA",
+    "beszerzesiAr": 61393,
+    "eladasiAr": 98408,
+    "suly": 0.6,
+    "minimumKeszlet": 46,
+    "batches": [
+      { "parcella": "C3-2", "mennyiseg": 91, "lejarat": null },
+      { "parcella": "C3-3", "mennyiseg": 6, "lejarat": null }
+    ]
+  },
+  {
+    "nev": "Vitamin C 1000mg (Richter special edition 146)",
+    "gyarto": "Richter",
+    "kategoria": "EGESZSEGUGY",
+    "beszerzesiAr": 65189,
+    "eladasiAr": 87310,
+    "suly": 0.1,
+    "minimumKeszlet": 28,
+    "batches": [
+      { "parcella": "A4-2", "mennyiseg": 94, "lejarat": "2026-12-05T22:09:23.852813Z" },
+      { "parcella": "B1-4", "mennyiseg": 60, "lejarat": "2026-10-11T22:09:23.852826Z" }
+    ]
+  },
+  {
+    "nev": "Kapucnis pulóver (Adidas special edition 147)",
+    "gyarto": "Adidas",
+    "kategoria": "RUHAZAT",
+    "beszerzesiAr": 95863,
+    "eladasiAr": 172038,
+    "suly": 0.6,
+    "minimumKeszlet": 18,
+    "batches": [
+      { "parcella": "A1-2", "mennyiseg": 1, "lejarat": null }
+    ]
+  },
+  {
+    "nev": "Súlyzó 5kg (Decathlon special edition 148)",
+    "gyarto": "Decathlon",
+    "kategoria": "SPORT",
+    "beszerzesiAr": 91032,
+    "eladasiAr": 116610,
+    "suly": 5.0,
+    "minimumKeszlet": 47,
+    "batches": [
+      { "parcella": "B1-2", "mennyiseg": 16, "lejarat": null }
+    ]
+  },
+  {
+    "nev": "Laptop T14 (Apple special edition 149)",
+    "gyarto": "Apple",
+    "kategoria": "ELEKTRONIKA",
+    "beszerzesiAr": 548,
+    "eladasiAr": 706,
+    "suly": 1.45,
+    "minimumKeszlet": 19,
+    "batches": [
+      { "parcella": "C2-1", "mennyiseg": 57, "lejarat": null },
+      { "parcella": "A4-2", "mennyiseg": 94, "lejarat": null }
+    ]
+  },
+  {
+    "nev": "Esőkabát (Levi's special edition 150)",
+    "gyarto": "Levi's",
+    "kategoria": "RUHAZAT",
+    "beszerzesiAr": 146179,
+    "eladasiAr": 182483,
+    "suly": 0.4,
+    "minimumKeszlet": 17,
+    "batches": [
+      { "parcella": "D5-1", "mennyiseg": 43, "lejarat": null }
+    ]
+  },
+  {
+    "nev": "Lázmérő (Pfizer special edition 151)",
+    "gyarto": "Pfizer",
+    "kategoria": "EGESZSEGUGY",
+    "beszerzesiAr": 73918,
+    "eladasiAr": 97978,
+    "suly": 0.1,
+    "minimumKeszlet": 47,
+    "batches": [
+      { "parcella": "D3-3", "mennyiseg": 11, "lejarat": "2026-05-21T22:09:23.852916Z" }
+    ]
+  },
+  {
+    "nev": "Esernyő (RaktárWeb Brand special edition 152)",
+    "gyarto": "RaktárWeb Brand",
+    "kategoria": "EGYEB",
+    "beszerzesiAr": 38547,
+    "eladasiAr": 59677,
+    "suly": 0.5,
+    "minimumKeszlet": 27,
+    "batches": [
+      { "parcella": "B1-3", "mennyiseg": 84, "lejarat": null }
+    ]
+  },
+  {
+    "nev": "Póló pamut (Nike special edition 153)",
+    "gyarto": "Nike",
+    "kategoria": "RUHAZAT",
+    "beszerzesiAr": 13557,
+    "eladasiAr": 17294,
+    "suly": 0.2,
+    "minimumKeszlet": 22,
+    "batches": [
+      { "parcella": "D3-2", "mennyiseg": 76, "lejarat": null },
+      { "parcella": "C3-1", "mennyiseg": 83, "lejarat": null },
+      { "parcella": "D5-4", "mennyiseg": 55, "lejarat": null }
+    ]
+  },
+  {
+    "nev": "Mosogatószer 1L (Domestos special edition 154)",
+    "gyarto": "Domestos",
+    "kategoria": "VEGYSZER",
+    "beszerzesiAr": 116956,
+    "eladasiAr": 179173,
+    "suly": 1.1,
+    "minimumKeszlet": 32,
+    "batches": [
+      { "parcella": "B4-1", "mennyiseg": 98, "lejarat": "2026-05-21T22:09:23.852968Z" }
+    ]
+  },
+  {
+    "nev": "Díszdoboz (RaktárWeb Brand special edition 155)",
+    "gyarto": "RaktárWeb Brand",
+    "kategoria": "EGYEB",
+    "beszerzesiAr": 92716,
+    "eladasiAr": 122090,
+    "suly": 0.3,
+    "minimumKeszlet": 45,
+    "batches": [
+      { "parcella": "C2-4", "mennyiseg": 45, "lejarat": null }
+    ]
+  },
+  {
+    "nev": "Elsősegély készlet (Bayer special edition 156)",
+    "gyarto": "Bayer",
+    "kategoria": "EGESZSEGUGY",
+    "beszerzesiAr": 10903,
+    "eladasiAr": 18689,
+    "suly": 0.5,
+    "minimumKeszlet": 14,
+    "batches": [
+      { "parcella": "B3-4", "mennyiseg": 60, "lejarat": "2027-02-07T22:09:23.853014Z" },
+      { "parcella": "A5-4", "mennyiseg": 25, "lejarat": "2027-01-26T22:09:23.853028Z" }
+    ]
+  },
+  {
+    "nev": "Társasjáték (Lego special edition 157)",
+    "gyarto": "Lego",
+    "kategoria": "JATEK",
+    "beszerzesiAr": 29492,
+    "eladasiAr": 43346,
+    "suly": 1.1,
+    "minimumKeszlet": 36,
+    "batches": [
+      { "parcella": "A1-4", "mennyiseg": 84, "lejarat": null }
+    ]
+  },
+  {
+    "nev": "Puzzle 1000 db (Hasbro special edition 158)",
+    "gyarto": "Hasbro",
+    "kategoria": "JATEK",
+    "beszerzesiAr": 118033,
+    "eladasiAr": 180532,
+    "suly": 0.5,
+    "minimumKeszlet": 32,
+    "batches": [
+      { "parcella": "D5-2", "mennyiseg": 56, "lejarat": null }
+    ]
+  },
+  {
+    "nev": "Fúrógép (Makita special edition 159)",
+    "gyarto": "Makita",
+    "kategoria": "BARKACS",
+    "beszerzesiAr": 133417,
+    "eladasiAr": 216227,
+    "suly": 1.8,
+    "minimumKeszlet": 24,
+    "batches": [
+      { "parcella": "B5-3", "mennyiseg": 57, "lejarat": null },
+      { "parcella": "C1-4", "mennyiseg": 64, "lejarat": null },
+      { "parcella": "B1-1", "mennyiseg": 29, "lejarat": null }
+    ]
+  },
+  {
+    "nev": "Futócipő (Quechua special edition 160)",
+    "gyarto": "Quechua",
+    "kategoria": "SPORT",
+    "beszerzesiAr": 148790,
+    "eladasiAr": 234909,
+    "suly": 0.8,
+    "minimumKeszlet": 50,
+    "batches": [
+      { "parcella": "B2-4", "mennyiseg": 53, "lejarat": null }
+    ]
+  },
+  {
+    "nev": "Gemkapocs 100db (Parker special edition 161)",
+    "gyarto": "Parker",
+    "kategoria": "IRODASZER",
+    "beszerzesiAr": 125290,
+    "eladasiAr": 166572,
+    "suly": 0.1,
+    "minimumKeszlet": 10,
+    "batches": [
+      { "parcella": "A4-1", "mennyiseg": 52, "lejarat": null }
+    ]
+  },
+  {
+    "nev": "Motorolaj 5W30 (Michelin special edition 162)",
+    "gyarto": "Michelin",
+    "kategoria": "AUTO_MOTOR",
+    "beszerzesiAr": 15804,
+    "eladasiAr": 19997,
+    "suly": 1.2,
+    "minimumKeszlet": 6,
+    "batches": [
+      { "parcella": "B4-3", "mennyiseg": 8, "lejarat": null },
+      { "parcella": "A5-1", "mennyiseg": 9, "lejarat": null }
+    ]
+  },
+  {
+    "nev": "Sci-fi antológia (Helikon special edition 163)",
+    "gyarto": "Helikon",
+    "kategoria": "KONYVEK",
+    "beszerzesiAr": 99202,
+    "eladasiAr": 171488,
+    "suly": 0.5,
+    "minimumKeszlet": 41,
+    "batches": [
+      { "parcella": "B2-4", "mennyiseg": 94, "lejarat": null }
+    ]
+  },
+  {
+    "nev": "Díszdoboz (RaktárWeb Brand special edition 164)",
+    "gyarto": "RaktárWeb Brand",
+    "kategoria": "EGYEB",
+    "beszerzesiAr": 61748,
+    "eladasiAr": 93438,
+    "suly": 0.3,
+    "minimumKeszlet": 7,
+    "batches": [
+      { "parcella": "C2-3", "mennyiseg": 3, "lejarat": null },
+      { "parcella": "C2-4", "mennyiseg": 33, "lejarat": null }
+    ]
+  },
+  {
+    "nev": "Vállfa szett (Generic Co special edition 165)",
+    "gyarto": "Generic Co",
+    "kategoria": "EGYEB",
+    "beszerzesiAr": 102484,
+    "eladasiAr": 155523,
+    "suly": 0.5,
+    "minimumKeszlet": 23,
+    "batches": [
+      { "parcella": "C1-4", "mennyiseg": 82, "lejarat": null },
+      { "parcella": "D5-4", "mennyiseg": 89, "lejarat": null }
+    ]
+  },
+  {
+    "nev": "Éjjeli lámpa (IKEA special edition 166)",
+    "gyarto": "IKEA",
+    "kategoria": "BUTOR",
+    "beszerzesiAr": 97728,
+    "eladasiAr": 131688,
+    "suly": 0.8,
+    "minimumKeszlet": 9,
+    "batches": [
+      { "parcella": "D4-2", "mennyiseg": 66, "lejarat": null },
+      { "parcella": "D2-2", "mennyiseg": 85, "lejarat": null },
+      { "parcella": "C2-3", "mennyiseg": 92, "lejarat": null }
+    ]
+  },
+  {
+    "nev": "Sampon 400ml (Old Spice special edition 167)",
+    "gyarto": "Old Spice",
+    "kategoria": "KOZMETIKA",
+    "beszerzesiAr": 74674,
+    "eladasiAr": 110283,
+    "suly": 0.45,
+    "minimumKeszlet": 33,
+    "batches": [
+      { "parcella": "A4-3", "mennyiseg": 5, "lejarat": "2027-03-25T22:09:23.853299Z" }
+    ]
+  },
+  {
+    "nev": "Kapucnis pulóver (Adidas special edition 168)",
+    "gyarto": "Adidas",
+    "kategoria": "RUHAZAT",
+    "beszerzesiAr": 109818,
+    "eladasiAr": 182900,
+    "suly": 0.6,
+    "minimumKeszlet": 14,
+    "batches": [
+      { "parcella": "A5-1", "mennyiseg": 69, "lejarat": null },
+      { "parcella": "B5-3", "mennyiseg": 7, "lejarat": null }
+    ]
+  },
+  {
+    "nev": "Kenyér fehér (Bonafarm special edition 169)",
+    "gyarto": "Bonafarm",
+    "kategoria": "ELELMISZER",
+    "beszerzesiAr": 36229,
+    "eladasiAr": 52579,
+    "suly": 0.5,
+    "minimumKeszlet": 44,
+    "batches": [
+      { "parcella": "A2-2", "mennyiseg": 26, "lejarat": "2026-06-07T22:09:23.853357Z" },
+      { "parcella": "B3-4", "mennyiseg": 20, "lejarat": "2027-05-29T22:09:23.853377Z" }
+    ]
+  },
+  {
+    "nev": "Arckrém (L'Oréal special edition 170)",
+    "gyarto": "L'Oréal",
+    "kategoria": "KOZMETIKA",
+    "beszerzesiAr": 48155,
+    "eladasiAr": 79049,
+    "suly": 0.1,
+    "minimumKeszlet": 19,
+    "batches": []
+  },
+  {
+    "nev": "Krimi regény (Libri special edition 171)",
+    "gyarto": "Libri",
+    "kategoria": "KONYVEK",
+    "beszerzesiAr": 80726,
+    "eladasiAr": 115669,
+    "suly": 0.5,
+    "minimumKeszlet": 6,
+    "batches": [
+      { "parcella": "B2-2", "mennyiseg": 59, "lejarat": null }
+    ]
+  },
+  {
+    "nev": "Díszdoboz (Generic Co special edition 172)",
+    "gyarto": "Generic Co",
+    "kategoria": "EGYEB",
+    "beszerzesiAr": 106798,
+    "eladasiAr": 131933,
+    "suly": 0.4,
+    "minimumKeszlet": 40,
+    "batches": [
+      { "parcella": "C3-4", "mennyiseg": 6, "lejarat": null },
+      { "parcella": "D4-1", "mennyiseg": 99, "lejarat": null },
+      { "parcella": "C1-2", "mennyiseg": 11, "lejarat": null }
+    ]
+  },
+  {
+    "nev": "Banán (Pékműhely special edition 173)",
+    "gyarto": "Pékműhely",
+    "kategoria": "ELELMISZER",
+    "beszerzesiAr": 57574,
+    "eladasiAr": 91970,
+    "suly": 1.0,
+    "minimumKeszlet": 24,
+    "batches": [
+      { "parcella": "D3-4", "mennyiseg": 94, "lejarat": "2027-02-21T22:09:23.853494Z" }
+    ]
+  },
+  {
+    "nev": "Folyékony szappan (Old Spice special edition 174)",
+    "gyarto": "Old Spice",
+    "kategoria": "KOZMETIKA",
+    "beszerzesiAr": 87135,
+    "eladasiAr": 113928,
+    "suly": 1.0,
+    "minimumKeszlet": 43,
+    "batches": [
+      { "parcella": "C4-1", "mennyiseg": 75, "lejarat": "2026-04-11T22:09:23.853532Z" },
+      { "parcella": "D5-4", "mennyiseg": 23, "lejarat": "2026-05-12T22:09:23.853545Z" }
+    ]
+  },
+  {
+    "nev": "Puzzle 1000 db (Lego special edition 175)",
+    "gyarto": "Lego",
+    "kategoria": "JATEK",
+    "beszerzesiAr": 105273,
+    "eladasiAr": 180847,
+    "suly": 0.5,
+    "minimumKeszlet": 37,
+    "batches": [
+      { "parcella": "C2-3", "mennyiseg": 13, "lejarat": null }
+    ]
+  },
+  {
+    "nev": "HDMI kábel (Lenovo special edition 176)",
+    "gyarto": "Lenovo",
+    "kategoria": "ELEKTRONIKA",
+    "beszerzesiAr": 102843,
+    "eladasiAr": 164714,
+    "suly": 0.2,
+    "minimumKeszlet": 20,
+    "batches": [
+      { "parcella": "A2-4", "mennyiseg": 34, "lejarat": null }
+    ]
+  },
+  {
+    "nev": "Íróasztal (IKEA special edition 177)",
+    "gyarto": "IKEA",
+    "kategoria": "BUTOR",
+    "beszerzesiAr": 85021,
+    "eladasiAr": 125482,
+    "suly": 18.76,
+    "minimumKeszlet": 21,
+    "batches": [
+      { "parcella": "B1-1", "mennyiseg": 27, "lejarat": null },
+      { "parcella": "D3-4", "mennyiseg": 29, "lejarat": null }
+    ]
+  },
+  {
+    "nev": "Építőkocka készlet (Hasbro special edition 178)",
+    "gyarto": "Hasbro",
+    "kategoria": "JATEK",
+    "beszerzesiAr": 88641,
+    "eladasiAr": 157611,
+    "suly": 1.2,
+    "minimumKeszlet": 48,
+    "batches": [
+      { "parcella": "D5-3", "mennyiseg": 42, "lejarat": null },
+      { "parcella": "C3-3", "mennyiseg": 59, "lejarat": null }
+    ]
+  },
+  {
+    "nev": "Farmer nadrág (Nike special edition 179)",
+    "gyarto": "Nike",
+    "kategoria": "RUHAZAT",
+    "beszerzesiAr": 55204,
+    "eladasiAr": 96443,
+    "suly": 0.6,
+    "minimumKeszlet": 37,
+    "batches": []
+  },
+  {
+    "nev": "Motorolaj 5W30 (Continental special edition 180)",
+    "gyarto": "Continental",
+    "kategoria": "AUTO_MOTOR",
+    "beszerzesiAr": 75836,
+    "eladasiAr": 109386,
+    "suly": 4.5,
+    "minimumKeszlet": 18,
+    "batches": [
+      { "parcella": "B1-2", "mennyiseg": 70, "lejarat": null }
+    ]
+  },
+  {
+    "nev": "Babzsákfotel (Herman Miller special edition 181)",
+    "gyarto": "Herman Miller",
+    "kategoria": "BUTOR",
+    "beszerzesiAr": 98908,
+    "eladasiAr": 130965,
+    "suly": 6.16,
+    "minimumKeszlet": 50,
+    "batches": []
+  },
+  {
+    "nev": "Kézfertőtlenítő (Richter special edition 182)",
+    "gyarto": "Richter",
+    "kategoria": "EGESZSEGUGY",
+    "beszerzesiAr": 122307,
+    "eladasiAr": 211172,
+    "suly": 0.5,
+    "minimumKeszlet": 6,
+    "batches": []
+  },
+  {
+    "nev": "Elsősegély készlet (Bayer special edition 183)",
+    "gyarto": "Bayer",
+    "kategoria": "EGESZSEGUGY",
+    "beszerzesiAr": 133456,
+    "eladasiAr": 166115,
+    "suly": 1.2,
+    "minimumKeszlet": 47,
+    "batches": [
+      { "parcella": "B3-4", "mennyiseg": 100, "lejarat": "2026-02-21T22:09:23.853683Z" }
+    ]
+  },
+  {
+    "nev": "Iratrendező (Faber-Castell special edition 184)",
+    "gyarto": "Faber-Castell",
+    "kategoria": "IRODASZER",
+    "beszerzesiAr": 65350,
+    "eladasiAr": 98852,
+    "suly": 0.67,
+    "minimumKeszlet": 42,
+    "batches": [
+      { "parcella": "C1-1", "mennyiseg": 85, "lejarat": null },
+      { "parcella": "B2-4", "mennyiseg": 17, "lejarat": null },
+      { "parcella": "A5-4", "mennyiseg": 63, "lejarat": null }
+    ]
+  },
+  {
+    "nev": "Súlyzó 5kg (Kipsta special edition 185)",
+    "gyarto": "Kipsta",
+    "kategoria": "SPORT",
+    "beszerzesiAr": 127149,
+    "eladasiAr": 207362,
+    "suly": 5.0,
+    "minimumKeszlet": 41,
+    "batches": []
+  },
+  {
+    "nev": "HDMI kábel (LG special edition 186)",
+    "gyarto": "LG",
+    "kategoria": "ELEKTRONIKA",
+    "beszerzesiAr": 9586,
+    "eladasiAr": 12553,
+    "suly": 0.2,
+    "minimumKeszlet": 41,
+    "batches": [
+      { "parcella": "D2-3", "mennyiseg": 95, "lejarat": null }
+    ]
+  },
+  {
+    "nev": "Zokni 3 pár (Puma special edition 187)",
+    "gyarto": "Puma",
+    "kategoria": "RUHAZAT",
+    "beszerzesiAr": 142231,
+    "eladasiAr": 175244,
+    "suly": 0.1,
+    "minimumKeszlet": 33,
+    "batches": [
+      { "parcella": "B4-4", "mennyiseg": 70, "lejarat": null }
+    ]
+  },
+  {
+    "nev": "Mérőszalag 5m (Bosch special edition 188)",
+    "gyarto": "Bosch",
+    "kategoria": "BARKACS",
+    "beszerzesiAr": 47265,
+    "eladasiAr": 78011,
+    "suly": 0.4,
+    "minimumKeszlet": 6,
+    "batches": [
+      { "parcella": "A5-3", "mennyiseg": 74, "lejarat": null },
+      { "parcella": "A3-3", "mennyiseg": 19, "lejarat": null }
+    ]
+  },
+  {
+    "nev": "Féktárcsa (Castrol special edition 189)",
+    "gyarto": "Castrol",
+    "kategoria": "AUTO_MOTOR",
+    "beszerzesiAr": 44212,
+    "eladasiAr": 58380,
+    "suly": 4.5,
+    "minimumKeszlet": 46,
+    "batches": [
+      { "parcella": "B3-2", "mennyiseg": 63, "lejarat": null }
+    ]
+  },
+  {
+    "nev": "Elsősegély készlet (Richter special edition 190)",
+    "gyarto": "Richter",
+    "kategoria": "EGESZSEGUGY",
+    "beszerzesiAr": 108303,
+    "eladasiAr": 140487,
+    "suly": 1.2,
+    "minimumKeszlet": 50,
+    "batches": [
+      { "parcella": "D1-3", "mennyiseg": 83, "lejarat": "2027-03-05T22:09:23.853815Z" },
+      { "parcella": "C5-2", "mennyiseg": 15, "lejarat": "2026-07-10T22:09:23.853830Z" }
+    ]
+  },
+  {
+    "nev": "Sci-fi antológia (Helikon special edition 191)",
+    "gyarto": "Helikon",
+    "kategoria": "KONYVEK",
+    "beszerzesiAr": 38910,
+    "eladasiAr": 61007,
+    "suly": 0.5,
+    "minimumKeszlet": 42,
+    "batches": [
+      { "parcella": "B2-1", "mennyiseg": 88, "lejarat": null },
+      { "parcella": "B4-1", "mennyiseg": 95, "lejarat": null }
+    ]
+  },
+  {
+    "nev": "Füzet A4 (Victoria special edition 192)",
+    "gyarto": "Victoria",
+    "kategoria": "IRODASZER",
+    "beszerzesiAr": 125544,
+    "eladasiAr": 183705,
+    "suly": 0.4,
+    "minimumKeszlet": 25,
+    "batches": [
+      { "parcella": "D4-2", "mennyiseg": 1, "lejarat": null },
+      { "parcella": "D3-1", "mennyiseg": 59, "lejarat": null }
+    ]
+  },
+  {
+    "nev": "Elsősegély készlet (Richter special edition 193)",
+    "gyarto": "Richter",
+    "kategoria": "EGESZSEGUGY",
+    "beszerzesiAr": 126577,
+    "eladasiAr": 185067,
+    "suly": 0.5,
+    "minimumKeszlet": 43,
+    "batches": []
+  },
+  {
+    "nev": "Elsősegély készlet (Richter special edition 194)",
+    "gyarto": "Richter",
+    "kategoria": "EGESZSEGUGY",
+    "beszerzesiAr": 62170,
+    "eladasiAr": 90164,
+    "suly": 0.5,
+    "minimumKeszlet": 16,
+    "batches": [
+      { "parcella": "C4-4", "mennyiseg": 84, "lejarat": "2027-03-18T22:09:23.853906Z" },
+      { "parcella": "D1-4", "mennyiseg": 83, "lejarat": "2027-05-08T22:09:23.853918Z" }
+    ]
+  },
+  {
+    "nev": "Vitamin C 1000mg (Pfizer special edition 195)",
+    "gyarto": "Pfizer",
+    "kategoria": "EGESZSEGUGY",
+    "beszerzesiAr": 137415,
+    "eladasiAr": 183244,
+    "suly": 0.1,
+    "minimumKeszlet": 17,
+    "batches": [
+      { "parcella": "A2-4", "mennyiseg": 90, "lejarat": "2027-06-19T22:09:23.853934Z" }
+    ]
+  },
+  {
+    "nev": "Babzsákfotel (JYSK special edition 196)",
+    "gyarto": "JYSK",
+    "kategoria": "BUTOR",
+    "beszerzesiAr": 99173,
+    "eladasiAr": 152662,
+    "suly": 5.52,
+    "minimumKeszlet": 39,
+    "batches": []
+  },
+  {
+    "nev": "Akkumulátor 72Ah (Continental special edition 197)",
+    "gyarto": "Continental",
+    "kategoria": "AUTO_MOTOR",
+    "beszerzesiAr": 26070,
+    "eladasiAr": 31367,
+    "suly": 15.07,
+    "minimumKeszlet": 28,
+    "batches": [
+      { "parcella": "C5-4", "mennyiseg": 9, "lejarat": null },
+      { "parcella": "D3-2", "mennyiseg": 100, "lejarat": null }
+    ]
+  },
+  {
+    "nev": "Konyhai mérleg (Philips special edition 198)",
+    "gyarto": "Philips",
+    "kategoria": "HAZTARTAS",
+    "beszerzesiAr": 105631,
+    "eladasiAr": 157159,
+    "suly": 0.8,
+    "minimumKeszlet": 32,
+    "batches": [
+      { "parcella": "B5-2", "mennyiseg": 25, "lejarat": null }
+    ]
+  },
+  {
+    "nev": "Mosókapszula (CleanPro special edition 199)",
+    "gyarto": "CleanPro",
+    "kategoria": "VEGYSZER",
+    "beszerzesiAr": 10745,
+    "eladasiAr": 18855,
+    "suly": 1.5,
+    "minimumKeszlet": 46,
+    "batches": [
+      { "parcella": "B2-3", "mennyiseg": 69, "lejarat": "2027-04-22T22:09:23.854004Z" }
+    ]
+  }
+]

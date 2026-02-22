@@ -1,4 +1,3 @@
-//raktar-frontend/src/components/SearchResults.tsx
 import { useEffect, useState } from "react";
 import { useSearchParams, useNavigate } from "react-router-dom";
 import { getProducts } from "../../services/api";
@@ -11,50 +10,76 @@ function SearchResults() {
   const [results, setResults] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
 
+  // Segédfüggvények az adatok kinyeréséhez (mivel a Product-on belül a batches-ben vannak)
+  const getTotalQuantity = (p: Product) => p.batches?.reduce((sum, b) => sum + b.mennyiseg, 0) || 0;
+  
+  const getLocations = (p: Product) => {
+    if (!p.batches || p.batches.length === 0) return "Nincs készleten";
+    const parcels = Array.from(new Set(p.batches.map(b => b.parcella)));
+    return parcels.join(", ");
+  };
+
+  const getEarliestExpiry = (p: Product) => {
+    if (!p.batches || p.batches.length === 0) return null;
+    const dates = p.batches.filter(b => b.lejarat).map(b => new Date(b.lejarat!));
+    if (dates.length === 0) return null;
+    return new Date(Math.min(...dates.map(d => d.getTime())));
+  };
+
   useEffect(() => {
     window.scrollTo(0, 0);
   }, [query]);
 
   useEffect(() => {
+    let isMounted = true;
     setLoading(true);
-    getProducts().then((all) => {
-      const filtered = all.filter(
-        (p) =>
-          p.nev.toLowerCase().includes(query.toLowerCase()) ||
-          p.gyarto.toLowerCase().includes(query.toLowerCase()) ||
-          p.parcella.toLowerCase().includes(query.toLowerCase()),
-      );
-      setResults(filtered);
-      setLoading(false);
-    });
+
+    getProducts()
+      .then((all) => {
+        if (!isMounted) return;
+        const filtered = all.filter((p) => {
+          const searchIn = `${p.nev} ${p.gyarto} ${p.kategoria} ${getLocations(p)}`.toLowerCase();
+          return searchIn.includes(query.toLowerCase());
+        });
+        setResults(filtered);
+      })
+      .catch((err) => {
+        console.error("Keresési hiba:", err);
+      })
+      .finally(() => {
+        if (isMounted) setLoading(false);
+      });
+
+    return () => { isMounted = false; };
   }, [query]);
 
   const getStatusBadge = (product: Product) => {
     const now = new Date();
     const oneWeekLater = new Date();
     oneWeekLater.setDate(now.getDate() + 7);
-    const lejaratDate = product.lejarat ? new Date(product.lejarat) : null;
+    const earliestExpiry = getEarliestExpiry(product);
+    const totalQty = getTotalQuantity(product);
 
-    if ((lejaratDate && lejaratDate <= now) || product.mennyiseg < 10)
+    if ((earliestExpiry && earliestExpiry <= now) || totalQty < product.minimumKeszlet)
       return "bg-red-500/10 text-red-600 dark:text-red-400 border-red-500/20";
-    if ((lejaratDate && lejaratDate <= oneWeekLater) || product.mennyiseg < 100)
+    if (earliestExpiry && earliestExpiry <= oneWeekLater)
       return "bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-500/20";
     return "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/20";
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-slate-950 p-4 sm:p-8 md:p-12 transition-colors duration-300">
-      <div className="max-w-5xl mx-auto text-left">
+    <div className="min-h-screen bg-slate-50 dark:bg-slate-950 p-4 sm:p-8 md:p-12 transition-colors duration-300 text-left">
+      <div className="max-w-5xl mx-auto">
         <header className="mb-8 md:mb-12 flex flex-col md:flex-row md:items-end justify-between gap-4 border-b border-slate-200 dark:border-slate-800 pb-8 transition-colors">
           <div>
             <h1 className="text-3xl md:text-4xl font-black text-slate-900 dark:text-white tracking-tighter uppercase italic leading-none">
               Keresési <span className="text-blue-600">találatok</span>
             </h1>
-            <p className="text-slate-500 dark:text-slate-400 font-semibold mt-3 text-sm md:text-base transition-colors">
-              Kifejezés: <span className="text-blue-500 underline decoration-2 underline-offset-4 font-bold">"{query}"</span>
+            <p className="text-slate-500 dark:text-slate-400 font-semibold mt-3 text-sm md:text-base">
+              Kifejezés: <span className="text-blue-500 underline decoration-2 underline-offset-4 font-bold italic">"{query}"</span>
             </p>
           </div>
-          <div className="inline-block bg-white dark:bg-slate-900 px-6 py-2 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-800 text-slate-400 dark:text-slate-500 font-bold text-xs md:text-sm tracking-widest uppercase transition-all">
+          <div className="inline-block bg-white dark:bg-slate-900 px-6 py-2 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-800 text-slate-400 font-bold text-xs tracking-widest uppercase italic">
             {results.length} találat
           </div>
         </header>
@@ -62,56 +87,59 @@ function SearchResults() {
         {loading ? (
           <div className="flex flex-col items-center py-20 gap-4 text-center">
             <div className="w-12 h-12 border-4 border-blue-600 border-t-transparent rounded-full animate-spin"></div>
-            <p className="text-slate-400 dark:text-slate-500 font-black uppercase text-xs tracking-[0.2em]">Készlet átfésülése...</p>
+            <p className="text-slate-400 font-black uppercase text-[10px] tracking-[0.2em]">Készlet átfésülése...</p>
           </div>
         ) : results.length > 0 ? (
           <div className="grid gap-6">
-            {results.map((p) => (
-              <div
-                key={p.id}
-                onClick={() => navigate(`/product/${p.id}`)}
-                className="group bg-white dark:bg-slate-900 p-3 rounded-[2.5rem] border border-slate-100 dark:border-slate-800 shadow-xl hover:shadow-2xl hover:shadow-blue-500/10 dark:hover:border-blue-500/30 transition-all duration-300 cursor-pointer flex flex-col md:flex-row items-center gap-4 md:gap-6 text-left"
-              >
-                <div className="w-full md:w-32 h-24 md:h-32 bg-slate-50 dark:bg-slate-800 rounded-[2rem] flex items-center justify-center text-4xl group-hover:bg-blue-600 group-hover:text-white transition-all duration-300 shadow-inner">
-                  {p.mennyiseg < 10 ? "⚠️" : "📦"}
-                </div>
+            {results.map((p) => {
+              const totalQty = getTotalQuantity(p);
+              return (
+                <div
+                  key={p.id}
+                  onClick={() => navigate(`/product/${p.id}`)}
+                  className="group bg-white dark:bg-slate-900 p-4 rounded-[2.5rem] border border-slate-100 dark:border-slate-800 shadow-xl hover:shadow-2xl hover:shadow-blue-500/10 transition-all duration-300 cursor-pointer flex flex-col md:flex-row items-center gap-6"
+                >
+                  <div className="w-full md:w-32 h-24 md:h-32 bg-slate-50 dark:bg-slate-800 rounded-[2rem] flex items-center justify-center text-4xl group-hover:bg-blue-600 group-hover:text-white transition-all shadow-inner">
+                    {totalQty < p.minimumKeszlet ? "⚠️" : "📦"}
+                  </div>
 
-                <div className="flex-1 py-2 px-2">
-                  <div className="flex flex-wrap items-center gap-3 mb-2">
-                    <span className={`px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest border transition-colors ${getStatusBadge(p)}`}>
-                      {p.mennyiseg < 10 ? "Kritikus" : "Raktáron"}
-                    </span>
-                    <span className="text-slate-300 dark:text-slate-600 text-xs font-bold font-mono transition-colors">#{p.id}</span>
+                  <div className="flex-1 py-2">
+                    <div className="flex flex-wrap items-center gap-3 mb-2">
+                      <span className={`px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest border ${getStatusBadge(p)}`}>
+                        {totalQty < p.minimumKeszlet ? "Alacsony készlet" : "Raktáron"}
+                      </span>
+                      <span className="text-slate-300 dark:text-slate-600 text-xs font-bold">#{p.id}</span>
+                    </div>
+                    <h3 className="text-xl md:text-2xl font-black text-slate-800 dark:text-white group-hover:text-blue-600 transition-colors tracking-tight mb-1 italic uppercase">
+                      {p.nev}
+                    </h3>
+                    <p className="text-slate-500 dark:text-slate-400 font-bold text-xs uppercase tracking-wide">
+                      {p.gyarto} • <span className="text-blue-500 font-black">{p.kategoria}</span>
+                    </p>
                   </div>
-                  <h3 className="text-xl md:text-2xl font-black text-slate-800 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors tracking-tight leading-tight mb-1">
-                    {p.nev}
-                  </h3>
-                  <p className="text-slate-500 dark:text-slate-400 font-bold text-xs md:text-sm uppercase tracking-wide transition-colors">
-                    {p.gyarto} • <span className="text-blue-500 dark:text-blue-400 font-black">{p.ar.toLocaleString()} Ft</span>
-                  </p>
-                </div>
 
-                <div className="w-full md:w-auto flex md:flex-col items-center justify-around md:justify-center gap-4 bg-slate-50 dark:bg-slate-800/50 md:bg-transparent p-4 md:p-8 rounded-[2rem] md:rounded-none transition-colors">
-                  <div className="text-center">
-                    <p className="text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase mb-1">Hely</p>
-                    <span className="bg-blue-600 text-white px-4 py-1.5 rounded-xl font-black text-base md:text-lg shadow-lg shadow-blue-500/20 block border border-blue-400/20 italic">
-                      {p.parcella}
-                    </span>
-                  </div>
-                  <div className="text-center border-l md:border-l-0 md:border-t border-slate-200 dark:border-slate-800 pl-4 md:pl-0 md:pt-4 transition-colors">
-                    <p className="text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase mb-1">Készlet</p>
-                    <span className="text-lg md:text-xl font-black text-slate-800 dark:text-white transition-colors">{p.mennyiseg} db</span>
+                  <div className="w-full md:w-auto flex md:flex-col items-center justify-around md:justify-center gap-4 bg-slate-50 dark:bg-slate-800/50 md:bg-transparent p-4 md:p-8 rounded-[2rem] md:rounded-none">
+                    <div className="text-center">
+                      <p className="text-[10px] font-black text-slate-400 uppercase mb-1">Helyszín</p>
+                      <span className="bg-blue-600 text-white px-4 py-1.5 rounded-xl font-black text-sm shadow-lg block italic uppercase">
+                        {getLocations(p)}
+                      </span>
+                    </div>
+                    <div className="text-center border-l md:border-l-0 md:border-t border-slate-200 dark:border-slate-800 pl-4 md:pl-0 md:pt-4">
+                      <p className="text-[10px] font-black text-slate-400 uppercase mb-1">Készlet</p>
+                      <span className="text-lg md:text-xl font-black text-slate-800 dark:text-white">{totalQty} db</span>
+                    </div>
                   </div>
                 </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         ) : (
-          <div className="text-center py-20 md:py-32 bg-white dark:bg-slate-900 rounded-[3rem] border-4 border-dashed border-slate-100 dark:border-slate-800 px-6 transition-all">
-            <div className="text-6xl md:text-8xl mb-6 animate-bounce">🏜️</div>
-            <h2 className="text-2xl md:text-3xl font-black text-slate-800 dark:text-white mb-2 italic tracking-tighter uppercase transition-colors">Nem találtunk semmit...</h2>
-            <p className="text-slate-400 dark:text-slate-500 font-bold mb-8 max-w-sm mx-auto uppercase text-xs tracking-widest transition-colors">A tétel jelenleg nem szerepel a nyilvántartásban.</p>
-            <button onClick={() => navigate("/")} className="w-full md:w-auto bg-blue-600 text-white px-10 py-4 rounded-2xl font-black shadow-lg shadow-blue-500/20 hover:bg-blue-700 transition-all active:scale-95 uppercase text-sm tracking-widest">Vissza a kezdőlapra</button>
+          <div className="text-center py-20 bg-white dark:bg-slate-900 rounded-[3rem] border-4 border-dashed border-slate-100 dark:border-slate-800 px-6">
+            <div className="text-6xl mb-6 animate-bounce">🏜️</div>
+            <h2 className="text-2xl font-black text-slate-800 dark:text-white mb-2 italic tracking-tighter uppercase">Nincs találat...</h2>
+            <p className="text-slate-400 font-bold mb-8 max-w-sm mx-auto uppercase text-[10px] tracking-widest italic">A keresett tétel nem található a rendszerben.</p>
+            <button onClick={() => navigate("/")} className="bg-blue-600 text-white px-10 py-4 rounded-2xl font-black shadow-lg hover:bg-blue-700 transition-all uppercase text-xs tracking-widest italic">Vissza a bázisra</button>
           </div>
         )}
       </div>

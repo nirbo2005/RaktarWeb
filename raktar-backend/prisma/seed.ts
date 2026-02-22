@@ -1,79 +1,82 @@
-//raktar-backend/prisma/seed.ts
-import { PrismaClient, Role } from '@prisma/client'; // Importáld a Role enumot is
+import { PrismaClient, Role } from '@prisma/client';
+import * as bcrypt from 'bcrypt';
 import * as fs from 'fs';
 import * as path from 'path';
-import * as bcrypt from 'bcrypt';
 
 const prisma = new PrismaClient();
 
 async function main() {
-  console.log('--- Seedelés megkezdése ---');
+  console.log('🌱 Seeding folyamat elindítva...');
 
-  // Stock seedelés (változatlan)
-  const stockPath = path.join(process.cwd(), 'prisma', 'stock.json');
-  const stockRaw = fs.readFileSync(stockPath, 'utf-8');
-  const stocks = JSON.parse(stockRaw);
+  
+  await prisma.batch.deleteMany();
+  await prisma.auditLog.deleteMany();
+  await prisma.changeRequest.deleteMany();
+  await prisma.notification.deleteMany();
+  await prisma.product.deleteMany();
+  await prisma.user.deleteMany();
 
-  for (const item of stocks) {
-    await prisma.stock.upsert({
-      where: { id: item.id },
-      update: {
-        nev: item.nev,
-        gyarto: item.gyarto,
-        lejarat: new Date(item.lejarat),
-        ar: item.ar,
-        mennyiseg: item.mennyiseg,
-        parcella: item.parcella,
-      },
-      create: {
-        id: item.id,
-        nev: item.nev,
-        gyarto: item.gyarto,
-        lejarat: new Date(item.lejarat),
-        ar: item.ar,
-        mennyiseg: item.mennyiseg,
-        parcella: item.parcella,
-      },
-    });
+  
+  const usersPath = path.join(__dirname, 'seed-users.json');
+  if (fs.existsSync(usersPath)) {
+    const usersData = JSON.parse(fs.readFileSync(usersPath, 'utf-8'));
+    for (const u of usersData) {
+      const hashedPassword = await bcrypt.hash(u.jelszo, 10);
+      await prisma.user.create({
+        data: {
+          nev: u.nev,
+          felhasznalonev: u.felhasznalonev,
+          jelszo: hashedPassword,
+          rang: u.rang as Role,
+          email: u.email,
+          telefonszam: u.telefonszam,
+          mustChangePassword: u.mustChangePassword || false
+        },
+      });
+    }
+    console.log(`✅ ${usersData.length} felhasználó létrehozva.`);
   }
-  console.log(`✅ ${stocks.length} termék szinkronizálva.`);
 
-  // User seedelés - JAVÍTVA
-  const usersPath = path.join(process.cwd(), 'prisma', 'users.json');
-  const usersRaw = fs.readFileSync(usersPath, 'utf-8');
-  const users = JSON.parse(usersRaw);
+  
+  const productsPath = path.join(__dirname, 'seed-products.json');
+  if (fs.existsSync(productsPath)) {
+    const productsData = JSON.parse(fs.readFileSync(productsPath, 'utf-8'));
+    
+    for (const item of productsData) {
+      const product = await prisma.product.create({
+        data: {
+          nev: item.nev,
+          gyarto: item.gyarto,
+          kategoria: item.kategoria,
+          beszerzesiAr: item.beszerzesiAr,
+          eladasiAr: item.eladasiAr,
+          suly: item.suly,
+          minimumKeszlet: item.minimumKeszlet,
+        },
+      });
 
-  for (const user of users) {
-    const passwordToHash = user.jelszo || '123456';
-    const hashedPassword = await bcrypt.hash(passwordToHash, 10);
-
-    await prisma.user.upsert({
-      where: { felhasznalonev: user.felhasznalonev },
-      update: {
-        nev: user.nev,
-        rang: user.rang as Role, // admin helyett rang
-        email: user.email,
-        telefonszam: user.telefonszam,
-        isBanned: user.isBanned || false,
-      },
-      create: {
-        nev: user.nev,
-        felhasznalonev: user.felhasznalonev,
-        jelszo: hashedPassword,
-        rang: user.rang as Role, // admin helyett rang
-        email: user.email,
-        telefonszam: user.telefonszam,
-        isBanned: user.isBanned || false,
-      },
-    });
+      if (item.batches && item.batches.length > 0) {
+        const batchData = item.batches.map((b: any) => ({
+          productId: product.id,
+          parcella: b.parcella,
+          mennyiseg: b.mennyiseg,
+          lejarat: b.lejarat ? new Date(b.lejarat) : null,
+        }));
+        
+        await prisma.batch.createMany({
+          data: batchData,
+        });
+      }
+    }
+    console.log(`✅ ${productsData.length} termék feltöltve.`);
   }
-  console.log(`✅ ${users.length} felhasználó szinkronizálva az új rangokkal.`);
-  console.log('--- Seedelés sikeresen befejeződött ---');
+
+  console.log('✨ Seeding sikeresen befejeződött!');
 }
 
 main()
   .catch((e) => {
-    console.error('Hiba a seedelés során:', e);
+    console.error('❌ Hiba a seeding során:', e);
     process.exit(1);
   })
   .finally(async () => {

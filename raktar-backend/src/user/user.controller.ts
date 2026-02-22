@@ -1,4 +1,3 @@
-//raktar-backend/src/user/user.controller.ts
 import {
   Controller,
   Get,
@@ -13,6 +12,7 @@ import {
   ClassSerializerInterceptor,
   UseGuards,
   SetMetadata,
+  Request,
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -22,7 +22,7 @@ import { RolesGuard } from '../auth/roles.guard';
 import { Roles } from '../auth/roles.decorator';
 import { Role } from '@prisma/client';
 
-// Segéd-dekorátor a publikus végpontokhoz
+
 export const IS_PUBLIC_KEY = 'isPublic';
 export const Public = () => SetMetadata(IS_PUBLIC_KEY, true);
 
@@ -31,11 +31,20 @@ export const Public = () => SetMetadata(IS_PUBLIC_KEY, true);
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
-  @Public() // Ez feloldja a JwtAuthGuard szigorítását
+  @Public()
   @UseInterceptors(ClassSerializerInterceptor)
   @Post('register')
   async create(@Body() createUserDto: CreateUserDto): Promise<UserEntity> {
     return this.userService.create(createUserDto);
+  }
+
+  
+  @UseInterceptors(ClassSerializerInterceptor)
+  @Get('me')
+  @Roles(Role.NEZELODO, Role.KEZELO, Role.ADMIN)
+  async getMe(@Request() req): Promise<UserEntity> {
+    
+    return this.userService.findOne(req.user.id);
   }
 
   @UseInterceptors(ClassSerializerInterceptor)

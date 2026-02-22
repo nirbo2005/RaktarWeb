@@ -1,6 +1,6 @@
-//raktar-backend/src/product/dto/create-product.dto.ts
 import { Type } from 'class-transformer';
-import { IsString, IsNotEmpty, IsInt, IsNumber, IsDate, Min, Matches } from 'class-validator';
+import { IsString, IsNotEmpty, IsInt, IsNumber, Min, IsEnum, IsOptional } from 'class-validator';
+import { ProductCategory } from '@prisma/client';
 
 export class CreateProductDto {
   @IsString()
@@ -11,22 +11,26 @@ export class CreateProductDto {
   @IsNotEmpty({ message: 'A gyártó megadása kötelező!' })
   gyarto: string;
 
-  @Type(() => Date)
-  @IsDate({ message: 'Érvénytelen dátum formátum!' })
-  lejarat: Date;
-
-  @IsNumber()
-  @Min(0, { message: 'Az ár nem lehet negatív!' })
-  ar: number;
+  @IsEnum(ProductCategory, { message: 'Érvénytelen kategória!' })
+  @IsOptional()
+  kategoria?: ProductCategory;
 
   @IsInt()
-  @Min(0, { message: 'A mennyiség nem lehet negatív!' })
-  mennyiseg: number;
+  @Min(0, { message: 'A beszerzési ár nem lehet negatív!' })
+  @IsOptional()
+  beszerzesiAr?: number;
 
-  @IsString()
-  @IsNotEmpty()
-  @Matches(/^[AB][1-5]-[1-4]$/, {
-    message: 'Parcella formátuma kötelezően: [Részleg(A-B)][Sor(1-5)]-[Oszlop(1-4)], pl. "A1-1" vagy "B5-4".',
-  })
-  parcella: string;
+  @IsInt()
+  @Min(0, { message: 'Az eladási ár nem lehet negatív!' })
+  eladasiAr: number;
+
+  @IsNumber()
+  @Min(0.01, { message: 'A súlynak nagyobbnak kell lennie 0-nál!' })
+  @IsOptional()
+  suly?: number;
+
+  @IsInt()
+  @Min(0, { message: 'A minimum készlet nem lehet negatív!' })
+  @IsOptional()
+  minimumKeszlet?: number;
 }

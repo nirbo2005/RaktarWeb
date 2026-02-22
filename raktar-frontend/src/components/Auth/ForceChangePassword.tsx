@@ -1,4 +1,4 @@
-//raktar-frontend/src/components/ForceChangePassword.tsx
+
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { forceChangePassword } from "../../services/api";
@@ -53,7 +53,7 @@ function ForceChangePassword() {
         ujJelszo: form.ujJelszo
       });
       
-      // Sikeres csere, ki kell jelentkeztetni, hogy a token frissüljön és a flag eltűnjön
+      
       MySwal.fire({
         icon: 'success',
         title: 'Jelszó frissítve!',

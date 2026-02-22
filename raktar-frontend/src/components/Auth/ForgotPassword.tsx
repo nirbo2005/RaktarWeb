@@ -1,4 +1,3 @@
-//raktar-frontend/src/components/ForgotPassword.tsx
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { forgotPassword } from "../../services/api";
@@ -127,7 +126,7 @@ function ForgotPassword() {
               value={form.telefonszam}
               onChange={(phone) => setForm({ ...form, telefonszam: phone })}
               localization={hu}
-              masks={{ hu: '.. ... ....' }} /* ÚJ MASZK: a helyes tagoláshoz */
+              masks={{ hu: '.. ... ....' }}
               countryCodeEditable={false}
               enableSearch={true}
               searchPlaceholder="Keresés..."
@@ -171,7 +170,6 @@ function ForgotPassword() {
         }
         .phone-input-fp:focus { border-color: rgb(37 99 235) !important; }
         
-        /* GOMB HÁTTÉR JAVÍTÁSA */
         .phone-button-fp { 
           background: transparent !important; border: none !important; 
           border-radius: 1rem 0 0 1rem !important; width: 48px !important;
@@ -190,7 +188,6 @@ function ForgotPassword() {
         .dark .phone-container-fp .flag-dropdown.open .selected-flag {
           background: rgba(255, 255, 255, 0.05) !important;
         }
-        /* --- */
 
         .phone-dropdown-fp { 
           background: white !important; border-radius: 1rem !important; color: #111827 !important;

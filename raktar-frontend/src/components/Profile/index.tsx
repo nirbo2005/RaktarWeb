@@ -1,4 +1,3 @@
-//raktar-frontend/src/components/Profile/index.tsx
 import { useEffect, useState, useCallback } from "react";
 import { useAuth } from "../../context/AuthContext";
 import { getAuditLogs, getAllUsers, getPendingRequests, restoreAction } from "../../services/api";
@@ -38,25 +37,50 @@ const Profile = () => {
   const [pendingRequests, setPendingRequests] = useState<any[]>([]);
   const [logFilters, setLogFilters] = useState({ muvelet: "", startDate: "", endDate: "", targetUserId: "" });
 
+  // Debug log a renderelés elején
+  console.log("💎 PROFILE INDEX RENDER - USER STATE:", user);
+
   const isAdmin = user?.rang === "ADMIN";
 
   const loadData = useCallback(async () => {
-    if (!user) return;
+    if (!user?.id) {
+      console.warn("⚠️ LOAD_DATA: Nincs felhasználói azonosító, várakozás...");
+      return;
+    }
+
+    console.log("🔄 PROFIL ADATOK BETÖLTÉSE INDUL...");
     setLoading(true);
     try {
-      const activeFilters = Object.fromEntries(Object.entries(logFilters).filter(([_, value]) => value !== ""));
+      const activeFilters = Object.fromEntries(
+        Object.entries(logFilters).filter(([_, value]) => value !== "")
+      );
+
+      console.log("📡 API HÍVÁS: getAuditLogs...");
       const logData = await getAuditLogs(user.id, isAdmin, activeFilters);
+      console.log("✅ AUDIT LOGOK MEGÉRKEZTEK:", logData.length, "db");
       setLogs(logData);
+
       if (isAdmin) {
+        console.log("🛡️ ADMIN ADATOK LEKÉRÉSE...");
         const [users, reqs] = await Promise.all([getAllUsers(), getPendingRequests()]);
         setAllUsers(users);
         setPendingRequests(reqs);
+        console.log("✅ ADMIN ADATOK SZINKRONIZÁLVA.");
       }
-    } catch (err) { console.error(err); }
-    finally { setLoading(false); }
-  }, [user, logFilters, isAdmin]);
+    } catch (err) { 
+      console.error("❌ HIBA AZ ADATOK BETÖLTÉSEKOR:", err); 
+    }
+    finally { 
+      setLoading(false); 
+      console.log("🔚 ADATBETÖLTÉS BEFEJEZŐDÖTT.");
+    }
+  }, [user?.id, logFilters, isAdmin]);
 
-  useEffect(() => { loadData(); }, [loadData]);
+  useEffect(() => { 
+    if (user?.id) {
+      loadData(); 
+    }
+  }, [loadData, user?.id]);
 
   const handleRestore = async (logId: number) => {
     const result = await MySwal.fire({
@@ -102,15 +126,32 @@ const Profile = () => {
     }
   };
 
-  if (!user) return <div className="p-10 text-center font-black italic uppercase animate-pulse">Betöltés...</div>;
+  // JAVÍTÁS: Csak akkor blokkoljuk a renderelést, ha egyáltalán nincs user objektumunk.
+  // Ha van user, de a név még nem töltődött be a headerbe, azt a Header komponens lekezeli opcionális láncolással.
+  if (!user) {
+    console.log("⏳ VÁRAKOZÁS AZ AUTHENTIKÁCIÓRA...");
+    return (
+      <div className="flex flex-col items-center justify-center min-h-[60vh] space-y-4">
+        <div className="w-12 h-12 border-4 border-blue-600 border-t-transparent rounded-full animate-spin"></div>
+        <div className="font-black italic uppercase text-slate-500 animate-pulse tracking-tighter">
+          Munkamenet ellenőrzése...
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="max-w-5xl mx-auto py-12 px-6 space-y-6 select-none">
       <Header />
-      {loading && <div className="text-center font-black text-blue-500 animate-pulse text-[10px] uppercase">Frissítés...</div>}
+      
+      {loading && (
+        <div className="text-center font-black text-blue-500 animate-pulse text-[10px] uppercase tracking-widest">
+          Adatok szinkronizálása...
+        </div>
+      )}
       
       <div className="space-y-6">
-        {/* Saját profil szekció */}
+        {/* Saját profil adatok */}
         <section className="bg-white dark:bg-slate-900 rounded-[2rem] border border-slate-100 dark:border-slate-800 shadow-sm overflow-hidden">
           <button 
             onClick={() => setOpenSection(openSection === "details" ? null : "details")} 
@@ -122,10 +163,13 @@ const Profile = () => {
           {openSection === "details" && <Details />}
         </section>
 
-        {/* Tevékenységnapló szekció */}
+        {/* Tevékenységnapló */}
         <section className="bg-white dark:bg-slate-900 rounded-[2rem] border border-slate-100 dark:border-slate-800 shadow-sm overflow-hidden">
           <button 
-            onClick={() => setOpenSection(openSection === "logs" ? null : "logs")} 
+            onClick={() => {
+              console.log("📜 Tevékenységnapló szekció kapcsolása. Logok száma:", logs.length);
+              setOpenSection(openSection === "logs" ? null : "logs");
+            }} 
             className="w-full p-5 flex justify-between items-center font-black uppercase text-lg dark:text-white hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors"
           >
             <span>📜 Tevékenységnapló</span>
@@ -144,7 +188,7 @@ const Profile = () => {
           )}
         </section>
 
-        {/* Admin felület szekció */}
+        {/* Admin felület */}
         {isAdmin && (
           <section className="bg-white dark:bg-slate-900 rounded-[2rem] border-2 border-indigo-600/20 shadow-lg overflow-hidden">
             <button 

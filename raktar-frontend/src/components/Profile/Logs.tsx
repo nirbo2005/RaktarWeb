@@ -1,4 +1,3 @@
-//raktar-frontend/src/components/Profile/Logs.tsx
 import React, { useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
@@ -26,56 +25,46 @@ interface Props {
 }
 
 const Logs = ({ logs, allUsers, filters, setFilters, onRefresh, onRestore, onGroupRestore }: Props) => {
+  console.log("🔥 LOGS KOMPONENS RENDERELÉS - LOGS TÖMB HOSSZA:", logs?.length || 0);
+  console.log("🛠️ AKTUÁLIS SZŰRŐK:", filters);
+
   const navigate = useNavigate();
   const { user } = useAuth();
   const isAdmin = user?.rang === "ADMIN";
   const isKezelo = user?.rang === "KEZELO";
 
-  const formatDate = (dateStr: any) => new Date(dateStr).toLocaleString("hu-HU", { 
-    year: "numeric", month: "2-digit", day: "2-digit", hour: "2-digit", minute: "2-digit" 
-  });
+  const formatDate = (dateStr: any) => {
+    if (!dateStr) return "N/A";
+    return new Date(dateStr).toLocaleString("hu-HU", { 
+      year: "numeric", month: "2-digit", day: "2-digit", hour: "2-digit", minute: "2-digit" 
+    });
+  };
 
   const getDiffText = (log: AuditLog) => {
-    if (log.muvelet === "CREATE") return "✨ Termék hozzáadva";
-    if (log.muvelet === "DELETE" || log.muvelet === "BULK_DELETE") return "🗑️ Termék törölve";
-
+    if (log.muvelet === "CREATE") return "Termék hozzáadva";
+    if (log.muvelet === "DELETE" || log.muvelet === "BULK_DELETE") return "Termék törölve";
     try {
       const regi = typeof log.regiAdat === 'string' ? JSON.parse(log.regiAdat) : log.regiAdat;
       const uj = typeof log.ujAdat === 'string' ? JSON.parse(log.ujAdat) : log.ujAdat;
-
-      if (!regi || !uj || (log.muvelet === "RESTORE" && regi.id === uj.id && Object.keys(regi).every(k => regi[k] === uj[k]))) {
-        return log.muvelet === "RESTORE" ? "♻️ Termék helyreállítva törölt állapotból" : "";
-      }
-
+      if (!regi || !uj) return log.muvelet;
+      
       const diffs: string[] = [];
-      const keys = ['nev', 'mennyiseg', 'parcella', 'gyarto', 'ar'];
       const labels: { [key: string]: string } = { nev: 'Név', mennyiseg: 'Mennyiség', parcella: 'Parcella', gyarto: 'Gyártó', ar: 'Ár' };
-
-      keys.forEach(key => {
+      
+      Object.keys(labels).forEach(key => {
         if (regi[key] !== uj[key]) {
-          if (log.muvelet === "RESTORE") {
-            diffs.push(`${labels[key]}: ${regi[key] ?? 'N/A'} <-- ${uj[key] ?? 'N/A'}`);
-          } else {
-            diffs.push(`${labels[key]}: ${regi[key] ?? 'N/A'} --> ${uj[key] ?? 'N/A'}`);
-          }
+          diffs.push(`${labels[key]}: ${regi[key] ?? 'N/A'} -> ${uj[key] ?? 'N/A'}`);
         }
       });
-
-      if (diffs.length > 0) {
-        return (log.muvelet === "RESTORE" ? "♻️ Visszaállítva: " : "") + diffs.join(", ");
-      }
-      
-      return log.muvelet === "RESTORE" ? "♻️ Termék helyreállítva" : "";
-    } catch (e) {
-      return log.muvelet === "RESTORE" ? "♻️ Termék helyreállítva" : "";
-    }
+      return diffs.join(", ");
+    } catch (e) { return "Adatváltozás"; }
   };
 
   const exportToExcel = async () => {
+    console.log("📥 EXCEL EXPORT INDÍTÁSA...");
     const workbook = new ExcelJS.Workbook();
     const worksheet = workbook.addWorksheet("Tevékenységnapló");
 
-    // ÚJ SORREND: termék, változtatások, művelet, felhasználó, időpont
     worksheet.columns = [
       { header: "TERMÉK", key: "termek", width: 30 },
       { header: "VÁLTOZTATÁSOK", key: "valtozasok", width: 50 },
@@ -84,28 +73,28 @@ const Logs = ({ logs, allUsers, filters, setFilters, onRefresh, onRestore, onGro
       { header: "IDŐPONT", key: "idopont", width: 20 },
     ];
 
-    // Fejléc formázása
     const headerRow = worksheet.getRow(1);
-    headerRow.font = { bold: true, color: { argb: "FFFFFFFF" }, size: 10 };
+    headerRow.font = { bold: true, color: { argb: "FFFFFFFF" } };
     headerRow.fill = { type: "pattern", pattern: "solid", fgColor: { argb: "FF1E293B" } };
-    headerRow.alignment = { vertical: 'middle', horizontal: 'center' };
 
     logs.forEach(log => {
       worksheet.addRow({
-        termek: log.stock?.nev || log.termekNev || "Rendszer",
+        termek: (log as any).product?.nev || log.termekNev || "Rendszer",
         valtozasok: getDiffText(log),
         muvelet: log.muvelet,
-        user: `${log.user?.nev} (@${log.user?.felhasznalonev})`,
+        user: `${log.user?.nev || 'Ismeretlen'} (@${log.user?.felhasznalonev || '?'})`,
         idopont: formatDate(log.idopont),
       });
     });
 
     const buffer = await workbook.xlsx.writeBuffer();
     saveAs(new Blob([buffer]), `raktar_naplo_${new Date().toISOString().split('T')[0]}.xlsx`);
-    MySwal.fire({ icon: 'success', title: 'Excel export kész!' });
+    console.log("✅ EXCEL FÁJL GENERÁLVA.");
+    MySwal.fire({ icon: 'success', title: 'Excel export kész!', timer: 2000, showConfirmButton: false });
   };
 
   const renderDiff = (log: AuditLog) => {
+    console.log(`🔍 RENDERDIFF - ID: ${log.id}, MŰVELET: ${log.muvelet}`);
     if (log.muvelet === "CREATE") return <p className="text-xs font-bold text-emerald-500 uppercase tracking-widest text-left">✨ Termék hozzáadva</p>;
     if (log.muvelet === "DELETE" || log.muvelet === "BULK_DELETE") return <p className="text-xs font-bold text-rose-500 uppercase tracking-widest text-left">🗑️ Termék törölve</p>;
 
@@ -113,9 +102,9 @@ const Logs = ({ logs, allUsers, filters, setFilters, onRefresh, onRestore, onGro
       const regi = typeof log.regiAdat === 'string' ? JSON.parse(log.regiAdat) : log.regiAdat;
       const uj = typeof log.ujAdat === 'string' ? JSON.parse(log.ujAdat) : log.ujAdat;
 
-      if (!regi || !uj || (log.muvelet === "RESTORE" && regi.id === uj.id && Object.keys(regi).every(k => regi[k] === uj[k]))) {
-        if (log.muvelet === "RESTORE") return <p className="text-xs font-bold text-blue-500 uppercase tracking-widest text-left">♻️ Termék helyreállítva törölt állapotból</p>;
-        return null;
+      if (!regi || !uj) {
+         if (log.muvelet === "RESTORE") return <p className="text-xs font-bold text-blue-500 uppercase tracking-widest text-left">♻️ Termék helyreállítva</p>;
+         return null;
       }
 
       const changes: React.ReactNode[] = [];
@@ -157,11 +146,17 @@ const Logs = ({ logs, allUsers, filters, setFilters, onRefresh, onRestore, onGro
       }
       return log.muvelet === "RESTORE" ? <p className="text-xs font-bold text-blue-500 uppercase tracking-widest text-left">♻️ Termék helyreállítva</p> : null;
     } catch (e) {
-      return <p className="text-xs font-bold text-blue-500 uppercase tracking-widest text-left">♻️ Termék helyreállítva</p>;
+      console.error("❌ HIBA A DIFF RENDERELÉSKOR:", e);
+      return <p className="text-xs font-bold text-blue-500 uppercase tracking-widest text-left">♻️ Adatváltozás történt</p>;
     }
   };
 
   const groupedLogs = useMemo(() => {
+    console.log("⚙️ LOGOK CSOPORTOSÍTÁSA (useMemo)...");
+    if (!logs || logs.length === 0) {
+      console.warn("⚠️ NINCSENEK LOGOK A CSOPORTOSÍTÁSHOZ.");
+      return [];
+    }
     const result: any[] = [];
     let currentGroup: any = null;
     logs.forEach((log: AuditLog) => {
@@ -180,6 +175,7 @@ const Logs = ({ logs, allUsers, filters, setFilters, onRefresh, onRestore, onGro
       }
     });
     if (currentGroup) result.push(currentGroup);
+    console.log("✅ CSOPORTOSÍTÁS KÉSZ. ELEMEK SZÁMA:", result.length);
     return result;
   }, [logs]);
 
@@ -200,7 +196,7 @@ const Logs = ({ logs, allUsers, filters, setFilters, onRefresh, onRestore, onGro
         {isAdmin && (
           <select value={filters.targetUserId} onChange={(e) => setFilters({ ...filters, targetUserId: e.target.value })} className="p-3 rounded-xl bg-slate-50 dark:bg-slate-800 text-[10px] font-bold dark:text-white border border-slate-200 dark:border-slate-700 outline-none transition-all">
             <option value="">Összes felhasználó</option>
-            {allUsers.map((u: any) => <option key={u.id} value={u.id}>{u.nev}</option>)}
+            {allUsers?.map((u: any) => <option key={u.id} value={u.id}>{u.nev}</option>)}
           </select>
         )}
         <select value={filters.muvelet} onChange={(e) => setFilters({ ...filters, muvelet: e.target.value })} className="p-3 rounded-xl bg-slate-50 dark:bg-slate-800 text-[10px] font-bold dark:text-white border border-slate-200 dark:border-slate-700 outline-none">
@@ -213,56 +209,69 @@ const Logs = ({ logs, allUsers, filters, setFilters, onRefresh, onRestore, onGro
         </select>
         <input type="date" value={filters.startDate} onChange={(e) => setFilters({ ...filters, startDate: e.target.value })} className="p-3 rounded-xl bg-slate-50 dark:bg-slate-800 dark:text-white border border-slate-200 dark:border-slate-700 text-[10px] font-bold" />
         <input type="date" value={filters.endDate} onChange={(e) => setFilters({ ...filters, endDate: e.target.value })} className="p-3 rounded-xl bg-slate-50 dark:bg-slate-800 dark:text-white border border-slate-200 dark:border-slate-700 text-[10px] font-bold" />
-        <button onClick={onRefresh} className="bg-blue-600 hover:bg-blue-500 text-white rounded-xl text-[10px] font-black uppercase tracking-widest transition-all active:scale-95 shadow-lg shadow-blue-500/10">Szűrés</button>
+        <button onClick={() => { console.log("🔘 SZŰRÉS GOMB MEGNYOMVA"); onRefresh(); }} className="bg-blue-600 hover:bg-blue-500 text-white rounded-xl text-[10px] font-black uppercase tracking-widest transition-all active:scale-95 shadow-lg shadow-blue-500/10">Szűrés</button>
         <button onClick={exportToExcel} className="bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl text-[10px] font-black uppercase tracking-widest transition-all active:scale-95 flex items-center justify-center gap-2 shadow-lg shadow-emerald-500/10"><span>📊</span> Export</button>
       </div>
 
       <div className="space-y-4 max-h-[600px] overflow-y-auto pr-2 custom-scrollbar">
-        {groupedLogs.map((log, index) => (
-          <div 
-            key={log.isGroup ? `group-${index}` : log.id} 
-            className={`p-5 rounded-[2rem] border transition-all ${log.isGroup ? "bg-red-50 dark:bg-red-900/10 border-red-200 dark:border-red-900/30" : "bg-white dark:bg-slate-900/40 border-slate-100 dark:border-slate-800 hover:border-blue-300 dark:hover:bg-slate-800/60 cursor-pointer shadow-sm hover:shadow-xl"}`} 
-            onClick={() => !log.isGroup && log.stockId && navigate(`/product/${log.stockId}`)}
-          >
-            <div className="flex justify-between items-start">
-              <div className="flex items-center gap-4 text-left">
-                <div className="w-12 h-12 rounded-2xl bg-slate-100 dark:bg-slate-800 flex items-center justify-center font-black text-slate-500 dark:text-slate-400 border border-slate-200 dark:border-slate-700 shadow-inner">
-                  {log.user?.nev?.charAt(0) || "?"}
-                </div>
-                <div>
-                  <div className="flex items-center gap-2 mb-1">
-                    <span className={`px-2 py-0.5 rounded-lg text-[8px] font-black uppercase tracking-widest ${getActionColor(log.muvelet)}`}>
-                      {log.muvelet}
-                    </span>
-                    <p className="text-[10px] font-black uppercase text-slate-400 dark:text-slate-500 tracking-tighter">
-                      {log.user?.nev} <span className="text-blue-500/50">•</span> @{log.user?.felhasznalonev}
-                    </p>
+        {groupedLogs.map((log, index) => {
+          const productId = (log as any).productId;
+          return (
+            <div 
+              key={log.isGroup ? `group-${index}` : log.id} 
+              className={`p-5 rounded-[2rem] border transition-all ${log.isGroup ? "bg-red-50 dark:bg-red-900/10 border-red-200 dark:border-red-900/30" : "bg-white dark:bg-slate-900/40 border-slate-100 dark:border-slate-800 hover:border-blue-300 dark:hover:bg-slate-800/60 cursor-pointer shadow-sm hover:shadow-xl"}`} 
+              onClick={() => {
+                if (!log.isGroup && productId) {
+                  console.log(`🔗 NAVIGÁCIÓ A TERMÉKRE: ${productId}`);
+                  navigate(`/product/${productId}`);
+                }
+              }}
+            >
+              <div className="flex justify-between items-start">
+                <div className="flex items-center gap-4 text-left">
+                  <div className="w-12 h-12 rounded-2xl bg-slate-100 dark:bg-slate-800 flex items-center justify-center font-black text-slate-500 dark:text-slate-400 border border-slate-200 dark:border-slate-700 shadow-inner">
+                    {log.user?.nev?.charAt(0) || "?"}
                   </div>
-                  <h4 className="text-base font-black dark:text-white leading-tight">
-                    {log.isGroup ? `🗑️ Tömeges Törlés (${log.count} tétel)` : (log.stock?.nev || log.termekNev || "Rendszerfolyamat")}
-                  </h4>
+                  <div>
+                    <div className="flex items-center gap-2 mb-1">
+                      <span className={`px-2 py-0.5 rounded-lg text-[8px] font-black uppercase tracking-widest ${getActionColor(log.muvelet)}`}>
+                        {log.muvelet}
+                      </span>
+                      <p className="text-[10px] font-black uppercase text-slate-400 dark:text-slate-500 tracking-tighter">
+                        {log.user?.nev} <span className="text-blue-500/50">•</span> @{log.user?.felhasznalonev}
+                      </p>
+                    </div>
+                    <h4 className="text-base font-black dark:text-white leading-tight">
+                      {log.isGroup ? `🗑️ Tömeges Törlés (${log.count} tétel)` : ((log as any).product?.nev || log.termekNev || "Rendszerfolyamat")}
+                    </h4>
+                  </div>
                 </div>
+                
+                {(isAdmin || isKezelo) && log.muvelet !== "RESTORE" && (log.muvelet === "UPDATE" || log.muvelet === "DELETE" || log.isGroup) && (
+                  <button 
+                    onClick={(e) => { e.stopPropagation(); console.log(`♻️ VISSZAÁLLÍTÁS INDÍTÁSA - ID: ${log.id}`); log.isGroup ? onGroupRestore(log) : onRestore(log.id); }} 
+                    className="bg-emerald-500 hover:bg-emerald-400 text-white p-2.5 rounded-2xl shadow-lg shadow-emerald-500/20 transition-all active:scale-90"
+                    title="Visszaállítás"
+                  >♻️</button>
+                )}
               </div>
-              
-              {(isAdmin || isKezelo) && log.muvelet !== "RESTORE" && (log.muvelet === "UPDATE" || log.muvelet === "DELETE" || log.isGroup) && (
-                <button 
-                  onClick={(e) => { e.stopPropagation(); log.isGroup ? onGroupRestore(log) : onRestore(log.id); }} 
-                  className="bg-emerald-500 hover:bg-emerald-400 text-white p-2.5 rounded-2xl shadow-lg shadow-emerald-500/20 transition-all active:scale-90"
-                  title="Visszaállítás"
-                >♻️</button>
-              )}
-            </div>
 
-            <div className="mt-4 p-4 bg-slate-50 dark:bg-slate-950/40 rounded-[1.5rem] border border-slate-100 dark:border-slate-800/50">
-              {renderDiff(log)}
-            </div>
+              <div className="mt-4 p-4 bg-slate-50 dark:bg-slate-950/40 rounded-[1.5rem] border border-slate-100 dark:border-slate-800/50">
+                {renderDiff(log)}
+              </div>
 
-            <div className="mt-3 flex justify-between items-center px-2">
-              <p className="text-[10px] font-bold text-slate-300 dark:text-slate-600 italic">{formatDate(log.idopont)}</p>
-              {!log.isGroup && <span className="text-[9px] font-black uppercase text-blue-500/40 tracking-widest italic">Részletek megtekintése →</span>}
+              <div className="mt-3 flex justify-between items-center px-2">
+                <p className="text-[10px] font-bold text-slate-300 dark:text-slate-600 italic">{formatDate(log.idopont)}</p>
+                {!log.isGroup && <span className="text-[9px] font-black uppercase text-blue-500/40 tracking-widest italic">Részletek megtekintése →</span>}
+              </div>
             </div>
-          </div>
-        ))}
+          );
+        })}
+        {groupedLogs.length === 0 && (
+          <p className="text-center py-10 text-slate-400 font-bold uppercase text-xs tracking-widest animate-pulse">
+            Nincs megjeleníthető naplóbejegyzés.
+          </p>
+        )}
       </div>
     </div>
   );

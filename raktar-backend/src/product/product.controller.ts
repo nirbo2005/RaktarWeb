@@ -1,4 +1,3 @@
-//raktar-backend/src/product/product.controller.ts
 import {
   Body,
   Controller,
@@ -46,7 +45,7 @@ export class ProductController {
     return this.productService.findOne(id, admin === 'true');
   }
 
-  @ApiOperation({ summary: 'Tömegeges törlés' })
+  @ApiOperation({ summary: 'Tömeges törlés' })
   @Post('bulk-delete')
   @Roles(Role.KEZELO, Role.ADMIN)
   async deleteMany(
@@ -82,6 +81,7 @@ export class ProductController {
   @Roles(Role.KEZELO, Role.ADMIN)
   async delete(
     @Param('id', ParseIntPipe) id: number,
+    
     @Query('userId', ParseIntPipe) userId: number,
   ) {
     return this.productService.delete(id, userId);
@@ -89,7 +89,7 @@ export class ProductController {
 
   @ApiOperation({ summary: 'Törölt termék visszaállítása' })
   @Patch(':id/restore')
-  @Roles(Role.ADMIN) // A visszaállítás általában kritikusabb, maradjon Admin jogkör
+  @Roles(Role.ADMIN)
   async restore(
     @Param('id', ParseIntPipe) id: number,
     @Query('userId', ParseIntPipe) userId: number,

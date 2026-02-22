@@ -1,4 +1,3 @@
-//raktar-backend/src/audit/audit.service.ts
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma.service';
 import { GetLogsQueryDto } from './dto/get-logs-query.dto';
@@ -13,7 +12,7 @@ export class AuditService {
       targetUserId,
       admin,
       muvelet,
-      stockId,
+      productId,
       startDate,
       endDate,
     } = query;
@@ -23,15 +22,15 @@ export class AuditService {
     if (!admin) {
       where.userId = userId;
     } else if (targetUserId) {
-      where.userId = targetUserId;
+      where.userId = Number(targetUserId);
     }
 
     if (muvelet) {
       where.muvelet = muvelet;
     }
 
-    if (stockId) {
-      where.stockId = stockId;
+    if (productId) {
+      where.productId = Number(productId);
     }
 
     if (startDate || endDate) {
@@ -53,10 +52,10 @@ export class AuditService {
       where,
       include: {
         user: {
-          select: { nev: true, felhasznalonev: true },
+          select: { id: true, nev: true, felhasznalonev: true },
         },
-        stock: {
-          select: { nev: true },
+        product: {
+          select: { id: true, nev: true },
         },
       },
       orderBy: {
@@ -68,19 +67,23 @@ export class AuditService {
   async createLog(
     userId: number,
     muvelet: string,
-    stockId?: number,
+    productId?: number,
     regiAdat?: any,
     ujAdat?: any,
     tx?: Prisma.TransactionClient,
   ) {
-    const prismaClient = tx || this.prisma;
-    return prismaClient.auditLog.create({
+    const client = tx || this.prisma;
+    
+    const cleanRegi = regiAdat ? JSON.parse(JSON.stringify(regiAdat)) : null;
+    const cleanUj = ujAdat ? JSON.parse(JSON.stringify(ujAdat)) : null;
+
+    return client.auditLog.create({
       data: {
         muvelet,
         userId,
-        stockId,
-        regiAdat: regiAdat ? JSON.parse(JSON.stringify(regiAdat)) : null,
-        ujAdat: ujAdat ? JSON.parse(JSON.stringify(ujAdat)) : null,
+        productId: productId ? Number(productId) : null,
+        regiAdat: cleanRegi,
+        ujAdat: cleanUj,
       },
     });
   }

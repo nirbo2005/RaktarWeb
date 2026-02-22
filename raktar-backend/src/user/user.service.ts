@@ -1,4 +1,3 @@
-//raktar-backend/src/user/user.service.ts
 import {
   Injectable,
   NotFoundException,
@@ -9,21 +8,24 @@ import { PrismaService } from '../prisma.service';
 import * as bcrypt from 'bcrypt';
 import { UserEntity } from './entities/user.entity';
 import { Role } from '@prisma/client';
+import { EventsGateway } from '../events/events.gateway';
 
 @Injectable()
 export class UserService {
-  constructor(private prisma: PrismaService) {}
+  constructor(
+    private prisma: PrismaService,
+    private events: EventsGateway,
+  ) {}
 
   async create(createUserDto: CreateUserDto): Promise<UserEntity> {
     const salt = await bcrypt.genSalt();
     const hashedJelszo = await bcrypt.hash(createUserDto.jelszo, salt);
 
-    // Az admin boolean helyett a rang enumot használjuk
     const user = await this.prisma.user.create({
       data: {
         ...createUserDto,
         jelszo: hashedJelszo,
-        rang: createUserDto.rang || Role.NEZELODO, // Alapértelmezett a nézelődő
+        rang: createUserDto.rang || Role.NEZELODO,
       },
     });
     return new UserEntity(user);
@@ -45,6 +47,8 @@ export class UserService {
       where: { id },
     });
     if (!user) throw new NotFoundException('Felhasználó nem található');
+    
+    
     return new UserEntity(user);
   }
 
@@ -55,7 +59,6 @@ export class UserService {
     const { ujJelszo, regiJelszo, ...validFields } = data;
     const updateData: any = { ...validFields };
 
-    // Jelszó módosítás logikája
     if (ujJelszo && ujJelszo.trim() !== '') {
       if (regiJelszo) {
         const isMatch = await bcrypt.compare(regiJelszo, user.jelszo);
@@ -71,17 +74,20 @@ export class UserService {
       where: { id },
       data: updateData,
     });
+
+    
+    this.events.emitToUser(id, 'user_updated', updated);
+
     return new UserEntity(updated);
   }
 
   async createChangeRequest(userId: number, tipus: string, ujErtek: string) {
-    return this.prisma.changeRequest.create({
-      data: {
-        userId,
-        tipus,
-        ujErtek,
-      },
+    const request = await this.prisma.changeRequest.create({
+      data: { userId, tipus, ujErtek },
     });
+
+    this.events.emitUpdate('notifications_updated', { role: 'ADMIN' });
+    return request;
   }
 
   async getPendingRequests() {
@@ -91,32 +97,48 @@ export class UserService {
     });
   }
 
+  
+
   async handleRequest(requestId: number, statusz: 'APPROVED' | 'REJECTED') {
     const request = await this.prisma.changeRequest.findUnique({
       where: { id: requestId },
     });
     if (!request) throw new NotFoundException('Kérelem nem található');
 
+    
+    let updatedUser: any = null;
+
     if (statusz === 'APPROVED') {
       if (request.tipus === 'NEV_MODOSITAS') {
-        await this.prisma.user.update({
+        updatedUser = await this.prisma.user.update({
           where: { id: request.userId },
           data: { nev: request.ujErtek },
         });
       } else if (request.tipus === 'RANG_MODOSITAS') {
-        // Rang módosítása Role enum alapján
-        await this.prisma.user.update({
+        updatedUser = await this.prisma.user.update({
           where: { id: request.userId },
           data: { rang: request.ujErtek as Role },
         });
       }
+
+      if (updatedUser) {
+        
+        this.events.emitToUser(request.userId, 'user_updated', updatedUser);
+      }
     }
 
-    return this.prisma.changeRequest.update({
+    const updatedRequest = await this.prisma.changeRequest.update({
       where: { id: requestId },
       data: { statusz },
     });
+
+    
+    this.events.emitToUser(request.userId, 'notifications_updated', { userId: request.userId });
+
+    return updatedRequest;
   }
+
+
 
   async toggleBan(id: number): Promise<UserEntity> {
     const user = await this.prisma.user.findUnique({ where: { id } });
@@ -126,11 +148,20 @@ export class UserService {
       where: { id },
       data: { isBanned: !user.isBanned },
     });
+
+    if (updated.isBanned) {
+      this.events.emitToUser(id, 'force_logout', {
+        userId: id,
+        reason: 'Fiók kitiltva',
+      });
+    } else {
+      this.events.emitToUser(id, 'user_updated', updated);
+    }
+
     return new UserEntity(updated);
   }
 
   async remove(id: number): Promise<UserEntity> {
-    // Puha törlés és adatok anonimizálása
     const updated = await this.prisma.user.update({
       where: { id },
       data: {
@@ -141,6 +172,9 @@ export class UserService {
         isBanned: true,
       },
     });
+
+    this.events.emitToUser(id, 'force_logout', { userId: id, reason: 'Fiók törölve' });
+
     return new UserEntity(updated);
   }
 }

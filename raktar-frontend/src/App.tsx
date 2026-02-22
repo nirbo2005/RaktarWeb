@@ -1,4 +1,3 @@
-//raktar-frontend/src/App.tsx
 import { useEffect, useState, type ReactNode } from "react";
 import { BrowserRouter, Routes, Route, useLocation, Navigate, Outlet } from "react-router-dom";
 import { AuthProvider, useAuth } from "./context/AuthContext";
@@ -19,6 +18,7 @@ import ForgotPassword from "./components/Auth/ForgotPassword";
 import ForceChangePassword from "./components/Auth/ForceChangePassword";
 
 import Profile from "./components/Profile";
+import Notifications from "./components/Auxiliary/Notification"; // <-- ÚJ IMPORT ITT
 
 import StockValue from "./components/beta/StockValue";
 
@@ -121,6 +121,7 @@ function App() {
                 <Route path="/profile" element={<Profile />} />
                 <Route path="/scanner" element={<ScannerView />} />
                 <Route path="/search" element={<SearchResults />} />
+                <Route path="/notifications" element={<Notifications />} /> {/* <-- ÚJ ÚTVONAL ITT */}
               </Route>
 
               {/* ADMIN / KEZELŐ ROUTE-OK */}

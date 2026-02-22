@@ -1,4 +1,4 @@
-//raktar-frontend/src/components/Auth/Register.tsx
+
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { register } from "../../services/api";
@@ -176,7 +176,7 @@ function Register() {
                 onChange={(phone) => setForm({ ...form, telefonszam: phone })}
                 onBlur={() => validateField("telefonszam", form.telefonszam)}
                 localization={hu}
-                masks={{ hu: '.. ... ....' }} /* ÚJ MASZK: a helyes tagoláshoz */
+                masks={{ hu: '.. ... ....' }}
                 countryCodeEditable={false}
                 enableSearch={true}
                 searchPlaceholder="Keresés..."
@@ -235,7 +235,7 @@ function Register() {
         }
         .phone-input-reg:focus { border-color: rgb(37 99 235) !important; }
         
-        /* GOMB HÁTTÉR JAVÍTÁSA */
+       
         .phone-button-reg { 
           background: transparent !important; border: none !important; 
           border-radius: 1rem 0 0 1rem !important; width: 48px !important;
@@ -254,7 +254,7 @@ function Register() {
         .dark .phone-container-reg .flag-dropdown.open .selected-flag {
           background: rgba(255, 255, 255, 0.05) !important;
         }
-        /* --- */
+       
 
         .phone-dropdown-reg { 
           background: white !important; border-radius: 1rem !important; color: #111827 !important;

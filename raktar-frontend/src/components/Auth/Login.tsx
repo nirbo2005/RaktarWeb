@@ -1,6 +1,5 @@
-//raktar-frontend/src/components/Login.tsx
-import { useState } from "react";
-import { useNavigate, Link } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { useNavigate, Link, useLocation } from "react-router-dom";
 import { login as apiLogin } from "../../services/api";
 import { useAuth } from "../../context/AuthContext";
 import Swal from 'sweetalert2';
@@ -23,11 +22,39 @@ const toast = MySwal.mixin({
   color: '#fff'
 });
 
+
+
 function Login() {
   const navigate = useNavigate();
+  const location = useLocation();
   const { login } = useAuth();
   const [form, setForm] = useState({ felhasznalonev: "", jelszo: "" });
   const [error, setError] = useState("");
+
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    const reason = params.get("reason");
+  
+    if (reason === "session_expired") {
+      
+      const showNotice = async () => {
+        await MySwal.fire({
+          icon: 'warning',
+          title: 'Munkamenet megszakítva',
+          text: 'Bejelentkeztél egy másik eszközről, ezért itt kijelentkeztettünk.',
+          confirmButtonText: 'Értettem',
+          allowOutsideClick: false,
+          backdrop: true
+        });
+        
+        navigate("/login", { replace: true });
+      };
+  
+      showNotice();
+    }
+  }, [location, navigate]);
+
+  
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -37,13 +64,12 @@ function Login() {
       const data = await apiLogin(form.felhasznalonev, form.jelszo);
       login(data.access_token, data.user);
 
-      // Vizsgáljuk, hogy kell-e jelszót cserélnie az új mező alapján!
       if (data.user.mustChangePassword) {
         navigate("/force-change-password");
       } else {
         await toast.fire({
           icon: 'success',
-          title: `Üdv újra, ${data.user.nev}! 👋`
+          title: `Üdv újra, ${data.user.nev || data.user.felhasznalonev}! 👋`
         });
         navigate("/");
       }
@@ -66,7 +92,7 @@ function Login() {
 
   return (
     <div className="min-h-[80vh] flex items-center justify-center bg-slate-50 dark:bg-slate-950 p-4 transition-colors duration-300">
-      <div className="bg-white dark:bg-slate-900 p-8 rounded-[2rem] shadow-2xl w-full max-w-md border border-slate-200 dark:border-slate-800 transition-all text-left">
+      <div className="bg-white dark:bg-slate-900 p-8 rounded-[2rem] shadow-2xl w-full max-w-md border border-slate-200 dark:border-slate-800 transition-all text-left relative overflow-hidden">
         <h1 className="text-3xl font-black text-slate-900 dark:text-white mb-6 text-center italic uppercase tracking-tighter transition-colors">
           Bejelentkezés
         </h1>
@@ -100,7 +126,6 @@ function Login() {
               <label className="text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest transition-colors">
                 Jelszó
               </label>
-              {/* ÚJ: Elfelejtett jelszó link */}
               <Link 
                 to="/forgot-password" 
                 className="text-[10px] font-black text-blue-600 dark:text-blue-400 hover:text-blue-500 transition-colors uppercase tracking-widest"

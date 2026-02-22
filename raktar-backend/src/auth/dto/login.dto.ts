@@ -1,4 +1,4 @@
-//raktar-backend/src/auth/dto/login.dto.ts
+
 import { IsString, IsNotEmpty, MinLength } from 'class-validator';
 
 export class LoginDto {

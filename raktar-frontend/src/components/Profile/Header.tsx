@@ -1,4 +1,3 @@
-// raktar-frontend/src/components/Profile/Header.tsx
 import { useAuth } from "../../context/AuthContext";
 
 const Header = () => {
@@ -9,25 +8,33 @@ const Header = () => {
   const isAdmin = user.rang === "ADMIN";
   const isKezelo = user.rang === "KEZELO";
 
+  // Biztonsági betűvágás: ha nincs név, kérdőjelet adunk vissza
+  const getInitial = () => {
+    if (user?.nev && user.nev.length > 0) {
+      return user.nev.charAt(0).toUpperCase();
+    }
+    return "?";
+  };
+
   return (
     <header className="bg-white dark:bg-slate-900 rounded-[2.5rem] shadow-2xl overflow-hidden border border-slate-100 dark:border-slate-800 transition-all duration-500">
       <div className="h-32 bg-gradient-to-r from-blue-600 via-blue-700 to-indigo-800" />
       <div className="px-8 md:px-12 flex flex-col md:flex-row items-stretch gap-8 -mt-16">
         <div className="flex flex-col justify-end pb-4">
           <div className="w-28 h-28 bg-white dark:bg-slate-800 rounded-3xl shadow-2xl flex items-center justify-center text-5xl border-8 border-white dark:border-slate-900 font-black italic text-blue-600 shadow-blue-500/20 z-10 shrink-0">
-            {user.nev.charAt(0)}
+            {getInitial()}
           </div>
         </div>
         <div className="flex-1 flex flex-col">
           <div className="h-16 flex items-end pb-2">
             <h1 className="text-2xl md:text-4xl font-black text-white uppercase italic tracking-tight drop-shadow-md">
-              {user.nev}
+              {user?.nev || "Névtelen felhasználó"}
             </h1>
           </div>
           <div className="h-16 flex items-center justify-between">
             <div className="flex flex-wrap items-center gap-3">
               <span className="text-slate-400 font-bold text-[11px] uppercase tracking-widest bg-slate-800/60 px-3 py-1.5 rounded-xl border border-slate-700/50 backdrop-blur-sm">
-                @{user.felhasznalonev}
+                @{user?.felhasznalonev}
               </span>
               <span className="text-blue-400 font-black text-[10px] uppercase tracking-wider bg-blue-900/30 px-3 py-1.5 rounded-xl border border-blue-800/50 backdrop-blur-sm">
                 {isAdmin ? "🛡️ Admin" : isKezelo ? "📦 Kezelő" : "👁️ Nézelődő"}

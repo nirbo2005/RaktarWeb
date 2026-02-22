@@ -1,4 +1,4 @@
-//raktár-backend/src/auth/roles.guard.ts
+
 import { Injectable, CanActivate, ExecutionContext, ForbiddenException } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import { Role } from '@prisma/client';
@@ -14,14 +14,14 @@ export class RolesGuard implements CanActivate {
       context.getClass(),
     ]);
 
-    // Ha nincs megadva role a végponton, akkor bárki (bejelentkezett) beléphet
+    
     if (!requiredRoles) {
       return true;
     }
 
     const { user } = context.switchToHttp().getRequest();
     
-    // Ellenőrizzük, hogy a user rangja benne van-e az engedélyezett rangok listájában
+    
     const hasRole = requiredRoles.some((role) => user?.rang === role);
 
     if (!hasRole) {
