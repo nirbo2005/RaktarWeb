@@ -1,6 +1,4 @@
-
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
 import { forceChangePassword } from "../../services/api";
 import { useAuth } from "../../context/AuthContext";
 import Swal from 'sweetalert2';
@@ -14,7 +12,6 @@ const MySwal = Swal.mixin({
 });
 
 function ForceChangePassword() {
-  const navigate = useNavigate();
   const { user, logout } = useAuth();
   
   const [form, setForm] = useState({
@@ -35,8 +32,14 @@ function ForceChangePassword() {
       return;
     }
 
-    if (form.ujJelszo.length < 6) {
-      setError("Az új jelszónak legalább 6 karakternek kell lennie!");
+    // Backend DTO szinkron: legalább 8 karakter, komplexitás ellenőrzés
+    const passwordRegex = /((?=.*\d)|(?=.*\W+))(?![.\n])(?=.*[A-Z])(?=.*[a-z]).*$/;
+    if (form.ujJelszo.length < 8) {
+      setError("Az új jelszónak legalább 8 karakternek kell lennie!");
+      return;
+    }
+    if (!passwordRegex.test(form.ujJelszo)) {
+      setError("A jelszónak tartalmaznia kell kisbetűt, nagybetűt és számot/jelet!");
       return;
     }
 
@@ -53,20 +56,22 @@ function ForceChangePassword() {
         ujJelszo: form.ujJelszo
       });
       
-      
+      // Siker esetén azonnal tájékoztatjuk a felhasználót
       MySwal.fire({
         icon: 'success',
-        title: 'Jelszó frissítve!',
-        text: 'A jelszavad sikeresen megváltozott. Kérjük, jelentkezz be újra az új jelszavaddal!',
-        confirmButtonText: 'Újra bejelentkezem',
+        title: 'Jelszó sikeresen frissítve! ✨',
+        text: 'A biztonság érdekében most kérjük, jelentkezz be az új jelszavaddal.',
+        confirmButtonText: 'Értem, irány a belépés',
         allowOutsideClick: false,
       }).then(() => {
-        logout();
-        navigate("/login");
+        // Teljes takarítás és hard redirect a tiszta session érdekében
+        // Ez megszünteti a WebSocket kapcsolatot és minden memóriában maradt state-et
+        localStorage.clear(); 
+        window.location.href = "/login"; 
       });
       
     } catch (err: any) {
-      const errorMsg = err.message || "Hiba a jelszó frissítésekor.";
+      const errorMsg = err.response?.data?.message || err.message || "Hiba a jelszó frissítésekor.";
       setError(errorMsg);
 
       MySwal.fire({
@@ -120,11 +125,11 @@ function ForceChangePassword() {
             <input
               type="password"
               className={inputStyle}
-              placeholder="Minimum 6 karakter"
+              placeholder="Min. 8 karakter, kis-, nagybetű és szám"
               value={form.ujJelszo}
               onChange={(e) => setForm({ ...form, ujJelszo: e.target.value })}
               required
-              minLength={6}
+              minLength={8}
             />
           </div>
 
@@ -137,7 +142,7 @@ function ForceChangePassword() {
               value={form.ujJelszoUjra}
               onChange={(e) => setForm({ ...form, ujJelszoUjra: e.target.value })}
               required
-              minLength={6}
+              minLength={8}
             />
           </div>
 

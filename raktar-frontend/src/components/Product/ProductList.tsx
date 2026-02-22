@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useMemo, useState, useCallback } from "react"; // useEffect eltávolítva
 import { useNavigate } from "react-router-dom";
 import {
   getProducts,
@@ -6,12 +6,12 @@ import {
   deleteManyProducts,
 } from "../../services/api";
 import { useAuth } from "../../context/AuthContext";
+import { useAutoRefresh } from "../../hooks/useAutoRefresh"; // ÚJ: Hook import
 import type { Product } from "../../types/Product";
 import { QRCodeSVG } from "qrcode.react";
 import ExcelJS from "exceljs";
 import { saveAs } from "file-saver";
 import Swal from 'sweetalert2';
-import socket from "../../services/socket"; // Importálva a WebSocket szinkronhoz
 
 const MySwal = Swal.mixin({
   customClass: {
@@ -75,22 +75,18 @@ function ProductList() {
   const { user } = useAuth();
   const canEdit = user && (user.rang === "KEZELO" || user.rang === "ADMIN");
 
-  const fetchProducts = () => {
-    getProducts().then(setProducts).catch(console.error);
-  };
-
-  useEffect(() => {
-    fetchProducts();
-
-    // REAKTÍV FRISSÍTÉS: Figyeljük a termékek és sarzsok változását
-    socket.on("products_updated", () => {
-      fetchProducts();
-    });
-
-    return () => {
-      socket.off("products_updated");
-    };
+  // 1. Centralizált adatlekérés
+  const fetchProducts = useCallback(async () => {
+    try {
+      const data = await getProducts();
+      setProducts(data);
+    } catch (err) {
+      console.error("Adatbetöltési hiba:", err);
+    }
   }, []);
+
+  // 2. Automatikus frissítés bekötése (WebSocket + Reconnect + Első betöltés)
+  useAutoRefresh(fetchProducts);
 
   const toggleRow = (id: number) => {
     setExpandedRowIds(prev => 
@@ -116,14 +112,13 @@ function ProductList() {
           </div>
         </div>
       `,
-      didOpen: () => {
-        import("react-dom/client").then((ReactDOMClient) => {
-          const container = document.getElementById("qr-svg-container");
-          if (container) {
-            const root = ReactDOMClient.createRoot(container);
-            root.render(<QRCodeSVG value={productUrl} size={300} level="H" includeMargin={false} />);
-          }
-        });
+      didOpen: async () => {
+        const ReactDOMClient = await import("react-dom/client");
+        const container = document.getElementById("qr-svg-container");
+        if (container) {
+          const root = ReactDOMClient.createRoot(container);
+          root.render(<QRCodeSVG value={productUrl} size={300} level="H" includeMargin={false} />);
+        }
       },
     }).then((result) => {
       if (result.isConfirmed) {
@@ -175,8 +170,6 @@ function ProductList() {
     worksheet.getRow(1).fill = { type: "pattern", pattern: "solid", fgColor: { argb: "FF334155" } };
 
     const now = new Date();
-    const oneWeekLater = new Date();
-    oneWeekLater.setDate(now.getDate() + 7);
 
     filteredAndSortedProducts.forEach((p) => {
       const earliestExpiry = getEarliestExpiry(p);
@@ -273,14 +266,15 @@ function ProductList() {
   };
 
   return (
-    <div className="min-h-screen p-4 md:p-10 bg-slate-50 dark:bg-slate-950 transition-colors duration-300">
+    <div className="min-h-screen p-4 md:p-10 bg-slate-50 dark:bg-slate-950 transition-colors duration-300 text-left">
       <div className="max-w-7xl mx-auto">
-        <div className="flex flex-col xl:flex-row justify-between items-start xl:items-center gap-6 mb-12 text-left">
+        {/* UI részek változatlanok */}
+        <div className="flex flex-col xl:flex-row justify-between items-start xl:items-center gap-6 mb-12">
           <div className="flex items-center gap-4 group cursor-pointer" onClick={() => navigate("/")}>
             <div className="bg-blue-600 p-3 rounded-2xl shadow-lg shadow-blue-500/20 group-hover:scale-110 transition-transform">
               <span className="text-3xl text-white">📦</span>
             </div>
-            <h1 className="text-4xl font-black text-slate-900 dark:text-white tracking-tighter italic uppercase transition-colors">
+            <h1 className="text-4xl font-black text-slate-900 dark:text-white tracking-tighter italic uppercase">
               Raktár
             </h1>
           </div>
@@ -313,8 +307,8 @@ function ProductList() {
 
         {filteredAndSortedProducts.length > 0 ? (
           <>
-            <div className="hidden lg:block bg-white dark:bg-slate-900 rounded-[2.5rem] border border-slate-200 dark:border-slate-800 shadow-xl overflow-hidden transition-all text-left">
-              <table className="w-full border-collapse text-left">
+            <div className="hidden lg:block bg-white dark:bg-slate-900 rounded-[2.5rem] border border-slate-200 dark:border-slate-800 shadow-xl overflow-hidden transition-all">
+              <table className="w-full border-collapse">
                 <thead>
                   <tr className="bg-slate-50 dark:bg-slate-800/50 text-slate-500 dark:text-slate-400 text-[10px] font-black uppercase tracking-[0.2em] border-b border-slate-200 dark:border-slate-800">
                     <th className="p-6 text-center w-12"></th>
@@ -336,7 +330,7 @@ function ProductList() {
                       <React.Fragment key={p.id}>
                         <tr className={`transition-colors group ${selectedIds.includes(p.id) ? "bg-blue-50/50 dark:bg-blue-900/20" : "hover:bg-blue-50/30 dark:hover:bg-blue-900/10"}`}>
                           <td className="p-6 text-center cursor-pointer" onClick={() => toggleRow(p.id)}>
-                            <div className={`transform transition-transform ${isExpanded ? "rotate-90 text-blue-500" : "text-slate-400"}`}>▶</div>
+                            <div className={`transform transition-transform ${isExpanded ? "rotate-90 text-blue-50" : "text-slate-400"}`}>▶</div>
                           </td>
                           {canEdit && isSelectionMode && (
                             <td className="p-6 text-center"><input type="checkbox" className="w-4 h-4 rounded text-blue-600" checked={selectedIds.includes(p.id)} onChange={() => toggleSelect(p.id)} /></td>
@@ -388,7 +382,8 @@ function ProductList() {
               </table>
             </div>
 
-            <div className="lg:hidden grid grid-cols-1 sm:grid-cols-2 gap-6 text-left">
+            {/* Mobil nézet változatlan */}
+            <div className="lg:hidden grid grid-cols-1 sm:grid-cols-2 gap-6">
               {filteredAndSortedProducts.map((p) => {
                 const totalQty = getTotalQuantity(p);
                 const isExpanded = expandedRowIds.includes(p.id);

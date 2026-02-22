@@ -1,96 +1,97 @@
-import React, { createContext, useContext, useState, useEffect } from "react";
-import Swal from "sweetalert2";
+//raktar-frontend/src/context/AuthContext.tsx
+import React, { createContext, useContext, useState, useEffect, useCallback } from "react";
 import type { User } from "../types/User";
-import socket from "../services/socket";
+import { socket } from "../services/socket";
 import { getMe } from "../services/api";
 
 interface AuthContextType {
   user: User | null;
   token: string | null;
+  loading: boolean;
   login: (token: string, user: User) => void;
   logout: () => void;
   setUser: (user: User | null) => void;
   socket: any;
-  notifTrigger: number;
-  refreshNotifications: () => void;
+  refreshKey: number;
+  triggerGlobalRefresh: () => void;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [user, setUser] = useState<User | null>(null);
-  const [token, setToken] = useState<string | null>(localStorage.getItem("token"));
-  const [notifTrigger, setNotifTrigger] = useState(0);
+  // JAVÍTÁS: Szinkron inicializálás, hogy ne legyen race condition
+  const [token, setToken] = useState<string | null>(() => localStorage.getItem("token"));
+  const [user, setUser] = useState<User | null>(() => {
+    const saved = localStorage.getItem("user");
+    return saved && saved !== "undefined" ? JSON.parse(saved) : null;
+  });
+  
+  // Ha van tokenünk, alapból loading-gal indítunk, amíg a háttérben validálunk
+  const [loading, setLoading] = useState(!!token && !user);
+  const [refreshKey, setRefreshKey] = useState(0);
 
-  const refreshNotifications = () => {
-    setNotifTrigger(prev => prev + 1);
-  };
-
-  useEffect(() => {
-    const savedUser = localStorage.getItem("user");
-    if (savedUser && savedUser !== "undefined") {
-      try {
-        setUser(JSON.parse(savedUser));
-      } catch (e) {
-        console.error("Hiba a mentett felhasználó betöltésekor");
-      }
-    }
+  const triggerGlobalRefresh = useCallback(() => {
+    setRefreshKey(prev => prev + 1);
   }, []);
 
   useEffect(() => {
-    if (user) {
-      // 0. CSATLAKOZÁS A SAJÁT SZOBÁHOZ
-      socket.emit('join_user_room', { userId: user.id });
+    const initAuth = async () => {
+      if (token && !user) {
+        try {
+          const updatedUser = await getMe();
+          setUser(updatedUser);
+          localStorage.setItem("user", JSON.stringify(updatedUser));
+        } catch (e) {
+          console.error("Auth inicializálási hiba");
+          logout();
+        }
+      }
+      setLoading(false);
+    };
 
-      // 1. REAL-TIME KILÉPTETÉS: Ha a szerver jelez (Single Session, Ban, Reset)
-      socket.on("force_logout", async (data: { userId: number; reason?: string }) => {
-        if (Number(data.userId) === Number(user?.id)) {
-          console.log("‼️ FORCE LOGOUT ESEMÉNY ÉRKEZETT");
-          // Törlés előtt egy pillanatra álljunk meg
-          localStorage.removeItem("token");
-          localStorage.removeItem("user");
-          // Azonnali ugrás a loginra, ahol a korábban beépített useEffect elkapja a reason-t
-          window.location.href = "/login?reason=session_expired";
+    initAuth();
+  }, []);
+
+  useEffect(() => {
+    const handleOnline = () => triggerGlobalRefresh();
+    window.addEventListener('server-online', handleOnline);
+
+    if (user) {
+      socket.emit('join_user_room', { userId: user.id });
+      socket.on("products_updated", triggerGlobalRefresh);
+      
+      socket.on("notifications_updated", (data: any) => {
+        if (data.global || (data.userId && Number(data.userId) === Number(user.id))) {
+          triggerGlobalRefresh();
         }
       });
 
-      // 2. Felhasználó adatok frissítése
+      socket.on("force_logout", (data: { userId: number }) => {
+        if (Number(data.userId) === Number(user?.id)) logout();
+      });
+
       socket.on("user_updated", async (data: any) => {
-        const targetId = data.id || data.userId;
-        if (Number(targetId) === Number(user.id)) {
+        if (Number(data.id || data.userId) === Number(user?.id)) {
+          if (window.location.pathname === "/force-change-password") return;
           try {
             const updatedUser = await getMe();
             setUser(updatedUser);
             localStorage.setItem("user", JSON.stringify(updatedUser));
-            
-            if (updatedUser.mustChangePassword) {
-               Swal.fire({
-                 title: "Biztonsági frissítés",
-                 text: "A jelszavad megváltoztatása kötelező!",
-                 icon: "info",
-                 background: 'rgb(15, 23, 42)',
-                 color: '#fff'
-               });
-            }
           } catch (err) {
-            console.error("Hiba a profil szinkronizálásakor", err);
+            console.error("Szinkron hiba", err);
           }
-        }
-      });
-
-      socket.on("notifications_updated", (data: any) => {
-        if (data.global || (data.userId && Number(data.userId) === Number(user.id))) {
-          refreshNotifications();
         }
       });
     }
 
     return () => {
+      window.removeEventListener('server-online', handleOnline);
+      socket.off("products_updated");
+      socket.off("notifications_updated");
       socket.off("force_logout");
       socket.off("user_updated");
-      socket.off("notifications_updated");
     };
-  }, [user]);
+  }, [user, triggerGlobalRefresh]);
 
   const login = (newToken: string, userData: User) => {
     localStorage.setItem("token", newToken);
@@ -98,28 +99,18 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     setToken(newToken);
     setUser(userData);
     socket.emit('join_user_room', { userId: userData.id });
+    triggerGlobalRefresh();
   };
 
   const logout = () => {
     setToken(null);
     setUser(null);
-    localStorage.removeItem("token");
-    localStorage.removeItem("user");
-    // Érdemes az oldalt is újratölteni, hogy minden state tisztuljon
+    localStorage.clear();
     window.location.href = "/login";
   };
 
   return (
-    <AuthContext.Provider value={{ 
-      user, 
-      token, 
-      login, 
-      logout, 
-      setUser, 
-      socket,
-      notifTrigger,
-      refreshNotifications 
-    }}>
+    <AuthContext.Provider value={{ user, token, loading, login, logout, setUser, socket, refreshKey, triggerGlobalRefresh }}>
       {children}
     </AuthContext.Provider>
   );

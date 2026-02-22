@@ -2,6 +2,8 @@ import {
   Injectable,
   NotFoundException,
   UnauthorizedException,
+  ConflictException,
+  InternalServerErrorException,
 } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { PrismaService } from '../prisma.service';
@@ -17,18 +19,50 @@ export class UserService {
     private events: EventsGateway,
   ) {}
 
-  async create(createUserDto: CreateUserDto): Promise<UserEntity> {
-    const salt = await bcrypt.genSalt();
-    const hashedJelszo = await bcrypt.hash(createUserDto.jelszo, salt);
+  /**
+   * Telefonszám normalizálása: Eltávolít minden nem számjegyet, 
+   * majd visszahelyezi a '+' jelet az elejére.
+   */
+  private normalizePhoneNumber(phone: string | null | undefined): string | null {
+    if (!phone) return null;
+    const cleaned = phone.replace(/\D/g, ''); // Csak számjegyek maradnak
+    return cleaned ? `+${cleaned}` : null;
+  }
 
-    const user = await this.prisma.user.create({
-      data: {
-        ...createUserDto,
-        jelszo: hashedJelszo,
-        rang: createUserDto.rang || Role.NEZELODO,
-      },
-    });
-    return new UserEntity(user);
+  async create(createUserDto: CreateUserDto): Promise<UserEntity> {
+    try {
+      const salt = await bcrypt.genSalt();
+      const hashedJelszo = await bcrypt.hash(createUserDto.jelszo, salt);
+
+      const user = await this.prisma.user.create({
+        data: {
+          ...createUserDto,
+          telefonszam: this.normalizePhoneNumber(createUserDto.telefonszam), // NORMALIZÁLÁS MENTÉS ELŐTT
+          jelszo: hashedJelszo,
+          rang: createUserDto.rang || Role.NEZELODO,
+        },
+      });
+      return new UserEntity(user);
+    } catch (error: any) {
+      if (error.code === 'P2002') {
+        const target = JSON.stringify(error.meta?.target || '').toLowerCase();
+        
+        if (target.includes('felhasznalonev')) {
+          throw new ConflictException('Ez a felhasználónév már foglalt!');
+        }
+        if (target.includes('email')) {
+          throw new ConflictException('Ez az e-mail cím már regisztrálva van!');
+        }
+        if (target.includes('telefonszam') || target.includes('phone')) {
+          throw new ConflictException('Ez a telefonszám már használatban van egy másik fióknál!');
+        }
+        
+        throw new ConflictException('Már létezik felhasználó ezekkel az adatokkal.');
+      }
+      
+      console.error('Váratlan hiba regisztrációkor:', error);
+      throw new InternalServerErrorException('Szerveroldali hiba történt a mentés során.');
+    }
   }
 
   async findAll(): Promise<UserEntity[]> {
@@ -47,45 +81,64 @@ export class UserService {
       where: { id },
     });
     if (!user) throw new NotFoundException('Felhasználó nem található');
-    
-    
     return new UserEntity(user);
   }
 
   async updateProfile(id: number, data: any): Promise<UserEntity> {
     const user = await this.prisma.user.findUnique({ where: { id } });
-    if (!user) throw new NotFoundException('Felhasználó nem található');
+    if (!user) {
+      throw new NotFoundException('A megadott felhasználó nem található a rendszerben!');
+    }
 
-    const { ujJelszo, regiJelszo, ...validFields } = data;
+    const { ujJelszo, regiJelszo, telefonszam, ...validFields } = data;
     const updateData: any = { ...validFields };
 
+    // Telefonszám normalizálása frissítéskor is
+    if (telefonszam !== undefined) {
+      updateData.telefonszam = this.normalizePhoneNumber(telefonszam);
+    }
+
     if (ujJelszo && ujJelszo.trim() !== '') {
-      if (regiJelszo) {
-        const isMatch = await bcrypt.compare(regiJelszo, user.jelszo);
-        if (!isMatch)
-          throw new UnauthorizedException('A régi jelszó nem megfelelő!');
+      if (!regiJelszo) {
+        throw new UnauthorizedException('A jelszó módosításához meg kell adnia a régi jelszavát!');
+      }
+
+      const isMatch = await bcrypt.compare(regiJelszo, user.jelszo);
+      if (!isMatch) {
+        throw new UnauthorizedException('A megadott régi jelszó nem megfelelő!');
       }
 
       const salt = await bcrypt.genSalt();
       updateData.jelszo = await bcrypt.hash(ujJelszo, salt);
     }
 
-    const updated = await this.prisma.user.update({
-      where: { id },
-      data: updateData,
-    });
+    try {
+      const updated = await this.prisma.user.update({
+        where: { id },
+        data: updateData,
+      });
 
-    
-    this.events.emitToUser(id, 'user_updated', updated);
+      this.events.emitToUser(id, 'user_updated', updated);
+      return new UserEntity(updated);
 
-    return new UserEntity(updated);
+    } catch (error: any) {
+      if (error.code === 'P2002') {
+        const target = JSON.stringify(error.meta?.target || '').toLowerCase();
+        if (target.includes('felhasznalonev')) throw new ConflictException('Ez a felhasználónév már foglalt!');
+        if (target.includes('email')) throw new ConflictException('Ez az e-mail cím már regisztrálva van!');
+        if (target.includes('telefonszam') || target.includes('phone')) {
+          throw new ConflictException('Ez a telefonszám már használatban van egy másik fióknál!');
+        }
+        throw new ConflictException('Ütközés történt a profil adatok frissítésekor!');
+      }
+      throw new InternalServerErrorException('Szerveroldali hiba a profil frissítése közben.');
+    }
   }
 
   async createChangeRequest(userId: number, tipus: string, ujErtek: string) {
     const request = await this.prisma.changeRequest.create({
       data: { userId, tipus, ujErtek },
     });
-
     this.events.emitUpdate('notifications_updated', { role: 'ADMIN' });
     return request;
   }
@@ -97,15 +150,12 @@ export class UserService {
     });
   }
 
-  
-
   async handleRequest(requestId: number, statusz: 'APPROVED' | 'REJECTED') {
     const request = await this.prisma.changeRequest.findUnique({
       where: { id: requestId },
     });
     if (!request) throw new NotFoundException('Kérelem nem található');
 
-    
     let updatedUser: any = null;
 
     if (statusz === 'APPROVED') {
@@ -122,7 +172,6 @@ export class UserService {
       }
 
       if (updatedUser) {
-        
         this.events.emitToUser(request.userId, 'user_updated', updatedUser);
       }
     }
@@ -132,13 +181,9 @@ export class UserService {
       data: { statusz },
     });
 
-    
     this.events.emitToUser(request.userId, 'notifications_updated', { userId: request.userId });
-
     return updatedRequest;
   }
-
-
 
   async toggleBan(id: number): Promise<UserEntity> {
     const user = await this.prisma.user.findUnique({ where: { id } });
@@ -174,7 +219,6 @@ export class UserService {
     });
 
     this.events.emitToUser(id, 'force_logout', { userId: id, reason: 'Fiók törölve' });
-
     return new UserEntity(updated);
   }
 }

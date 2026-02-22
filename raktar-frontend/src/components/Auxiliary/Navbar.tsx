@@ -1,66 +1,49 @@
+//raktar-frontend/src/components/Auxiliary/Navbar.tsx
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { getProducts, getMyNotifications, markNotificationAsRead } from "../../services/api";
-import { useDarkMode } from "../../hooks/useDarkMode";
-import socket from "../../services/socket";
+import { useAutoRefresh } from "../../hooks/useAutoRefresh";
 import type { Product } from "../../types/Product";
 import type { AppNotification } from "../../types/Notification";
 
-function Navbar() {
+interface NavbarProps {
+  isDark: boolean;
+  setIsDark: (val: boolean) => void;
+}
+
+function Navbar({ isDark, setIsDark }: NavbarProps) {
   const location = useLocation();
   const navigate = useNavigate();
-  const { user, logout, notifTrigger } = useAuth();
-  const [isDark, setIsDark] = useDarkMode();
+  const { user, logout } = useAuth();
 
   const [searchTerm, setSearchTerm] = useState("");
   const [quickResults, setQuickResults] = useState<Product[]>([]);
   const [allProducts, setAllProducts] = useState<Product[]>([]);
-  
   const [notifications, setNotifications] = useState<AppNotification[]>([]);
+  
   const [isNotifOpen, setIsNotifOpen] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   
   const searchRef = useRef<HTMLDivElement>(null);
   const notifRef = useRef<HTMLDivElement>(null);
 
-  const fetchNotifications = () => {
-    if (user) {
-      getMyNotifications().then(setNotifications).catch(console.error);
+  const fetchData = useCallback(async () => {
+    if (user && !user.mustChangePassword && location.pathname !== "/force-change-password") {
+      try {
+        const [notifs, products] = await Promise.all([
+          getMyNotifications(),
+          getProducts()
+        ]);
+        if (notifs) setNotifications(notifs);
+        if (products) setAllProducts(products);
+      } catch (err) {
+        console.error("Navbar adatfrissítési hiba elnyomva");
+      }
     }
-  };
+  }, [user, location.pathname]);
 
-  const fetchProducts = () => {
-    if (user) {
-      getProducts().then(setAllProducts).catch(console.error);
-    }
-  };
-
-  
-  useEffect(() => {
-    if (user) {
-      fetchNotifications();
-    }
-  }, [user, notifTrigger]);
-
-  
-  useEffect(() => {
-    if (user) {
-      fetchProducts();
-
-      const handleProductUpdate = () => {
-        fetchProducts();
-      };
-
-      
-      
-      socket.on("products_updated", handleProductUpdate);
-
-      return () => {
-        socket.off("products_updated", handleProductUpdate);
-      };
-    }
-  }, [user]);
+  useAutoRefresh(fetchData);
 
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
@@ -83,12 +66,12 @@ function Navbar() {
   }, [location]);
 
   useEffect(() => {
-    if (searchTerm.trim().length > 1) {
+    if (searchTerm.trim().length > 1 && Array.isArray(allProducts)) {
       const filtered = allProducts
         .filter(
           (p) =>
-            p.nev.toLowerCase().includes(searchTerm.toLowerCase()) ||
-            p.gyarto.toLowerCase().includes(searchTerm.toLowerCase()),
+            p?.nev?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            p?.gyarto?.toLowerCase().includes(searchTerm.toLowerCase()),
         )
         .slice(0, 5);
       setQuickResults(filtered);
@@ -116,7 +99,7 @@ function Navbar() {
   const handleNotificationClick = async (id: number) => {
     try {
       await markNotificationAsRead(id);
-      
+      fetchData(); 
     } catch (err) {
       console.error("Hiba az értesítés olvasottá tételekor", err);
     }
@@ -148,15 +131,14 @@ function Navbar() {
     </button>
   );
 
-  const unreadCount = notifications.filter(n => !n.isRead).length;
-  const recentNotifications = notifications.slice(0, 5);
+  const unreadCount = (notifications || []).filter(n => n && !n.isRead).length;
+  const recentNotifications = (notifications || []).slice(0, 5);
 
   return (
-    <nav className="bg-white dark:bg-black border-b border-slate-200 dark:border-slate-800 sticky top-0 z-[100] shadow-sm transition-colors">
+    <nav className="bg-white dark:bg-black border-b border-slate-200 dark:border-slate-800 sticky top-0 z-[100] shadow-sm transition-colors text-left">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16 gap-2 md:gap-4">
           
-          {/* HAMBURGER GOMB */}
           <button
             onClick={() => setIsMenuOpen(!isMenuOpen)}
             className="md:hidden p-2 text-slate-500 dark:text-slate-400 hover:text-blue-600 focus:outline-none z-[110]"
@@ -168,7 +150,6 @@ function Navbar() {
             </div>
           </button>
 
-          {/* LOGO */}
           <div className="flex items-center gap-2 shrink-0 cursor-pointer group" onClick={() => navigate("/")}>
             <div className="bg-blue-600 p-1.5 rounded-lg shadow-inner group-hover:scale-105 transition-transform">
               <span className="text-xl leading-none">📦</span>
@@ -178,8 +159,7 @@ function Navbar() {
             </span>
           </div>
 
-          {/* DESKTOP LINKS */}
-          {user && (
+          {user && !user.mustChangePassword && (
             <div className="hidden md:flex items-center gap-1 shrink-0">
               <Link to="/" className={linkStyle("/")}>🏠 Termékek</Link>
               <Link to="/grid" className={linkStyle("/grid")}>📊 Áttekintés</Link>
@@ -187,19 +167,16 @@ function Navbar() {
             </div>
           )}
 
-          {/* DESKTOP SEARCH */}
-          {user && (
+          {user && !user.mustChangePassword && (
             <div className="flex-1 max-w-md relative mx-2 hidden md:block" ref={searchRef}>
               <form onSubmit={handleSearchSubmit}>
-                <div className="relative group">
-                  <input
-                    type="text"
-                    placeholder="Keresés..."
-                    className="w-full bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-slate-900 dark:text-white text-sm rounded-xl px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all"
-                    value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value)}
-                  />
-                </div>
+                <input
+                  type="text"
+                  placeholder="Keresés..."
+                  className="w-full bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-slate-900 dark:text-white text-sm rounded-xl px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all"
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                />
               </form>
 
               {quickResults.length > 0 && (
@@ -226,9 +203,8 @@ function Navbar() {
             </div>
           )}
 
-          {/* RIGHT SIDE TOOLS */}
           <div className="flex items-center gap-2 shrink-0">
-            {user && (
+            {user && !user.mustChangePassword && (
               <div className="relative" ref={notifRef}>
                 <button 
                   onClick={() => setIsNotifOpen(!isNotifOpen)}
@@ -290,7 +266,6 @@ function Navbar() {
               <div className="hidden md:flex items-center gap-3">
                 <Link to="/profile" className={linkStyle("/profile")}>
                   <div className="w-8 h-8 bg-blue-600/10 text-blue-600 rounded-lg flex items-center justify-center font-black text-xs border border-blue-600/20">
-                    {/* JAVÍTOTT SOR: Opcionális láncolás a crash elkerülésére */}
                     {user?.nev ? user.nev.charAt(0).toUpperCase() : (user?.felhasznalonev ? user.felhasznalonev.charAt(0).toUpperCase() : '?')}
                   </div>
                   <div className="flex flex-col items-start leading-none">
@@ -309,44 +284,34 @@ function Navbar() {
         </div>
       </div>
 
-      {/* MOBIL MENÜ */}
       <div 
         className={`md:hidden overflow-hidden transition-all duration-300 ease-in-out border-t border-slate-200 dark:border-slate-800 bg-white dark:bg-black shadow-2xl ${isMenuOpen ? "max-h-[80vh] opacity-100" : "max-h-0 opacity-0"}`}
       >
         <div className="px-4 py-6 space-y-3 text-left">
           {user ? (
             <>
-              {/* MOBIL KERESÉS */}
-              <div className="mb-4 relative" ref={searchRef}>
-                <form onSubmit={handleSearchSubmit}>
-                  <input
-                    type="text"
-                    placeholder="Keresés..."
-                    className="w-full bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-slate-900 dark:text-white text-sm rounded-xl px-4 py-4 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value)}
-                  />
-                </form>
-                {quickResults.length > 0 && (
-                  <div className="absolute top-full left-0 right-0 mt-1 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl shadow-xl z-[130] max-h-60 overflow-y-auto">
-                    {quickResults.map((p) => (
-                      <div
-                        key={p.id}
-                        onClick={() => { navigate(`/product/${p.id}`); setIsMenuOpen(false); }}
-                        className="p-4 border-b border-slate-100 dark:border-slate-800 last:border-0 flex justify-between items-center"
-                      >
-                        <div className="text-slate-900 dark:text-white font-bold text-sm">{p.nev}</div>
-                        <span className="text-blue-500 text-[10px] font-black uppercase">→</span>
-                      </div>
-                    ))}
-                  </div>
-                )}
-              </div>
+              {!user.mustChangePassword && (
+                <div className="mb-4 relative" ref={searchRef}>
+                  <form onSubmit={handleSearchSubmit}>
+                    <input
+                      type="text"
+                      placeholder="Keresés..."
+                      className="w-full bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-slate-900 dark:text-white text-sm rounded-xl px-4 py-4 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      value={searchTerm}
+                      onChange={(e) => setSearchTerm(e.target.value)}
+                    />
+                  </form>
+                </div>
+              )}
 
-              <Link to="/" className={linkStyle("/")}>🏠 Termékek</Link>
-              <Link to="/grid" className={linkStyle("/grid")}>📊 Áttekintés</Link>
-              <Link to="/scanner" className={linkStyle("/scanner")}>📷 Beolvasás</Link>
-              <Link to="/notifications" className={linkStyle("/notifications")}>🔔 Értesítések {unreadCount > 0 && `(${unreadCount})`}</Link>
+              {!user.mustChangePassword && (
+                <>
+                  <Link to="/" className={linkStyle("/")}>🏠 Termékek</Link>
+                  <Link to="/grid" className={linkStyle("/grid")}>📊 Áttekintés</Link>
+                  <Link to="/scanner" className={linkStyle("/scanner")}>📷 Beolvasás</Link>
+                  <Link to="/notifications" className={linkStyle("/notifications")}>🔔 Értesítések {unreadCount > 0 && `(${unreadCount})`}</Link>
+                </>
+              )}
               
               <div className="h-px bg-slate-200 dark:border-slate-800 my-4" />
               

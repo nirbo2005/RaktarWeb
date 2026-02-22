@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { register } from "../../services/api";
@@ -57,7 +56,12 @@ function Register() {
         if (!value || value.length < 5) error = "A telefonszám megadása kötelező!";
         break;
       case "jelszo":
-        if (value.length < 6) error = "Minimum 6 karakter!";
+        const passwordRegex = /((?=.*\d)|(?=.*\W+))(?![.\n])(?=.*[A-Z])(?=.*[a-z]).*$/;
+        if (value.length < 8) {
+          error = "Minimum 8 karakter szükséges!";
+        } else if (!passwordRegex.test(value)) {
+          error = "Legalább egy nagybetű, kisbetű és szám/jel kell!";
+        }
         break;
     }
 
@@ -67,7 +71,9 @@ function Register() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setGeneralError("");
+    setFieldErrors({});
 
+    // 1. Alapvető validáció ellenőrzése
     const hasEmptyFields = !form.nev || !form.felhasznalonev || !form.email || !form.jelszo || !form.telefonszam;
     const hasErrors = Object.values(fieldErrors).some(err => err !== "");
 
@@ -77,9 +83,12 @@ function Register() {
     }
     
     try {
+      // 2. Adatok normalizálása beküldés előtt
       const submitData = {
         ...form,
-        telefonszam: form.telefonszam.startsWith('+') ? form.telefonszam : `+${form.telefonszam}`
+        // Telefonszám tisztítása: csak a számjegyeket tartjuk meg, és elé tesszük a '+' jelet
+        // Ez biztosítja, hogy a "+36 20 123" és "+3620123" ugyanaz legyen az adatbázisban
+        telefonszam: `+${form.telefonszam.replace(/\D/g, '')}`
       };
 
       await register(submitData);
@@ -87,17 +96,33 @@ function Register() {
       await toast.fire({
         icon: 'success',
         title: 'Sikeres regisztráció! ✨',
-        text: 'Most már bejelentkezhetsz.'
+        text: 'Most már bejelentkezhetsz a fiókodba.'
       });
       
       navigate("/login");
     } catch (err: any) {
-      const errorMsg = err.message || "Hiba a regisztráció során.";
+      // 3. Hibaüzenet kinyerése a backendtől
+      const errorMsg = err.response?.data?.message || err.message || "Hiba a regisztráció során.";
       setGeneralError(errorMsg);
 
+      // 4. Mező-szintű hibaillesztés és vizuális jelzés
+      const lowerMsg = errorMsg.toLowerCase();
+      
+      if (lowerMsg.includes("e-mail") || lowerMsg.includes("email")) {
+        setFieldErrors(p => ({...p, email: errorMsg}));
+      }
+      if (lowerMsg.includes("felhasználónév") || lowerMsg.includes("username")) {
+        setFieldErrors(p => ({...p, felhasznalonev: errorMsg}));
+      }
+      // Most már a tisztított telefonszám miatt az ütközés biztosan észlelve lesz
+      if (lowerMsg.includes("telefonszám") || lowerMsg.includes("telefon") || lowerMsg.includes("phone")) {
+        setFieldErrors(p => ({...p, telefonszam: errorMsg}));
+      }
+
+      // 5. SweetAlert2 visszajelzés
       MySwal.fire({
         icon: 'error',
-        title: 'Hiba történt',
+        title: 'Regisztrációs hiba',
         text: errorMsg,
         confirmButtonText: 'Értem'
       });
@@ -114,8 +139,8 @@ function Register() {
   const errorStyle = "text-[9px] text-red-500 font-bold mt-1 ml-2 uppercase tracking-tighter animate-in fade-in slide-in-from-left-1 text-left";
 
   return (
-    <div className="min-h-[90vh] flex items-center justify-center p-4">
-      <div className="bg-white dark:bg-slate-900 p-8 rounded-[2.5rem] shadow-2xl w-full max-w-md border border-gray-100 dark:border-slate-800 backdrop-blur-xl transition-colors">
+    <div className="min-h-[90vh] flex items-center justify-center p-4 text-left transition-colors duration-300">
+      <div className="bg-white dark:bg-slate-900 p-8 rounded-[2.5rem] shadow-2xl w-full max-w-md border border-gray-100 dark:border-slate-800 backdrop-blur-xl relative overflow-hidden">
         <h1 className="text-3xl font-black text-gray-800 dark:text-white mb-6 text-center italic uppercase tracking-tighter">
           Fiók létrehozása
         </h1>
@@ -127,96 +152,87 @@ function Register() {
         )}
 
         <form onSubmit={handleSubmit} className="space-y-4">
-          <div className="grid grid-cols-1 gap-4">
-            <div>
-              <label className={labelStyle}>Teljes Név *</label>
-              <input
-                className={inputStyle("nev")}
-                placeholder="Pl. Kovács János"
-                value={form.nev}
-                onChange={(e) => setForm({ ...form, nev: e.target.value })}
-                onBlur={(e) => validateField("nev", e.target.value)}
-                required
-              />
-              {fieldErrors.nev && <p className={errorStyle}>❌ {fieldErrors.nev}</p>}
-            </div>
+          <div>
+            <label className={labelStyle}>Teljes Név *</label>
+            <input
+              className={inputStyle("nev")}
+              placeholder="Pl. Kovács János"
+              value={form.nev}
+              onChange={(e) => setForm({ ...form, nev: e.target.value })}
+              onBlur={(e) => validateField("nev", e.target.value)}
+              required
+            />
+            {fieldErrors.nev && <p className={errorStyle}>❌ {fieldErrors.nev}</p>}
+          </div>
 
-            <div>
-              <label className={labelStyle}>Felhasználónév *</label>
-              <input
-                className={inputStyle("felhasznalonev")}
-                placeholder="kjanos88"
-                value={form.felhasznalonev}
-                onChange={(e) => setForm({ ...form, felhasznalonev: e.target.value })}
-                onBlur={(e) => validateField("felhasznalonev", e.target.value)}
-                required
-              />
-              {fieldErrors.felhasznalonev && <p className={errorStyle}>❌ {fieldErrors.felhasznalonev}</p>}
-            </div>
+          <div>
+            <label className={labelStyle}>Felhasználónév *</label>
+            <input
+              className={inputStyle("felhasznalonev")}
+              placeholder="kjanos88"
+              value={form.felhasznalonev}
+              onChange={(e) => setForm({ ...form, felhasznalonev: e.target.value })}
+              onBlur={(e) => validateField("felhasznalonev", e.target.value)}
+              required
+            />
+            {fieldErrors.felhasznalonev && <p className={errorStyle}>❌ {fieldErrors.felhasznalonev}</p>}
+          </div>
 
-            <div>
-              <label className={labelStyle}>Email cím *</label>
-              <input
-                type="email"
-                className={inputStyle("email")}
-                placeholder="pelda@email.hu"
-                value={form.email}
-                onChange={(e) => setForm({ ...form, email: e.target.value })}
-                onBlur={(e) => validateField("email", e.target.value)}
-                required
-              />
-              {fieldErrors.email && <p className={errorStyle}>❌ {fieldErrors.email}</p>}
-            </div>
+          <div>
+            <label className={labelStyle}>Email cím *</label>
+            <input
+              type="email"
+              className={inputStyle("email")}
+              placeholder="pelda@email.hu"
+              value={form.email}
+              onChange={(e) => setForm({ ...form, email: e.target.value })}
+              onBlur={(e) => validateField("email", e.target.value)}
+              required
+            />
+            {fieldErrors.email && <p className={errorStyle}>❌ {fieldErrors.email}</p>}
+          </div>
 
-            <div>
-              <label className={labelStyle}>Telefonszám (Nemzetközi) *</label>
-              <PhoneInput
-                country={'hu'}
-                value={form.telefonszam}
-                onChange={(phone) => setForm({ ...form, telefonszam: phone })}
-                onBlur={() => validateField("telefonszam", form.telefonszam)}
-                localization={hu}
-                masks={{ hu: '.. ... ....' }}
-                countryCodeEditable={false}
-                enableSearch={true}
-                searchPlaceholder="Keresés..."
-                containerClass="phone-container-reg"
-                inputClass={`phone-input-reg ${fieldErrors.telefonszam ? '!border-red-500' : ''}`}
-                buttonClass="phone-button-reg"
-                dropdownClass="phone-dropdown-reg"
-                dropdownStyle={{ height: '300px' }}
-              />
-              {fieldErrors.telefonszam && <p className={errorStyle}>❌ {fieldErrors.telefonszam}</p>}
-            </div>
+          <div>
+            <label className={labelStyle}>Telefonszám (Nemzetközi) *</label>
+            <PhoneInput
+              country={'hu'}
+              value={form.telefonszam}
+              onChange={(phone) => setForm({ ...form, telefonszam: phone })}
+              onBlur={() => validateField("telefonszam", form.telefonszam)}
+              localization={hu}
+              masks={{ hu: '.. ... ....' }}
+              countryCodeEditable={false}
+              enableSearch={true}
+              containerClass="phone-container-reg"
+              inputClass={`phone-input-reg ${fieldErrors.telefonszam ? '!border-red-500' : ''}`}
+            />
+            {fieldErrors.telefonszam && <p className={errorStyle}>❌ {fieldErrors.telefonszam}</p>}
+          </div>
 
-            <div>
-              <label className={labelStyle}>Jelszó *</label>
-              <input
-                type="password"
-                className={inputStyle("jelszo")}
-                placeholder="••••••••"
-                value={form.jelszo}
-                onChange={(e) => setForm({ ...form, jelszo: e.target.value })}
-                onBlur={(e) => validateField("jelszo", e.target.value)}
-                required
-              />
-              {fieldErrors.jelszo && <p className={errorStyle}>❌ {fieldErrors.jelszo}</p>}
-            </div>
+          <div>
+            <label className={labelStyle}>Jelszó *</label>
+            <input
+              type="password"
+              className={inputStyle("jelszo")}
+              placeholder="••••••••"
+              value={form.jelszo}
+              onChange={(e) => setForm({ ...form, jelszo: e.target.value })}
+              onBlur={(e) => validateField("jelszo", e.target.value)}
+              required
+            />
+            {fieldErrors.jelszo && <p className={errorStyle}>❌ {fieldErrors.jelszo}</p>}
           </div>
 
           <button
             type="submit"
-            className="w-full bg-blue-600 hover:bg-blue-500 text-white font-black py-4 rounded-2xl transition-all shadow-lg shadow-blue-600/20 active:scale-95 uppercase tracking-widest text-xs mt-4 disabled:opacity-50 disabled:cursor-not-allowed"
+            className="w-full bg-blue-600 hover:bg-blue-500 text-white font-black py-4 rounded-2xl transition-all shadow-lg shadow-blue-600/20 active:scale-95 uppercase tracking-widest text-xs mt-4 disabled:opacity-50"
           >
             Regisztráció véglegesítése
           </button>
         </form>
 
         <div className="mt-8 pt-6 border-t border-gray-100 dark:border-slate-800 text-center">
-          <Link
-            to="/login"
-            className="text-blue-600 dark:text-blue-400 font-black uppercase text-[10px] tracking-widest hover:underline transition-all"
-          >
+          <Link to="/login" className="text-blue-600 dark:text-blue-400 font-black uppercase text-[10px] tracking-widest hover:underline">
             Vissza a bejelentkezéshez
           </Link>
         </div>
@@ -228,45 +244,10 @@ function Register() {
           width: 100% !important; height: 46px !important; border-radius: 1rem !important;
           border: 1px solid rgb(226 232 240) !important; background: rgb(249 250 251) !important;
           padding-left: 58px !important; font-size: 0.875rem !important; color: #111827 !important;
-          transition: all 0.2s !important;
         }
-        .dark .phone-input-reg { 
-          background: rgba(30, 41, 59, 0.5) !important; border-color: rgb(51 65 85) !important; color: white !important;
-        }
+        .dark .phone-input-reg { background: rgba(30, 41, 59, 0.5) !important; border-color: rgb(51 65 85) !important; color: white !important; }
         .phone-input-reg:focus { border-color: rgb(37 99 235) !important; }
-        
-       
-        .phone-button-reg { 
-          background: transparent !important; border: none !important; 
-          border-radius: 1rem 0 0 1rem !important; width: 48px !important;
-        }
-        .phone-container-reg .flag-dropdown,
-        .phone-container-reg .selected-flag {
-          background: transparent !important;
-        }
-        .phone-container-reg .selected-flag:hover, 
-        .phone-container-reg .selected-flag:focus,
-        .phone-container-reg .flag-dropdown.open .selected-flag {
-          background: rgba(0, 0, 0, 0.05) !important;
-        }
-        .dark .phone-container-reg .selected-flag:hover, 
-        .dark .phone-container-reg .selected-flag:focus,
-        .dark .phone-container-reg .flag-dropdown.open .selected-flag {
-          background: rgba(255, 255, 255, 0.05) !important;
-        }
-       
-
-        .phone-dropdown-reg { 
-          background: white !important; border-radius: 1rem !important; color: #111827 !important;
-          box-shadow: 0 10px 25px -5px rgba(0,0,0,0.1) !important;
-        }
-        .dark .phone-dropdown-reg { 
-          background: rgb(15, 23, 42) !important; color: white !important; border-color: rgb(51 65 85) !important;
-        }
-        .dark .country-list { background: rgb(15, 23, 42) !important; }
-        .dark .phone-dropdown-reg .country:hover { background: rgb(30, 41, 59) !important; }
-        .dark .phone-dropdown-reg .search { background: rgb(15, 23, 42) !important; }
-        .dark .phone-dropdown-reg .search-box { background: rgb(30, 41, 59) !important; color: white !important; border-color: rgb(51 65 85) !important; }
+        .dark .phone-dropdown-reg { background: rgb(15, 23, 42) !important; color: white !important; }
       `}</style>
     </div>
   );

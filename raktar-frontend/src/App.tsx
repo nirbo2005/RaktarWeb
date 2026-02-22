@@ -1,3 +1,4 @@
+//raktar-frontend/src/App.tsx
 import { useEffect, useState, type ReactNode } from "react";
 import { BrowserRouter, Routes, Route, useLocation, Navigate, Outlet } from "react-router-dom";
 import { AuthProvider, useAuth } from "./context/AuthContext";
@@ -5,6 +6,7 @@ import { AuthProvider, useAuth } from "./context/AuthContext";
 import Navbar from "./components/Auxiliary/Navbar";
 import ScannerView from "./components/Auxiliary/ScannerView";
 import SearchResults from "./components/Auxiliary/SearchResults";
+import { ConnectionStatus } from './components/Auxiliary/ConnectionStatus';
 
 import ProductList from "./components/Product/ProductList";
 import ProductDetails from "./components/Product/ProductDetails";
@@ -18,25 +20,28 @@ import ForgotPassword from "./components/Auth/ForgotPassword";
 import ForceChangePassword from "./components/Auth/ForceChangePassword";
 
 import Profile from "./components/Profile";
-import Notifications from "./components/Auxiliary/Notification"; // <-- ÚJ IMPORT ITT
+import Notifications from "./components/Auxiliary/Notification";
 
 import StockValue from "./components/beta/StockValue";
 
 import type { UserRole } from "./types/User";
 
 const ProtectedRoute = ({ allowedRoles }: { allowedRoles?: UserRole[] }) => {
-  const { user, token } = useAuth();
+  const { user, token, loading } = useAuth();
+  const location = useLocation();
 
-  if (!token) {
-    return <Navigate to="/login" replace />;
-  }
+  if (loading) return null; 
 
-  // Ha a felhasználónak jelszót kell cserélnie, csak a jelszócsere oldalra mehet!
-  if (user?.mustChangePassword) {
+  const rawToken = localStorage.getItem("token");
+  if (!rawToken) return <Navigate to="/login" state={{ from: location }} replace />;
+
+  if (!token || !user) return null;
+
+  if (user.mustChangePassword && location.pathname !== "/force-change-password") {
     return <Navigate to="/force-change-password" replace />;
   }
 
-  if (allowedRoles && user && !allowedRoles.includes(user.rang)) {
+  if (allowedRoles && !allowedRoles.includes(user.rang)) {
     return <Navigate to="/" replace />;
   }
 
@@ -44,17 +49,19 @@ const ProtectedRoute = ({ allowedRoles }: { allowedRoles?: UserRole[] }) => {
 };
 
 const PublicRoute = () => {
-  const { token, user } = useAuth();
-  
-  // Ha be van jelentkezve, de jelszót kell cserélnie, oda irányítjuk
-  if (token) {
-    if (user?.mustChangePassword) {
-      return <Navigate to="/force-change-password" replace />;
-    }
-    return <Navigate to="/profile" replace />;
-  }
-
+  const { token, loading } = useAuth();
+  const rawToken = localStorage.getItem("token");
+  if (loading) return null;
+  if (token || rawToken) return <Navigate to="/" replace />;
   return <Outlet />;
+};
+
+const ForceChangeRoute = ({ children }: { children: ReactNode }) => {
+  const { token, user, loading } = useAuth();
+  if (loading) return null;
+  if (!token && !localStorage.getItem("token")) return <Navigate to="/login" replace />;
+  if (user && !user.mustChangePassword) return <Navigate to="/" replace />;
+  return <>{children}</>;
 };
 
 function ScrollToTop() {
@@ -68,11 +75,11 @@ function ScrollToTop() {
 }
 
 function App() {
-  const [isDark, setIsDark] = useState(
-    () => localStorage.getItem("theme") === "dark",
-  );
+  // SINGLE SOURCE OF TRUTH: A téma állapota itt lakik
+  const [isDark, setIsDark] = useState(() => localStorage.getItem("theme") === "dark");
 
   useEffect(() => {
+    // Osztály és Storage frissítése
     if (isDark) {
       document.documentElement.classList.add("dark");
       localStorage.setItem("theme", "dark");
@@ -87,33 +94,31 @@ function App() {
       <BrowserRouter>
         <ScrollToTop />
         <div className="min-h-screen bg-gray-50 text-gray-900 dark:bg-slate-950 dark:text-slate-100 font-sans flex flex-col transition-colors duration-300">
-          <Navbar />
+          {/* A Navbar megkapja a közös state-et */}
+          <Navbar isDark={isDark} setIsDark={setIsDark} />
+          <ConnectionStatus />
           
           <button
             onClick={() => setIsDark(!isDark)}
-            className="fixed bottom-4 right-4 z-50 p-3 rounded-full bg-white dark:bg-slate-800 shadow-2xl border border-slate-200 dark:border-slate-700 hover:scale-110 transition-transform"
-            title={isDark ? "Világos mód" : "Sötét mód"}
+            className="fixed bottom-4 right-4 z-[150] p-3 rounded-full bg-white dark:bg-slate-800 shadow-2xl border border-slate-200 dark:border-slate-700 hover:scale-110 transition-transform"
           >
             {isDark ? "☀️" : "🌙"}
           </button>
 
           <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 flex-grow w-full">
             <Routes>
-              {/* PUBLIKUS ROUTE-OK */}
               <Route element={<PublicRoute />}>
                 <Route path="/login" element={<Login />} />
                 <Route path="/register" element={<Register />} />
                 <Route path="/forgot-password" element={<ForgotPassword />} />
               </Route>
 
-              {/* JELSZÓCSERE ROUTE - Ezt külön kezeljük, hogy a Protected ne csípje meg */}
               <Route path="/force-change-password" element={
                 <ForceChangeRoute>
                   <ForceChangePassword />
                 </ForceChangeRoute>
               } />
 
-              {/* VÉDETT ROUTE-OK (Csak ha be van lépve ÉS nem kell jelszót cserélnie) */}
               <Route element={<ProtectedRoute />}>
                 <Route path="/" element={<ProductList />} />
                 <Route path="/product/:id" element={<ProductDetails />} />
@@ -121,15 +126,12 @@ function App() {
                 <Route path="/profile" element={<Profile />} />
                 <Route path="/scanner" element={<ScannerView />} />
                 <Route path="/search" element={<SearchResults />} />
-                <Route path="/notifications" element={<Notifications />} /> {/* <-- ÚJ ÚTVONAL ITT */}
+                <Route path="/notifications" element={<Notifications />} />
               </Route>
 
-              {/* ADMIN / KEZELŐ ROUTE-OK */}
               <Route element={<ProtectedRoute allowedRoles={["KEZELO", "ADMIN"]} />}>
                 <Route path="/add" element={<ProductAdd />} />
                 <Route path="/modify/:id" element={<ProductModify />} />
-                
-                {/* ÚJ BÉTA ÚTVONAL (Rejtett) */}
                 <Route path="/stock-value" element={<StockValue />} />
               </Route>
               
@@ -141,13 +143,5 @@ function App() {
     </AuthProvider>
   );
 }
-
-// Speciális Route komponens csak a kötelező jelszócseréhez
-const ForceChangeRoute = ({ children }: { children: ReactNode }) => {
-  const { token, user } = useAuth();
-  if (!token) return <Navigate to="/login" replace />;
-  if (user && !user.mustChangePassword) return <Navigate to="/" replace />;
-  return <>{children}</>;
-};
 
 export default App;

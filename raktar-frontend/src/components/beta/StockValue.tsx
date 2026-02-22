@@ -1,5 +1,6 @@
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import { getProducts } from "../../services/api";
+import { useAutoRefresh } from "../../hooks/useAutoRefresh"; // ÚJ: Hook import
 import type { Product } from "../../types/Product";
 
 function StockValue() {
@@ -7,11 +8,8 @@ function StockValue() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
-    fetchData();
-  }, []);
-
-  const fetchData = async () => {
+  // 1. Memoizált adatlekérő függvény
+  const fetchData = useCallback(async () => {
     setLoading(true);
     setError(null);
     try {
@@ -22,7 +20,10 @@ function StockValue() {
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
+
+  // 2. Automatikus frissítés bekötése (WebSocket + Reconnect)
+  useAutoRefresh(fetchData);
 
   // --- FORMÁZÓ FÜGGVÉNYEK ---
   const formatHUF = (value: number) => {
@@ -59,14 +60,12 @@ function StockValue() {
     products.forEach((p) => {
       if (p.isDeleted) return;
 
-      // Mennyiség és helyszínek kinyerése a sarzsokból
       const totalQty = p.batches?.reduce((sum, b) => sum + (b.mennyiseg || 0), 0) || 0;
       const itemTotalValue = p.eladasiAr * totalQty; 
       
       totalValue += itemTotalValue;
       totalItems += totalQty;
 
-      // Szektor alapú bontás a sarzsok helyszínei alapján
       p.batches?.forEach(batch => {
         const sector = batch.parcella?.charAt(0).toUpperCase() || "?";
         const batchValue = (batch.mennyiseg || 0) * p.eladasiAr;
@@ -94,11 +93,11 @@ function StockValue() {
   }, [products]);
 
   // --- RENDERELÉS ---
-  if (loading) {
+  if (loading && products.length === 0) {
     return (
       <div className="min-h-[80vh] flex flex-col items-center justify-center gap-4 animate-pulse">
         <div className="text-6xl animate-bounce">🧮</div>
-        <div className="text-blue-600 dark:text-blue-400 font-black tracking-[0.3em] uppercase text-xs">
+        <div className="text-blue-600 dark:text-blue-400 font-black tracking-[0.3em] uppercase text-xs text-center">
           Pénzügyi adatok kalkulálása...
         </div>
       </div>
@@ -117,30 +116,30 @@ function StockValue() {
   }
 
   return (
-    <div className="min-h-screen p-4 md:p-8 transition-colors duration-300">
+    <div className="min-h-screen p-4 md:p-8 transition-colors duration-300 text-left">
       <div className="max-w-6xl mx-auto space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
         
         {/* FEJLÉC */}
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 border-b border-slate-200 dark:border-slate-800 pb-6 text-left">
           <div>
-            <h1 className="text-3xl md:text-4xl font-black text-slate-900 dark:text-white tracking-tighter uppercase italic">
+            <h1 className="text-3xl md:text-4xl font-black text-slate-900 dark:text-white tracking-tighter uppercase italic leading-none">
               Készlet<span className="text-emerald-500">érték</span> Kalkulátor
             </h1>
             <p className="text-slate-500 dark:text-slate-400 font-bold uppercase text-xs tracking-widest mt-2">
-              Sarzs-alapú pénzügyi elemzés • {new Date().toLocaleDateString('hu-HU')}
+              Élő pénzügyi elemzés • {new Date().toLocaleDateString('hu-HU')}
             </p>
           </div>
           <button 
             onClick={fetchData}
             className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-300 px-6 py-3 rounded-2xl font-black uppercase text-[10px] tracking-widest hover:border-emerald-400 transition-all shadow-sm active:scale-95"
           >
-            🔄 Újraszámolás
+            🔄 Manuális frissítés
           </button>
         </div>
 
         {/* FŐ MUTATÓK */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 text-left">
-          <div className="bg-emerald-50 dark:bg-emerald-900/20 p-8 rounded-[2.5rem] border border-emerald-200 dark:border-emerald-800/50 shadow-xl shadow-emerald-500/10 col-span-1 md:col-span-2 lg:col-span-1">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div className="bg-emerald-50 dark:bg-emerald-900/20 p-8 rounded-[2.5rem] border border-emerald-200 dark:border-emerald-800/50 shadow-xl shadow-emerald-500/10">
             <h3 className="text-emerald-600 dark:text-emerald-400 font-black uppercase tracking-widest text-xs mb-2 italic">Teljes Raktárérték</h3>
             <div 
               className="text-3xl sm:text-4xl lg:text-5xl font-black text-emerald-700 dark:text-emerald-300 tracking-tighter leading-tight break-words"
@@ -152,21 +151,21 @@ function StockValue() {
 
           <div className="bg-white dark:bg-slate-900 p-8 rounded-[2.5rem] border border-slate-200 dark:border-slate-800 shadow-xl">
             <h3 className="text-slate-400 font-black uppercase tracking-widest text-xs mb-2">Összes Darabszám</h3>
-            <div className="text-4xl md:text-5xl font-black text-slate-800 dark:text-white tracking-tighter">
+            <div className="text-4xl md:text-5xl font-black text-slate-800 dark:text-white tracking-tighter italic">
               {stats.totalItems.toLocaleString("hu-HU")} <span className="text-xl text-slate-400 font-bold uppercase">db</span>
             </div>
           </div>
 
           <div className="bg-white dark:bg-slate-900 p-8 rounded-[2.5rem] border border-slate-200 dark:border-slate-800 shadow-xl">
             <h3 className="text-slate-400 font-black uppercase tracking-widest text-xs mb-2">Aktív Szektorok</h3>
-            <div className="text-4xl md:text-5xl font-black text-slate-800 dark:text-white tracking-tighter">
+            <div className="text-4xl md:text-5xl font-black text-slate-800 dark:text-white tracking-tighter italic">
               {Object.keys(stats.valueBySector).length} <span className="text-xl text-slate-400 font-bold uppercase">szektor</span>
             </div>
           </div>
         </div>
 
         {/* RÉSZLETES BONTÁS */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 text-left">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
           
           {/* TOP 5 TERMÉK */}
           <div className="bg-white dark:bg-slate-900 p-8 rounded-[2.5rem] border border-slate-200 dark:border-slate-800 shadow-xl">
@@ -179,7 +178,7 @@ function StockValue() {
                   <div className="flex items-center gap-4 overflow-hidden">
                     <span className="text-xl font-black text-slate-300 dark:text-slate-600">#{index + 1}</span>
                     <div className="truncate">
-                      <p className="font-black text-slate-800 dark:text-slate-200 text-sm truncate">{item.p.nev}</p>
+                      <p className="font-black text-slate-800 dark:text-slate-200 text-sm truncate uppercase tracking-tight italic">{item.p.nev}</p>
                       <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest mt-0.5">
                         {item.totalQty} db • {item.locations}
                       </p>
@@ -191,9 +190,6 @@ function StockValue() {
                   </div>
                 </div>
               ))}
-              {stats.topProducts.length === 0 && (
-                <p className="text-slate-400 italic text-sm text-center py-4">Nincs készleten lévő termék.</p>
-              )}
             </div>
           </div>
 
@@ -209,13 +205,13 @@ function StockValue() {
                 return (
                   <div key={sector}>
                     <div className="flex justify-between items-end mb-2">
-                      <span className="font-black text-slate-800 dark:text-slate-200 text-xl">"{sector}" Szektor</span>
+                      <span className="font-black text-slate-800 dark:text-slate-200 text-xl italic uppercase">"{sector}" Szektor</span>
                       <div className="text-right">
                         <span className="font-black text-blue-600 dark:text-blue-400 block">{formatHUF(value)}</span>
                         <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">{percentage.toFixed(1)}% részesedés</span>
                       </div>
                     </div>
-                    <div className="w-full bg-slate-100 dark:bg-slate-800 h-3 rounded-full overflow-hidden">
+                    <div className="w-full bg-slate-100 dark:bg-slate-800 h-3 rounded-full overflow-hidden shadow-inner">
                       <div 
                         className="bg-blue-500 h-full rounded-full transition-all duration-1000 ease-out shadow-[0_0_10px_rgba(59,130,246,0.5)]"
                         style={{ width: `${percentage}%` }}
@@ -224,12 +220,8 @@ function StockValue() {
                   </div>
                 );
               })}
-              {Object.keys(stats.valueBySector).length === 0 && (
-                <p className="text-slate-400 italic text-sm text-center py-4">Nincs rögzített helyszínadat.</p>
-              )}
             </div>
           </div>
-
         </div>
       </div>
     </div>

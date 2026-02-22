@@ -1,6 +1,7 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { useSearchParams, useNavigate } from "react-router-dom";
 import { getProducts } from "../../services/api";
+import { useAutoRefresh } from "../../hooks/useAutoRefresh"; // ÚJ: Hook import
 import type { Product } from "../../types/Product";
 
 function SearchResults() {
@@ -10,7 +11,7 @@ function SearchResults() {
   const [results, setResults] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
 
-  // Segédfüggvények az adatok kinyeréséhez (mivel a Product-on belül a batches-ben vannak)
+  // Segédfüggvények
   const getTotalQuantity = (p: Product) => p.batches?.reduce((sum, b) => sum + b.mennyiseg, 0) || 0;
   
   const getLocations = (p: Product) => {
@@ -26,31 +27,28 @@ function SearchResults() {
     return new Date(Math.min(...dates.map(d => d.getTime())));
   };
 
-  useEffect(() => {
-    window.scrollTo(0, 0);
+  // 1. Memoizált keresési és betöltési logika
+  const performSearch = useCallback(async () => {
+    setLoading(true);
+    try {
+      const all = await getProducts();
+      const filtered = all.filter((p) => {
+        const searchIn = `${p.nev} ${p.gyarto} ${p.kategoria} ${getLocations(p)}`.toLowerCase();
+        return searchIn.includes(query.toLowerCase());
+      });
+      setResults(filtered);
+    } catch (err) {
+      console.error("Keresési hiba:", err);
+    } finally {
+      setLoading(false);
+    }
   }, [query]);
 
+  // 2. Automatikus frissítés bekötése (WebSocket + Reconnect)
+  useAutoRefresh(performSearch);
+
   useEffect(() => {
-    let isMounted = true;
-    setLoading(true);
-
-    getProducts()
-      .then((all) => {
-        if (!isMounted) return;
-        const filtered = all.filter((p) => {
-          const searchIn = `${p.nev} ${p.gyarto} ${p.kategoria} ${getLocations(p)}`.toLowerCase();
-          return searchIn.includes(query.toLowerCase());
-        });
-        setResults(filtered);
-      })
-      .catch((err) => {
-        console.error("Keresési hiba:", err);
-      })
-      .finally(() => {
-        if (isMounted) setLoading(false);
-      });
-
-    return () => { isMounted = false; };
+    window.scrollTo(0, 0);
   }, [query]);
 
   const getStatusBadge = (product: Product) => {

@@ -1,9 +1,9 @@
-import React, { useEffect, useState, useRef, useCallback } from "react";
+import React, { useState, useRef, useCallback, useEffect } from "react";
 import { useSearchParams, useNavigate } from "react-router-dom";
 import { getProducts, updateBatch, createBatch, sortWarehouse } from "../../services/api";
 import { useAuth } from "../../context/AuthContext";
+import { useAutoRefresh } from "../../hooks/useAutoRefresh"; // ÚJ: Hook import
 import type { Batch } from "../../types/Batch";
-import socket from "../../services/socket"; // WebSocket import
 import Swal from 'sweetalert2';
 
 const MySwal = Swal.mixin({
@@ -47,12 +47,11 @@ interface BatchesByPolc {
   [polc: string]: BatchWithProductInfo[];
 }
 
-const ProductGridView: React.FC = () => {
+export const ProductGridView: React.FC = () => {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
   const { user } = useAuth();
   
-  // JAVÍTÁS: Deklaráljuk a TypeScript által hiányolt változókat a searchParams-ból
   const targetProductId = searchParams.get("productId");
   const targetParcelName = searchParams.get("parcel");
 
@@ -65,12 +64,12 @@ const ProductGridView: React.FC = () => {
   const highlightedProductRef = useRef<HTMLLIElement | null>(null);
   const isAdmin = user?.rang === "ADMIN";
   const canMove = !!(user && (user.rang === "KEZELO" || isAdmin));
-  
   const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
 
-  // Memoizált betöltés az élő frissítésekhez
-  const loadProductsAndBatches = useCallback(async (showLoading = true) => {
-    if (showLoading) setLoading(true);
+  // 1. Memoizált adatlekérő függvény
+  const loadProductsAndBatches = useCallback(async () => {
+    // Csak akkor mutassunk töltést, ha még nincs adatunk (vagy manuális frissítés van)
+    if (Object.keys(batchesByPolc).length === 0) setLoading(true);
     try {
       const products = await getProducts();
       const byPolc: BatchesByPolc = {};
@@ -94,24 +93,14 @@ const ProductGridView: React.FC = () => {
     } catch (err: any) {
       console.error("Hiba az adatok betöltésekor:", err);
     } finally {
-      if (showLoading) setLoading(false);
+      setLoading(false);
     }
-  }, []);
+  }, [batchesByPolc]);
 
-  useEffect(() => {
-    loadProductsAndBatches();
+  // 2. Automatikus frissítés bekötése (AuthContext triggereli: WebSocket + Reconnect)
+  useAutoRefresh(loadProductsAndBatches);
 
-    // JAVÍTÁS: WebSocket figyelő bekötése (Élő szinkronhoz)
-    socket.on("products_updated", () => {
-      console.log("Raktár térkép frissítése...");
-      loadProductsAndBatches(false); // Frissítés a háttérben töltőképernyő nélkül
-    });
-
-    return () => {
-      socket.off("products_updated");
-    };
-  }, [loadProductsAndBatches]);
-
+  // Highlight és navigációs logika
   useEffect(() => {
     const parcelParam = searchParams.get("parcel");
     if (parcelParam) setSelectedParcella(parcelParam.split("-")[0]);
@@ -155,48 +144,31 @@ const ProductGridView: React.FC = () => {
         <div class="flex flex-col gap-6 p-2 text-left">
           ${draggedBatch.mennyiseg > maxFitting ? `
             <div class="bg-red-50 dark:bg-red-900/30 border border-red-200 dark:border-red-800 p-3 rounded-xl text-red-700 dark:text-red-400 text-[10px] font-black uppercase tracking-tighter">
-              ⚠️ SÚLYSTOP: A polcra már csak maximum ${maxFitting} db fér el a ${draggedBatch.mennyiseg} darabból!
+              ⚠️ SÚLYSTOP: Csak maximum ${maxFitting} db fér el!
             </div>
           ` : ''}
-          
           <div class="flex items-center gap-4">
             <input type="range" id="swal-range" class="flex-grow h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-blue-600" 
               min="1" max="${absoluteMax}" value="${absoluteMax}">
             <input type="number" id="swal-input" class="w-24 p-2 border-2 border-slate-200 dark:border-slate-700 rounded-xl bg-slate-50 dark:bg-slate-800 font-black text-center" 
               min="1" max="${absoluteMax}" value="${absoluteMax}">
           </div>
-
-          <div class="grid grid-cols-4 gap-2">
-            ${[0.25, 0.50, 0.75, 1.00].map(pct => `
-              <button type="button" class="pct-btn bg-slate-100 dark:bg-slate-800 p-2 rounded-lg text-[10px] font-black hover:bg-blue-600 hover:text-white transition-colors" 
-                data-val="${Math.max(1, Math.floor(absoluteMax * pct))}">${pct * 100}%</button>
-            `).join('')}
-          </div>
         </div>
       `,
       didOpen: () => {
         const range = document.getElementById('swal-range') as HTMLInputElement;
         const input = document.getElementById('swal-input') as HTMLInputElement;
-        const pctBtns = document.querySelectorAll('.pct-btn');
-
         const updateValues = (val: number) => {
           const v = Math.min(Math.max(1, val), absoluteMax);
           range.value = v.toString();
           input.value = v.toString();
         };
-
         range.addEventListener('input', () => updateValues(parseInt(range.value)));
         input.addEventListener('input', () => updateValues(parseInt(input.value)));
-        pctBtns.forEach(btn => {
-          btn.addEventListener('click', () => updateValues(parseInt((btn as HTMLElement).dataset.val || "1")));
-        });
       },
       preConfirm: () => {
         const val = parseInt((document.getElementById('swal-input') as HTMLInputElement).value);
-        if (isNaN(val) || val < 1 || val > absoluteMax) {
-          Swal.showValidationMessage(`Kérlek 1 és ${absoluteMax} közötti számot adj meg!`);
-          return false;
-        }
+        if (isNaN(val) || val < 1 || val > absoluteMax) return false;
         return val;
       },
       showCancelButton: true,
@@ -213,8 +185,8 @@ const ProductGridView: React.FC = () => {
           await updateBatch(batchId, { mennyiseg: draggedBatch.mennyiseg - moveQuantity }, user!.id);
           await createBatch({ productId: draggedBatch.productId, parcella: targetParcella, mennyiseg: moveQuantity, lejarat: draggedBatch.lejarat }, user!.id);
         }
-        toast.fire({ icon: 'success', title: 'Sikeres áthelyezés!' });
-        await loadProductsAndBatches();
+        toast.fire({ icon: 'success', title: 'Áthelyezve!' });
+        loadProductsAndBatches();
       } catch (err: any) {
         MySwal.fire('Hiba', err.message, 'error');
       } finally {
@@ -233,8 +205,8 @@ const ProductGridView: React.FC = () => {
   const handleSortClick = async () => {
     if (!isAdmin || !user) return;
     const res = await MySwal.fire({
-      title: 'Raktár rendezése?',
-      text: "Kategória szerinti optimalizálás.",
+      title: 'Optimalizálás?',
+      text: "Raktár rendezése kategóriák szerint.",
       icon: 'question',
       showCancelButton: true,
       confirmButtonText: 'Indítás'
@@ -243,8 +215,8 @@ const ProductGridView: React.FC = () => {
       setLoading(true);
       try {
         await sortWarehouse(user.id);
-        await loadProductsAndBatches();
-        toast.fire({ icon: 'success', title: 'Raktár optimalizálva!' });
+        loadProductsAndBatches();
+        toast.fire({ icon: 'success', title: 'Optimalizálva!' });
       } catch (err: any) { MySwal.fire('Hiba', err.message, 'error'); } finally { setLoading(false); }
     }
   };
@@ -310,7 +282,7 @@ const ProductGridView: React.FC = () => {
                 const isTargetShelf = activeHighlight && targetParcelName === polcName;
 
                 return (
-                  <div key={polcName} data-shelf-name={polcName}
+                  <div key={polcName}
                     onDragOver={e => { e.preventDefault(); !isMobile && e.currentTarget.classList.add('drag-over-shelf'); }}
                     onDragLeave={e => !isMobile && e.currentTarget.classList.remove('drag-over-shelf')}
                     onDrop={e => {
@@ -329,7 +301,7 @@ const ProductGridView: React.FC = () => {
                            {weight.toFixed(0)} / {MAX_SHELF_WEIGHT} KG
                          </span>
                        </div>
-                       <div className="w-full h-1.5 bg-slate-200 dark:bg-slate-800 rounded-full overflow-hidden">
+                       <div className="w-full h-1.5 bg-slate-200 dark:bg-slate-800 rounded-full overflow-hidden shadow-inner">
                           <div className={`h-full transition-all duration-500 ${weight > 1800 ? 'bg-red-500' : 'bg-blue-500'}`} style={{ width: `${(weight / MAX_SHELF_WEIGHT) * 100}%` }} />
                        </div>
                     </div>
@@ -346,7 +318,7 @@ const ProductGridView: React.FC = () => {
                               ${draggedBatchId === b.id ? 'opacity-30 border-blue-500 scale-95' : isTargetBatch ? 'shake-product border-blue-500 bg-blue-50/50 dark:bg-blue-900/20' : 'border-slate-100 dark:border-slate-800 hover:border-blue-400'}`}>
                             <div className="font-black text-[11px] uppercase truncate mb-1 dark:text-white tracking-tight italic">{b.productNev}</div>
                             <div className="flex justify-between items-center text-[10px] font-bold text-slate-500">
-                               <span className="bg-slate-100 dark:bg-slate-700 px-1.5 py-0.5 rounded text-blue-600 dark:text-blue-400">{b.mennyiseg} DB</span>
+                               <span className="bg-slate-100 dark:bg-slate-700 px-1.5 py-0.5 rounded text-blue-600 dark:text-blue-400 font-black">{b.mennyiseg} DB</span>
                                <span className="italic">{(b.mennyiseg * b.suly).toFixed(1)} KG</span>
                             </div>
                           </li>
@@ -359,7 +331,7 @@ const ProductGridView: React.FC = () => {
               })}
             </div>
           ) : (
-            <div className="py-20 text-center bg-white dark:bg-slate-900 rounded-[3rem] border-2 border-dashed dark:border-slate-800 transition-all">
+            <div className="py-20 text-center bg-white dark:bg-slate-900 rounded-[3rem] border-2 border-dashed border-slate-100 dark:border-slate-800 transition-all shadow-inner">
                 <p className="text-slate-400 font-black uppercase tracking-widest italic text-xs">Válassz szektort az áttekintéshez</p>
             </div>
           )}

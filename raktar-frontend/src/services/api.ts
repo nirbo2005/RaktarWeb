@@ -1,5 +1,5 @@
-import type { Product } from "../types/Product";
 import type { Batch } from "../types/Batch";
+import type { Product } from "../types/Product";
 import type { AppNotification } from "../types/Notification";
 import type { User } from "../types/User";
 
@@ -9,6 +9,10 @@ const BASE_URL = import.meta.env.VITE_API_BASE_URL || "http://localhost:3000";
 // SEGÉDFÜGGVÉNYEK (HELPERS)
 // ==========================================
 
+export const notifyServerOffline = () => {
+  window.dispatchEvent(new CustomEvent('server-offline'));
+};
+
 function getHeaders() {
   const token = localStorage.getItem("token");
   return {
@@ -17,26 +21,29 @@ function getHeaders() {
   };
 }
 
-async function handleResponse(response: Response) {
-  const data = await response.json().catch(() => ({}));
+const handleResponse = async (response: Response) => {
+  if (response.status === 401 || response.status === 403) {
+    // SENIOR JAVÍTÁS: Kivétel hozzáadása a kényszerített jelszócsere oldalhoz
+    // Ha a júzer éppen jelszót cserél, a 401-es hiba normális a többi végpontról, nem szabad kiléptetni!
+    if (window.location.pathname.includes("/force-change-password")) {
+      console.warn("API 401/403 elnyomva jelszócsere közben:", response.url);
+      return; 
+    }
+
+    // Ha a szerver elutasítja a tokent (lehet újraindítás miatt), logout
+    localStorage.clear(); 
+    if (!window.location.pathname.includes("/login")) {
+      window.location.href = "/login?reason=session_lost";
+    }
+    return;
+  }
 
   if (!response.ok) {
-    // ... handleResponse belseje
-  if (response.status === 401) {
-    const msg = data.message || "";
-    if (msg.includes("Munkamenet lejárt") || msg.includes("máshol jelentkeztek be")) {
-      localStorage.removeItem("token");
-      localStorage.removeItem("user");
-      // Azonnali átirányítás paraméterrel
-      window.location.href = "/login?reason=session_expired";
-      return Promise.reject(new Error("Munkamenet lejárt"));
-    }
+    const error = await response.json().catch(() => ({ message: "Ismeretlen hiba" }));
+    throw new Error(error.message);
   }
-      const error = (data && data.message) || response.statusText;
-      return Promise.reject(new Error(error));
-    }
-    return data;
-  }
+  return response.json();
+};
 
 // ==========================================
 // AUTHENTICATION API
@@ -76,7 +83,9 @@ export async function forceChangePassword(data: { felhasznalonev: string; ideigl
   return handleResponse(res);
 }
 
-// ... (A többi API hívás változatlan, maradnak a korábbi handleResponse-szal)
+// ==========================================
+// USER MANAGEMENT
+// ==========================================
 
 export async function register(userData: any) {
   const res = await fetch(`${BASE_URL}/user/register`, {
@@ -117,6 +126,10 @@ export async function deleteUserPermanently(id: number) {
   return handleResponse(res);
 }
 
+// ==========================================
+// CHANGE REQUESTS
+// ==========================================
+
 export async function submitChangeRequest(requestData: any) {
   const res = await fetch(`${BASE_URL}/user/request-change`, {
     method: "POST",
@@ -140,10 +153,24 @@ export async function handleAdminRequest(requestId: number, statusz: string) {
   return handleResponse(res);
 }
 
-export async function getProducts(): Promise<Product[]> {
-  const res = await fetch(`${BASE_URL}/product`, { headers: getHeaders() });
-  return handleResponse(res);
-}
+// ==========================================
+// PRODUCT API
+// ==========================================
+
+export const getProducts = async (): Promise<Product[]> => {
+  try {
+    const response = await fetch(`${BASE_URL}/product`, {
+      headers: getHeaders(),
+    });
+    return await handleResponse(response);
+  } catch (error) {
+    if (error instanceof TypeError && error.message === "Failed to fetch") {
+      notifyServerOffline(); 
+      throw new Error("A szerver nem elérhető."); 
+    }
+    throw error;
+  }
+};
 
 export async function getProductById(id: number | string, isAdmin: boolean = false): Promise<any> {
   const res = await fetch(`${BASE_URL}/product/${id}?admin=${isAdmin}`, { headers: getHeaders() });
@@ -193,6 +220,10 @@ export async function restoreProduct(id: number, userId: number) {
   return handleResponse(res);
 }
 
+// ==========================================
+// BATCH API
+// ==========================================
+
 export async function createBatch(batchData: any, userId: number): Promise<Batch> {
   const res = await fetch(`${BASE_URL}/batch?userId=${userId}`, {
     method: "POST",
@@ -227,6 +258,10 @@ export async function sortWarehouse(userId: number) {
   return handleResponse(res);
 }
 
+// ==========================================
+// NOTIFICATIONS
+// ==========================================
+
 export async function getMyNotifications(): Promise<AppNotification[]> {
   const res = await fetch(`${BASE_URL}/notification`, { headers: getHeaders() });
   return handleResponse(res);
@@ -255,6 +290,10 @@ export async function deleteReadNotifications(): Promise<void> {
   });
   return handleResponse(res);
 }
+
+// ==========================================
+// AUDIT LOGS
+// ==========================================
 
 export async function getAuditLogs(userId: number, isAdmin: boolean, filters: any = {}) {
   const params = new URLSearchParams();

@@ -1,5 +1,6 @@
-import { useEffect, useState, useCallback } from "react";
+import { useState, useCallback } from "react";
 import { useAuth } from "../../context/AuthContext";
+import { useAutoRefresh } from "../../hooks/useAutoRefresh"; // ÚJ: Hook import
 import { getAuditLogs, getAllUsers, getPendingRequests, restoreAction } from "../../services/api";
 import Header from "./Header";
 import Details from "./Details";
@@ -37,50 +38,37 @@ const Profile = () => {
   const [pendingRequests, setPendingRequests] = useState<any[]>([]);
   const [logFilters, setLogFilters] = useState({ muvelet: "", startDate: "", endDate: "", targetUserId: "" });
 
-  // Debug log a renderelés elején
-  console.log("💎 PROFILE INDEX RENDER - USER STATE:", user);
-
   const isAdmin = user?.rang === "ADMIN";
 
+  // 1. Memoizált adatbetöltő (minden profil adatot szinkronizál)
   const loadData = useCallback(async () => {
-    if (!user?.id) {
-      console.warn("⚠️ LOAD_DATA: Nincs felhasználói azonosító, várakozás...");
-      return;
-    }
+    if (!user?.id) return;
 
-    console.log("🔄 PROFIL ADATOK BETÖLTÉSE INDUL...");
     setLoading(true);
     try {
       const activeFilters = Object.fromEntries(
         Object.entries(logFilters).filter(([_, value]) => value !== "")
       );
 
-      console.log("📡 API HÍVÁS: getAuditLogs...");
+      // Logok lekérése minden felhasználónak
       const logData = await getAuditLogs(user.id, isAdmin, activeFilters);
-      console.log("✅ AUDIT LOGOK MEGÉRKEZTEK:", logData.length, "db");
       setLogs(logData);
 
+      // Admin specifikus adatok
       if (isAdmin) {
-        console.log("🛡️ ADMIN ADATOK LEKÉRÉSE...");
         const [users, reqs] = await Promise.all([getAllUsers(), getPendingRequests()]);
         setAllUsers(users);
         setPendingRequests(reqs);
-        console.log("✅ ADMIN ADATOK SZINKRONIZÁLVA.");
       }
     } catch (err) { 
-      console.error("❌ HIBA AZ ADATOK BETÖLTÉSEKOR:", err); 
-    }
-    finally { 
+      console.error("Profil adatfrissítési hiba:", err); 
+    } finally { 
       setLoading(false); 
-      console.log("🔚 ADATBETÖLTÉS BEFEJEZŐDÖTT.");
     }
   }, [user?.id, logFilters, isAdmin]);
 
-  useEffect(() => { 
-    if (user?.id) {
-      loadData(); 
-    }
-  }, [loadData, user?.id]);
+  // 2. Automatikus frissítés (WebSocket + Reconnect + Első betöltés)
+  useAutoRefresh(loadData);
 
   const handleRestore = async (logId: number) => {
     const result = await MySwal.fire({
@@ -96,10 +84,10 @@ const Profile = () => {
     if (result.isConfirmed) {
       try {
         await restoreAction(logId, user!.id);
-        toast.fire({ icon: 'success', title: 'Visszaállítás sikeres!' });
+        toast.fire({ icon: 'success', title: 'Visszaállítva!' });
         loadData();
       } catch (err) {
-        MySwal.fire('Hiba!', 'Nem sikerült a visszaállítás.', 'error');
+        MySwal.fire('Hiba!', 'Sikertelen művelet.', 'error');
       }
     }
   };
@@ -110,66 +98,57 @@ const Profile = () => {
       text: `Biztosan visszaállítod mind a ${group.count} elemet?`,
       icon: 'warning',
       showCancelButton: true,
-      confirmButtonText: 'Mindet vissza',
+      confirmButtonText: 'Visszaállítás',
       cancelButtonText: 'Mégse',
-      reverseButtons: true
     });
 
     if (result.isConfirmed) {
       try {
         await Promise.all(group.items.map((item: any) => restoreAction(item.id, user!.id)));
-        toast.fire({ icon: 'success', title: 'Csoportos visszaállítás kész!' });
+        toast.fire({ icon: 'success', title: 'Sikeres művelet!' });
         loadData();
       } catch (err) {
-        MySwal.fire('Hiba!', 'Részleges vagy teljes hiba a visszaállításnál.', 'error');
+        MySwal.fire('Hiba!', 'Részleges hiba történt.', 'error');
       }
     }
   };
 
-  // JAVÍTÁS: Csak akkor blokkoljuk a renderelést, ha egyáltalán nincs user objektumunk.
-  // Ha van user, de a név még nem töltődött be a headerbe, azt a Header komponens lekezeli opcionális láncolással.
   if (!user) {
-    console.log("⏳ VÁRAKOZÁS AZ AUTHENTIKÁCIÓRA...");
     return (
       <div className="flex flex-col items-center justify-center min-h-[60vh] space-y-4">
         <div className="w-12 h-12 border-4 border-blue-600 border-t-transparent rounded-full animate-spin"></div>
         <div className="font-black italic uppercase text-slate-500 animate-pulse tracking-tighter">
-          Munkamenet ellenőrzése...
+          Azonosítás...
         </div>
       </div>
     );
   }
 
   return (
-    <div className="max-w-5xl mx-auto py-12 px-6 space-y-6 select-none">
+    <div className="max-w-5xl mx-auto py-12 px-6 space-y-6 select-none transition-colors duration-300 text-left">
       <Header />
       
       {loading && (
         <div className="text-center font-black text-blue-500 animate-pulse text-[10px] uppercase tracking-widest">
-          Adatok szinkronizálása...
+          Frissítés...
         </div>
       )}
       
       <div className="space-y-6">
-        {/* Saját profil adatok */}
         <section className="bg-white dark:bg-slate-900 rounded-[2rem] border border-slate-100 dark:border-slate-800 shadow-sm overflow-hidden">
           <button 
             onClick={() => setOpenSection(openSection === "details" ? null : "details")} 
             className="w-full p-5 flex justify-between items-center font-black uppercase text-lg dark:text-white hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors"
           >
-            <span>👤 Saját profil adatok</span>
+            <span>👤 Saját profil</span>
             <span className={`transition-transform duration-300 ${openSection === "details" ? 'rotate-180' : ''}`}>▼</span>
           </button>
           {openSection === "details" && <Details />}
         </section>
 
-        {/* Tevékenységnapló */}
         <section className="bg-white dark:bg-slate-900 rounded-[2rem] border border-slate-100 dark:border-slate-800 shadow-sm overflow-hidden">
           <button 
-            onClick={() => {
-              console.log("📜 Tevékenységnapló szekció kapcsolása. Logok száma:", logs.length);
-              setOpenSection(openSection === "logs" ? null : "logs");
-            }} 
+            onClick={() => setOpenSection(openSection === "logs" ? null : "logs")} 
             className="w-full p-5 flex justify-between items-center font-black uppercase text-lg dark:text-white hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors"
           >
             <span>📜 Tevékenységnapló</span>
@@ -188,14 +167,13 @@ const Profile = () => {
           )}
         </section>
 
-        {/* Admin felület */}
         {isAdmin && (
           <section className="bg-white dark:bg-slate-900 rounded-[2rem] border-2 border-indigo-600/20 shadow-lg overflow-hidden">
             <button 
               onClick={() => setOpenSection(openSection === "admin" ? null : "admin")} 
               className="w-full p-6 flex justify-between items-center font-black uppercase text-lg text-indigo-600 dark:text-indigo-400 hover:bg-indigo-50 dark:hover:bg-indigo-900/20 transition-colors"
             >
-              <span>🛡️ Admin Felület</span>
+              <span>🛡️ Adminisztráció</span>
               <span className={`transition-transform duration-300 ${openSection === "admin" ? 'rotate-180' : ''}`}>▼</span>
             </button>
             {openSection === "admin" && <Admin allUsers={allUsers} pendingRequests={pendingRequests} onRefresh={loadData} />}

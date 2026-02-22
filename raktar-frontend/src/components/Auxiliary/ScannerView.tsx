@@ -1,7 +1,8 @@
-import { useEffect, useState, useRef, useMemo } from "react";
+import { useEffect, useState, useRef, useMemo, useCallback } from "react";
 import { Html5Qrcode } from "html5-qrcode";
 import { getProductById } from "../../services/api";
 import { useNavigate } from "react-router-dom";
+import { useAutoRefresh } from "../../hooks/useAutoRefresh"; // ÚJ: Hook import
 import type { Product } from "../../types/Product";
 import Swal from 'sweetalert2';
 
@@ -20,7 +21,6 @@ function ScannerView() {
   const navigate = useNavigate();
   const scannerRef = useRef<Html5Qrcode | null>(null);
 
-  
   const stockSummary = useMemo(() => {
     if (!product?.batches || product.batches.length === 0) return { total: 0, locations: "Nincs készleten" };
     
@@ -32,6 +32,20 @@ function ScannerView() {
       locations: uniqueLocations.length > 0 ? uniqueLocations.join(", ") : "Ismeretlen hely"
     };
   }, [product]);
+
+  // 1. Memoizált adatfrissítő függvény
+  const refreshCurrentProduct = useCallback(async () => {
+    if (!product) return;
+    try {
+      const data = await getProductById(product.id);
+      setProduct(data);
+    } catch (err) {
+      console.error("Hiba a szkenner adatfrissítésekor:", err);
+    }
+  }, [product]);
+
+  // 2. Automatikus frissítés bekötése (Csak ha már van beolvasott termék)
+  useAutoRefresh(refreshCurrentProduct);
 
   useEffect(() => {
     if (!scannerRef.current) {

@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { addProduct, createBatch, getProducts } from "../../services/api";
 import { useAuth } from "../../context/AuthContext";
@@ -33,13 +33,11 @@ function ProductAdd() {
   const navigate = useNavigate();
   const { user } = useAuth();
   
-  // Kereső és módválasztó állapotok
   const [existingProducts, setExistingProducts] = useState<Product[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [mode, setMode] = useState<"SEARCH" | "NEW_MASTER">("SEARCH");
 
-  // Mesteradat Form (Cikktörzs)
   const [masterForm, setMasterForm] = useState({
     nev: "",
     gyarto: "",
@@ -50,7 +48,6 @@ function ProductAdd() {
     minimumKeszlet: 10,
   });
 
-  // Fizikai Készlet Form (Sarzs)
   const [batchForm, setBatchForm] = useState({
     mennyiseg: 0,
     lejarat: "",
@@ -62,9 +59,23 @@ function ProductAdd() {
     oszlop: "1"
   });
 
-  useEffect(() => {
-    getProducts().then(setExistingProducts).catch(console.error);
+  // 1. Csak a keresőlistát frissítjük, ha visszajön a hálózat
+  const fetchSearchList = useCallback(async () => {
+    try {
+      const data = await getProducts();
+      setExistingProducts(data);
+    } catch (err) {
+      console.error("Hiba a terméklista frissítésekor:", err);
+    }
   }, []);
+
+  useEffect(() => {
+    fetchSearchList();
+    
+    // Hálózati figyelő: Csak a háttérben lévő keresőlistát frissíti, nem bántja az űrlapot
+    window.addEventListener('server-online', fetchSearchList);
+    return () => window.removeEventListener('server-online', fetchSearchList);
+  }, [fetchSearchList]);
 
   const handleMasterChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
@@ -89,18 +100,14 @@ function ProductAdd() {
 
     try {
       if (selectedProduct) {
-        // MEGLÉVŐ TERMÉKHEZ ÚJ SARZS (BATCH)
         await createBatch({
           productId: selectedProduct.id,
           parcella: parcellaString,
           mennyiseg: Number(batchForm.mennyiseg),
           lejarat: lejaratDate,
         }, user.id);
-
-        await toast.fire({ icon: 'success', title: 'Új készlet (Sarzs) sikeresen bevételezve! 📦' });
+        await toast.fire({ icon: 'success', title: 'Bevételezés sikeres! 📦' });
       } else {
-        // TELJESEN ÚJ CIKKTÖRZS + KEZDŐ SARZS
-        // 1. Cikktörzs mentése
         const newProduct = await addProduct({
           nev: masterForm.nev,
           gyarto: masterForm.gyarto,
@@ -112,7 +119,6 @@ function ProductAdd() {
           isDeleted: false,
         }, user.id);
 
-        // 2. Kezdő készlet (Batch) mentése
         await createBatch({
           productId: newProduct.id,
           parcella: parcellaString,
@@ -120,14 +126,14 @@ function ProductAdd() {
           lejarat: lejaratDate,
         }, user.id);
 
-        await toast.fire({ icon: 'success', title: 'Új cikktörzs és kezdőkészlet rögzítve! ✨' });
+        await toast.fire({ icon: 'success', title: 'Termék rögzítve! ✨' });
       }
       navigate("/");
     } catch (error: any) {
       MySwal.fire({
         icon: 'error',
-        title: 'Mentési hiba',
-        text: error.message || 'Ellenőrizze az adatokat, és a polc kapacitását!',
+        title: 'Hiba történt',
+        text: error.message || 'Hálózati hiba vagy megtelt polc.',
       });
     }
   };
@@ -135,23 +141,22 @@ function ProductAdd() {
   const filteredProducts = existingProducts.filter(p => 
     p.nev.toLowerCase().includes(searchTerm.toLowerCase()) || 
     p.gyarto.toLowerCase().includes(searchTerm.toLowerCase())
-  ).slice(0, 5); // Csak az első 5 találatot mutatjuk
+  ).slice(0, 5);
 
   const inputStyle = "w-full p-3 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white rounded-2xl focus:ring-2 focus:ring-blue-500 outline-none transition-all";
   const labelStyle = "block mb-2 text-xs font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest";
 
   return (
-    <div className="flex items-center justify-center min-h-[80vh] py-10">
-      <div className="w-full max-w-3xl bg-white dark:bg-slate-900 p-8 md:p-10 rounded-[3rem] shadow-2xl border border-slate-100 dark:border-slate-800 relative">
+    <div className="flex items-center justify-center min-h-[80vh] py-10 text-left">
+      <div className="w-full max-w-3xl bg-white dark:bg-slate-900 p-8 md:p-10 rounded-[3rem] shadow-2xl border border-slate-100 dark:border-slate-800 relative transition-colors duration-300">
         <button onClick={() => navigate("/")} className="absolute top-8 right-8 w-10 h-10 flex items-center justify-center rounded-full bg-slate-100 dark:bg-slate-800 text-slate-400 hover:text-red-500 transition-all active:scale-90">✕</button>
         
-        <h1 className="text-3xl font-black text-slate-800 dark:text-white italic uppercase tracking-tighter mb-8 text-left">
+        <h1 className="text-3xl font-black text-slate-800 dark:text-white italic uppercase tracking-tighter mb-8">
           📦 Raktári <span className="text-blue-600">Bevételezés</span>
         </h1>
 
-        {/* KERESŐ ÉS VÁLASZTÓ SZEKCIÓ */}
         {!selectedProduct && mode === "SEARCH" && (
-          <div className="mb-10 text-left animate-in fade-in zoom-in duration-300">
+          <div className="mb-10 animate-in fade-in zoom-in duration-300">
             <label className={labelStyle}>Keresés meglévő cikktörzsben</label>
             <input 
               type="text" 
@@ -194,9 +199,8 @@ function ProductAdd() {
           </div>
         )}
 
-        {/* KIVÁLASZTOTT TERMÉK MUTATÁSA */}
         {selectedProduct && (
-          <div className="mb-8 p-4 bg-blue-50 dark:bg-blue-900/20 rounded-2xl border border-blue-200 dark:border-blue-800 flex justify-between items-center animate-in slide-in-from-top-4 text-left">
+          <div className="mb-8 p-4 bg-blue-50 dark:bg-blue-900/20 rounded-2xl border border-blue-200 dark:border-blue-800 flex justify-between items-center animate-in slide-in-from-top-4">
             <div>
               <span className="block text-[10px] text-blue-600 dark:text-blue-400 font-black uppercase tracking-widest mb-1">Kijelölt Cikktörzs</span>
               <span className="text-xl font-black italic uppercase text-slate-800 dark:text-white">{selectedProduct.nev}</span>
@@ -205,13 +209,12 @@ function ProductAdd() {
           </div>
         )}
 
-        <form onSubmit={handleSubmit} className="text-left space-y-8">
-          {/* MESTERADATOK (Csak ha új terméket hozunk létre) */}
+        <form onSubmit={handleSubmit} className="space-y-8">
           {mode === "NEW_MASTER" && !selectedProduct && (
             <div className="space-y-6 animate-in fade-in duration-500">
               <div className="flex justify-between items-center border-b border-slate-100 dark:border-slate-800 pb-2">
-                <h3 className="text-lg font-black uppercase tracking-widest text-indigo-600 dark:text-indigo-400">Mesteradatok (Cikktörzs)</h3>
-                <button type="button" onClick={() => setMode("SEARCH")} className="text-xs text-slate-400 hover:text-slate-600 underline uppercase font-bold">Vissza a keresőhöz</button>
+                <h3 className="text-lg font-black uppercase tracking-widest text-indigo-600 dark:text-indigo-400">Mesteradatok</h3>
+                <button type="button" onClick={() => setMode("SEARCH")} className="text-xs text-slate-400 hover:text-slate-600 underline uppercase font-bold">Keresés</button>
               </div>
               
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -245,10 +248,9 @@ function ProductAdd() {
             </div>
           )}
 
-          {/* FIZIKAI KÉSZLET (SARZS) ADATAI - Ez mindig megjelenik */}
           {(selectedProduct || mode === "NEW_MASTER") && (
             <div className="space-y-6 pt-6 border-t border-slate-100 dark:border-slate-800 animate-in slide-in-from-bottom-4">
-              <h3 className="text-lg font-black uppercase tracking-widest text-emerald-600 dark:text-emerald-400 mb-4 border-b border-slate-100 dark:border-slate-800 pb-2">Készlet (Sarzs) Bevételezése</h3>
+              <h3 className="text-lg font-black uppercase tracking-widest text-emerald-600 dark:text-emerald-400 mb-4 border-b border-slate-100 dark:border-slate-800 pb-2">Sarzs Bevételezése</h3>
               
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
@@ -272,7 +274,7 @@ function ProductAdd() {
                 </div>
 
                 <div className="md:col-span-2">
-                  <label className={labelStyle}>Bevételezett Mennyiség (db)</label>
+                  <label className={labelStyle}>Mennyiség (db)</label>
                   <input name="mennyiseg" type="number" min="1" className={`${inputStyle} text-2xl font-black text-center`} onChange={handleBatchChange} required />
                 </div>
               </div>

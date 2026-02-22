@@ -2,45 +2,45 @@
   {
     "nev": "Bossman",
     "felhasznalonev": "admin",
-    "jelszo": "123456",
+    "jelszo": "User!123",
     "email": "admin@raktarweb.hu",
-    "telefonszam": "+36 1 999 9999",
+    "telefonszam": "+3619999999",
     "rang": "ADMIN",
     "isBanned": false
   },
   {
     "nev": "Kovács János",
     "felhasznalonev": "kjanos",
-    "jelszo": "123456",
+    "jelszo": "User!123",
     "email": "kjanos@raktarweb.hu",
-    "telefonszam": "+36 20 123 4567",
+    "telefonszam": "+36201234567",
     "rang": "KEZELO",
     "isBanned": false
   },
   {
     "nev": "Nagy Ilona",
     "felhasznalonev": "nilona",
-    "jelszo": "123456",
+    "jelszo": "User!123",
     "email": "nilona@raktarweb.hu",
-    "telefonszam": "+36 30 234 5678",
+    "telefonszam": "+36302345678",
     "rang": "KEZELO",
     "isBanned": false
   },
   {
     "nev": "Szabó Péter",
     "felhasznalonev": "szpeter",
-    "jelszo": "123456",
+    "jelszo": "User!123",
     "email": "szpeter@raktarweb.hu",
-    "telefonszam": "+36 70 345 6789",
+    "telefonszam": "+36703456789",
     "rang": "NEZELODO",
     "isBanned": false
   },
   {
     "nev": "Tóth Anikó",
     "felhasznalonev": "taniko",
-    "jelszo": "123456",
+    "jelszo": "User!123",
     "email": "taniko@raktarweb.hu",
-    "telefonszam": "+36 20 456 7890",
+    "telefonszam": "+36204567890",
     "rang": "NEZELODO",
     "isBanned": false
   }
