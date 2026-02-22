@@ -1,3 +1,4 @@
+//raktar-backend/src/auth/auth.service.ts
 import {
   Injectable,
   UnauthorizedException,
@@ -32,16 +33,15 @@ export class AuthService {
     }
 
     if (user.isBanned) {
-      throw new ForbiddenException('Ez a fiók fel van függesztve!');
+      // Fontos a 'felfüggesztve' szó a frontend SweetAlert logikájához
+      throw new ForbiddenException('Ez a felhasználói fiók fel van függesztve!');
     }
 
-    
     const updatedUser = await this.prisma.user.update({
       where: { id: user.id },
       data: { currentTokenVersion: { increment: 1 } }
     });
   
-    
     const payload = { 
       username: updatedUser.felhasznalonev, 
       sub: updatedUser.id, 
@@ -50,10 +50,9 @@ export class AuthService {
       mustChangePassword: updatedUser.mustChangePassword 
     };
   
-    
     this.events.emitToUser(updatedUser.id, 'force_logout', { 
       userId: updatedUser.id,
-      reason: 'Új bejelentkezés történt egy másik eszközről.' 
+      reason: 'session_expired' 
     });
   
     return {
@@ -72,7 +71,6 @@ export class AuthService {
 
   async forgotPassword(dto: ForgotPasswordDto) {
     const user = await this.userService.findByUsername(dto.felhasznalonev);
-
     const dbPhone = user?.telefonszam ? user.telefonszam.replace(/\s+/g, '') : '';
     const inputPhone = dto.telefonszam ? dto.telefonszam.replace(/\s+/g, '') : '';
 
@@ -94,7 +92,7 @@ export class AuthService {
 
     this.events.emitToUser(user.id, 'force_logout', { 
       userId: user.id,
-      reason: 'Adminisztrátori jelszó-reset történt.' 
+      reason: 'session_expired' 
     });
 
     return { 
@@ -123,7 +121,7 @@ export class AuthService {
 
     this.events.emitToUser(user.id, 'force_logout', { 
       userId: user.id,
-      reason: 'Sikeres jelszóváltás. Kérjük jelentkezzen be újra!' 
+      reason: 'session_expired' 
     });
 
     return { message: 'Sikeres jelszóváltás!' };

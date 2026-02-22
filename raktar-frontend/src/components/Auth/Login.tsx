@@ -1,3 +1,4 @@
+//raktar-frontend/src/components/Auth/Login.tsx
 import { useState, useEffect } from "react";
 import { useNavigate, Link, useLocation } from "react-router-dom";
 import { login as apiLogin } from "../../services/api";
@@ -32,12 +33,16 @@ function Login() {
   useEffect(() => {
     const params = new URLSearchParams(location.search);
     const reason = params.get("reason");
-    if (reason === "session_expired") {
+    
+    if (reason === "session_expired" || reason === "banned" || reason === "session_lost") {
       const showNotice = async () => {
+        const isBan = reason === "banned";
         await MySwal.fire({
-          icon: 'warning',
-          title: 'Munkamenet megszakítva',
-          text: 'Bejelentkeztél egy másik eszközről, ezért itt kijelentkeztettünk.',
+          icon: isBan ? 'error' : 'warning',
+          title: isBan ? 'Hozzáférés megtagadva' : 'Munkamenet megszakítva',
+          text: isBan 
+            ? 'Ezt a fiókot biztonsági okokból vagy szabálysértés miatt felfüggesztettük.' 
+            : 'A munkamenet lejárt vagy megszakadt. Kérjük, jelentkezzen be újra.',
           confirmButtonText: 'Értettem',
           allowOutsideClick: false,
           backdrop: true
@@ -60,12 +65,8 @@ function Login() {
     setError("");
     try {
       const data = await apiLogin(form.felhasznalonev, form.jelszo);
-      
-      // 1. Állapotok elmentése a Context-be és LocalStorage-ba
       login(data.access_token, data.user);
   
-      // 2. Rövid várakozás a state szinkronizációhoz a navigáció előtt
-      // Ez megakadályozza, hogy a ProtectedRoute üres token-t lásson a váltás pillanatában
       setTimeout(() => {
         if (data.user.mustChangePassword) {
           navigate("/force-change-password", { replace: true });
@@ -76,18 +77,39 @@ function Login() {
       }, 100);
 
     } catch (err: any) {
-      const errorMsg = err.response?.data?.message || "Hibás felhasználónév vagy jelszó!";
+      // Az api.ts-ben lévő handleResponse most már átadja a response objektumot
+      const status = err.response?.status;
+      const serverMessage = err.response?.data?.message;
+
+      if (status === 403) {
+        setError("Ezt a fiókot felfüggesztettük!");
+        MySwal.fire({
+          icon: 'error',
+          title: 'Ki vagy tiltva!',
+          text: serverMessage || 'Sajnáljuk, de ez a felhasználói fiók nem léphet be a rendszerbe.',
+          footer: '<span style="color: #94a3b8; font-size: 10px; font-weight: 900; text-transform: uppercase;">Lépj kapcsolatba az adminisztrátorral</span>',
+          confirmButtonText: 'Értettem'
+        });
+        return;
+      }
+
+      const errorMsg = serverMessage || "Hibás felhasználónév vagy jelszó!";
       setError(errorMsg);
-      MySwal.fire({ icon: 'error', title: 'Hoppá...', text: errorMsg });
+      MySwal.fire({ 
+          icon: 'error', 
+          title: 'Hoppá...', 
+          text: errorMsg 
+      });
     }
   };
 
   return (
     <div className="min-h-[80vh] flex items-center justify-center bg-slate-50 dark:bg-slate-950 p-4 transition-colors duration-300">
-      <div className="bg-white dark:bg-slate-900 p-8 rounded-[2rem] shadow-2xl w-full max-w-md border border-slate-200 dark:border-slate-800 transition-all text-left relative overflow-hidden">
+      <div className="bg-white dark:bg-slate-900 p-8 rounded-[2rem] shadow-2xl w-full max-md border border-slate-200 dark:border-slate-800 transition-all text-left relative overflow-hidden">
         
         <button 
           onClick={fillDemoData}
+          type="button"
           className="absolute top-4 right-4 bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 px-3 py-1 rounded-full text-[9px] font-black uppercase tracking-widest hover:scale-105 active:scale-95 transition-all border border-blue-100 dark:border-blue-800 shadow-sm"
         >
           🔑 Jelszó kitöltése

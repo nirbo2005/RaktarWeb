@@ -1,3 +1,4 @@
+//raktar-frontend/src/services/api.ts
 import type { Batch } from "../types/Batch";
 import type { Product } from "../types/Product";
 import type { AppNotification } from "../types/Notification";
@@ -22,15 +23,25 @@ function getHeaders() {
 }
 
 const handleResponse = async (response: Response) => {
+  // Ha 401 vagy 403 hibát kapunk
   if (response.status === 401 || response.status === 403) {
-    // SENIOR JAVÍTÁS: Kivétel hozzáadása a kényszerített jelszócsere oldalhoz
-    // Ha a júzer éppen jelszót cserél, a 401-es hiba normális a többi végpontról, nem szabad kiléptetni!
+    
+    // 1. KIVÉTEL: Bejelentkezés közben NE kezeljük le központilag a 403-at (tiltás), 
+    // hogy a Login.tsx megkaphassa és kiírhassa a hibaüzenetet.
+    if (response.url.includes("/auth/login")) {
+      const error = await response.json().catch(() => ({ message: "Tiltott hozzáférés" }));
+      const customError: any = new Error(error.message);
+      customError.response = { status: response.status, data: error };
+      throw customError;
+    }
+
+    // 2. KIVÉTEL: Jelszócsere közben is engedjük át a hibát
     if (window.location.pathname.includes("/force-change-password")) {
       console.warn("API 401/403 elnyomva jelszócsere közben:", response.url);
       return; 
     }
 
-    // Ha a szerver elutasítja a tokent (lehet újraindítás miatt), logout
+    // Alapesetben (ha nem login/jelszócsere): kijelentkeztetés
     localStorage.clear(); 
     if (!window.location.pathname.includes("/login")) {
       window.location.href = "/login?reason=session_lost";
@@ -40,7 +51,9 @@ const handleResponse = async (response: Response) => {
 
   if (!response.ok) {
     const error = await response.json().catch(() => ({ message: "Ismeretlen hiba" }));
-    throw new Error(error.message);
+    const customError: any = new Error(error.message);
+    customError.response = { status: response.status, data: error };
+    throw customError;
   }
   return response.json();
 };

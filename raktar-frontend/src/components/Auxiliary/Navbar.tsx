@@ -122,14 +122,12 @@ function Navbar({ isDark, setIsDark }: NavbarProps) {
     }
   `;
 
-  const DarkModeToggle = () => (
-    <button
-      onClick={() => setIsDark(!isDark)}
-      className="p-2 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-xl border border-slate-200 dark:border-slate-700 transition-all active:scale-90 shadow-sm"
-    >
-      {isDark ? "☀️" : "🌙"}
-    </button>
-  );
+  // Explicit toggle funkció, hogy elkerüljük a beregadást
+  const toggleTheme = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsDark(!isDark);
+  };
 
   const unreadCount = (notifications || []).filter(n => n && !n.isRead).length;
   const recentNotifications = (notifications || []).slice(0, 5);
@@ -259,7 +257,12 @@ function Navbar({ isDark, setIsDark }: NavbarProps) {
             )}
 
             <div className="hidden md:block">
-              <DarkModeToggle />
+              <button
+                onClick={toggleTheme}
+                className="p-2 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-xl border border-slate-200 dark:border-slate-700 transition-all active:scale-90 shadow-sm"
+              >
+                {isDark ? "☀️" : "🌙"}
+              </button>
             </div>
 
             {user ? (
@@ -319,7 +322,12 @@ function Navbar({ isDark, setIsDark }: NavbarProps) {
               
               <div className="flex items-center justify-between px-4 py-3 bg-slate-50 dark:bg-slate-900 rounded-xl border border-slate-100 dark:border-slate-800 mt-2">
                 <span className="text-slate-500 dark:text-slate-400 font-bold text-sm italic uppercase tracking-widest">Sötét mód</span>
-                <DarkModeToggle />
+                <button
+                  onClick={toggleTheme}
+                  className="p-2 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-xl border border-slate-200 dark:border-slate-700 transition-all active:scale-90 shadow-sm"
+                >
+                  {isDark ? "☀️" : "🌙"}
+                </button>
               </div>
               
               <button

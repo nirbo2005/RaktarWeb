@@ -9,7 +9,7 @@ interface AuthContextType {
   token: string | null;
   loading: boolean;
   login: (token: string, user: User) => void;
-  logout: () => void;
+  logout: (reason?: string) => void;
   setUser: (user: User | null) => void;
   socket: any;
   refreshKey: number;
@@ -19,19 +19,25 @@ interface AuthContextType {
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  // JAVÍTÁS: Szinkron inicializálás, hogy ne legyen race condition
   const [token, setToken] = useState<string | null>(() => localStorage.getItem("token"));
   const [user, setUser] = useState<User | null>(() => {
     const saved = localStorage.getItem("user");
     return saved && saved !== "undefined" ? JSON.parse(saved) : null;
   });
   
-  // Ha van tokenünk, alapból loading-gal indítunk, amíg a háttérben validálunk
   const [loading, setLoading] = useState(!!token && !user);
   const [refreshKey, setRefreshKey] = useState(0);
 
   const triggerGlobalRefresh = useCallback(() => {
     setRefreshKey(prev => prev + 1);
+  }, []);
+
+  const logout = useCallback((reason?: string) => {
+    setToken(null);
+    setUser(null);
+    localStorage.clear();
+    const url = reason ? `/login?reason=${reason}` : "/login";
+    window.location.href = url;
   }, []);
 
   useEffect(() => {
@@ -50,7 +56,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     };
 
     initAuth();
-  }, []);
+  }, [token, user, logout]);
 
   useEffect(() => {
     const handleOnline = () => triggerGlobalRefresh();
@@ -66,8 +72,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         }
       });
 
-      socket.on("force_logout", (data: { userId: number }) => {
-        if (Number(data.userId) === Number(user?.id)) logout();
+      socket.on("force_logout", (data: { userId: number; reason?: string }) => {
+        if (Number(data.userId) === Number(user?.id)) {
+          // Ha a szerver küld konkrét indokot, azt adjuk át (pl. 'banned')
+          logout(data.reason || "session_expired");
+        }
       });
 
       socket.on("user_updated", async (data: any) => {
@@ -91,7 +100,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       socket.off("force_logout");
       socket.off("user_updated");
     };
-  }, [user, triggerGlobalRefresh]);
+  }, [user, triggerGlobalRefresh, logout]);
 
   const login = (newToken: string, userData: User) => {
     localStorage.setItem("token", newToken);
@@ -100,13 +109,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     setUser(userData);
     socket.emit('join_user_room', { userId: userData.id });
     triggerGlobalRefresh();
-  };
-
-  const logout = () => {
-    setToken(null);
-    setUser(null);
-    localStorage.clear();
-    window.location.href = "/login";
   };
 
   return (
