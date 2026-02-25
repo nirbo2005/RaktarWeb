@@ -5,6 +5,7 @@ import type { AuditLog } from "../../types";
 import Swal from 'sweetalert2';
 import ExcelJS from "exceljs";
 import { saveAs } from "file-saver";
+import { useTranslation } from "react-i18next";
 
 const MySwal = Swal.mixin({
   customClass: {
@@ -25,11 +26,9 @@ interface Props {
 }
 
 const Logs = ({ logs, allUsers, filters, setFilters, onRefresh, onRestore, onGroupRestore }: Props) => {
-  console.log("🔥 LOGS KOMPONENS RENDERELÉS - LOGS TÖMB HOSSZA:", logs?.length || 0);
-  console.log("🛠️ AKTUÁLIS SZŰRŐK:", filters);
-
   const navigate = useNavigate();
   const { user } = useAuth();
+  const { t } = useTranslation();
   const isAdmin = user?.rang === "ADMIN";
   const isKezelo = user?.rang === "KEZELO";
 
@@ -41,15 +40,15 @@ const Logs = ({ logs, allUsers, filters, setFilters, onRefresh, onRestore, onGro
   };
 
   const getDiffText = (log: AuditLog) => {
-    if (log.muvelet === "CREATE") return "Termék hozzáadva";
-    if (log.muvelet === "DELETE" || log.muvelet === "BULK_DELETE") return "Termék törölve";
+    if (log.muvelet === "CREATE") return t('logs.diff.productAdded');
+    if (log.muvelet === "DELETE" || log.muvelet === "BULK_DELETE") return t('logs.diff.productDeleted');
     try {
       const regi = typeof log.regiAdat === 'string' ? JSON.parse(log.regiAdat) : log.regiAdat;
       const uj = typeof log.ujAdat === 'string' ? JSON.parse(log.ujAdat) : log.ujAdat;
       if (!regi || !uj) return log.muvelet;
       
       const diffs: string[] = [];
-      const labels: { [key: string]: string } = { nev: 'Név', mennyiseg: 'Mennyiség', parcella: 'Parcella', gyarto: 'Gyártó', ar: 'Ár' };
+      const labels: { [key: string]: string } = { nev: t('logs.labels.name'), mennyiseg: t('logs.labels.quantity'), parcella: t('logs.labels.plot'), gyarto: t('logs.labels.manufacturer'), ar: t('logs.labels.price') };
       
       Object.keys(labels).forEach(key => {
         if (regi[key] !== uj[key]) {
@@ -57,20 +56,19 @@ const Logs = ({ logs, allUsers, filters, setFilters, onRefresh, onRestore, onGro
         }
       });
       return diffs.join(", ");
-    } catch (e) { return "Adatváltozás"; }
+    } catch (e) { return t('logs.diff.dataChanged'); }
   };
 
   const exportToExcel = async () => {
-    console.log("📥 EXCEL EXPORT INDÍTÁSA...");
     const workbook = new ExcelJS.Workbook();
-    const worksheet = workbook.addWorksheet("Tevékenységnapló");
+    const worksheet = workbook.addWorksheet(t('logs.excel.sheetName'));
 
     worksheet.columns = [
-      { header: "TERMÉK", key: "termek", width: 30 },
-      { header: "VÁLTOZTATÁSOK", key: "valtozasok", width: 50 },
-      { header: "MŰVELET", key: "muvelet", width: 15 },
-      { header: "FELHASZNÁLÓ", key: "user", width: 25 },
-      { header: "IDŐPONT", key: "idopont", width: 20 },
+      { header: t('logs.excel.product'), key: "termek", width: 30 },
+      { header: t('logs.excel.changes'), key: "valtozasok", width: 50 },
+      { header: t('logs.excel.action'), key: "muvelet", width: 15 },
+      { header: t('logs.excel.user'), key: "user", width: 25 },
+      { header: t('logs.excel.date'), key: "idopont", width: 20 },
     ];
 
     const headerRow = worksheet.getRow(1);
@@ -79,37 +77,35 @@ const Logs = ({ logs, allUsers, filters, setFilters, onRefresh, onRestore, onGro
 
     logs.forEach(log => {
       worksheet.addRow({
-        termek: (log as any).product?.nev || log.termekNev || "Rendszer",
+        termek: (log as any).product?.nev || log.termekNev || t('logs.excel.system'),
         valtozasok: getDiffText(log),
         muvelet: log.muvelet,
-        user: `${log.user?.nev || 'Ismeretlen'} (@${log.user?.felhasznalonev || '?'})`,
+        user: `${log.user?.nev || t('logs.excel.unknown')} (@${log.user?.felhasznalonev || '?'})`,
         idopont: formatDate(log.idopont),
       });
     });
 
     const buffer = await workbook.xlsx.writeBuffer();
     saveAs(new Blob([buffer]), `raktar_naplo_${new Date().toISOString().split('T')[0]}.xlsx`);
-    console.log("✅ EXCEL FÁJL GENERÁLVA.");
-    MySwal.fire({ icon: 'success', title: 'Excel export kész!', timer: 2000, showConfirmButton: false });
+    MySwal.fire({ icon: 'success', title: t('logs.excel.ready'), timer: 2000, showConfirmButton: false });
   };
 
   const renderDiff = (log: AuditLog) => {
-    console.log(`🔍 RENDERDIFF - ID: ${log.id}, MŰVELET: ${log.muvelet}`);
-    if (log.muvelet === "CREATE") return <p className="text-xs font-bold text-emerald-500 uppercase tracking-widest text-left">✨ Termék hozzáadva</p>;
-    if (log.muvelet === "DELETE" || log.muvelet === "BULK_DELETE") return <p className="text-xs font-bold text-rose-500 uppercase tracking-widest text-left">🗑️ Termék törölve</p>;
+    if (log.muvelet === "CREATE") return <p className="text-xs font-bold text-emerald-500 uppercase tracking-widest text-left">✨ {t('logs.diff.productAdded')}</p>;
+    if (log.muvelet === "DELETE" || log.muvelet === "BULK_DELETE") return <p className="text-xs font-bold text-rose-500 uppercase tracking-widest text-left">🗑️ {t('logs.diff.productDeleted')}</p>;
 
     try {
       const regi = typeof log.regiAdat === 'string' ? JSON.parse(log.regiAdat) : log.regiAdat;
       const uj = typeof log.ujAdat === 'string' ? JSON.parse(log.ujAdat) : log.ujAdat;
 
       if (!regi || !uj) {
-         if (log.muvelet === "RESTORE") return <p className="text-xs font-bold text-blue-500 uppercase tracking-widest text-left">♻️ Termék helyreállítva</p>;
+         if (log.muvelet === "RESTORE") return <p className="text-xs font-bold text-blue-500 uppercase tracking-widest text-left">♻️ {t('logs.diff.productRestored')}</p>;
          return null;
       }
 
       const changes: React.ReactNode[] = [];
       const keys = ['nev', 'mennyiseg', 'parcella', 'gyarto', 'ar'];
-      const labels: { [key: string]: string } = { nev: 'Név', mennyiseg: 'Mennyiség', parcella: 'Parcella', gyarto: 'Gyártó', ar: 'Ár' };
+      const labels: { [key: string]: string } = { nev: t('logs.labels.name'), mennyiseg: t('logs.labels.quantity'), parcella: t('logs.labels.plot'), gyarto: t('logs.labels.manufacturer'), ar: t('logs.labels.price') };
 
       keys.forEach(key => {
         if (regi[key] !== uj[key]) {
@@ -138,25 +134,20 @@ const Logs = ({ logs, allUsers, filters, setFilters, onRefresh, onRestore, onGro
         return (
           <div className="space-y-1">
             {log.muvelet === "RESTORE" && (
-              <p className="text-[10px] font-black text-blue-500 uppercase mb-2 tracking-tighter italic text-left">♻️ Módosítás visszavonva:</p>
+              <p className="text-[10px] font-black text-blue-500 uppercase mb-2 tracking-tighter italic text-left">♻️ {t('logs.diff.reverted')}</p>
             )}
             <div className="space-y-1">{changes}</div>
           </div>
         );
       }
-      return log.muvelet === "RESTORE" ? <p className="text-xs font-bold text-blue-500 uppercase tracking-widest text-left">♻️ Termék helyreállítva</p> : null;
+      return log.muvelet === "RESTORE" ? <p className="text-xs font-bold text-blue-500 uppercase tracking-widest text-left">♻️ {t('logs.diff.productRestored')}</p> : null;
     } catch (e) {
-      console.error("❌ HIBA A DIFF RENDERELÉSKOR:", e);
-      return <p className="text-xs font-bold text-blue-500 uppercase tracking-widest text-left">♻️ Adatváltozás történt</p>;
+      return <p className="text-xs font-bold text-blue-500 uppercase tracking-widest text-left">♻️ {t('logs.diff.dataChanged')}</p>;
     }
   };
 
   const groupedLogs = useMemo(() => {
-    console.log("⚙️ LOGOK CSOPORTOSÍTÁSA (useMemo)...");
-    if (!logs || logs.length === 0) {
-      console.warn("⚠️ NINCSENEK LOGOK A CSOPORTOSÍTÁSHOZ.");
-      return [];
-    }
+    if (!logs || logs.length === 0) return [];
     const result: any[] = [];
     let currentGroup: any = null;
     logs.forEach((log: AuditLog) => {
@@ -175,7 +166,6 @@ const Logs = ({ logs, allUsers, filters, setFilters, onRefresh, onRestore, onGro
       }
     });
     if (currentGroup) result.push(currentGroup);
-    console.log("✅ CSOPORTOSÍTÁS KÉSZ. ELEMEK SZÁMA:", result.length);
     return result;
   }, [logs]);
 
@@ -195,22 +185,22 @@ const Logs = ({ logs, allUsers, filters, setFilters, onRefresh, onRestore, onGro
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-6 gap-3 mb-8">
         {isAdmin && (
           <select value={filters.targetUserId} onChange={(e) => setFilters({ ...filters, targetUserId: e.target.value })} className="p-3 rounded-xl bg-slate-50 dark:bg-slate-800 text-[10px] font-bold dark:text-white border border-slate-200 dark:border-slate-700 outline-none transition-all">
-            <option value="">Összes felhasználó</option>
+            <option value="">{t('logs.filters.allUsers')}</option>
             {allUsers?.map((u: any) => <option key={u.id} value={u.id}>{u.nev}</option>)}
           </select>
         )}
         <select value={filters.muvelet} onChange={(e) => setFilters({ ...filters, muvelet: e.target.value })} className="p-3 rounded-xl bg-slate-50 dark:bg-slate-800 text-[10px] font-bold dark:text-white border border-slate-200 dark:border-slate-700 outline-none">
-          <option value="">Minden művelet</option>
-          <option value="CREATE">✨ Létrehozás</option>
-          <option value="UPDATE">📝 Módosítás</option>
-          <option value="DELETE">🗑️ Törlés</option>
-          <option value="BULK_DELETE">🗑️ Tömeges Törlés</option>
-          <option value="RESTORE">♻️ Visszaállítás</option>
+          <option value="">{t('logs.filters.allActions')}</option>
+          <option value="CREATE">{t('logs.filters.create')}</option>
+          <option value="UPDATE">{t('logs.filters.update')}</option>
+          <option value="DELETE">{t('logs.filters.delete')}</option>
+          <option value="BULK_DELETE">{t('logs.filters.bulkDelete')}</option>
+          <option value="RESTORE">{t('logs.filters.restore')}</option>
         </select>
         <input type="date" value={filters.startDate} onChange={(e) => setFilters({ ...filters, startDate: e.target.value })} className="p-3 rounded-xl bg-slate-50 dark:bg-slate-800 dark:text-white border border-slate-200 dark:border-slate-700 text-[10px] font-bold" />
         <input type="date" value={filters.endDate} onChange={(e) => setFilters({ ...filters, endDate: e.target.value })} className="p-3 rounded-xl bg-slate-50 dark:bg-slate-800 dark:text-white border border-slate-200 dark:border-slate-700 text-[10px] font-bold" />
-        <button onClick={() => { console.log("🔘 SZŰRÉS GOMB MEGNYOMVA"); onRefresh(); }} className="bg-blue-600 hover:bg-blue-500 text-white rounded-xl text-[10px] font-black uppercase tracking-widest transition-all active:scale-95 shadow-lg shadow-blue-500/10">Szűrés</button>
-        <button onClick={exportToExcel} className="bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl text-[10px] font-black uppercase tracking-widest transition-all active:scale-95 flex items-center justify-center gap-2 shadow-lg shadow-emerald-500/10"><span>📊</span> Export</button>
+        <button onClick={() => onRefresh()} className="bg-blue-600 hover:bg-blue-500 text-white rounded-xl text-[10px] font-black uppercase tracking-widest transition-all active:scale-95 shadow-lg shadow-blue-500/10">{t('logs.filters.filterBtn')}</button>
+        <button onClick={exportToExcel} className="bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl text-[10px] font-black uppercase tracking-widest transition-all active:scale-95 flex items-center justify-center gap-2 shadow-lg shadow-emerald-500/10"><span>📊</span> {t('logs.filters.exportBtn')}</button>
       </div>
 
       <div className="space-y-4 max-h-[600px] overflow-y-auto pr-2 custom-scrollbar">
@@ -221,10 +211,7 @@ const Logs = ({ logs, allUsers, filters, setFilters, onRefresh, onRestore, onGro
               key={log.isGroup ? `group-${index}` : log.id} 
               className={`p-5 rounded-[2rem] border transition-all ${log.isGroup ? "bg-red-50 dark:bg-red-900/10 border-red-200 dark:border-red-900/30" : "bg-white dark:bg-slate-900/40 border-slate-100 dark:border-slate-800 hover:border-blue-300 dark:hover:bg-slate-800/60 cursor-pointer shadow-sm hover:shadow-xl"}`} 
               onClick={() => {
-                if (!log.isGroup && productId) {
-                  console.log(`🔗 NAVIGÁCIÓ A TERMÉKRE: ${productId}`);
-                  navigate(`/product/${productId}`);
-                }
+                if (!log.isGroup && productId) navigate(`/product/${productId}`);
               }}
             >
               <div className="flex justify-between items-start">
@@ -242,16 +229,16 @@ const Logs = ({ logs, allUsers, filters, setFilters, onRefresh, onRestore, onGro
                       </p>
                     </div>
                     <h4 className="text-base font-black dark:text-white leading-tight">
-                      {log.isGroup ? `🗑️ Tömeges Törlés (${log.count} tétel)` : ((log as any).product?.nev || log.termekNev || "Rendszerfolyamat")}
+                      {log.isGroup ? t('logs.misc.bulkDeleteCount', { count: log.count }) : ((log as any).product?.nev || log.termekNev || t('logs.misc.systemProcess'))}
                     </h4>
                   </div>
                 </div>
                 
                 {(isAdmin || isKezelo) && log.muvelet !== "RESTORE" && (log.muvelet === "UPDATE" || log.muvelet === "DELETE" || log.isGroup) && (
                   <button 
-                    onClick={(e) => { e.stopPropagation(); console.log(`♻️ VISSZAÁLLÍTÁS INDÍTÁSA - ID: ${log.id}`); log.isGroup ? onGroupRestore(log) : onRestore(log.id); }} 
+                    onClick={(e) => { e.stopPropagation(); log.isGroup ? onGroupRestore(log) : onRestore(log.id); }} 
                     className="bg-emerald-500 hover:bg-emerald-400 text-white p-2.5 rounded-2xl shadow-lg shadow-emerald-500/20 transition-all active:scale-90"
-                    title="Visszaállítás"
+                    title={t('logs.filters.restore')}
                   >♻️</button>
                 )}
               </div>
@@ -262,14 +249,14 @@ const Logs = ({ logs, allUsers, filters, setFilters, onRefresh, onRestore, onGro
 
               <div className="mt-3 flex justify-between items-center px-2">
                 <p className="text-[10px] font-bold text-slate-300 dark:text-slate-600 italic">{formatDate(log.idopont)}</p>
-                {!log.isGroup && <span className="text-[9px] font-black uppercase text-blue-500/40 tracking-widest italic">Részletek megtekintése →</span>}
+                {!log.isGroup && <span className="text-[9px] font-black uppercase text-blue-500/40 tracking-widest italic">{t('logs.misc.viewDetails')}</span>}
               </div>
             </div>
           );
         })}
         {groupedLogs.length === 0 && (
           <p className="text-center py-10 text-slate-400 font-bold uppercase text-xs tracking-widest animate-pulse">
-            Nincs megjeleníthető naplóbejegyzés.
+            {t('logs.misc.noLogs')}
           </p>
         )}
       </div>

@@ -2,6 +2,7 @@ import { useState } from "react";
 import { forceChangePassword } from "../../services/api";
 import { useAuth } from "../../context/AuthContext";
 import Swal from 'sweetalert2';
+import { useTranslation } from "react-i18next";
 
 const MySwal = Swal.mixin({
   customClass: {
@@ -13,6 +14,7 @@ const MySwal = Swal.mixin({
 
 function ForceChangePassword() {
   const { user, logout } = useAuth();
+  const { t } = useTranslation();
   
   const [form, setForm] = useState({
     ideiglenesJelszo: "",
@@ -28,23 +30,22 @@ function ForceChangePassword() {
     setError("");
 
     if (!user) {
-      setError("Hiányzó felhasználói munkamenet!");
+      setError(t('auth.forceChange.alerts.missingSession'));
       return;
     }
 
-    // Backend DTO szinkron: legalább 8 karakter, komplexitás ellenőrzés
     const passwordRegex = /((?=.*\d)|(?=.*\W+))(?![.\n])(?=.*[A-Z])(?=.*[a-z]).*$/;
     if (form.ujJelszo.length < 8) {
-      setError("Az új jelszónak legalább 8 karakternek kell lennie!");
+      setError(t('auth.forceChange.alerts.shortPassword'));
       return;
     }
     if (!passwordRegex.test(form.ujJelszo)) {
-      setError("A jelszónak tartalmaznia kell kisbetűt, nagybetűt és számot/jelet!");
+      setError(t('auth.forceChange.alerts.weakPassword'));
       return;
     }
 
     if (form.ujJelszo !== form.ujJelszoUjra) {
-      setError("A két új jelszó nem egyezik!");
+      setError(t('auth.forceChange.alerts.passwordMismatch'));
       return;
     }
 
@@ -56,29 +57,26 @@ function ForceChangePassword() {
         ujJelszo: form.ujJelszo
       });
       
-      // Siker esetén azonnal tájékoztatjuk a felhasználót
       MySwal.fire({
         icon: 'success',
-        title: 'Jelszó sikeresen frissítve! ✨',
-        text: 'A biztonság érdekében most kérjük, jelentkezz be az új jelszavaddal.',
-        confirmButtonText: 'Értem, irány a belépés',
+        title: t('auth.forceChange.alerts.successTitle'),
+        text: t('auth.forceChange.alerts.successText'),
+        confirmButtonText: t('auth.forceChange.alerts.goToLogin'),
         allowOutsideClick: false,
       }).then(() => {
-        // Teljes takarítás és hard redirect a tiszta session érdekében
-        // Ez megszünteti a WebSocket kapcsolatot és minden memóriában maradt state-et
         localStorage.clear(); 
         window.location.href = "/login"; 
       });
       
     } catch (err: any) {
-      const errorMsg = err.response?.data?.message || err.message || "Hiba a jelszó frissítésekor.";
+      const errorMsg = err.response?.data?.message || err.message || t('auth.forceChange.alerts.updateError');
       setError(errorMsg);
 
       MySwal.fire({
         icon: 'error',
-        title: 'Hiba történt',
+        title: t('auth.forceChange.alerts.errorTitle'),
         text: errorMsg,
-        confirmButtonText: 'Értem'
+        confirmButtonText: t('auth.forceChange.alerts.understand')
       });
     } finally {
       setLoading(false);
@@ -91,14 +89,11 @@ function ForceChangePassword() {
   return (
     <div className="min-h-[80vh] flex items-center justify-center p-4 transition-colors duration-300">
       <div className="bg-white dark:bg-slate-900 p-8 rounded-[2.5rem] shadow-2xl w-full max-w-md border border-red-500/20 transition-colors relative overflow-hidden">
-        {/* Dekoratív piros csík a tetején */}
         <div className="absolute top-0 left-0 right-0 h-2 bg-red-500"></div>
 
-        <h1 className="text-3xl font-black text-gray-800 dark:text-white mb-2 text-center italic uppercase tracking-tighter mt-2">
-          Kötelező <span className="text-red-500">Jelszócsere</span>
-        </h1>
+        <h1 className="text-3xl font-black text-gray-800 dark:text-white mb-2 text-center italic uppercase tracking-tighter mt-2" dangerouslySetInnerHTML={{ __html: t('auth.forceChange.title') }}></h1>
         <p className="text-slate-400 text-xs text-center font-bold mb-8 uppercase tracking-widest leading-relaxed">
-          Ideiglenes jelszóval léptél be. A továbblépéshez adj meg egy új, biztonságos jelszót!
+          {t('auth.forceChange.subtitle')}
         </p>
 
         {error && (
@@ -109,11 +104,11 @@ function ForceChangePassword() {
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label className={labelStyle}>Ideiglenes (Jelenlegi) jelszó</label>
+            <label className={labelStyle}>{t('auth.forceChange.tempPassword')}</label>
             <input
               type="password"
               className={inputStyle}
-              placeholder="Amit az előbb kaptál..."
+              placeholder={t('auth.forceChange.tempPlaceholder')}
               value={form.ideiglenesJelszo}
               onChange={(e) => setForm({ ...form, ideiglenesJelszo: e.target.value })}
               required
@@ -121,11 +116,11 @@ function ForceChangePassword() {
           </div>
 
           <div className="pt-2">
-            <label className={labelStyle}>Új jelszó</label>
+            <label className={labelStyle}>{t('auth.forceChange.newPassword')}</label>
             <input
               type="password"
               className={inputStyle}
-              placeholder="Min. 8 karakter, kis-, nagybetű és szám"
+              placeholder={t('auth.forceChange.newPlaceholder')}
               value={form.ujJelszo}
               onChange={(e) => setForm({ ...form, ujJelszo: e.target.value })}
               required
@@ -134,11 +129,11 @@ function ForceChangePassword() {
           </div>
 
           <div>
-            <label className={labelStyle}>Új jelszó újra</label>
+            <label className={labelStyle}>{t('auth.forceChange.newPasswordAgain')}</label>
             <input
               type="password"
               className={inputStyle}
-              placeholder="Erősítsd meg az új jelszót"
+              placeholder={t('auth.forceChange.newAgainPlaceholder')}
               value={form.ujJelszoUjra}
               onChange={(e) => setForm({ ...form, ujJelszoUjra: e.target.value })}
               required
@@ -151,7 +146,7 @@ function ForceChangePassword() {
             disabled={loading}
             className="w-full bg-red-600 hover:bg-red-500 text-white font-black py-4 rounded-2xl transition-all shadow-lg shadow-red-600/20 active:scale-95 uppercase tracking-widest text-xs mt-6 disabled:opacity-50"
           >
-            {loading ? "Frissítés..." : "Jelszó cseréje"}
+            {loading ? t('auth.forceChange.updating') : t('auth.forceChange.submit')}
           </button>
         </form>
 
@@ -160,7 +155,7 @@ function ForceChangePassword() {
             onClick={() => logout()}
             className="text-slate-500 dark:text-slate-400 font-black uppercase text-[10px] tracking-widest hover:text-red-500 transition-all"
           >
-            ← Kijelentkezés és megszakítás
+            {t('auth.forceChange.logoutAndCancel')}
           </button>
         </div>
       </div>

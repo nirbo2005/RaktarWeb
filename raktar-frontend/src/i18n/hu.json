@@ -1,0 +1,517 @@
+{
+  "header": {
+    "admin": "Admin",
+    "handler": "Kezelő",
+    "viewer": "Nézelődő",
+    "anonymous": "Névtelen felhasználó",
+    "logout": "Kijelentkezés"
+  },
+  "common": {
+    "save": "Mentés",
+    "cancel": "Mégse",
+    "error": "Hiba!",
+    "success": "Sikeres művelet!",
+    "search": "Keresés...",
+    "noResults": "Nincs találat",
+    "identifying": "Azonosítás...",
+    "updating": "Frissítés...",
+    "close": "Bezárás",
+    "yes": "Igen",
+    "back": "Vissza",
+    "pieces": "db"
+  },
+  "admin": {
+    "editTitle": "Szerkesztés: {{name}}",
+    "fullName": "Teljes név",
+    "rank": "Rang",
+    "phone": "Telefonszám (Kötelező)",
+    "newPassword": "Új jelszó (Hagyd üresen, ha nem változik)",
+    "pendingRequests": "Várakozó kérelmek",
+    "noRequests": "Nincs várakozó kérelem.",
+    "systemUsers": "Rendszer felhasználói",
+    "validation": {
+      "nameRequired": "A név kötelező!",
+      "nameNoNumbers": "Számok nem lehetnek a névben!",
+      "phoneRequired": "A telefonszám kötelező!"
+    },
+    "alerts": {
+      "fixErrors": "Javítsd a hibákat!",
+      "userUpdated": "Felhasználó frissítve!",
+      "saveFailed": "Nem sikerült a mentés.",
+      "cantBanSelf": "Saját magadat nem tilthatod ki!",
+      "accountUnbanned": "Fiók feloldva",
+      "accountBanned": "Fiók felfüggesztve",
+      "actionFailed": "A művelet sikertelen.",
+      "cantDeleteSelf": "Saját admin fiókodat nem törölheted!",
+      "deleteTitle": "Végleges törlés?",
+      "deleteText": "Biztosan törlöd {{name}} felhasználót? Ez nem vonható vissza!",
+      "yesDelete": "Igen, töröld!",
+      "userDeleted": "Felhasználó törölve",
+      "deleteFailed": "A törlés nem sikerült.",
+      "accepted": "Elfogadva",
+      "rejected": "Elutasítva"
+    }
+  },
+  "details": {
+    "fullName": "Teljes név",
+    "adminApprovalNeeded": "Admin jóváhagyás szükséges",
+    "phoneLabel": "Telefonszám (Nemzetközi) *",
+    "username": "Felhasználónév",
+    "email": "Email cím",
+    "oldPassword": "Régi jelszó",
+    "newPassword": "Új jelszó",
+    "buttons": {
+      "fixErrors": "Javítsd a hibákat...",
+      "noChanges": "🤔 Semmi nem változott...",
+      "saveAndRequest": "💾 Mentés és Névkérés",
+      "saveData": "💾 Adatok mentése"
+    },
+    "validation": {
+      "nameEmpty": "A név nem lehet üres!",
+      "nameNumbers": "A név nem tartalmazhat számokat!",
+      "emailInvalid": "Érvénytelen email formátum!",
+      "phoneRequired": "A telefonszám megadása kötelező!"
+    },
+    "alerts": {
+      "noChanges": "Még minden a régi... 😴",
+      "fixBeforeSave": "Kérjük, javítsd a hibákat mentés előtt!",
+      "oldPassRequired": "A régi jelszó kötelező!",
+      "dataUpdated": "Adatok frissítve! ✨",
+      "errorOccurred": "Hiba történt!"
+    }
+  },
+  "profile": {
+    "tabs": {
+      "myProfile": "👤 Saját profil",
+      "activityLog": "📜 Tevékenységnapló",
+      "administration": "🛡️ Adminisztráció"
+    },
+    "alerts": {
+      "restoreTitle": "Visszaállítás?",
+      "restoreText": "Biztosan vissza szeretnéd állítani az eredeti állapotot?",
+      "restoreBtn": "Visszaállítás",
+      "restored": "Visszaállítva!",
+      "restoreFailed": "Sikertelen művelet.",
+      "groupRestoreTitle": "Csoportos visszaállítás",
+      "groupRestoreText": "Biztosan visszaállítod mind a {{count}} elemet?",
+      "partialError": "Részleges hiba történt."
+    }
+  },
+  "logs": {
+    "labels": {
+      "name": "Név",
+      "quantity": "Mennyiség",
+      "plot": "Parcella",
+      "manufacturer": "Gyártó",
+      "price": "Ár"
+    },
+    "filters": {
+      "allUsers": "Összes felhasználó",
+      "allActions": "Minden művelet",
+      "create": "✨ Létrehozás",
+      "update": "📝 Módosítás",
+      "delete": "🗑️ Törlés",
+      "bulkDelete": "🗑️ Tömeges Törlés",
+      "restore": "♻️ Visszaállítás",
+      "filterBtn": "Szűrés",
+      "exportBtn": "Export"
+    },
+    "diff": {
+      "productAdded": "Termék hozzáadva",
+      "productDeleted": "Termék törölve",
+      "dataChanged": "Adatváltozás történt",
+      "productRestored": "Termék helyreállítva",
+      "reverted": "Módosítás visszavonva:"
+    },
+    "excel": {
+      "sheetName": "Tevékenységnapló",
+      "product": "TERMÉK",
+      "changes": "VÁLTOZTATÁSOK",
+      "action": "MŰVELET",
+      "user": "FELHASZNÁLÓ",
+      "date": "IDŐPONT",
+      "system": "Rendszer",
+      "unknown": "Ismeretlen",
+      "ready": "Excel export kész!"
+    },
+    "misc": {
+      "bulkDeleteCount": "Tömeges Törlés ({{count}} tétel)",
+      "systemProcess": "Rendszerfolyamat",
+      "viewDetails": "Részletek megtekintése →",
+      "noLogs": "Nincs megjeleníthető naplóbejegyzés."
+    }
+  },
+  "product": {
+    "categories": {
+      "ELEKTRONIKA": "Elektronika",
+      "ELELMISZER": "Élelmiszer",
+      "VEGYSZER": "Vegyszer",
+      "IRODASZER": "Irodaszer",
+      "AUTO_MOTOR": "Autó-Motor",
+      "RUHAZAT": "Ruházat",
+      "BARKACS": "Barkács",
+      "SPORT": "Sport",
+      "JATEK": "Játék",
+      "HAZTARTAS": "Háztartás",
+      "KOZMETIKA": "Kozmetika",
+      "KONYVEK": "Könyvek",
+      "BUTOR": "Bútor",
+      "EGESZSEGUGY": "Egészségügy",
+      "EGYEB": "Egyéb"
+    },
+    "add": {
+      "title": "📦 Raktári <span class=\"text-blue-600\">Bevételezés</span>",
+      "searchExisting": "Keresés meglévő cikktörzsben",
+      "searchPlaceholder": "Keresés név vagy gyártó alapján...",
+      "select": "Kiválaszt →",
+      "or": "VAGY",
+      "createNew": "+ Új Cikktörzs Létrehozása",
+      "selectedMaster": "Kijelölt Cikktörzs",
+      "masterData": "Mesteradatok",
+      "name": "Termék név",
+      "namePlaceholder": "Pl. Acélcsavar",
+      "manufacturer": "Gyártó",
+      "manufacturerPlaceholder": "Pl. IronWorks Kft.",
+      "category": "Kategória",
+      "weight": "Súly (kg / db)",
+      "purchasePrice": "Beszerzési Ár (Ft)",
+      "salePrice": "Eladási Ár (Ft)",
+      "minStock": "Minimum Készlet",
+      "batchIntake": "Sarzs Bevételezése",
+      "expiry": "Lejárati idő (Opcionális)",
+      "location": "Helyszín (Célpolc)",
+      "quantity": "Mennyiség (db)",
+      "saveToWarehouse": "Mentés a Raktárba",
+      "alerts": {
+        "intakeSuccess": "Bevételezés sikeres! 📦",
+        "productCreated": "Termék rögzítve! ✨",
+        "errorOccurred": "Hiba történt",
+        "errorText": "Hálózati hiba vagy megtelt polc."
+      }
+    },
+    "details": {
+      "deletedWarning": "⚠️ Figyelem: Ez a termék törölt állapotban van!",
+      "back": "Vissza",
+      "itemNumber": "Cikkszám (ID)",
+      "masterData": "Mesteradatok",
+      "weightUnit": "Súly (Egység)",
+      "minStock": "Min. Készlet",
+      "purchasePrice": "Beszerzési Ár",
+      "salePrice": "Eladási Ár",
+      "stockStatus": "Készlet Állapot",
+      "totalStock": "Aktuális Összesített Készlet",
+      "criticalStock": "🚨 Kritikus készlet",
+      "physicalLocation": "Fizikai Elhelyezkedés (Sarzsok)",
+      "expiry": "Szavatossági idő",
+      "nonPerishable": "Nem romlandó",
+      "outOfStock": "Nincs készleten.",
+      "modify": "Módosítás",
+      "delete": "Törlés",
+      "notFoundTitle": "Nincs ilyen termék",
+      "backToHome": "Vissza a főoldalra",
+      "fetching": "Adatok lekérése...",
+      "alerts": {
+        "deleteConfirmTitle": "Biztos vagy benne?",
+        "deleteConfirmText": "A(z) \"{{name}}\" teljes cikktörzse és minden fizikai sarzsa törlésre kerül a rendszerből!",
+        "yesDelete": "Igen, törlöm!",
+        "deletedSuccess": "Termék törölve! 🗑️",
+        "deleteFailed": "Sikertelen törlés."
+      }
+    },
+    "grid": {
+      "title": "Raktár Térkép",
+      "subtitle": "Interaktív készletkezelés",
+      "sorting": "🪄 Rendezés",
+      "sector": "SZEKTOR",
+      "emptyShelf": "Üres polc",
+      "selectSector": "Válassz szektort az áttekintéshez",
+      "alerts": {
+        "weightStop": "Súlystop! 🛑",
+        "shelfFull": "A(z) {{shelf}} polc megtelt.",
+        "moveHowMuch": "Mennyit szeretnél áthelyezni?",
+        "weightWarning": "⚠️ SÚLYSTOP: Csak maximum {{max}} db fér el!",
+        "moveBtn": "📦 Áthelyezés",
+        "movedSuccess": "Áthelyezve!",
+        "sortTitle": "Optimalizálás?",
+        "sortText": "Raktár rendezése kategóriák szerint.",
+        "start": "Indítás",
+        "sortedSuccess": "Optimalizálva!"
+      }
+    },
+    "list": {
+      "title": "Raktár",
+      "bulkDelete": "🗑️ Törlés ({{count}})",
+      "filterErrors": "🚨 Csak hibák",
+      "filterAll": "⚠️ Szűrés",
+      "export": "📊 Export",
+      "selectModeOn": "✖ Kijelölés vége",
+      "selectModeOff": "☑️ Több kijelölése",
+      "newProduct": "+ Új Termék",
+      "headers": {
+        "qr": "QR",
+        "product": "Termék",
+        "category": "Kategória",
+        "totalStock": "Össz. Készlet",
+        "actions": "Művelet"
+      },
+      "batches": "Sarzsok",
+      "nonPerishable": "Nem romlandó",
+      "details": "Részletek",
+      "allGoodTitle": "Minden polc rendben",
+      "allGoodSubtitle": "Nincs beavatkozást igénylő tétel",
+      "print": "🖨️ Nyomtatás",
+      "excel": {
+        "sheetName": "Raktárkészlet",
+        "name": "Terméknév",
+        "manufacturer": "Gyártó",
+        "category": "Kategória",
+        "quantity": "Össz. Mennyiség (db)",
+        "earliestExpiry": "Legkorábbi Lejárat"
+      },
+      "alerts": {
+        "bulkDeleteTitle": "Tömeges törlés",
+        "bulkDeleteText": "{{count}} tétel törlése?",
+        "bulkDeleted": "Tételek törölve.",
+        "bulkDeleteFailed": "Sikertelen tömeges törlés.",
+        "deleteTitle": "Termék törlése",
+        "deleteText": "Biztosan törlöd?",
+        "deleted": "Termék törölve.",
+        "deleteFailed": "Sikertelen törlés.",
+        "excelReady": "Excel riport kész! 📊"
+      }
+    },
+    "modify": {
+      "tabs": {
+        "physicalStock": "📦 Fizikai Készlet",
+        "masterData": "⚙️ Cikktörzs"
+      },
+      "deletedTitle": "Termék törölve",
+      "restoreBtn": "Visszaállítás",
+      "stockManagement": "Készletkezelés",
+      "selectBatch": "Célzott Fizikai Polc (Sarzs) Kiválasztása",
+      "createNewBatch": "➕ ÚJ SARZS LÉTREHOZÁSA (Új polcra)",
+      "newBatchData": "Új Sarzs Adatok",
+      "location": "Helyszín (Polc)",
+      "expiry": "Lejárati Idő",
+      "quantity": "Mennyiség (db)",
+      "execute": "Végrehajtás",
+      "editData": "Adatok Szerkesztése",
+      "alerts": {
+        "restoreTitle": "Visszaállítás?",
+        "restoreText": "A termék újra elérhető lesz.",
+        "restored": "Újraaktiválva!",
+        "restoreFailed": "Sikertelen.",
+        "chooseBatch": "Válassz meglévő sarzsot!",
+        "intakeSuccess": "+{{count}} db bevételezve.",
+        "notEnoughStock": "Nincs elég készlet. Max: {{max}} db",
+        "batchDeleted": "Sarzs kiürült és törölve lett.",
+        "lastBatchEmpty": "Utolsó sarzs kiürült",
+        "deletePhysicalBatch": "Töröljük a fizikai sarzsot?",
+        "keepZero": "Maradjon 0-val",
+        "stockUpdated": "Készlet frissítve.",
+        "dataUpdated": "Adatok frissítve! ✨",
+        "saveFailed": "Sikertelen mentés."
+      }
+    }
+  },
+  "stockValue": {
+    "title": "Készlet<span class=\"text-emerald-500\">érték</span> Kalkulátor",
+    "subtitle": "Élő pénzügyi elemzés",
+    "manualRefresh": "🔄 Manuális frissítés",
+    "totalValue": "Teljes Raktárérték",
+    "totalItems": "Összes Darabszám",
+    "activeSectors": "Aktív Szektorok",
+    "sectors": "szektor",
+    "topProducts": "🏆 Érték szerinti rangsor",
+    "territorialDistribution": "📍 Területi Eloszlás",
+    "sectorLabel": "\"{{sector}}\" Szektor",
+    "share": "{{percent}}% részesedés",
+    "noLocation": "Nincs helyszín",
+    "billionFt": "milliárd Ft",
+    "millionFt": "millió Ft",
+    "calculating": "Pénzügyi adatok kalkulálása...",
+    "loadError": "Nem sikerült betölteni a készletadatokat."
+  },
+  "auxiliary": {
+    "connection": {
+      "serverOffline": "Szerver Offline",
+      "reconnecting": "Automatikus újracsatlakozás..."
+    },
+    "navbar": {
+      "products": "🏠 Termékek",
+      "overview": "📊 Áttekintés",
+      "scanner": "📷 Beolvasás",
+      "notifications": "🔔 Értesítések",
+      "new": "új",
+      "profile": "👤 Profil",
+      "darkTheme": "Sötét mód",
+      "logout": "🚪 Kijelentkezés",
+      "login": "Belépés",
+      "register": "Regisztráció",
+      "searchPlaceholder": "Keresés...",
+      "jump": "Ugrás →",
+      "viewAll": "Összes megtekintése →",
+      "noNotifications": "Nincs értesítés"
+    },
+    "notifications": {
+      "title": "🔔 Értesítési <span class=\"text-blue-600\">Központ</span>",
+      "unreadCount": "{{count}} olvasatlan értesítés",
+      "allRead": "Minden értesítés elolvasva",
+      "deleteReadBtn": "🗑️ Olvasottak törlése",
+      "markAllReadBtn": "✓ Mind olvasott",
+      "acknowledge": "Nyugtázom",
+      "emptyTitle": "Nincs értesítés",
+      "emptyText": "Jelenleg nincs semmilyen riasztás a rendszerben.",
+      "alerts": {
+        "allMarkedRead": "Minden értesítés olvasottnak jelölve!",
+        "deleteConfirmTitle": "Olvasottak törlése?",
+        "deleteConfirmText": "Minden már nyugtázott (olvasott) értesítésed véglegesen törlődik!",
+        "yesDelete": "Igen, töröld őket!",
+        "deletedSuccess": "Olvasott értesítések törölve!"
+      }
+    },
+    "scanner": {
+      "title": "📷 QR SZKENNER",
+      "camError": "A kamera nem elérhető vagy le van tiltva.",
+      "searching": "Keresés...",
+      "locations": "Helyszínek",
+      "totalStock": "Összkészlet",
+      "detailsBtn": "Termék adatlap",
+      "newScanBtn": "Új szkennelés",
+      "backToMenu": "← Vissza a menübe",
+      "noStock": "Nincs készleten",
+      "unknownLocation": "Ismeretlen hely",
+      "alerts": {
+        "invalidCodeTitle": "Érvénytelen kód",
+        "invalidCodeText": "Ez nem egy érvényes RaktárWeb QR kód!",
+        "noMatchTitle": "Nincs találat",
+        "noMatchText": "A keresett termék nem található a rendszerben."
+      }
+    },
+    "search": {
+      "title": "Keresési <span class=\"text-blue-600\">találatok</span>",
+      "expression": "Kifejezés:",
+      "resultsCount": "{{count}} találat",
+      "scanningStock": "Készlet átfésülése...",
+      "lowStock": "Alacsony készlet",
+      "inStock": "Raktáron",
+      "location": "Helyszín",
+      "stock": "Készlet",
+      "noResultsTitle": "Nincs találat...",
+      "noResultsText": "A keresett tétel nem található a rendszerben.",
+      "backToHub": "Vissza a bázisra",
+      "noStock": "Nincs készleten"
+    }
+  },
+  "hooks": {
+    "realTime": {
+      "alerts": {
+        "accountSuspended": "A fiókodat felfüggesztették.",
+        "connectionLost": "Megszakadt a kapcsolat a szerverrel."
+      }
+    }
+  },
+  "auth": {
+    "register": {
+      "title": "Fiók létrehozása",
+      "fullName": "Teljes Név *",
+      "fullNamePlaceholder": "Pl. Kovács János",
+      "username": "Felhasználónév *",
+      "usernamePlaceholder": "kjanos88",
+      "email": "Email cím *",
+      "emailPlaceholder": "pelda@email.hu",
+      "phone": "Telefonszám (Nemzetközi) *",
+      "password": "Jelszó *",
+      "passwordPlaceholder": "••••••••",
+      "submit": "Regisztráció véglegesítése",
+      "backToLogin": "Vissza a bejelentkezéshez",
+      "validation": {
+        "nameEmpty": "A név kötelező!",
+        "nameNumbers": "A név nem tartalmazhat számokat!",
+        "nameTwoWords": "Vezetéknév és keresztnév is kell!",
+        "usernameShort": "Minimum 4 karakter!",
+        "emailInvalid": "Érvénytelen email formátum!",
+        "phoneRequired": "A telefonszám megadása kötelező!",
+        "passwordShort": "Minimum 8 karakter szükséges!",
+        "passwordWeak": "Legalább egy nagybetű, kisbetű és szám/jel kell!"
+      },
+      "alerts": {
+        "fillAll": "Kérjük, tölts ki minden mezőt megfelelően!",
+        "successTitle": "Sikeres regisztráció! ✨",
+        "successText": "Most már bejelentkezhetsz a fiókodba.",
+        "errorTitle": "Regisztrációs hiba"
+      }
+    },
+    "login": {
+      "title": "Bejelentkezés",
+      "fillDemo": "🔑 Jelszó kitöltése",
+      "username": "Felhasználónév",
+      "usernamePlaceholder": "Adja meg a nevét...",
+      "password": "Jelszó",
+      "passwordPlaceholder": "••••••••",
+      "forgotPassword": "Elfelejtetted?",
+      "submit": "Belépés a rendszerbe",
+      "registerNew": "Új fiók regisztrálása",
+      "alerts": {
+        "accessDenied": "Hozzáférés megtagadva",
+        "sessionLost": "Munkamenet megszakítva",
+        "bannedText": "Ezt a fiókot biztonsági okokból vagy szabálysértés miatt felfüggesztettük.",
+        "sessionExpiredText": "A munkamenet lejárt vagy megszakadt. Kérjük, jelentkezzen be újra.",
+        "gotIt": "Értettem",
+        "welcomeBack": "Üdv újra!",
+        "bannedTitle": "Ki vagy tiltva!",
+        "bannedFooter": "<span style=\"color: #94a3b8; font-size: 10px; font-weight: 900; text-transform: uppercase;\">Lépj kapcsolatba az adminisztrátorral</span>",
+        "bannedServerMsg": "Sajnáljuk, de ez a felhasználói fiók nem léphet be a rendszerbe.",
+        "wrongCredentials": "Hibás felhasználónév vagy jelszó!",
+        "oops": "Hoppá..."
+      }
+    },
+    "forgotPassword": {
+      "title": "Jelszó <span class=\"text-blue-600\">visszaállítás</span>",
+      "subtitle": "Kérjük, add meg a fiókodhoz tartozó biztonsági adatokat a jelszó cseréjéhez.",
+      "username": "Felhasználónév",
+      "usernamePlaceholder": "Pl. kjanos88",
+      "email": "Regisztrált Email",
+      "emailPlaceholder": "pelda@email.hu",
+      "phone": "Regisztrált Telefonszám",
+      "submit": "Új jelszó kérése",
+      "checking": "Ellenőrzés...",
+      "backToLogin": "← Vissza a bejelentkezéshez",
+      "alerts": {
+        "fillValid": "Kérjük, tölts ki minden mezőt érvényes adatokkal!",
+        "successTitle": "Sikeres azonosítás!",
+        "successHtml1": "<p class=\"text-slate-500 dark:text-slate-400 text-sm mb-4\">A rendszer legenerálta az ideiglenes jelszavadat. Kérjük, másold ki, mert csak most látod!</p>",
+        "successHtml2": "<p class=\"text-[10px] uppercase font-bold text-red-500 mt-4 tracking-widest\">Belépés után kötelező lesz megváltoztatnod!</p>",
+        "goToLogin": "Irány a belépés",
+        "errorOccurred": "Hiba történt",
+        "verifyError": "Hiba az adatok ellenőrzésekor.",
+        "understand": "Értem"
+      }
+    },
+    "forceChange": {
+      "title": "Kötelező <span class=\"text-red-500\">Jelszócsere</span>",
+      "subtitle": "Ideiglenes jelszóval léptél be. A továbblépéshez adj meg egy új, biztonságos jelszót!",
+      "tempPassword": "Ideiglenes (Jelenlegi) jelszó",
+      "tempPlaceholder": "Amit az előbb kaptál...",
+      "newPassword": "Új jelszó",
+      "newPlaceholder": "Min. 8 karakter, kis-, nagybetű és szám",
+      "newPasswordAgain": "Új jelszó újra",
+      "newAgainPlaceholder": "Erősítsd meg az új jelszót",
+      "submit": "Jelszó cseréje",
+      "updating": "Frissítés...",
+      "logoutAndCancel": "← Kijelentkezés és megszakítás",
+      "alerts": {
+        "missingSession": "Hiányzó felhasználói munkamenet!",
+        "shortPassword": "Az új jelszónak legalább 8 karakternek kell lennie!",
+        "weakPassword": "A jelszónak tartalmaznia kell kisbetűt, nagybetűt és számot/jelet!",
+        "passwordMismatch": "A két új jelszó nem egyezik!",
+        "successTitle": "Jelszó sikeresen frissítve! ✨",
+        "successText": "A biztonság érdekében most kérjük, jelentkezz be az új jelszavaddal.",
+        "goToLogin": "Értem, irány a belépés",
+        "errorTitle": "Hiba történt",
+        "updateError": "Hiba a jelszó frissítésekor.",
+        "understand": "Értem"
+      }
+    }
+  }
+}

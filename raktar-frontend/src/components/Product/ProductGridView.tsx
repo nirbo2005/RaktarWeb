@@ -1,10 +1,12 @@
+// raktar-frontend/src/components/Product/ProductGridView.tsx
 import React, { useState, useRef, useCallback, useEffect } from "react";
 import { useSearchParams, useNavigate } from "react-router-dom";
 import { getProducts, updateBatch, createBatch, sortWarehouse } from "../../services/api";
 import { useAuth } from "../../context/AuthContext";
-import { useAutoRefresh } from "../../hooks/useAutoRefresh"; // ÚJ: Hook import
+import { useAutoRefresh } from "../../hooks/useAutoRefresh"; 
 import type { Batch } from "../../types/Batch";
 import Swal from 'sweetalert2';
+import { useTranslation } from "react-i18next";
 
 const MySwal = Swal.mixin({
   customClass: {
@@ -51,6 +53,7 @@ export const ProductGridView: React.FC = () => {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
   const { user } = useAuth();
+  const { t } = useTranslation();
   
   const targetProductId = searchParams.get("productId");
   const targetParcelName = searchParams.get("parcel");
@@ -66,9 +69,7 @@ export const ProductGridView: React.FC = () => {
   const canMove = !!(user && (user.rang === "KEZELO" || isAdmin));
   const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
 
-  // 1. Memoizált adatlekérő függvény
   const loadProductsAndBatches = useCallback(async () => {
-    // Csak akkor mutassunk töltést, ha még nincs adatunk (vagy manuális frissítés van)
     if (Object.keys(batchesByPolc).length === 0) setLoading(true);
     try {
       const products = await getProducts();
@@ -97,10 +98,8 @@ export const ProductGridView: React.FC = () => {
     }
   }, [batchesByPolc]);
 
-  // 2. Automatikus frissítés bekötése (AuthContext triggereli: WebSocket + Reconnect)
   useAutoRefresh(loadProductsAndBatches);
 
-  // Highlight és navigációs logika
   useEffect(() => {
     const parcelParam = searchParams.get("parcel");
     if (parcelParam) setSelectedParcella(parcelParam.split("-")[0]);
@@ -133,18 +132,18 @@ export const ProductGridView: React.FC = () => {
     const absoluteMax = Math.min(draggedBatch.mennyiseg, maxFitting);
 
     if (maxFitting <= 0) {
-      MySwal.fire({ title: 'Súlystop! 🛑', text: `A(z) ${targetParcella} polc megtelt.`, icon: 'error' });
+      MySwal.fire({ title: t('product.grid.alerts.weightStop'), text: t('product.grid.alerts.shelfFull', { shelf: targetParcella }), icon: 'error' });
       setDraggedBatchId(null);
       return;
     }
 
     const { value: moveQuantity, isConfirmed } = await MySwal.fire({
-      title: 'Mennyit szeretnél áthelyezni?',
+      title: t('product.grid.alerts.moveHowMuch'),
       html: `
         <div class="flex flex-col gap-6 p-2 text-left">
           ${draggedBatch.mennyiseg > maxFitting ? `
             <div class="bg-red-50 dark:bg-red-900/30 border border-red-200 dark:border-red-800 p-3 rounded-xl text-red-700 dark:text-red-400 text-[10px] font-black uppercase tracking-tighter">
-              ⚠️ SÚLYSTOP: Csak maximum ${maxFitting} db fér el!
+              ${t('product.grid.alerts.weightWarning', { max: maxFitting })}
             </div>
           ` : ''}
           <div class="flex items-center gap-4">
@@ -172,8 +171,8 @@ export const ProductGridView: React.FC = () => {
         return val;
       },
       showCancelButton: true,
-      confirmButtonText: '📦 Áthelyezés',
-      cancelButtonText: 'Mégse'
+      confirmButtonText: t('product.grid.alerts.moveBtn'),
+      cancelButtonText: t('common.cancel')
     });
 
     if (isConfirmed && moveQuantity) {
@@ -185,10 +184,10 @@ export const ProductGridView: React.FC = () => {
           await updateBatch(batchId, { mennyiseg: draggedBatch.mennyiseg - moveQuantity }, user!.id);
           await createBatch({ productId: draggedBatch.productId, parcella: targetParcella, mennyiseg: moveQuantity, lejarat: draggedBatch.lejarat }, user!.id);
         }
-        toast.fire({ icon: 'success', title: 'Áthelyezve!' });
+        toast.fire({ icon: 'success', title: t('product.grid.alerts.movedSuccess') });
         loadProductsAndBatches();
       } catch (err: any) {
-        MySwal.fire('Hiba', err.message, 'error');
+        MySwal.fire(t('common.error'), err.message, 'error');
       } finally {
         setLoading(false);
       }
@@ -205,19 +204,20 @@ export const ProductGridView: React.FC = () => {
   const handleSortClick = async () => {
     if (!isAdmin || !user) return;
     const res = await MySwal.fire({
-      title: 'Optimalizálás?',
-      text: "Raktár rendezése kategóriák szerint.",
+      title: t('product.grid.alerts.sortTitle'),
+      text: t('product.grid.alerts.sortText'),
       icon: 'question',
       showCancelButton: true,
-      confirmButtonText: 'Indítás'
+      confirmButtonText: t('product.grid.alerts.start'),
+      cancelButtonText: t('common.cancel')
     });
     if (res.isConfirmed) {
       setLoading(true);
       try {
         await sortWarehouse(user.id);
         loadProductsAndBatches();
-        toast.fire({ icon: 'success', title: 'Optimalizálva!' });
-      } catch (err: any) { MySwal.fire('Hiba', err.message, 'error'); } finally { setLoading(false); }
+        toast.fire({ icon: 'success', title: t('product.grid.alerts.sortedSuccess') });
+      } catch (err: any) { MySwal.fire(t('common.error'), err.message, 'error'); } finally { setLoading(false); }
     }
   };
 
@@ -239,14 +239,14 @@ export const ProductGridView: React.FC = () => {
       <div className="max-w-7xl mx-auto">
         <header className="mb-8 border-b border-slate-200 dark:border-slate-800 pb-6 flex justify-between items-end">
           <div>
-            <h1 className="text-3xl font-black text-slate-900 dark:text-white uppercase italic tracking-tighter">Raktár Térkép</h1>
-            <p className="text-slate-500 dark:text-slate-400 text-sm italic tracking-wide">Interaktív készletkezelés</p>
+            <h1 className="text-3xl font-black text-slate-900 dark:text-white uppercase italic tracking-tighter">{t('product.grid.title')}</h1>
+            <p className="text-slate-500 dark:text-slate-400 text-sm italic tracking-wide">{t('product.grid.subtitle')}</p>
           </div>
           <div className="flex gap-4 items-center">
-            {loading && <span className="animate-pulse text-blue-600 font-black text-[10px] uppercase">Művelet folyamatban...</span>}
+            {loading && <span className="animate-pulse text-blue-600 font-black text-[10px] uppercase">{t('common.updating')}</span>}
             {isAdmin && (
               <button onClick={handleSortClick} className="bg-indigo-600 text-white px-6 py-2.5 rounded-2xl font-black uppercase text-[10px] tracking-widest shadow-lg active:scale-95 transition-transform">
-                🪄 Rendezés
+                {t('product.grid.sorting')}
               </button>
             )}
           </div>
@@ -255,7 +255,7 @@ export const ProductGridView: React.FC = () => {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-10">
           {rows.map(row => (
             <div key={row} className="flex flex-col gap-2">
-               <span className="font-black text-slate-300 dark:text-slate-800 text-xs uppercase pl-2">{row} SZEKTOR</span>
+               <span className="font-black text-slate-300 dark:text-slate-800 text-xs uppercase pl-2">{row} {t('product.grid.sector')}</span>
                <div className="flex gap-2">
                  {cols.map(col => {
                    const name = `${row}${col}`;
@@ -324,7 +324,7 @@ export const ProductGridView: React.FC = () => {
                           </li>
                         );
                       })}
-                      {shelfBatches.length === 0 && <li className="text-slate-300 dark:text-slate-700 text-[10px] font-black uppercase text-center py-10 tracking-widest italic opacity-50">Üres polc</li>}
+                      {shelfBatches.length === 0 && <li className="text-slate-300 dark:text-slate-700 text-[10px] font-black uppercase text-center py-10 tracking-widest italic opacity-50">{t('product.grid.emptyShelf')}</li>}
                     </ul>
                   </div>
                 );
@@ -332,7 +332,7 @@ export const ProductGridView: React.FC = () => {
             </div>
           ) : (
             <div className="py-20 text-center bg-white dark:bg-slate-900 rounded-[3rem] border-2 border-dashed border-slate-100 dark:border-slate-800 transition-all shadow-inner">
-                <p className="text-slate-400 font-black uppercase tracking-widest italic text-xs">Válassz szektort az áttekintéshez</p>
+                <p className="text-slate-400 font-black uppercase tracking-widest italic text-xs">{t('product.grid.selectSector')}</p>
             </div>
           )}
         </div>

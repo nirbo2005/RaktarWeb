@@ -1,3 +1,4 @@
+//src/components/Product/ProductModify.tsx - Komponens a termék adatainak és készletének módosításához, részletes kezelőfelülettel és valós idejű frissítéssel
 import { useEffect, useState, useCallback } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { getProductById, updateProduct, restoreProduct, updateBatch, createBatch, deleteBatch } from "../../services/api";

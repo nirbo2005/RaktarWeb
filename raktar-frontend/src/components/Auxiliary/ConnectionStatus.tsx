@@ -1,14 +1,13 @@
 import { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 export const ConnectionStatus = () => {
   const [isOffline, setIsOffline] = useState(false);
+  const { t } = useTranslation();
 
   useEffect(() => {
     const handleOffline = () => setIsOffline(true);
-    const handleOnline = () => {
-      console.log("UI: Szerver online állapot észlelve");
-      setIsOffline(false);
-    };
+    const handleOnline = () => setIsOffline(false);
 
     window.addEventListener('server-offline', handleOffline);
     window.addEventListener('server-online', handleOnline);
@@ -33,8 +32,8 @@ export const ConnectionStatus = () => {
           <span className="relative inline-flex rounded-full h-3 w-3 bg-white"></span>
         </div>
         <div className="flex flex-col">
-          <span className="font-black uppercase text-xs tracking-widest">Szerver Offline</span>
-          <span className="text-[10px] font-bold opacity-80 leading-none">Automatikus újracsatlakozás...</span>
+          <span className="font-black uppercase text-xs tracking-widest">{t('auxiliary.connection.serverOffline')}</span>
+          <span className="text-[10px] font-bold opacity-80 leading-none">{t('auxiliary.connection.reconnecting')}</span>
         </div>
       </div>
     </div>

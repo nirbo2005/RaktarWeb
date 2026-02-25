@@ -9,6 +9,7 @@ import {
 import type { AppNotification } from "../../types/Notification";
 import { useAuth } from "../../context/AuthContext";
 import Swal from 'sweetalert2';
+import { useTranslation } from "react-i18next";
 
 const toast = Swal.mixin({
   toast: true,
@@ -25,6 +26,7 @@ function Notifications() {
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
   const { user, notifTrigger, refreshNotifications } = useAuth();
+  const { t } = useTranslation();
 
   const fetchNotifications = () => {
     getMyNotifications()
@@ -33,40 +35,30 @@ function Notifications() {
       .finally(() => setLoading(false));
   };
 
-  
   useEffect(() => {
-    if (user) {
-      fetchNotifications();
-    }
+    if (user) fetchNotifications();
   }, [user, notifTrigger]);
 
   const handleMarkAsRead = async (id: number) => {
-    try {
-      await markNotificationAsRead(id);
-      
-    } catch (err) {
-      console.error("Hiba", err);
-    }
+    try { await markNotificationAsRead(id); } catch (err) {}
   };
 
   const handleMarkAllAsRead = async () => {
     try {
       await markAllNotificationsAsRead();
       refreshNotifications();
-      toast.fire({ icon: 'success', title: 'Minden értesítés olvasottnak jelölve!' });
-    } catch (err) {
-      console.error("Hiba", err);
-    }
+      toast.fire({ icon: 'success', title: t('auxiliary.notifications.alerts.allMarkedRead') });
+    } catch (err) {}
   };
 
   const handleDeleteRead = async () => {
     const result = await Swal.fire({
-      title: 'Olvasottak törlése?',
-      text: "Minden már nyugtázott (olvasott) értesítésed véglegesen törlődik!",
+      title: t('auxiliary.notifications.alerts.deleteConfirmTitle'),
+      text: t('auxiliary.notifications.alerts.deleteConfirmText'),
       icon: 'warning',
       showCancelButton: true,
-      confirmButtonText: 'Igen, töröld őket!',
-      cancelButtonText: 'Mégse',
+      confirmButtonText: t('auxiliary.notifications.alerts.yesDelete'),
+      cancelButtonText: t('common.cancel'),
       customClass: {
         popup: 'rounded-[2rem] bg-white dark:bg-slate-900 text-slate-900 dark:text-white',
         confirmButton: 'bg-red-600 hover:bg-red-500 text-white px-6 py-2 rounded-xl font-bold mx-2',
@@ -80,12 +72,8 @@ function Notifications() {
         setLoading(true);
         await deleteReadNotifications();
         refreshNotifications();
-        toast.fire({ icon: 'success', title: 'Olvasott értesítések törölve!' });
-      } catch (err) {
-        console.error("Hiba a törlés során", err);
-      } finally {
-        setLoading(false);
-      }
+        toast.fire({ icon: 'success', title: t('auxiliary.notifications.alerts.deletedSuccess') });
+      } catch (err) {} finally { setLoading(false); }
     }
   };
 
@@ -118,11 +106,9 @@ function Notifications() {
               ←
             </button>
             <div>
-              <h1 className="text-3xl md:text-4xl font-black text-slate-900 dark:text-white uppercase italic tracking-tighter">
-                🔔 Értesítési <span className="text-blue-600">Központ</span>
-              </h1>
+              <h1 className="text-3xl md:text-4xl font-black text-slate-900 dark:text-white uppercase italic tracking-tighter" dangerouslySetInnerHTML={{ __html: t('auxiliary.notifications.title') }}></h1>
               <p className="text-slate-500 font-bold text-xs uppercase tracking-widest mt-1">
-                {unreadCount > 0 ? `${unreadCount} olvasatlan értesítés` : 'Minden értesítés elolvasva'}
+                {unreadCount > 0 ? t('auxiliary.notifications.unreadCount', { count: unreadCount }) : t('auxiliary.notifications.allRead')}
               </p>
             </div>
           </div>
@@ -133,7 +119,7 @@ function Notifications() {
                 onClick={handleDeleteRead}
                 className="bg-red-600 hover:bg-red-500 text-white px-5 py-3 rounded-xl font-black uppercase text-[10px] tracking-widest shadow-lg transition-all active:scale-95"
               >
-                🗑️ Olvasottak törlése
+                {t('auxiliary.notifications.deleteReadBtn')}
               </button>
             )}
             {unreadCount > 0 && (
@@ -141,7 +127,7 @@ function Notifications() {
                 onClick={handleMarkAllAsRead}
                 className="bg-slate-900 dark:bg-white text-white dark:text-slate-900 px-5 py-3 rounded-xl font-black uppercase text-[10px] tracking-widest shadow-lg hover:scale-105 transition-all active:scale-95"
               >
-                ✓ Mind olvasott
+                {t('auxiliary.notifications.markAllReadBtn')}
               </button>
             )}
           </div>
@@ -182,7 +168,7 @@ function Notifications() {
                         onClick={() => handleMarkAsRead(notif.id)}
                         className="shrink-0 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors active:scale-95"
                       >
-                        Nyugtázom
+                        {t('auxiliary.notifications.acknowledge')}
                       </button>
                     )}
                   </div>
@@ -192,8 +178,8 @@ function Notifications() {
           ) : (
             <div className="py-20 text-center">
               <span className="text-6xl mb-4 block opacity-40">📭</span>
-              <h3 className="text-xl font-black text-slate-800 dark:text-slate-200 uppercase tracking-tighter italic">Nincs értesítés</h3>
-              <p className="text-slate-500 font-bold text-xs uppercase tracking-widest mt-2 text-center">Jelenleg nincs semmilyen riasztás a rendszerben.</p>
+              <h3 className="text-xl font-black text-slate-800 dark:text-slate-200 uppercase tracking-tighter italic">{t('auxiliary.notifications.emptyTitle')}</h3>
+              <p className="text-slate-500 font-bold text-xs uppercase tracking-widest mt-2 text-center">{t('auxiliary.notifications.emptyText')}</p>
             </div>
           )}
         </div>

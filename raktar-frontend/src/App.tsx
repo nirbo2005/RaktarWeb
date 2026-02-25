@@ -1,7 +1,8 @@
-//raktar-frontend/src/App.tsx
+import "./i18n";
 import { useEffect, useState, type ReactNode } from "react";
 import { BrowserRouter, Routes, Route, useLocation, Navigate, Outlet } from "react-router-dom";
 import { AuthProvider, useAuth } from "./context/AuthContext";
+import { useTranslation } from "react-i18next";
 
 import Navbar from "./components/Auxiliary/Navbar";
 import ScannerView from "./components/Auxiliary/ScannerView";
@@ -75,11 +76,10 @@ function ScrollToTop() {
 }
 
 function App() {
-  // SINGLE SOURCE OF TRUTH: A téma állapota itt lakik
   const [isDark, setIsDark] = useState(() => localStorage.getItem("theme") === "dark");
+  const { i18n } = useTranslation();
 
   useEffect(() => {
-    // Osztály és Storage frissítése
     if (isDark) {
       document.documentElement.classList.add("dark");
       localStorage.setItem("theme", "dark");
@@ -89,21 +89,32 @@ function App() {
     }
   }, [isDark]);
 
+  const toggleLanguage = () => {
+    i18n.changeLanguage(i18n.language.startsWith('hu') ? 'en' : 'hu');
+  };
+
   return (
     <AuthProvider>
       <BrowserRouter>
         <ScrollToTop />
         <div className="min-h-screen bg-gray-50 text-gray-900 dark:bg-slate-950 dark:text-slate-100 font-sans flex flex-col transition-colors duration-300">
-          {/* A Navbar megkapja a közös state-et */}
           <Navbar isDark={isDark} setIsDark={setIsDark} />
           <ConnectionStatus />
           
-          <button
-            onClick={() => setIsDark(!isDark)}
-            className="fixed bottom-4 right-4 z-[150] p-3 rounded-full bg-white dark:bg-slate-800 shadow-2xl border border-slate-200 dark:border-slate-700 hover:scale-110 transition-transform"
-          >
-            {isDark ? "☀️" : "🌙"}
-          </button>
+          <div className="fixed bottom-4 right-4 z-[150] flex flex-col gap-2">
+            <button
+              onClick={toggleLanguage}
+              className="p-3 rounded-full bg-white dark:bg-slate-800 shadow-2xl border border-slate-200 dark:border-slate-700 hover:scale-110 transition-transform font-black text-xs uppercase"
+            >
+              {i18n.language.startsWith('hu') ? 'HU' : 'EN'}
+            </button>
+            <button
+              onClick={() => setIsDark(!isDark)}
+              className="p-3 rounded-full bg-white dark:bg-slate-800 shadow-2xl border border-slate-200 dark:border-slate-700 hover:scale-110 transition-transform"
+            >
+              {isDark ? "☀️" : "🌙"}
+            </button>
+          </div>
 
           <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 flex-grow w-full">
             <Routes>

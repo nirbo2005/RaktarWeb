@@ -1,8 +1,8 @@
-//raktar-frontend/src/components/Profile/Details.tsx
 import { useState, useMemo } from "react";
 import { useAuth } from "../../context/AuthContext";
 import { updateProfile, submitChangeRequest } from "../../services/api";
 import Swal from 'sweetalert2';
+import { useTranslation } from "react-i18next";
 
 import PhoneInput from 'react-phone-input-2';
 import 'react-phone-input-2/lib/style.css';
@@ -29,6 +29,7 @@ const toast = MySwal.mixin({
 
 const Details = () => {
   const { user, setUser } = useAuth();
+  const { t } = useTranslation();
   const [formError, setFormError] = useState<string | null>(null);
   const [fieldErrors, setFieldErrors] = useState<{ [key: string]: string }>({});
   const [showOldPass, setShowOldPass] = useState(false);
@@ -49,14 +50,14 @@ const Details = () => {
     let error = "";
     switch (name) {
       case "nev":
-        if (!value) error = "A név nem lehet üres!";
-        else if (!/^[a-zA-ZÁÉÍÓÖŐÚÜŰáéíóöőúüű\s-]+$/.test(value)) error = "A név nem tartalmazhat számokat!";
+        if (!value) error = t('details.validation.nameEmpty');
+        else if (!/^[a-zA-ZÁÉÍÓÖŐÚÜŰáéíóöőúüű\s-]+$/.test(value)) error = t('details.validation.nameNumbers');
         break;
       case "email":
-        if (!/\S+@\S+\.\S+/.test(value)) error = "Érvénytelen email formátum!";
+        if (!/\S+@\S+\.\S+/.test(value)) error = t('details.validation.emailInvalid');
         break;
       case "telefonszam":
-        if (!value || value.length < 5) error = "A telefonszám megadása kötelező!";
+        if (!value || value.length < 5) error = t('details.validation.phoneRequired');
         break;
     }
     setFieldErrors(prev => ({ ...prev, [name]: error }));
@@ -81,17 +82,17 @@ const Details = () => {
     e.preventDefault();
 
     if (!profileForm.telefonszam || profileForm.telefonszam.length < 5) {
-      setFormError("A telefonszám megadása kötelező!");
+      setFormError(t('details.validation.phoneRequired'));
       return;
     }
 
     if (!isDirty) {
-      toast.fire({ icon: 'info', title: 'Még minden a régi... 😴' });
+      toast.fire({ icon: 'info', title: t('details.alerts.noChanges') });
       return;
     }
 
     if (hasErrors) {
-      setFormError("Kérjük, javítsd a hibákat mentés előtt!");
+      setFormError(t('details.alerts.fixBeforeSave'));
       return;
     }
 
@@ -108,7 +109,7 @@ const Details = () => {
       };
 
       if (profileForm.ujJelszo) {
-        if (!profileForm.regiJelszo) throw new Error("A régi jelszó kötelező!");
+        if (!profileForm.regiJelszo) throw new Error(t('details.alerts.oldPassRequired'));
         updateData.regiJelszo = profileForm.regiJelszo;
         updateData.ujJelszo = profileForm.ujJelszo;
       }
@@ -117,9 +118,9 @@ const Details = () => {
       const updatedUser = await updateProfile(user!.id, updateData);
       setUser(updatedUser);
       setProfileForm((prev) => ({ ...prev, regiJelszo: "", ujJelszo: "" }));
-      toast.fire({ icon: 'success', title: 'Adatok frissítve! ✨' });
+      toast.fire({ icon: 'success', title: t('details.alerts.dataUpdated') });
     } catch (err: any) {
-      setFormError(err.message || "Hiba történt!");
+      setFormError(err.message || t('details.alerts.errorOccurred'));
     }
   };
 
@@ -132,9 +133,8 @@ const Details = () => {
       <form onSubmit={handleUpdateSubmit} className="space-y-6">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           
-          {/* 1. SOR: NÉV ÉS TELEFON */}
           <div>
-            <label className={labelClass}>Teljes név</label>
+            <label className={labelClass}>{t('details.fullName')}</label>
             <input 
               type="text" 
               value={profileForm.nev} 
@@ -143,11 +143,11 @@ const Details = () => {
               className={`${inputClass} ${fieldErrors.nev ? 'border-red-500' : ''} ${isNameChanged ? 'border-amber-400 ring-1 ring-amber-400/20' : ''}`} 
             />
             {fieldErrors.nev && <p className={errorTextClass}>❌ {fieldErrors.nev}</p>}
-            {isNameChanged && <p className="mt-2 ml-2 text-[9px] font-bold text-amber-600 dark:text-amber-500 uppercase italic">⚠️ Admin jóváhagyás szükséges</p>}
+            {isNameChanged && <p className="mt-2 ml-2 text-[9px] font-bold text-amber-600 dark:text-amber-500 uppercase italic">⚠️ {t('details.adminApprovalNeeded')}</p>}
           </div>
 
           <div className="relative">
-            <label className={labelClass}>Telefonszám (Nemzetközi) *</label>
+            <label className={labelClass}>{t('details.phoneLabel')}</label>
             <PhoneInput
               country={'hu'}
               value={profileForm.telefonszam}
@@ -160,8 +160,8 @@ const Details = () => {
               masks={{ hu: '.. ... ....' }}
               countryCodeEditable={false} 
               enableSearch={true}
-              searchPlaceholder="Keresés..."
-              searchNotFound="Nincs találat"
+              searchPlaceholder={t('common.search')}
+              searchNotFound={t('common.noResults')}
               containerClass="phone-container"
               inputClass={`phone-input-field ${fieldErrors.telefonszam ? '!border-red-500' : ''}`}
               buttonClass="phone-dropdown-btn"
@@ -172,9 +172,8 @@ const Details = () => {
             {fieldErrors.telefonszam && <p className={errorTextClass}>❌ {fieldErrors.telefonszam}</p>}
           </div>
 
-          {/* 2. SOR: FELHASZNÁLÓNÉV ÉS EMAIL */}
           <div>
-            <label className={labelClass}>Felhasználónév</label>
+            <label className={labelClass}>{t('details.username')}</label>
             <input 
               type="text" 
               value={profileForm.felhasznalonev} 
@@ -184,7 +183,7 @@ const Details = () => {
           </div>
           
           <div>
-            <label className={labelClass}>Email cím</label>
+            <label className={labelClass}>{t('details.email')}</label>
             <input 
               type="email" 
               value={profileForm.email} 
@@ -195,14 +194,13 @@ const Details = () => {
             {fieldErrors.email && <p className={errorTextClass}>❌ {fieldErrors.email}</p>}
           </div>
           
-          {/* JELSZÓ MEZŐK */}
           <div className="relative">
-            <label className={labelClass}>Régi jelszó</label>
+            <label className={labelClass}>{t('details.oldPassword')}</label>
             <input type={showOldPass ? "text" : "password"} value={profileForm.regiJelszo} onChange={(e) => setProfileForm({ ...profileForm, regiJelszo: e.target.value })} className={inputClass} />
             <button type="button" onClick={() => setShowOldPass(!showOldPass)} className="absolute right-3 top-8 text-lg">{showOldPass ? "👁️" : "🙈"}</button>
           </div>
           <div className="relative">
-            <label className={labelClass}>Új jelszó</label>
+            <label className={labelClass}>{t('details.newPassword')}</label>
             <input type={showNewPass ? "text" : "password"} value={profileForm.ujJelszo} onChange={(e) => setProfileForm({ ...profileForm, ujJelszo: e.target.value })} className={inputClass} />
             <button type="button" onClick={() => setShowNewPass(!showNewPass)} className="absolute right-3 top-8 text-lg">{showNewPass ? "👁️" : "🙈"}</button>
           </div>
@@ -215,7 +213,7 @@ const Details = () => {
           disabled={hasErrors}
           className={`w-full p-4 rounded-xl font-black uppercase text-xs shadow-lg transition-all active:scale-95 ${(!isDirty || hasErrors) ? 'bg-slate-100 dark:bg-slate-800 text-slate-400 cursor-not-allowed shadow-none' : isNameChanged ? 'bg-amber-500 text-white hover:bg-amber-600' : 'bg-blue-600 text-white hover:bg-blue-500'}`}
         >
-          {hasErrors ? 'Javítsd a hibákat...' : !isDirty ? '🤔 Semmi nem változott...' : isNameChanged ? '💾 Mentés és Névkérés' : '💾 Adatok mentése'}
+          {hasErrors ? t('details.buttons.fixErrors') : !isDirty ? t('details.buttons.noChanges') : isNameChanged ? t('details.buttons.saveAndRequest') : t('details.buttons.saveData')}
         </button>
       </form>
 
@@ -229,8 +227,6 @@ const Details = () => {
         .dark .phone-input-field { 
           background: rgb(30 41 59) !important; border-color: rgb(51 65 85) !important; color: white !important;
         }
-
-        /* GOMB HÁTTÉR JAVÍTÁSA */
         .phone-dropdown-btn { 
           background: transparent !important; border: none !important; 
           border-radius: 0.75rem 0 0 0.75rem !important; width: 48px !important;
@@ -249,8 +245,6 @@ const Details = () => {
         .dark .phone-container .flag-dropdown.open .selected-flag {
           background: rgba(255, 255, 255, 0.05) !important;
         }
-        /* --- */
-
         .phone-dropdown-list { 
           background: white !important; border-radius: 1rem !important; 
           box-shadow: 0 10px 25px -5px rgba(0,0,0,0.1) !important; border: 1px solid #eee !important;

@@ -1,10 +1,11 @@
-import { useState, useCallback } from "react"; // useEffect eltávolítva
+import { useState, useCallback } from "react"; 
 import { useParams, useNavigate } from "react-router-dom";
 import { getProductById, deleteProduct } from "../../services/api";
 import { useAuth } from "../../context/AuthContext";
 import { useAutoRefresh } from "../../hooks/useAutoRefresh";
 import type { Product } from "../../types/Product";
 import Swal from 'sweetalert2';
+import { useTranslation } from "react-i18next";
 
 const MySwal = Swal.mixin({
   customClass: {
@@ -29,6 +30,7 @@ function ProductDetails() {
   const { id } = useParams();
   const navigate = useNavigate();
   const { user } = useAuth();
+  const { t } = useTranslation();
   const [product, setProduct] = useState<Product | null>(null);
   const [loading, setLoading] = useState(true);
   const [isDeletedError, setIsDeletedError] = useState(false);
@@ -36,7 +38,6 @@ function ProductDetails() {
   const isAdmin = user?.rang === "ADMIN";
   const canEdit = user?.rang === "KEZELO" || isAdmin;
 
-  // 1. Memoizált adatlekérés
   const fetchProductData = useCallback(async () => {
     if (!id) return;
     try {
@@ -48,26 +49,24 @@ function ProductDetails() {
         setIsDeletedError(false);
       }
     } catch (err) {
-      console.error("Betöltési hiba:", err);
       if (!product) setIsDeletedError(true);
     } finally {
       setLoading(false);
     }
   }, [id, isAdmin, product]);
 
-  // 2. Automatikus frissítés (kezeli az első betöltést, a WebSocketet és a Reconnectet is)
   useAutoRefresh(fetchProductData);
 
   const handleDelete = async () => {
     if (!user || !product || !canEdit) return;
 
     const result = await MySwal.fire({
-      title: 'Biztos vagy benne?',
-      text: `A(z) "${product.nev}" teljes cikktörzse és minden fizikai sarzsa törlésre kerül a rendszerből!`,
+      title: t('product.details.alerts.deleteConfirmTitle'),
+      text: t('product.details.alerts.deleteConfirmText', { name: product.nev }),
       icon: 'warning',
       showCancelButton: true,
-      confirmButtonText: 'Igen, törlöm!',
-      cancelButtonText: 'Mégse',
+      confirmButtonText: t('product.details.alerts.yesDelete'),
+      cancelButtonText: t('common.cancel'),
       reverseButtons: true
     });
 
@@ -76,14 +75,14 @@ function ProductDetails() {
         await deleteProduct(product.id, user.id);
         await toast.fire({
           icon: 'success',
-          title: 'Termék törölve! 🗑️'
+          title: t('product.details.alerts.deletedSuccess')
         });
         navigate("/");
       } catch (err) {
          MySwal.fire({
           icon: 'error',
-          title: 'Hiba',
-          text: 'Sikertelen törlés.',
+          title: t('common.error'),
+          text: t('product.details.alerts.deleteFailed'),
         });
       }
     }
@@ -120,7 +119,7 @@ function ProductDetails() {
       <div className="min-h-screen bg-slate-50 dark:bg-slate-950 flex items-center justify-center">
         <div className="flex flex-col items-center gap-4">
           <div className="w-12 h-12 border-4 border-blue-600 border-t-transparent rounded-full animate-spin"></div>
-          <p className="text-blue-600 font-black tracking-widest uppercase text-xs">Adatok lekérése...</p>
+          <p className="text-blue-600 font-black tracking-widest uppercase text-xs">{t('product.details.fetching')}</p>
         </div>
       </div>
     );
@@ -131,8 +130,8 @@ function ProductDetails() {
       <div className="min-h-screen bg-slate-50 dark:bg-slate-950 flex items-center justify-center p-6">
         <div className="max-w-md w-full bg-white dark:bg-slate-900 rounded-[3rem] p-10 shadow-2xl text-center border border-slate-200 dark:border-slate-800">
           <div className="text-8xl mb-6">🏜️</div>
-          <h1 className="text-3xl font-black text-slate-900 dark:text-white mb-4 tracking-tighter uppercase italic text-center">Nincs ilyen termék</h1>
-          <button onClick={() => navigate("/")} className="w-full bg-blue-600 text-white py-4 rounded-2xl font-black shadow-lg shadow-blue-500/20 hover:bg-blue-700 transition-all uppercase tracking-widest text-sm">Vissza a főoldalra</button>
+          <h1 className="text-3xl font-black text-slate-900 dark:text-white mb-4 tracking-tighter uppercase italic text-center">{t('product.details.notFoundTitle')}</h1>
+          <button onClick={() => navigate("/")} className="w-full bg-blue-600 text-white py-4 rounded-2xl font-black shadow-lg shadow-blue-500/20 hover:bg-blue-700 transition-all uppercase tracking-widest text-sm">{t('product.details.backToHome')}</button>
         </div>
       </div>
     );
@@ -145,57 +144,57 @@ function ProductDetails() {
       <div className="max-w-4xl mx-auto bg-white dark:bg-slate-900 rounded-[2.5rem] shadow-2xl overflow-hidden border border-slate-200 dark:border-slate-800 text-left transition-all">
         {(product as any).isDeleted && (
           <div className="bg-amber-600 text-white px-8 py-2 text-center text-[10px] font-black uppercase tracking-[0.2em]">
-            ⚠️ Figyelem: Ez a termék törölt állapotban van!
+            {t('product.details.deletedWarning')}
           </div>
         )}
 
         <div className="bg-blue-600 p-8 text-white relative overflow-hidden flex justify-between items-start">
           <div>
             <button onClick={() => navigate(-1)} className="mb-6 opacity-70 hover:opacity-100 flex items-center gap-2 transition-all font-bold uppercase text-[10px] tracking-[0.2em]">
-              <span className="text-lg">←</span> Vissza
+              <span className="text-lg">←</span> {t('product.details.back')}
             </button>
             <h1 className="text-4xl md:text-5xl font-black tracking-tighter uppercase italic leading-tight">{product.nev}</h1>
             <p className="opacity-80 font-black uppercase text-xs tracking-[0.2em] mt-2 border-t border-white/20 pt-2 inline-block">
-              {product.gyarto} • {product.kategoria}
+              {product.gyarto} • {t(`product.categories.${product.kategoria}`)}
             </p>
           </div>
           <div className="text-right">
-            <span className="block text-[10px] font-black uppercase tracking-widest opacity-70 mb-1">Cikkszám (ID)</span>
+            <span className="block text-[10px] font-black uppercase tracking-widest opacity-70 mb-1">{t('product.details.itemNumber')}</span>
             <span className="text-3xl font-black opacity-90">#{product.id}</span>
           </div>
         </div>
 
         <div className="p-8 space-y-8">
           <div>
-            <h3 className="text-xs font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest mb-4 border-b border-slate-100 dark:border-slate-800 pb-2">Mesteradatok</h3>
+            <h3 className="text-xs font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest mb-4 border-b border-slate-100 dark:border-slate-800 pb-2">{t('product.details.masterData')}</h3>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
               <div className="bg-slate-50 dark:bg-slate-800/50 p-6 rounded-3xl border border-slate-100 dark:border-slate-700">
-                <span className="text-slate-400 dark:text-slate-500 text-[10px] font-black uppercase block mb-1 tracking-widest">Súly (Egység)</span>
+                <span className="text-slate-400 dark:text-slate-500 text-[10px] font-black uppercase block mb-1 tracking-widest">{t('product.details.weightUnit')}</span>
                 <span className="text-2xl font-black text-slate-800 dark:text-slate-100 italic">{product.suly} <span className="text-sm font-medium">kg</span></span>
               </div>
               <div className="bg-slate-50 dark:bg-slate-800/50 p-6 rounded-3xl border border-slate-100 dark:border-slate-700">
-                <span className="text-slate-400 dark:text-slate-500 text-[10px] font-black uppercase block mb-1 tracking-widest">Min. Készlet</span>
+                <span className="text-slate-400 dark:text-slate-500 text-[10px] font-black uppercase block mb-1 tracking-widest">{t('product.details.minStock')}</span>
                 <span className="text-2xl font-black text-slate-800 dark:text-slate-100 italic">{product.minimumKeszlet} <span className="text-sm font-medium">db</span></span>
               </div>
               <div className="bg-slate-50 dark:bg-slate-800/50 p-6 rounded-3xl border border-slate-100 dark:border-slate-700">
-                <span className="text-slate-400 dark:text-slate-500 text-[10px] font-black uppercase block mb-1 tracking-widest">Beszerzési Ár</span>
+                <span className="text-slate-400 dark:text-slate-500 text-[10px] font-black uppercase block mb-1 tracking-widest">{t('product.details.purchasePrice')}</span>
                 <span className="text-2xl font-black text-slate-800 dark:text-slate-100 italic">{product.beszerzesiAr.toLocaleString()} <span className="text-sm font-medium">Ft</span></span>
               </div>
               <div className="bg-slate-50 dark:bg-slate-800/50 p-6 rounded-3xl border border-slate-100 dark:border-slate-700">
-                <span className="text-slate-400 dark:text-slate-500 text-[10px] font-black uppercase block mb-1 tracking-widest">Eladási Ár</span>
+                <span className="text-slate-400 dark:text-slate-500 text-[10px] font-black uppercase block mb-1 tracking-widest">{t('product.details.salePrice')}</span>
                 <span className="text-2xl font-black text-slate-800 dark:text-slate-100 italic">{product.eladasiAr.toLocaleString()} <span className="text-sm font-medium">Ft</span></span>
               </div>
             </div>
           </div>
 
           <div>
-            <h3 className="text-xs font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest mb-4 border-b border-slate-100 dark:border-slate-800 pb-2">Készlet Állapot</h3>
+            <h3 className="text-xs font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest mb-4 border-b border-slate-100 dark:border-slate-800 pb-2">{t('product.details.stockStatus')}</h3>
             <div className={`p-8 rounded-3xl border transition-colors ${getStockStyle(totalQty, product.minimumKeszlet)} flex justify-between items-center`}>
               <div>
-                <span className="opacity-60 text-[10px] font-black uppercase block mb-1 tracking-widest">Aktuális Összesített Készlet</span>
+                <span className="opacity-60 text-[10px] font-black uppercase block mb-1 tracking-widest">{t('product.details.totalStock')}</span>
                 <span className="text-4xl font-black italic">{totalQty} <span className="text-lg font-medium lowercase">db</span></span>
                 {totalQty < product.minimumKeszlet && (
-                  <span className="block text-[10px] font-black mt-2 uppercase tracking-tighter bg-white/20 dark:bg-black/20 px-2 py-0.5 rounded inline-block italic">🚨 Kritikus készlet</span>
+                  <span className="block text-[10px] font-black mt-2 uppercase tracking-tighter bg-white/20 dark:bg-black/20 px-2 py-0.5 rounded inline-block italic">{t('product.details.criticalStock')}</span>
                 )}
               </div>
               <div className="text-6xl opacity-30">📦</div>
@@ -203,7 +202,7 @@ function ProductDetails() {
           </div>
 
           <div>
-            <h3 className="text-xs font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest mb-4 border-b border-slate-100 dark:border-slate-800 pb-2">Fizikai Elhelyezkedés (Sarzsok)</h3>
+            <h3 className="text-xs font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest mb-4 border-b border-slate-100 dark:border-slate-800 pb-2">{t('product.details.physicalLocation')}</h3>
             {product.batches && product.batches.length > 0 ? (
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 {product.batches.map(batch => (
@@ -215,8 +214,8 @@ function ProductDetails() {
                       <span className="text-2xl font-black text-slate-800 dark:text-white italic">{batch.mennyiseg} <span className="text-sm">db</span></span>
                     </div>
                     <div className={`p-3 rounded-xl border ${getLejaratStyle(batch.lejarat)} transition-all duration-300`}>
-                      <span className="opacity-60 text-[9px] font-black uppercase block mb-1 tracking-widest">Szavatossági idő</span>
-                      <span className="text-sm font-black italic">{batch.lejarat ? new Date(batch.lejarat).toLocaleDateString("hu-HU") : "Nem romlandó"}</span>
+                      <span className="opacity-60 text-[9px] font-black uppercase block mb-1 tracking-widest">{t('product.details.expiry')}</span>
+                      <span className="text-sm font-black italic">{batch.lejarat ? new Date(batch.lejarat).toLocaleDateString("hu-HU") : t('product.details.nonPerishable')}</span>
                     </div>
                   </div>
                 ))}
@@ -224,15 +223,15 @@ function ProductDetails() {
             ) : (
               <div className="text-center py-10 bg-slate-50 dark:bg-slate-800/30 rounded-3xl border-2 border-dashed border-slate-200 dark:border-slate-800">
                 <span className="text-4xl mb-3 block opacity-50">🕸️</span>
-                <p className="text-slate-500 font-bold uppercase text-xs tracking-widest">Nincs készleten.</p>
+                <p className="text-slate-500 font-bold uppercase text-xs tracking-widest">{t('product.details.outOfStock')}</p>
               </div>
             )}
           </div>
 
           {canEdit && !(product as any).isDeleted && (
             <div className="flex flex-col sm:flex-row gap-4 pt-6 border-t border-slate-50 dark:border-slate-800">
-              <button onClick={() => navigate(`/modify/${product.id}`)} className="flex-1 bg-slate-900 dark:bg-blue-600 text-white py-4 rounded-2xl font-black hover:bg-slate-800 dark:hover:bg-blue-500 shadow-lg uppercase tracking-widest text-[10px] italic transition-all">Módosítás</button>
-              <button onClick={handleDelete} className="flex-1 bg-red-600 text-white py-4 rounded-2xl font-black hover:bg-red-700 shadow-lg uppercase tracking-widest text-[10px] italic transition-all">Törlés</button>
+              <button onClick={() => navigate(`/modify/${product.id}`)} className="flex-1 bg-slate-900 dark:bg-blue-600 text-white py-4 rounded-2xl font-black hover:bg-slate-800 dark:hover:bg-blue-500 shadow-lg uppercase tracking-widest text-[10px] italic transition-all">{t('product.details.modify')}</button>
+              <button onClick={handleDelete} className="flex-1 bg-red-600 text-white py-4 rounded-2xl font-black hover:bg-red-700 shadow-lg uppercase tracking-widest text-[10px] italic transition-all">{t('product.details.delete')}</button>
             </div>
           )}
         </div>

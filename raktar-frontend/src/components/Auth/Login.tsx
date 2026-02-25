@@ -1,9 +1,9 @@
-//raktar-frontend/src/components/Auth/Login.tsx
 import { useState, useEffect } from "react";
 import { useNavigate, Link, useLocation } from "react-router-dom";
 import { login as apiLogin } from "../../services/api";
 import { useAuth } from "../../context/AuthContext";
 import Swal from 'sweetalert2';
+import { useTranslation } from "react-i18next";
 
 const MySwal = Swal.mixin({
   customClass: {
@@ -27,6 +27,7 @@ function Login() {
   const navigate = useNavigate();
   const location = useLocation();
   const { login } = useAuth();
+  const { t } = useTranslation();
   const [form, setForm] = useState({ felhasznalonev: "", jelszo: "" });
   const [error, setError] = useState("");
 
@@ -39,11 +40,11 @@ function Login() {
         const isBan = reason === "banned";
         await MySwal.fire({
           icon: isBan ? 'error' : 'warning',
-          title: isBan ? 'Hozzáférés megtagadva' : 'Munkamenet megszakítva',
+          title: isBan ? t('auth.login.alerts.accessDenied') : t('auth.login.alerts.sessionLost'),
           text: isBan 
-            ? 'Ezt a fiókot biztonsági okokból vagy szabálysértés miatt felfüggesztettük.' 
-            : 'A munkamenet lejárt vagy megszakadt. Kérjük, jelentkezzen be újra.',
-          confirmButtonText: 'Értettem',
+            ? t('auth.login.alerts.bannedText') 
+            : t('auth.login.alerts.sessionExpiredText'),
+          confirmButtonText: t('auth.login.alerts.gotIt'),
           allowOutsideClick: false,
           backdrop: true
         });
@@ -51,7 +52,7 @@ function Login() {
       };
       showNotice();
     }
-  }, [location, navigate]);
+  }, [location, navigate, t]);
 
   const fillDemoData = () => {
     setForm(prev => ({
@@ -71,33 +72,32 @@ function Login() {
         if (data.user.mustChangePassword) {
           navigate("/force-change-password", { replace: true });
         } else {
-          toast.fire({ icon: 'success', title: 'Üdv újra!' });
+          toast.fire({ icon: 'success', title: t('auth.login.alerts.welcomeBack') });
           navigate("/", { replace: true });
         }
       }, 100);
 
     } catch (err: any) {
-      // Az api.ts-ben lévő handleResponse most már átadja a response objektumot
       const status = err.response?.status;
       const serverMessage = err.response?.data?.message;
 
       if (status === 403) {
-        setError("Ezt a fiókot felfüggesztettük!");
+        setError(t('auth.login.alerts.bannedText'));
         MySwal.fire({
           icon: 'error',
-          title: 'Ki vagy tiltva!',
-          text: serverMessage || 'Sajnáljuk, de ez a felhasználói fiók nem léphet be a rendszerbe.',
-          footer: '<span style="color: #94a3b8; font-size: 10px; font-weight: 900; text-transform: uppercase;">Lépj kapcsolatba az adminisztrátorral</span>',
-          confirmButtonText: 'Értettem'
+          title: t('auth.login.alerts.bannedTitle'),
+          text: serverMessage || t('auth.login.alerts.bannedServerMsg'),
+          footer: t('auth.login.alerts.bannedFooter'),
+          confirmButtonText: t('auth.login.alerts.gotIt')
         });
         return;
       }
 
-      const errorMsg = serverMessage || "Hibás felhasználónév vagy jelszó!";
+      const errorMsg = serverMessage || t('auth.login.alerts.wrongCredentials');
       setError(errorMsg);
       MySwal.fire({ 
           icon: 'error', 
-          title: 'Hoppá...', 
+          title: t('auth.login.alerts.oops'), 
           text: errorMsg 
       });
     }
@@ -112,11 +112,11 @@ function Login() {
           type="button"
           className="absolute top-4 right-4 bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 px-3 py-1 rounded-full text-[9px] font-black uppercase tracking-widest hover:scale-105 active:scale-95 transition-all border border-blue-100 dark:border-blue-800 shadow-sm"
         >
-          🔑 Jelszó kitöltése
+          {t('auth.login.fillDemo')}
         </button>
 
         <h1 className="text-3xl font-black text-slate-900 dark:text-white mb-6 text-center italic uppercase tracking-tighter">
-          Bejelentkezés
+          {t('auth.login.title')}
         </h1>
 
         {error && (
@@ -130,11 +130,11 @@ function Login() {
         <form onSubmit={handleSubmit} className="space-y-5">
           <div>
             <label className="block mb-1.5 ml-2 text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest">
-              Felhasználónév
+              {t('auth.login.username')}
             </label>
             <input
               className="w-full px-5 py-3 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-2xl text-slate-900 dark:text-white focus:ring-2 focus:ring-blue-500 outline-none transition-all"
-              placeholder="Adja meg a nevét..."
+              placeholder={t('auth.login.usernamePlaceholder')}
               value={form.felhasznalonev}
               onChange={(e) => setForm({ ...form, felhasznalonev: e.target.value })}
               required
@@ -144,19 +144,19 @@ function Login() {
           <div>
             <div className="flex justify-between items-center mb-1.5 ml-2 mr-2">
               <label className="text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest">
-                Jelszó
+                {t('auth.login.password')}
               </label>
               <Link 
                 to="/forgot-password" 
                 className="text-[10px] font-black text-blue-600 dark:text-blue-400 hover:text-blue-500 transition-colors uppercase tracking-widest"
               >
-                Elfelejtetted?
+                {t('auth.login.forgotPassword')}
               </Link>
             </div>
             <input
               type="password"
               className="w-full px-5 py-3 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-2xl text-slate-900 dark:text-white focus:ring-2 focus:ring-blue-500 outline-none transition-all"
-              placeholder="••••••••"
+              placeholder={t('auth.login.passwordPlaceholder')}
               value={form.jelszo}
               onChange={(e) => setForm({ ...form, jelszo: e.target.value })}
               required
@@ -167,13 +167,13 @@ function Login() {
             type="submit"
             className="w-full bg-blue-600 hover:bg-blue-500 text-white font-black py-4 rounded-2xl shadow-lg active:scale-95 uppercase tracking-widest text-xs mt-2 transition-all"
           >
-            Belépés a rendszerbe
+            {t('auth.login.submit')}
           </button>
         </form>
 
         <div className="mt-8 pt-6 border-t border-slate-100 dark:border-slate-800 text-center">
           <Link to="/register" className="text-blue-600 dark:text-blue-400 font-black uppercase text-xs tracking-widest hover:text-blue-500 transition-colors">
-            Új fiók regisztrálása
+            {t('auth.login.registerNew')}
           </Link>
         </div>
       </div>

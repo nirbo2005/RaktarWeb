@@ -5,6 +5,7 @@ import PhoneInput from 'react-phone-input-2';
 import 'react-phone-input-2/lib/style.css';
 import hu from 'react-phone-input-2/lang/hu.json';
 import Swal from 'sweetalert2';
+import { useTranslation } from "react-i18next";
 
 const MySwal = Swal.mixin({
   customClass: {
@@ -16,6 +17,7 @@ const MySwal = Swal.mixin({
 
 function ForgotPassword() {
   const navigate = useNavigate();
+  const { t } = useTranslation();
   const [form, setForm] = useState({
     felhasznalonev: "",
     email: "",
@@ -30,7 +32,7 @@ function ForgotPassword() {
     setError("");
 
     if (!form.felhasznalonev || !form.email || !form.telefonszam || form.telefonszam.length < 5) {
-      setError("Kérjük, tölts ki minden mezőt érvényes adatokkal!");
+      setError(t('auth.forgotPassword.alerts.fillValid'));
       return;
     }
     
@@ -45,15 +47,15 @@ function ForgotPassword() {
       
       MySwal.fire({
         icon: 'success',
-        title: 'Sikeres azonosítás!',
+        title: t('auth.forgotPassword.alerts.successTitle'),
         html: `
-          <p class="text-slate-500 dark:text-slate-400 text-sm mb-4">A rendszer legenerálta az ideiglenes jelszavadat. Kérjük, másold ki, mert csak most látod!</p>
+          ${t('auth.forgotPassword.alerts.successHtml1')}
           <div class="bg-slate-100 dark:bg-slate-950 p-4 rounded-2xl border border-slate-200 dark:border-slate-800 select-all font-mono text-2xl font-black tracking-widest text-blue-600 dark:text-blue-400">
             ${data.tempPassword}
           </div>
-          <p class="text-[10px] uppercase font-bold text-red-500 mt-4 tracking-widest">Belépés után kötelező lesz megváltoztatnod!</p>
+          ${t('auth.forgotPassword.alerts.successHtml2')}
         `,
-        confirmButtonText: 'Irány a belépés',
+        confirmButtonText: t('auth.forgotPassword.alerts.goToLogin'),
         allowOutsideClick: false,
       }).then((result) => {
         if (result.isConfirmed) {
@@ -62,14 +64,14 @@ function ForgotPassword() {
       });
       
     } catch (err: any) {
-      const errorMsg = err.message || "Hiba az adatok ellenőrzésekor.";
+      const errorMsg = err.message || t('auth.forgotPassword.alerts.verifyError');
       setError(errorMsg);
 
       MySwal.fire({
         icon: 'error',
-        title: 'Hiba történt',
+        title: t('auth.forgotPassword.alerts.errorOccurred'),
         text: errorMsg,
-        confirmButtonText: 'Értem'
+        confirmButtonText: t('auth.forgotPassword.alerts.understand')
       });
     } finally {
       setLoading(false);
@@ -82,11 +84,9 @@ function ForgotPassword() {
   return (
     <div className="min-h-[80vh] flex items-center justify-center p-4 transition-colors duration-300">
       <div className="bg-white dark:bg-slate-900 p-8 rounded-[2.5rem] shadow-2xl w-full max-w-md border border-gray-100 dark:border-slate-800 transition-colors">
-        <h1 className="text-3xl font-black text-gray-800 dark:text-white mb-2 text-center italic uppercase tracking-tighter">
-          Jelszó <span className="text-blue-600">visszaállítás</span>
-        </h1>
+        <h1 className="text-3xl font-black text-gray-800 dark:text-white mb-2 text-center italic uppercase tracking-tighter" dangerouslySetInnerHTML={{ __html: t('auth.forgotPassword.title') }}></h1>
         <p className="text-slate-400 text-xs text-center font-bold mb-8 uppercase tracking-widest leading-relaxed">
-          Kérjük, add meg a fiókodhoz tartozó biztonsági adatokat a jelszó cseréjéhez.
+          {t('auth.forgotPassword.subtitle')}
         </p>
 
         {error && (
@@ -97,10 +97,10 @@ function ForgotPassword() {
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label className={labelStyle}>Felhasználónév</label>
+            <label className={labelStyle}>{t('auth.forgotPassword.username')}</label>
             <input
               className={inputStyle}
-              placeholder="Pl. kjanos88"
+              placeholder={t('auth.forgotPassword.usernamePlaceholder')}
               value={form.felhasznalonev}
               onChange={(e) => setForm({ ...form, felhasznalonev: e.target.value })}
               required
@@ -108,11 +108,11 @@ function ForgotPassword() {
           </div>
 
           <div>
-            <label className={labelStyle}>Regisztrált Email</label>
+            <label className={labelStyle}>{t('auth.forgotPassword.email')}</label>
             <input
               type="email"
               className={inputStyle}
-              placeholder="pelda@email.hu"
+              placeholder={t('auth.forgotPassword.emailPlaceholder')}
               value={form.email}
               onChange={(e) => setForm({ ...form, email: e.target.value })}
               required
@@ -120,7 +120,7 @@ function ForgotPassword() {
           </div>
 
           <div>
-            <label className={labelStyle}>Regisztrált Telefonszám</label>
+            <label className={labelStyle}>{t('auth.forgotPassword.phone')}</label>
             <PhoneInput
               country={'hu'}
               value={form.telefonszam}
@@ -129,7 +129,7 @@ function ForgotPassword() {
               masks={{ hu: '.. ... ....' }}
               countryCodeEditable={false}
               enableSearch={true}
-              searchPlaceholder="Keresés..."
+              searchPlaceholder={t('common.search')}
               containerClass="phone-container-fp"
               inputClass="phone-input-fp"
               buttonClass="phone-button-fp"
@@ -143,7 +143,7 @@ function ForgotPassword() {
             disabled={loading}
             className="w-full bg-blue-600 hover:bg-blue-500 text-white font-black py-4 rounded-2xl transition-all shadow-lg shadow-blue-600/20 active:scale-95 uppercase tracking-widest text-xs mt-6 disabled:opacity-50"
           >
-            {loading ? "Ellenőrzés..." : "Új jelszó kérése"}
+            {loading ? t('auth.forgotPassword.checking') : t('auth.forgotPassword.submit')}
           </button>
         </form>
 
@@ -152,7 +152,7 @@ function ForgotPassword() {
             to="/login"
             className="text-slate-500 dark:text-slate-400 font-black uppercase text-[10px] tracking-widest hover:text-blue-500 transition-all"
           >
-            ← Vissza a bejelentkezéshez
+            {t('auth.forgotPassword.backToLogin')}
           </Link>
         </div>
       </div>

@@ -1,4 +1,3 @@
-//raktar-frontend/src/components/Auxiliary/Navbar.tsx
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 import { useState, useEffect, useRef, useCallback } from "react";
@@ -6,6 +5,7 @@ import { getProducts, getMyNotifications, markNotificationAsRead } from "../../s
 import { useAutoRefresh } from "../../hooks/useAutoRefresh";
 import type { Product } from "../../types/Product";
 import type { AppNotification } from "../../types/Notification";
+import { useTranslation } from "react-i18next";
 
 interface NavbarProps {
   isDark: boolean;
@@ -16,6 +16,7 @@ function Navbar({ isDark, setIsDark }: NavbarProps) {
   const location = useLocation();
   const navigate = useNavigate();
   const { user, logout } = useAuth();
+  const { t } = useTranslation();
 
   const [searchTerm, setSearchTerm] = useState("");
   const [quickResults, setQuickResults] = useState<Product[]>([]);
@@ -100,15 +101,13 @@ function Navbar({ isDark, setIsDark }: NavbarProps) {
     try {
       await markNotificationAsRead(id);
       fetchData(); 
-    } catch (err) {
-      console.error("Hiba az értesítés olvasottá tételekor", err);
-    }
+    } catch (err) {}
   };
 
   const getRoleBadge = (role?: string) => {
-    if (role === "ADMIN") return "🛡️ Admin";
-    if (role === "KEZELO") return "📦 Kezelő";
-    return "👁️ Nézelődő";
+    if (role === "ADMIN") return `🛡️ ${t('header.admin')}`;
+    if (role === "KEZELO") return `📦 ${t('header.handler')}`;
+    return `👁️ ${t('header.viewer')}`;
   };
 
   const isActive = (path: string) => location.pathname === path;
@@ -122,7 +121,6 @@ function Navbar({ isDark, setIsDark }: NavbarProps) {
     }
   `;
 
-  // Explicit toggle funkció, hogy elkerüljük a beregadást
   const toggleTheme = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
@@ -159,9 +157,9 @@ function Navbar({ isDark, setIsDark }: NavbarProps) {
 
           {user && !user.mustChangePassword && (
             <div className="hidden md:flex items-center gap-1 shrink-0">
-              <Link to="/" className={linkStyle("/")}>🏠 Termékek</Link>
-              <Link to="/grid" className={linkStyle("/grid")}>📊 Áttekintés</Link>
-              <Link to="/scanner" className={linkStyle("/scanner")}>📷 Beolvasás</Link>
+              <Link to="/" className={linkStyle("/")}>{t('auxiliary.navbar.products')}</Link>
+              <Link to="/grid" className={linkStyle("/grid")}>{t('auxiliary.navbar.overview')}</Link>
+              <Link to="/scanner" className={linkStyle("/scanner")}>{t('auxiliary.navbar.scanner')}</Link>
             </div>
           )}
 
@@ -170,7 +168,7 @@ function Navbar({ isDark, setIsDark }: NavbarProps) {
               <form onSubmit={handleSearchSubmit}>
                 <input
                   type="text"
-                  placeholder="Keresés..."
+                  placeholder={t('auxiliary.navbar.searchPlaceholder')}
                   className="w-full bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-slate-900 dark:text-white text-sm rounded-xl px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all"
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
@@ -193,7 +191,7 @@ function Navbar({ isDark, setIsDark }: NavbarProps) {
                         <div className="text-slate-900 dark:text-white font-bold text-sm">{p.nev}</div>
                         <div className="text-slate-400 text-[10px] uppercase font-bold tracking-widest">{p.gyarto}</div>
                       </div>
-                      <span className="bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 px-2 py-1 rounded text-[10px] font-black uppercase italic">Ugrás →</span>
+                      <span className="bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 px-2 py-1 rounded text-[10px] font-black uppercase italic">{t('auxiliary.navbar.jump')}</span>
                     </div>
                   ))}
                 </div>
@@ -219,8 +217,8 @@ function Navbar({ isDark, setIsDark }: NavbarProps) {
                 {isNotifOpen && (
                   <div className="absolute top-full right-0 mt-3 w-80 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl shadow-2xl z-[120] overflow-hidden flex flex-col animate-in fade-in slide-in-from-top-2 text-left">
                     <div className="p-4 border-b border-slate-100 dark:border-slate-800 flex justify-between items-center bg-slate-50 dark:bg-slate-800/50">
-                      <span className="font-black text-sm uppercase tracking-widest text-slate-800 dark:text-slate-200">Értesítések</span>
-                      {unreadCount > 0 && <span className="text-xs font-bold text-blue-600 dark:text-blue-400">{unreadCount} új</span>}
+                      <span className="font-black text-sm uppercase tracking-widest text-slate-800 dark:text-slate-200">{t('auxiliary.navbar.notifications')}</span>
+                      {unreadCount > 0 && <span className="text-xs font-bold text-blue-600 dark:text-blue-400">{unreadCount} {t('auxiliary.navbar.new')}</span>}
                     </div>
                     <div className="max-h-80 overflow-y-auto">
                       {recentNotifications.length > 0 ? (
@@ -240,7 +238,7 @@ function Navbar({ isDark, setIsDark }: NavbarProps) {
                           </div>
                         ))
                       ) : (
-                        <div className="p-8 text-center text-slate-400 font-bold text-xs uppercase tracking-widest">Nincs értesítés</div>
+                        <div className="p-8 text-center text-slate-400 font-bold text-xs uppercase tracking-widest">{t('auxiliary.navbar.noNotifications')}</div>
                       )}
                     </div>
                     <div className="p-2 bg-slate-50 dark:bg-slate-800/80 border-t border-slate-100 dark:border-slate-800">
@@ -248,7 +246,7 @@ function Navbar({ isDark, setIsDark }: NavbarProps) {
                         onClick={() => { setIsNotifOpen(false); navigate('/notifications'); }} 
                         className="w-full py-2 text-xs font-black text-blue-600 dark:text-blue-400 uppercase tracking-widest hover:underline"
                       >
-                        Összes megtekintése →
+                        {t('auxiliary.navbar.viewAll')}
                       </button>
                     </div>
                   </div>
@@ -280,7 +278,7 @@ function Navbar({ isDark, setIsDark }: NavbarProps) {
               </div>
             ) : (
               <div className="flex items-center gap-2">
-                <Link to="/login" className="bg-blue-600 hover:bg-blue-500 text-white px-4 py-2 rounded-xl text-sm font-bold shadow-lg transition-all active:scale-95">Belépés</Link>
+                <Link to="/login" className="bg-blue-600 hover:bg-blue-500 text-white px-4 py-2 rounded-xl text-sm font-bold shadow-lg transition-all active:scale-95">{t('auxiliary.navbar.login')}</Link>
               </div>
             )}
           </div>
@@ -298,7 +296,7 @@ function Navbar({ isDark, setIsDark }: NavbarProps) {
                   <form onSubmit={handleSearchSubmit}>
                     <input
                       type="text"
-                      placeholder="Keresés..."
+                      placeholder={t('auxiliary.navbar.searchPlaceholder')}
                       className="w-full bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-slate-900 dark:text-white text-sm rounded-xl px-4 py-4 focus:outline-none focus:ring-2 focus:ring-blue-500"
                       value={searchTerm}
                       onChange={(e) => setSearchTerm(e.target.value)}
@@ -309,19 +307,19 @@ function Navbar({ isDark, setIsDark }: NavbarProps) {
 
               {!user.mustChangePassword && (
                 <>
-                  <Link to="/" className={linkStyle("/")}>🏠 Termékek</Link>
-                  <Link to="/grid" className={linkStyle("/grid")}>📊 Áttekintés</Link>
-                  <Link to="/scanner" className={linkStyle("/scanner")}>📷 Beolvasás</Link>
-                  <Link to="/notifications" className={linkStyle("/notifications")}>🔔 Értesítések {unreadCount > 0 && `(${unreadCount})`}</Link>
+                  <Link to="/" className={linkStyle("/")}>{t('auxiliary.navbar.products')}</Link>
+                  <Link to="/grid" className={linkStyle("/grid")}>{t('auxiliary.navbar.overview')}</Link>
+                  <Link to="/scanner" className={linkStyle("/scanner")}>{t('auxiliary.navbar.scanner')}</Link>
+                  <Link to="/notifications" className={linkStyle("/notifications")}>{t('auxiliary.navbar.notifications')} {unreadCount > 0 && `(${unreadCount})`}</Link>
                 </>
               )}
               
               <div className="h-px bg-slate-200 dark:border-slate-800 my-4" />
               
-              <Link to="/profile" className={linkStyle("/profile")}>👤 Profil ({user?.nev || user?.felhasznalonev})</Link>
+              <Link to="/profile" className={linkStyle("/profile")}>{t('auxiliary.navbar.profile')} ({user?.nev || user?.felhasznalonev})</Link>
               
               <div className="flex items-center justify-between px-4 py-3 bg-slate-50 dark:bg-slate-900 rounded-xl border border-slate-100 dark:border-slate-800 mt-2">
-                <span className="text-slate-500 dark:text-slate-400 font-bold text-sm italic uppercase tracking-widest">Sötét mód</span>
+                <span className="text-slate-500 dark:text-slate-400 font-bold text-sm italic uppercase tracking-widest">{t('auxiliary.navbar.darkTheme')}</span>
                 <button
                   onClick={toggleTheme}
                   className="p-2 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-xl border border-slate-200 dark:border-slate-700 transition-all active:scale-90 shadow-sm"
@@ -334,13 +332,13 @@ function Navbar({ isDark, setIsDark }: NavbarProps) {
                 onClick={handleLogout}
                 className="w-full text-left px-4 py-4 text-red-500 font-black uppercase tracking-widest text-xs mt-2 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-xl flex items-center gap-3 transition-colors"
               >
-                <span>🚪</span> Kijelentkezés
+                {t('auxiliary.navbar.logout')}
               </button>
             </>
           ) : (
             <div className="grid grid-cols-2 gap-2">
-              <Link to="/login" className="bg-blue-600 text-white p-4 rounded-xl text-sm font-bold text-center">Belépés</Link>
-              <Link to="/register" className="bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-white p-4 rounded-xl text-sm font-bold text-center">Regisztráció</Link>
+              <Link to="/login" className="bg-blue-600 text-white p-4 rounded-xl text-sm font-bold text-center">{t('auxiliary.navbar.login')}</Link>
+              <Link to="/register" className="bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-white p-4 rounded-xl text-sm font-bold text-center">{t('auxiliary.navbar.register')}</Link>
             </div>
           )}
         </div>

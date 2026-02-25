@@ -5,6 +5,7 @@ import PhoneInput from 'react-phone-input-2';
 import 'react-phone-input-2/lib/style.css';
 import hu from 'react-phone-input-2/lang/hu.json';
 import Swal from 'sweetalert2';
+import { useTranslation } from "react-i18next";
 
 const MySwal = Swal.mixin({
   customClass: {
@@ -26,6 +27,7 @@ const toast = MySwal.mixin({
 
 function Register() {
   const navigate = useNavigate();
+  const { t } = useTranslation();
   const [form, setForm] = useState({
     nev: "",
     felhasznalonev: "",
@@ -42,25 +44,25 @@ function Register() {
     
     switch (name) {
       case "nev":
-        if (!value) error = "A név kötelező!";
-        else if (!/^[a-zA-ZÁÉÍÓÖŐÚÜŰáéíóöőúüű\s-]+$/.test(value)) error = "A név nem tartalmazhat számokat!";
-        else if (value.trim().split(" ").length < 2) error = "Vezetéknév és keresztnév is kell!";
+        if (!value) error = t('auth.register.validation.nameEmpty');
+        else if (!/^[a-zA-ZÁÉÍÓÖŐÚÜŰáéíóöőúüű\s-]+$/.test(value)) error = t('auth.register.validation.nameNumbers');
+        else if (value.trim().split(" ").length < 2) error = t('auth.register.validation.nameTwoWords');
         break;
       case "felhasznalonev":
-        if (value.length < 4) error = "Minimum 4 karakter!";
+        if (value.length < 4) error = t('auth.register.validation.usernameShort');
         break;
       case "email":
-        if (!/\S+@\S+\.\S+/.test(value)) error = "Érvénytelen email formátum!";
+        if (!/\S+@\S+\.\S+/.test(value)) error = t('auth.register.validation.emailInvalid');
         break;
       case "telefonszam":
-        if (!value || value.length < 5) error = "A telefonszám megadása kötelező!";
+        if (!value || value.length < 5) error = t('auth.register.validation.phoneRequired');
         break;
       case "jelszo":
         const passwordRegex = /((?=.*\d)|(?=.*\W+))(?![.\n])(?=.*[A-Z])(?=.*[a-z]).*$/;
         if (value.length < 8) {
-          error = "Minimum 8 karakter szükséges!";
+          error = t('auth.register.validation.passwordShort');
         } else if (!passwordRegex.test(value)) {
-          error = "Legalább egy nagybetű, kisbetű és szám/jel kell!";
+          error = t('auth.register.validation.passwordWeak');
         }
         break;
     }
@@ -73,21 +75,17 @@ function Register() {
     setGeneralError("");
     setFieldErrors({});
 
-    // 1. Alapvető validáció ellenőrzése
     const hasEmptyFields = !form.nev || !form.felhasznalonev || !form.email || !form.jelszo || !form.telefonszam;
     const hasErrors = Object.values(fieldErrors).some(err => err !== "");
 
     if (hasEmptyFields || hasErrors) {
-      setGeneralError("Kérjük, tölts ki minden mezőt megfelelően!");
+      setGeneralError(t('auth.register.alerts.fillAll'));
       return;
     }
     
     try {
-      // 2. Adatok normalizálása beküldés előtt
       const submitData = {
         ...form,
-        // Telefonszám tisztítása: csak a számjegyeket tartjuk meg, és elé tesszük a '+' jelet
-        // Ez biztosítja, hogy a "+36 20 123" és "+3620123" ugyanaz legyen az adatbázisban
         telefonszam: `+${form.telefonszam.replace(/\D/g, '')}`
       };
 
@@ -95,17 +93,15 @@ function Register() {
       
       await toast.fire({
         icon: 'success',
-        title: 'Sikeres regisztráció! ✨',
-        text: 'Most már bejelentkezhetsz a fiókodba.'
+        title: t('auth.register.alerts.successTitle'),
+        text: t('auth.register.alerts.successText')
       });
       
       navigate("/login");
     } catch (err: any) {
-      // 3. Hibaüzenet kinyerése a backendtől
-      const errorMsg = err.response?.data?.message || err.message || "Hiba a regisztráció során.";
+      const errorMsg = err.response?.data?.message || err.message || t('auth.register.alerts.errorTitle');
       setGeneralError(errorMsg);
 
-      // 4. Mező-szintű hibaillesztés és vizuális jelzés
       const lowerMsg = errorMsg.toLowerCase();
       
       if (lowerMsg.includes("e-mail") || lowerMsg.includes("email")) {
@@ -114,17 +110,15 @@ function Register() {
       if (lowerMsg.includes("felhasználónév") || lowerMsg.includes("username")) {
         setFieldErrors(p => ({...p, felhasznalonev: errorMsg}));
       }
-      // Most már a tisztított telefonszám miatt az ütközés biztosan észlelve lesz
       if (lowerMsg.includes("telefonszám") || lowerMsg.includes("telefon") || lowerMsg.includes("phone")) {
         setFieldErrors(p => ({...p, telefonszam: errorMsg}));
       }
 
-      // 5. SweetAlert2 visszajelzés
       MySwal.fire({
         icon: 'error',
-        title: 'Regisztrációs hiba',
+        title: t('auth.register.alerts.errorTitle'),
         text: errorMsg,
-        confirmButtonText: 'Értem'
+        confirmButtonText: t('common.yes')
       });
     }
   };
@@ -142,7 +136,7 @@ function Register() {
     <div className="min-h-[90vh] flex items-center justify-center p-4 text-left transition-colors duration-300">
       <div className="bg-white dark:bg-slate-900 p-8 rounded-[2.5rem] shadow-2xl w-full max-w-md border border-gray-100 dark:border-slate-800 backdrop-blur-xl relative overflow-hidden">
         <h1 className="text-3xl font-black text-gray-800 dark:text-white mb-6 text-center italic uppercase tracking-tighter">
-          Fiók létrehozása
+          {t('auth.register.title')}
         </h1>
 
         {generalError && (
@@ -153,10 +147,10 @@ function Register() {
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label className={labelStyle}>Teljes Név *</label>
+            <label className={labelStyle}>{t('auth.register.fullName')}</label>
             <input
               className={inputStyle("nev")}
-              placeholder="Pl. Kovács János"
+              placeholder={t('auth.register.fullNamePlaceholder')}
               value={form.nev}
               onChange={(e) => setForm({ ...form, nev: e.target.value })}
               onBlur={(e) => validateField("nev", e.target.value)}
@@ -166,10 +160,10 @@ function Register() {
           </div>
 
           <div>
-            <label className={labelStyle}>Felhasználónév *</label>
+            <label className={labelStyle}>{t('auth.register.username')}</label>
             <input
               className={inputStyle("felhasznalonev")}
-              placeholder="kjanos88"
+              placeholder={t('auth.register.usernamePlaceholder')}
               value={form.felhasznalonev}
               onChange={(e) => setForm({ ...form, felhasznalonev: e.target.value })}
               onBlur={(e) => validateField("felhasznalonev", e.target.value)}
@@ -179,11 +173,11 @@ function Register() {
           </div>
 
           <div>
-            <label className={labelStyle}>Email cím *</label>
+            <label className={labelStyle}>{t('auth.register.email')}</label>
             <input
               type="email"
               className={inputStyle("email")}
-              placeholder="pelda@email.hu"
+              placeholder={t('auth.register.emailPlaceholder')}
               value={form.email}
               onChange={(e) => setForm({ ...form, email: e.target.value })}
               onBlur={(e) => validateField("email", e.target.value)}
@@ -193,7 +187,7 @@ function Register() {
           </div>
 
           <div>
-            <label className={labelStyle}>Telefonszám (Nemzetközi) *</label>
+            <label className={labelStyle}>{t('auth.register.phone')}</label>
             <PhoneInput
               country={'hu'}
               value={form.telefonszam}
@@ -210,11 +204,11 @@ function Register() {
           </div>
 
           <div>
-            <label className={labelStyle}>Jelszó *</label>
+            <label className={labelStyle}>{t('auth.register.password')}</label>
             <input
               type="password"
               className={inputStyle("jelszo")}
-              placeholder="••••••••"
+              placeholder={t('auth.register.passwordPlaceholder')}
               value={form.jelszo}
               onChange={(e) => setForm({ ...form, jelszo: e.target.value })}
               onBlur={(e) => validateField("jelszo", e.target.value)}
@@ -227,13 +221,13 @@ function Register() {
             type="submit"
             className="w-full bg-blue-600 hover:bg-blue-500 text-white font-black py-4 rounded-2xl transition-all shadow-lg shadow-blue-600/20 active:scale-95 uppercase tracking-widest text-xs mt-4 disabled:opacity-50"
           >
-            Regisztráció véglegesítése
+            {t('auth.register.submit')}
           </button>
         </form>
 
         <div className="mt-8 pt-6 border-t border-gray-100 dark:border-slate-800 text-center">
           <Link to="/login" className="text-blue-600 dark:text-blue-400 font-black uppercase text-[10px] tracking-widest hover:underline">
-            Vissza a bejelentkezéshez
+            {t('auth.register.backToLogin')}
           </Link>
         </div>
       </div>
