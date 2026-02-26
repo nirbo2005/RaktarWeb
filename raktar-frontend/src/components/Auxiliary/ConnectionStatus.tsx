@@ -1,5 +1,6 @@
-import { useEffect, useState } from 'react';
-import { useTranslation } from 'react-i18next';
+//raktar-frontend/src/components/Auxiliary/ConnectionStatus.tsx
+import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 
 export const ConnectionStatus = () => {
   const [isOffline, setIsOffline] = useState(false);
@@ -9,16 +10,16 @@ export const ConnectionStatus = () => {
     const handleOffline = () => setIsOffline(true);
     const handleOnline = () => setIsOffline(false);
 
-    window.addEventListener('server-offline', handleOffline);
-    window.addEventListener('server-online', handleOnline);
-    window.addEventListener('online', handleOnline);
-    window.addEventListener('offline', handleOffline);
+    window.addEventListener("server-offline", handleOffline);
+    window.addEventListener("server-online", handleOnline);
+    window.addEventListener("online", handleOnline);
+    window.addEventListener("offline", handleOffline);
 
     return () => {
-      window.removeEventListener('server-offline', handleOffline);
-      window.removeEventListener('server-online', handleOnline);
-      window.removeEventListener('online', handleOnline);
-      window.removeEventListener('offline', handleOffline);
+      window.removeEventListener("server-offline", handleOffline);
+      window.removeEventListener("server-online", handleOnline);
+      window.removeEventListener("online", handleOnline);
+      window.removeEventListener("offline", handleOffline);
     };
   }, []);
 
@@ -32,8 +33,12 @@ export const ConnectionStatus = () => {
           <span className="relative inline-flex rounded-full h-3 w-3 bg-white"></span>
         </div>
         <div className="flex flex-col">
-          <span className="font-black uppercase text-xs tracking-widest">{t('auxiliary.connection.serverOffline')}</span>
-          <span className="text-[10px] font-bold opacity-80 leading-none">{t('auxiliary.connection.reconnecting')}</span>
+          <span className="font-black uppercase text-xs tracking-widest">
+            {t("auxiliary.connection.serverOffline")}
+          </span>
+          <span className="text-[10px] font-bold opacity-80 leading-none">
+            {t("auxiliary.connection.reconnecting")}
+          </span>
         </div>
       </div>
     </div>

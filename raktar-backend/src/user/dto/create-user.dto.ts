@@ -1,3 +1,4 @@
+//raktar-backend/src/user/dto/create-user.dto.ts
 import {
   IsString,
   IsNotEmpty,
@@ -17,7 +18,9 @@ export class CreateUserDto {
 
   @IsString()
   @IsNotEmpty({ message: 'A felhasználónév nem lehet üres!' })
-  @MinLength(3, { message: 'A felhasználónévnek legalább 3 karakternek kell lennie!' })
+  @MinLength(3, {
+    message: 'A felhasználónévnek legalább 3 karakternek kell lennie!',
+  })
   @MaxLength(20, { message: 'A felhasználónév maximum 20 karakter lehet!' })
   felhasznalonev: string;
 
@@ -25,7 +28,8 @@ export class CreateUserDto {
   @IsNotEmpty({ message: 'A jelszó nem lehet üres!' })
   @MinLength(8, { message: 'A jelszónak legalább 8 karakternek kell lennie!' })
   @Matches(/((?=.*\d)|(?=.*\W+))(?![.\n])(?=.*[A-Z])(?=.*[a-z]).*$/, {
-    message: 'A jelszó túl gyenge! Tartalmaznia kell kisbetűt, nagybetűt és számot vagy speciális karaktert!',
+    message:
+      'A jelszó túl gyenge! Tartalmaznia kell kisbetűt, nagybetűt és számot vagy speciális karaktert!',
   })
   jelszo: string;
 

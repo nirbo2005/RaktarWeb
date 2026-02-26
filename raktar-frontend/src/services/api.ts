@@ -11,7 +11,7 @@ const BASE_URL = import.meta.env.VITE_API_BASE_URL || "http://localhost:3000";
 // ==========================================
 
 export const notifyServerOffline = () => {
-  window.dispatchEvent(new CustomEvent('server-offline'));
+  window.dispatchEvent(new CustomEvent("server-offline"));
 };
 
 function getHeaders() {
@@ -23,26 +23,22 @@ function getHeaders() {
 }
 
 const handleResponse = async (response: Response) => {
-  // Ha 401 vagy 403 hibát kapunk
   if (response.status === 401 || response.status === 403) {
-    
-    // 1. KIVÉTEL: Bejelentkezés közben NE kezeljük le központilag a 403-at (tiltás), 
-    // hogy a Login.tsx megkaphassa és kiírhassa a hibaüzenetet.
     if (response.url.includes("/auth/login")) {
-      const error = await response.json().catch(() => ({ message: "Tiltott hozzáférés" }));
+      const error = await response
+        .json()
+        .catch(() => ({ message: "Tiltott hozzáférés" }));
       const customError: any = new Error(error.message);
       customError.response = { status: response.status, data: error };
       throw customError;
     }
 
-    // 2. KIVÉTEL: Jelszócsere közben is engedjük át a hibát
     if (window.location.pathname.includes("/force-change-password")) {
       console.warn("API 401/403 elnyomva jelszócsere közben:", response.url);
-      return; 
+      return;
     }
 
-    // Alapesetben (ha nem login/jelszócsere): kijelentkeztetés
-    localStorage.clear(); 
+    localStorage.clear();
     if (!window.location.pathname.includes("/login")) {
       window.location.href = "/login?reason=session_lost";
     }
@@ -50,7 +46,9 @@ const handleResponse = async (response: Response) => {
   }
 
   if (!response.ok) {
-    const error = await response.json().catch(() => ({ message: "Ismeretlen hiba" }));
+    const error = await response
+      .json()
+      .catch(() => ({ message: "Ismeretlen hiba" }));
     const customError: any = new Error(error.message);
     customError.response = { status: response.status, data: error };
     throw customError;
@@ -72,13 +70,17 @@ export async function login(felhasznalonev: string, jelszo: string) {
 }
 
 export async function getMe(): Promise<User> {
-  const res = await fetch(`${BASE_URL}/user/me`, { 
-    headers: getHeaders() 
+  const res = await fetch(`${BASE_URL}/users/me`, {
+    headers: getHeaders(),
   });
   return handleResponse(res);
 }
 
-export async function forgotPassword(data: { felhasznalonev: string; email: string; telefonszam: string }) {
+export async function forgotPassword(data: {
+  felhasznalonev: string;
+  email: string;
+  telefonszam: string;
+}) {
   const res = await fetch(`${BASE_URL}/auth/forgot-password`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
@@ -87,7 +89,11 @@ export async function forgotPassword(data: { felhasznalonev: string; email: stri
   return handleResponse(res);
 }
 
-export async function forceChangePassword(data: { felhasznalonev: string; ideiglenesJelszo: string; ujJelszo: string }) {
+export async function forceChangePassword(data: {
+  felhasznalonev: string;
+  ideiglenesJelszo: string;
+  ujJelszo: string;
+}) {
   const res = await fetch(`${BASE_URL}/auth/force-change-password`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
@@ -101,7 +107,7 @@ export async function forceChangePassword(data: { felhasznalonev: string; ideigl
 // ==========================================
 
 export async function register(userData: any) {
-  const res = await fetch(`${BASE_URL}/user/register`, {
+  const res = await fetch(`${BASE_URL}/users`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(userData),
@@ -110,13 +116,13 @@ export async function register(userData: any) {
 }
 
 export async function getAllUsers() {
-  const res = await fetch(`${BASE_URL}/user/all`, { headers: getHeaders() });
+  const res = await fetch(`${BASE_URL}/users`, { headers: getHeaders() });
   return handleResponse(res);
 }
 
 export async function updateProfile(id: number, data: any) {
-  const res = await fetch(`${BASE_URL}/user/update-profile/${id}`, {
-    method: "PUT",
+  const res = await fetch(`${BASE_URL}/users/${id}/profile`, {
+    method: "PATCH",
     headers: getHeaders(),
     body: JSON.stringify(data),
   });
@@ -124,7 +130,7 @@ export async function updateProfile(id: number, data: any) {
 }
 
 export async function toggleUserBan(id: number) {
-  const res = await fetch(`${BASE_URL}/user/admin/toggle-ban/${id}`, {
+  const res = await fetch(`${BASE_URL}/users/${id}/ban`, {
     method: "PATCH",
     headers: getHeaders(),
   });
@@ -132,7 +138,7 @@ export async function toggleUserBan(id: number) {
 }
 
 export async function deleteUserPermanently(id: number) {
-  const res = await fetch(`${BASE_URL}/user/admin/delete/${id}`, {
+  const res = await fetch(`${BASE_URL}/users/${id}`, {
     method: "DELETE",
     headers: getHeaders(),
   });
@@ -144,7 +150,7 @@ export async function deleteUserPermanently(id: number) {
 // ==========================================
 
 export async function submitChangeRequest(requestData: any) {
-  const res = await fetch(`${BASE_URL}/user/request-change`, {
+  const res = await fetch(`${BASE_URL}/users/change-request`, {
     method: "POST",
     headers: getHeaders(),
     body: JSON.stringify(requestData),
@@ -153,16 +159,21 @@ export async function submitChangeRequest(requestData: any) {
 }
 
 export async function getPendingRequests() {
-  const res = await fetch(`${BASE_URL}/user/admin/pending-requests`, { headers: getHeaders() });
+  const res = await fetch(`${BASE_URL}/users/pending-requests`, {
+    headers: getHeaders(),
+  });
   return handleResponse(res);
 }
 
 export async function handleAdminRequest(requestId: number, statusz: string) {
-  const res = await fetch(`${BASE_URL}/user/admin/handle-request/${requestId}`, {
-    method: "PATCH",
-    headers: getHeaders(),
-    body: JSON.stringify({ statusz }),
-  });
+  const res = await fetch(
+    `${BASE_URL}/users/handle-request`,
+    {
+      method: "POST",
+      headers: getHeaders(),
+      body: JSON.stringify({ requestId, statusz }),
+    },
+  );
   return handleResponse(res);
 }
 
@@ -178,15 +189,20 @@ export const getProducts = async (): Promise<Product[]> => {
     return await handleResponse(response);
   } catch (error) {
     if (error instanceof TypeError && error.message === "Failed to fetch") {
-      notifyServerOffline(); 
-      throw new Error("A szerver nem elérhető."); 
+      notifyServerOffline();
+      throw new Error("A szerver nem elérhető.");
     }
     throw error;
   }
 };
 
-export async function getProductById(id: number | string, isAdmin: boolean = false): Promise<any> {
-  const res = await fetch(`${BASE_URL}/product/${id}?admin=${isAdmin}`, { headers: getHeaders() });
+export async function getProductById(
+  id: number | string,
+  isAdmin: boolean = false,
+): Promise<any> {
+  const res = await fetch(`${BASE_URL}/product/${id}?admin=${isAdmin}`, {
+    headers: getHeaders(),
+  });
   return handleResponse(res);
 }
 
@@ -199,7 +215,11 @@ export async function addProduct(product: any, userId: number) {
   return handleResponse(res);
 }
 
-export async function updateProduct(id: number | string, productData: any, userId: number) {
+export async function updateProduct(
+  id: number | string,
+  productData: any,
+  userId: number,
+) {
   const res = await fetch(`${BASE_URL}/product/${id}`, {
     method: "PUT",
     headers: getHeaders(),
@@ -226,10 +246,13 @@ export async function deleteManyProducts(ids: number[], userId: number) {
 }
 
 export async function restoreProduct(id: number, userId: number) {
-  const res = await fetch(`${BASE_URL}/product/${id}/restore?userId=${userId}`, {
-    method: "PATCH",
-    headers: getHeaders(),
-  });
+  const res = await fetch(
+    `${BASE_URL}/product/${id}/restore?userId=${userId}`,
+    {
+      method: "PATCH",
+      headers: getHeaders(),
+    },
+  );
   return handleResponse(res);
 }
 
@@ -237,7 +260,10 @@ export async function restoreProduct(id: number, userId: number) {
 // BATCH API
 // ==========================================
 
-export async function createBatch(batchData: any, userId: number): Promise<Batch> {
+export async function createBatch(
+  batchData: any,
+  userId: number,
+): Promise<Batch> {
   const res = await fetch(`${BASE_URL}/batch?userId=${userId}`, {
     method: "POST",
     headers: getHeaders(),
@@ -246,7 +272,23 @@ export async function createBatch(batchData: any, userId: number): Promise<Batch
   return handleResponse(res);
 }
 
-export async function updateBatch(id: number, batchData: any, userId: number): Promise<Batch> {
+export async function createBulkBatches(
+  splits: any[],
+  userId: number,
+): Promise<Batch[]> {
+  const res = await fetch(`${BASE_URL}/batch/bulk?userId=${userId}`, {
+    method: "POST",
+    headers: getHeaders(),
+    body: JSON.stringify(splits),
+  });
+  return handleResponse(res);
+}
+
+export async function updateBatch(
+  id: number,
+  batchData: any,
+  userId: number,
+): Promise<Batch> {
   const res = await fetch(`${BASE_URL}/batch/${id}?userId=${userId}`, {
     method: "PATCH",
     headers: getHeaders(),
@@ -271,12 +313,34 @@ export async function sortWarehouse(userId: number) {
   return handleResponse(res);
 }
 
+export async function getWarehouseMap(): Promise<any> {
+  const res = await fetch(`${BASE_URL}/batch/warehouse-map`, {
+    headers: getHeaders(),
+  });
+  return handleResponse(res);
+}
+
+export async function findBestSpace(
+  productId: number,
+  mennyiseg: number,
+): Promise<any> {
+  const res = await fetch(
+    `${BASE_URL}/batch/best-space?productId=${productId}&mennyiseg=${mennyiseg}`,
+    {
+      headers: getHeaders(),
+    },
+  );
+  return handleResponse(res);
+}
+
 // ==========================================
 // NOTIFICATIONS
 // ==========================================
 
 export async function getMyNotifications(): Promise<AppNotification[]> {
-  const res = await fetch(`${BASE_URL}/notification`, { headers: getHeaders() });
+  const res = await fetch(`${BASE_URL}/notification`, {
+    headers: getHeaders(),
+  });
   return handleResponse(res);
 }
 
@@ -308,23 +372,65 @@ export async function deleteReadNotifications(): Promise<void> {
 // AUDIT LOGS
 // ==========================================
 
-export async function getAuditLogs(userId: number, isAdmin: boolean, filters: any = {}) {
+export async function getAuditLogs(
+  userId: number,
+  isAdmin: boolean,
+  filters: any = {},
+) {
   const params = new URLSearchParams();
   params.append("admin", String(isAdmin));
   Object.keys(filters).forEach((key) => {
     const value = filters[key];
     if (value) params.append(key, String(value));
   });
-  const res = await fetch(`${BASE_URL}/audit/user/${userId}?${params.toString()}`, {
-    headers: getHeaders(),
-  });
+  const res = await fetch(
+    `${BASE_URL}/audit/user/${userId}?${params.toString()}`,
+    {
+      headers: getHeaders(),
+    },
+  );
   return handleResponse(res);
 }
 
 export async function restoreAction(logId: number, userId: number) {
-  const res = await fetch(`${BASE_URL}/product/restore-log/${logId}?userId=${userId}`, {
+  const res = await fetch(
+    `${BASE_URL}/product/restore-log/${logId}?userId=${userId}`,
+    {
+      method: "POST",
+      headers: getHeaders(),
+    },
+  );
+  return handleResponse(res);
+}
+
+// ==========================================
+// SYSTEM & SESSIONS
+// ==========================================
+
+export const revokeSessions = async (userId: number): Promise<void> => {
+  const res = await fetch(`${BASE_URL}/users/${userId}/revoke-sessions`, {
     method: "POST",
     headers: getHeaders(),
   });
+  return handleResponse(res);
+};
+
+export const getSystemStatus = async (): Promise<any> => {
+  const res = await fetch(`${BASE_URL}/system/status`, {
+    headers: getHeaders(),
+  });
+  return handleResponse(res);
+};
+
+export async function suggestPlacement(
+  productId: number,
+  mennyiseg: number
+): Promise<any> {
+  const res = await fetch(
+    `${BASE_URL}/batch/suggest-placement?productId=${productId}&mennyiseg=${mennyiseg}`,
+    {
+      headers: getHeaders(),
+    }
+  );
   return handleResponse(res);
 }

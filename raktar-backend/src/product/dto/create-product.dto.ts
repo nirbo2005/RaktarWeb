@@ -1,5 +1,14 @@
+//raktar-backend/src/product/dto/create-product.dto.ts
 import { Type } from 'class-transformer';
-import { IsString, IsNotEmpty, IsInt, IsNumber, Min, IsEnum, IsOptional } from 'class-validator';
+import {
+  IsString,
+  IsNotEmpty,
+  IsInt,
+  IsNumber,
+  Min,
+  IsEnum,
+  IsOptional,
+} from 'class-validator';
 import { ProductCategory } from '@prisma/client';
 
 export class CreateProductDto {

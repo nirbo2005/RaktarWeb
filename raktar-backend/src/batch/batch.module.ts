@@ -1,20 +1,15 @@
+//raktar-backend/src/batch/batch.module.ts
 import { Module } from '@nestjs/common';
 import { BatchService } from './batch.service';
 import { BatchController } from './batch.controller';
 import { PrismaService } from '../prisma.service';
 import { AuditModule } from '../audit/audit.module';
-import { NotificationModule } from '../notification/notification.module'; 
+import { NotificationModule } from '../notification/notification.module';
 
 @Module({
-  imports: [
-    AuditModule,
-    NotificationModule, 
-  ],
+  imports: [AuditModule, NotificationModule],
   controllers: [BatchController],
-  providers: [
-    BatchService, 
-    PrismaService
-  ],
+  providers: [BatchService, PrismaService],
   exports: [BatchService],
 })
 export class BatchModule {}

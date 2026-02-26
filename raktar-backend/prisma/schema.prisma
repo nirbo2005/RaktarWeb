@@ -1,4 +1,4 @@
-//raktar-backend/prisma/schema.prisma
+// raktar-backend/prisma/schema.prisma
 generator client {
   provider   = "prisma-client-js"
   engineType = "binary"
@@ -15,7 +15,6 @@ enum Role {
   ADMIN
 }
 
-// Bővített 15 kategória
 enum ProductCategory {
   ELEKTRONIKA
   ELELMISZER
@@ -34,72 +33,70 @@ enum ProductCategory {
   EGYEB
 }
 
-// 1. CIKKTÖRZS: Mesteradatok
 model Product {
   id             Int             @id @default(autoincrement())
   nev            String
   gyarto         String
   kategoria      ProductCategory @default(EGYEB)
   beszerzesiAr   Int             @default(0)
-  eladasiAr      Int             // Ez veszi át a régi 'ar' helyét
-  suly           Float           @default(1.0) // Súly kg-ban (pl. 1.5) a kapacitás számításhoz
-  minimumKeszlet Int             @default(10)  // Alacsony készlet riasztáshoz
+  eladasiAr      Int             
+  suly           Float           @default(1.0)
+  minimumKeszlet Int             @default(10)
   isDeleted      Boolean         @default(false)
   letrehozva     DateTime        @default(now())
-
-  batches        Batch[]         // Egy termék több fizikai adagban is lehet
+  batches        Batch[]         
   logs           AuditLog[]
+  notifications  Notification[]
 }
 
-// 2. FIZIKAI KÉSZLET (SARZS/BATCH)
 model Batch {
   id          Int       @id @default(autoincrement())
   productId   Int
   product     Product   @relation(fields: [productId], references: [id], onDelete: Cascade)
-  
-  parcella    String    // Marad String, DTO-ból szigorúan validálva (pl. A1-1)
+  parcella    String    
   mennyiseg   Int
-  lejarat     DateTime? // Lehet null (nem minden romlandó)
+  lejarat     DateTime? 
   bekerules   DateTime  @default(now())
 }
 
 model User {
-  id                 Int             @id @default(autoincrement())
-  nev                String
-  felhasznalonev     String          @unique
-  jelszo             String
-  email              String?         @unique
-  telefonszam        String?         @unique
-  rang               Role            @default(NEZELODO)
-  isBanned           Boolean         @default(false)
-  mustChangePassword Boolean         @default(false)
-  currentTokenVersion Int     @default(0)
-  
-  logs               AuditLog[]
-  requests           ChangeRequest[]
-  notifications      Notification[]  
+  id                  Int             @id @default(autoincrement())
+  nev                 String
+  felhasznalonev      String          @unique
+  jelszo              String
+  email               String?         @unique
+  telefonszam         String?         @unique
+  rang                Role            @default(NEZELODO)
+  isBanned            Boolean         @default(false)
+  mustChangePassword  Boolean         @default(false)
+  currentTokenVersion Int             @default(0)
+  logs                AuditLog[]
+  requests            ChangeRequest[]
+  notifications       Notification[]  
 }
 
 model Notification {
   id         Int      @id @default(autoincrement())
   userId     Int
   user       User     @relation(fields: [userId], references: [id])
+  productId  Int?
+  product    Product? @relation(fields: [productId], references: [id], onDelete: SetNull)
   uzenet     String
-  tipus      String   // "INFO", "WARNING", "SUCCESS", "ERROR"
+  tipus      String   
   isRead     Boolean  @default(false)
   letrehozva DateTime @default(now())
 }
 
 model AuditLog {
-  id        Int      @id @default(autoincrement())
-  idopont   DateTime @default(now())
-  muvelet   String
-  userId    Int
-  user      User     @relation(fields: [userId], references: [id])
-  productId Int?     
-  product   Product? @relation(fields: [productId], references: [id], onDelete: SetNull)
-  regiAdat  Json?
-  ujAdat    Json?
+  id         Int      @id @default(autoincrement())
+  idopont    DateTime @default(now())
+  muvelet    String
+  userId     Int
+  user       User     @relation(fields: [userId], references: [id])
+  productId  Int?     
+  product    Product? @relation(fields: [productId], references: [id], onDelete: SetNull)
+  regiAdat   Json?
+  ujAdat     Json?
 }
 
 model ChangeRequest {

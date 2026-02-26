@@ -1,7 +1,8 @@
+//raktar-backend/src/events/events.module.ts
 import { Module, Global } from '@nestjs/common';
 import { EventsGateway } from './events.gateway';
 
-@Global() 
+@Global()
 @Module({
   providers: [EventsGateway],
   exports: [EventsGateway],

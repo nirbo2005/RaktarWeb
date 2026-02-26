@@ -1,4 +1,11 @@
-import { IsOptional, IsInt, IsString, IsBoolean, IsDateString } from 'class-validator';
+//raktar-backend/src/audit/dto/get-logs-query.dto.ts
+import {
+  IsOptional,
+  IsInt,
+  IsString,
+  IsBoolean,
+  IsDateString,
+} from 'class-validator';
 import { Transform } from 'class-transformer';
 
 export class GetLogsQueryDto {

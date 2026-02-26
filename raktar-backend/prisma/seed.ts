@@ -1,3 +1,4 @@
+// raktar-backend/prisma/seed.ts
 import { PrismaClient, Role } from '@prisma/client';
 import * as bcrypt from 'bcrypt';
 import * as fs from 'fs';
@@ -8,15 +9,19 @@ const prisma = new PrismaClient();
 async function main() {
   console.log('🌱 Seeding folyamat elindítva...');
 
-  
-  await prisma.batch.deleteMany();
-  await prisma.auditLog.deleteMany();
-  await prisma.changeRequest.deleteMany();
-  await prisma.notification.deleteMany();
-  await prisma.product.deleteMany();
-  await prisma.user.deleteMany();
+  // Hibatűrő törlés: Ha a tábla nem létezik, ne álljon le a folyamat
+  try {
+    await prisma.batch.deleteMany();
+    await prisma.auditLog.deleteMany();
+    await prisma.changeRequest.deleteMany();
+    await prisma.notification.deleteMany();
+    await prisma.product.deleteMany();
+    await prisma.user.deleteMany();
+    console.log('♻️ Korábbi adatok törölve.');
+  } catch (e) {
+    console.log('⚠️ Törlés sikertelen (lehet, hogy üres az adatbázis), folytatás...');
+  }
 
-  
   const usersPath = path.join(__dirname, 'seed-users.json');
   if (fs.existsSync(usersPath)) {
     const usersData = JSON.parse(fs.readFileSync(usersPath, 'utf-8'));
@@ -30,18 +35,17 @@ async function main() {
           rang: u.rang as Role,
           email: u.email,
           telefonszam: u.telefonszam,
-          mustChangePassword: u.mustChangePassword || false
+          mustChangePassword: u.mustChangePassword || false,
         },
       });
     }
     console.log(`✅ ${usersData.length} felhasználó létrehozva.`);
   }
 
-  
   const productsPath = path.join(__dirname, 'seed-products.json');
   if (fs.existsSync(productsPath)) {
     const productsData = JSON.parse(fs.readFileSync(productsPath, 'utf-8'));
-    
+
     for (const item of productsData) {
       const product = await prisma.product.create({
         data: {
@@ -60,9 +64,9 @@ async function main() {
           productId: product.id,
           parcella: b.parcella,
           mennyiseg: b.mennyiseg,
-          lejarat: b.lejarat ? new Date(b.lejarat) : null,
+          lejarat: b.lejarat ? new Date(b.lejarat) : null, // A sémában "lejarat" van
         }));
-        
+
         await prisma.batch.createMany({
           data: batchData,
         });

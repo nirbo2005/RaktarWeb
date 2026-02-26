@@ -1,3 +1,4 @@
+//raktar-frontend/src/types/Product.ts
 import { type Batch } from "./Batch";
 
 export type ProductCategory =
@@ -27,5 +28,5 @@ export type Product = {
   suly: number;
   minimumKeszlet: number;
   isDeleted: boolean;
-  batches?: Batch[]; // Ez tartalmazza a fizikai készletet
+  batches?: Batch[];
 };

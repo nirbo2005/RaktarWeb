@@ -1,3 +1,4 @@
+//raktar-backend/src/auth/dto/force-change-password.dto.ts
 import { IsNotEmpty, IsString, MinLength } from 'class-validator';
 
 export class ForceChangePasswordDto {
@@ -10,6 +11,8 @@ export class ForceChangePasswordDto {
   ideiglenesJelszo: string;
 
   @IsString()
-  @MinLength(6, { message: 'Az új jelszónak legalább 6 karakternek kell lennie!' })
+  @MinLength(6, {
+    message: 'Az új jelszónak legalább 6 karakternek kell lennie!',
+  })
   ujJelszo: string;
 }

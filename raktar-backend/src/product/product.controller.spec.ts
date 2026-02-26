@@ -1,4 +1,4 @@
-
+//raktar-backend/src/product/product.controller.spec.ts
 import { Test, TestingModule } from '@nestjs/testing';
 import { ProductController } from './product.controller';
 import { ProductService } from './product.service';

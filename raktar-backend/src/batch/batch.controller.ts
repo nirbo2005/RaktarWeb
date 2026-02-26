@@ -1,4 +1,18 @@
-import { Controller, Post, Body, Patch, Param, Delete, UseGuards, Request, ParseIntPipe, Query, BadRequestException } from '@nestjs/common';
+// raktar-backend/src/batch/batch.controller.ts
+import {
+  Controller,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  Get,
+  UseGuards,
+  Request,
+  ParseIntPipe,
+  Query,
+  BadRequestException,
+} from '@nestjs/common';
 import { BatchService } from './batch.service';
 import { CreateBatchDto } from './dto/create-batch.dto';
 import { UpdateBatchDto } from './dto/update-batch.dto';
@@ -12,23 +26,44 @@ import { Role } from '@prisma/client';
 export class BatchController {
   constructor(private readonly batchService: BatchService) {}
 
-  /**
-   * Segédfüggvény a userId kinyerésére. 
-   * Elsődlegesen a query paraméterből (amit a frontend küld), 
-   * másodlagosan a JWT tokenből próbálja venni.
-   */
   private getUserId(req: any, queryUserId?: string): number {
     const idFromQuery = queryUserId ? parseInt(queryUserId, 10) : NaN;
     if (!isNaN(idFromQuery)) return idFromQuery;
 
-    
-    const idFromToken = req.user?.id || req.user?.sub;
+    const idFromToken = req.user?.id || req.user?.userId || req.user?.sub;
     const parsedTokenId = parseInt(idFromToken, 10);
-    
+
     if (isNaN(parsedTokenId)) {
-      throw new BadRequestException('Nem azonosítható felhasználó (userId missing or NaN)');
+      throw new BadRequestException(
+        'Nem azonosítható felhasználó (userId missing)',
+      );
     }
     return parsedTokenId;
+  }
+
+  @Roles(Role.KEZELO, Role.ADMIN)
+  @Get('warehouse-map')
+  getWarehouseMap() {
+    return this.batchService.getWarehouseMap();
+  }
+
+  @Roles(Role.KEZELO, Role.ADMIN)
+  @Get('suggest-placement')
+  suggestPlacement(
+    @Query('productId', ParseIntPipe) productId: number,
+    @Query('mennyiseg', ParseIntPipe) mennyiseg: number,
+  ) {
+    return this.batchService.suggestPlacement(productId, mennyiseg);
+  }
+
+  @Roles(Role.KEZELO, Role.ADMIN)
+  @Post('bulk')
+  createBulk(
+    @Body() splits: CreateBatchDto[],
+    @Request() req,
+    @Query('userId') userId?: string,
+  ) {
+    return this.batchService.createBulk(splits, this.getUserId(req, userId));
   }
 
   @Roles(Role.ADMIN)
@@ -39,24 +74,39 @@ export class BatchController {
 
   @Roles(Role.KEZELO, Role.ADMIN)
   @Post()
-  create(@Body() createBatchDto: CreateBatchDto, @Request() req, @Query('userId') userId?: string) {
-    return this.batchService.create(createBatchDto, this.getUserId(req, userId));
+  create(
+    @Body() createBatchDto: CreateBatchDto,
+    @Request() req,
+    @Query('userId') userId?: string,
+  ) {
+    return this.batchService.create(
+      createBatchDto,
+      this.getUserId(req, userId),
+    );
   }
 
   @Roles(Role.KEZELO, Role.ADMIN)
   @Patch(':id')
   update(
-    @Param('id', ParseIntPipe) id: number, 
-    @Body() updateBatchDto: UpdateBatchDto, 
+    @Param('id', ParseIntPipe) id: number,
+    @Body() updateBatchDto: UpdateBatchDto,
     @Request() req,
-    @Query('userId') userId?: string
+    @Query('userId') userId?: string,
   ) {
-    return this.batchService.update(id, updateBatchDto, this.getUserId(req, userId));
+    return this.batchService.update(
+      id,
+      updateBatchDto,
+      this.getUserId(req, userId),
+    );
   }
 
   @Roles(Role.KEZELO, Role.ADMIN)
   @Delete(':id')
-  remove(@Param('id', ParseIntPipe) id: number, @Request() req, @Query('userId') userId?: string) {
+  remove(
+    @Param('id', ParseIntPipe) id: number,
+    @Request() req,
+    @Query('userId') userId?: string,
+  ) {
     return this.batchService.remove(id, this.getUserId(req, userId));
   }
 }

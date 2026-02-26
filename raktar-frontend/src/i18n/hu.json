@@ -18,7 +18,11 @@
     "close": "Bezárás",
     "yes": "Igen",
     "back": "Vissza",
-    "pieces": "db"
+    "pieces": "db",
+    "open": "Megnyitás",
+    "filterBtn": "Szűrés",
+    "restore": "Visszavonás",
+    "unknown": "Ismeretlen"
   },
   "admin": {
     "editTitle": "Szerkesztés: {{name}}",
@@ -81,6 +85,15 @@
     }
   },
   "profile": {
+    "dashboard": {
+      "details": { "title": "Személyes Adatok", "desc": "Név, elérhetőség és jelszókezelés" },
+      "stats": { "title": "Statisztikák", "desc": "Saját aktivitás és teljesítmény elemzése" },
+      "logs": { "title": "Tevékenységnapló", "desc": "Rendszerműveletek visszakövetése" },
+      "security": { "title": "Biztonsági Központ", "desc": "Munkamenetek és fiókvédelem" },
+      "stock": { "title": "Raktárérték", "desc": "Pénzügyi kimutatások és készletadatok" },
+      "admin": { "title": "Adminisztráció", "desc": "Felhasználók és kérelmek kezelése" },
+      "system": { "title": "Rendszerállapot", "desc": "Szerver diagnosztika és metrikák" }
+    },
     "tabs": {
       "myProfile": "👤 Saját profil",
       "activityLog": "📜 Tevékenységnapló",
@@ -90,11 +103,51 @@
       "restoreTitle": "Visszaállítás?",
       "restoreText": "Biztosan vissza szeretnéd állítani az eredeti állapotot?",
       "restoreBtn": "Visszaállítás",
-      "restored": "Visszaállítva!",
+      "restored": "Sikeresen visszavonva!",
       "restoreFailed": "Sikertelen művelet.",
       "groupRestoreTitle": "Csoportos visszaállítás",
       "groupRestoreText": "Biztosan visszaállítod mind a {{count}} elemet?",
       "partialError": "Részleges hiba történt."
+    },
+    "security": {
+      "passwordStatus": "Jelszó állapota",
+      "passwordActive": "Aktív",
+      "accountStatus": "Fiók állapota",
+      "active": "Aktív",
+      "banned": "Kitiltva",
+      "rankLevel": "Jogosultsági szint",
+      "revokeSessionsTitle": "Minden munkamenet kiléptetése",
+      "revokeSessionsDesc": "Ez a funkció azonnal kilépteti az összes eszközről, beleértve a jelenlegit is. Használja, ha illetéktelen hozzáférést gyanít.",
+      "revokeBtn": "Kijelentkezés mindenhonnan",
+      "revokeTitle": "Biztosan kiléptet mindenkit?",
+      "revokeText": "Az összes aktív token érvénytelenítve lesz.",
+      "revokeConfirm": "Igen, kiléptetés",
+      "successTitle": "Sikeres művelet",
+      "successText": "Minden munkamenet lezárva. Kérjük, jelentkezzen be újra.",
+      "loginHistory": "Bejelentkezési előzmények",
+      "comingSoon": "Hamarosan elérhető...",
+      "revokeError": "Nem sikerült a munkamenetek visszavonása."
+    },
+    "stats": {
+      "totalActions": "Összes művelet",
+      "creates": "Létrehozások",
+      "updates": "Módosítások",
+      "deletes": "Törlések",
+      "activityDistribution": "Aktivitás megoszlása",
+      "movesThisMonth": "Művelet ebben a hónapban",
+      "newProducts": "Új termék rögzítve"
+    },
+    "system": {
+      "database": "Adatbázis",
+      "connected": "Kapcsolódva",
+      "error": "Hiba",
+      "uptime": "Üzemidő",
+      "memory": "Memória használat",
+      "latency": "API késleltetés",
+      "recentEvents": "Legutóbbi rendszerműveletek",
+      "maintenance": "Karbantartás",
+      "maintenanceDesc": "Futtasson diagnosztikai eszközöket az adatbázis integritásának és a szerver optimális működésének ellenőrzéséhez.",
+      "runDiagnostic": "Diagnosztika indítása"
     }
   },
   "logs": {
@@ -106,8 +159,12 @@
       "price": "Ár"
     },
     "filters": {
+      "user": "Felhasználó",
       "allUsers": "Összes felhasználó",
+      "operation": "Művelet",
+      "allOperations": "Összes művelet",
       "allActions": "Minden művelet",
+      "date": "Dátumtól",
       "create": "✨ Létrehozás",
       "update": "📝 Módosítás",
       "delete": "🗑️ Törlés",
@@ -116,12 +173,34 @@
       "filterBtn": "Szűrés",
       "exportBtn": "Export"
     },
+    "operations": {
+      "create": "Létrehozás",
+      "update": "Módosítás",
+      "batch": "Készletmozgás",
+      "delete": "Törlés",
+      "bulkDelete": "TÖMEGES TÖRLÉS",
+      "bulkItems": "Termékek törölve ({{count}} db)",
+      "productCreate": "Új termék felvéve",
+      "productDelete": "Termék törölve",
+      "restored": "Visszaállítva"
+    },
     "diff": {
       "productAdded": "Termék hozzáadva",
       "productDeleted": "Termék törölve",
       "dataChanged": "Adatváltozás történt",
       "productRestored": "Termék helyreállítva",
       "reverted": "Módosítás visszavonva:"
+    },
+    "types": {
+      "split": "Részleges áthelyezés",
+      "move": "Teljes áthelyezés",
+      "merge": "Összevonás"
+    },
+    "fields": {
+      "sourceShelf": "Forrás polc",
+      "targetShelf": "Cél polc",
+      "total": "Összesen",
+      "system": "Rendszerfolyamat"
     },
     "excel": {
       "sheetName": "Tevékenységnapló",
@@ -186,12 +265,17 @@
         "intakeSuccess": "Bevételezés sikeres! 📦",
         "productCreated": "Termék rögzítve! ✨",
         "errorOccurred": "Hiba történt",
-        "errorText": "Hálózati hiba vagy megtelt polc."
+        "errorText": "Hálózati hiba vagy megtelt polc.",
+        "missingShelf": "Kérlek, rendelj polcot minden tételhez!",
+        "invalidAllocation": "Az elosztott mennyiség nem egyezik az összmennyiséggel!"
       }
     },
     "details": {
-      "deletedWarning": "⚠️ Figyelem: Ez a termék törölt állapotban van!",
       "back": "Vissza",
+      "backToHome": "Vissza a főoldalra",
+      "notFoundTitle": "Nincs ilyen termék",
+      "fetching": "Adatok lekérése...",
+      "deletedWarning": "⚠️ Figyelem: Ez a termék törölt állapotban van!",
       "itemNumber": "Cikkszám (ID)",
       "masterData": "Mesteradatok",
       "weightUnit": "Súly (Egység)",
@@ -207,9 +291,6 @@
       "outOfStock": "Nincs készleten.",
       "modify": "Módosítás",
       "delete": "Törlés",
-      "notFoundTitle": "Nincs ilyen termék",
-      "backToHome": "Vissza a főoldalra",
-      "fetching": "Adatok lekérése...",
       "alerts": {
         "deleteConfirmTitle": "Biztos vagy benne?",
         "deleteConfirmText": "A(z) \"{{name}}\" teljes cikktörzse és minden fizikai sarzsa törlésre kerül a rendszerből!",
@@ -281,10 +362,7 @@
       }
     },
     "modify": {
-      "tabs": {
-        "physicalStock": "📦 Fizikai Készlet",
-        "masterData": "⚙️ Cikktörzs"
-      },
+      "tabs": { "physicalStock": "📦 Fizikai Készlet", "masterData": "⚙️ Cikktörzs" },
       "deletedTitle": "Termék törölve",
       "restoreBtn": "Visszaállítás",
       "stockManagement": "Készletkezelés",
@@ -312,6 +390,28 @@
         "dataUpdated": "Adatok frissítve! ✨",
         "saveFailed": "Sikertelen mentés."
       }
+    }
+  },
+  "inventory": {
+    "shelfMap": {
+      "title": "Interaktív Raktártérkép",
+      "sector": "Szektor",
+      "weight": "Aktuális súly",
+      "category": "Kategória",
+      "empty": "Üres",
+      "low": "Alacsony terhelés",
+      "mid": "Közepes terhelés",
+      "high": "Magas terhelés",
+      "recommended": "Javasolt hely"
+    },
+    "splitter": {
+      "title": "Többpolcos Elosztás",
+      "allAllocated": "Minden tétel elhelyezve",
+      "remaining": "Fennmaradó",
+      "shelf": "Polc",
+      "qty": "Mennyiség",
+      "addSplit": "Bontás további polcokra",
+      "overAllocated": "⚠️ Hiba: {{amount}} db-bal többet osztottál el!"
     }
   },
   "stockValue": {

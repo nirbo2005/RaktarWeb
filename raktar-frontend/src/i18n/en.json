@@ -18,7 +18,11 @@
     "close": "Close",
     "yes": "Yes",
     "back": "Back",
-    "pieces": "pcs"
+    "pieces": "pcs",
+    "open": "Open",
+    "filterBtn": "Filter",
+    "restore": "Restore",
+    "unknown": "Unknown"
   },
   "admin": {
     "editTitle": "Edit: {{name}}",
@@ -81,6 +85,36 @@
     }
   },
   "profile": {
+    "dashboard": {
+      "details": {
+        "title": "Personal Details",
+        "desc": "Name, contact and password management"
+      },
+      "stats": {
+        "title": "Statistics",
+        "desc": "Personal activity and performance analysis"
+      },
+      "logs": {
+        "title": "Activity Log",
+        "desc": "Track system operations"
+      },
+      "security": {
+        "title": "Security Center",
+        "desc": "Sessions and account protection"
+      },
+      "stock": {
+        "title": "Stock Value",
+        "desc": "Financial reports and inventory data"
+      },
+      "admin": {
+        "title": "Administration",
+        "desc": "Manage users and requests"
+      },
+      "system": {
+        "title": "System Status",
+        "desc": "Server diagnostics and metrics"
+      }
+    },
     "tabs": {
       "myProfile": "👤 My Profile",
       "activityLog": "📜 Activity Log",
@@ -95,6 +129,46 @@
       "groupRestoreTitle": "Bulk Restore",
       "groupRestoreText": "Are you sure you want to restore all {{count}} items?",
       "partialError": "Partial error occurred."
+    },
+    "security": {
+      "passwordStatus": "Password Status",
+      "passwordActive": "Active",
+      "accountStatus": "Account Status",
+      "active": "Active",
+      "banned": "Banned",
+      "rankLevel": "Privilege Level",
+      "revokeSessionsTitle": "Revoke All Sessions",
+      "revokeSessionsDesc": "This will immediately sign you out from all devices, including the current one. Use this if you suspect unauthorized access.",
+      "revokeBtn": "Logout from everywhere",
+      "revokeTitle": "Are you sure?",
+      "revokeText": "All active tokens will be invalidated.",
+      "revokeConfirm": "Yes, revoke all",
+      "successTitle": "Success",
+      "successText": "All sessions closed. Please log in again.",
+      "loginHistory": "Login History",
+      "comingSoon": "Coming soon...",
+      "revokeError": "Failed to revoke sessions."
+    },
+    "stats": {
+      "totalActions": "Total Actions",
+      "creates": "Creations",
+      "updates": "Updates",
+      "deletes": "Deletions",
+      "activityDistribution": "Activity Distribution",
+      "movesThisMonth": "Actions this month",
+      "newProducts": "New products registered"
+    },
+    "system": {
+      "database": "Database",
+      "connected": "Connected",
+      "error": "Error",
+      "uptime": "Uptime",
+      "memory": "Memory Usage",
+      "latency": "API Latency",
+      "recentEvents": "Recent System Events",
+      "maintenance": "Maintenance",
+      "maintenanceDesc": "Run diagnostic tools to check database integrity and optimal server performance.",
+      "runDiagnostic": "Run Diagnostic"
     }
   },
   "logs": {
@@ -106,8 +180,12 @@
       "price": "Price"
     },
     "filters": {
+      "user": "User",
       "allUsers": "All users",
+      "operation": "Operation",
+      "allOperations": "All operations",
       "allActions": "All actions",
+      "date": "From date",
       "create": "✨ Create",
       "update": "📝 Update",
       "delete": "🗑️ Delete",
@@ -116,12 +194,34 @@
       "filterBtn": "Filter",
       "exportBtn": "Export"
     },
+    "operations": {
+      "create": "Create",
+      "update": "Update",
+      "batch": "Stock movement",
+      "delete": "Delete",
+      "bulkDelete": "BULK DELETE",
+      "bulkItems": "Products deleted ({{count}} pcs)",
+      "productCreate": "New product added",
+      "productDelete": "Product deleted",
+      "restored": "Restored"
+    },
     "diff": {
       "productAdded": "Product added",
       "productDeleted": "Product deleted",
       "dataChanged": "Data changed",
       "productRestored": "Product restored",
       "reverted": "Modification reverted:"
+    },
+    "types": {
+      "split": "Partial relocation",
+      "move": "Full relocation",
+      "merge": "Merge"
+    },
+    "fields": {
+      "sourceShelf": "Source shelf",
+      "targetShelf": "Target shelf",
+      "total": "Total",
+      "system": "System process"
     },
     "excel": {
       "sheetName": "Activity Log",
@@ -141,7 +241,7 @@
       "noLogs": "No log entries to display."
     }
   },
-"product": {
+  "product": {
     "categories": {
       "ELEKTRONIKA": "Electronics",
       "ELELMISZER": "Food",
@@ -158,6 +258,38 @@
       "BUTOR": "Furniture",
       "EGESZSEGUGY": "Healthcare",
       "EGYEB": "Other"
+    },
+    "add": {
+      "title": "📦 Warehouse <span class=\"text-blue-600\">Intake</span>",
+      "searchExisting": "Search existing master data",
+      "searchPlaceholder": "Search by name or manufacturer...",
+      "select": "Select →",
+      "or": "OR",
+      "createNew": "+ Create New Master Data",
+      "selectedMaster": "Selected Master Data",
+      "masterData": "Master Data",
+      "name": "Product Name",
+      "namePlaceholder": "e.g. Steel Bolt",
+      "manufacturer": "Manufacturer",
+      "manufacturerPlaceholder": "e.g. IronWorks Ltd.",
+      "category": "Category",
+      "weight": "Weight (kg / pc)",
+      "purchasePrice": "Purchase Price (HUF)",
+      "salePrice": "Sale Price (HUF)",
+      "minStock": "Minimum Stock",
+      "batchIntake": "Batch Intake",
+      "expiry": "Expiry Date (Optional)",
+      "location": "Location (Target Shelf)",
+      "quantity": "Quantity (pcs)",
+      "saveToWarehouse": "Save to Warehouse",
+      "alerts": {
+        "intakeSuccess": "Intake successful! 📦",
+        "productCreated": "Product registered! ✨",
+        "errorOccurred": "An error occurred",
+        "errorText": "Network error or shelf full.",
+        "missingShelf": "Please assign a shelf to all items!",
+        "invalidAllocation": "Allocated quantity does not match total quantity!"
+      }
     },
     "details": {
       "back": "Back",
@@ -281,6 +413,28 @@
         "stockUpdated": "Stock updated.",
         "dataUpdated": "Data updated! ✨",
         "saveFailed": "Failed to save."
+      }
+    },
+    "inventory": {
+      "shelfMap": {
+        "title": "Interactive Warehouse Map",
+        "sector": "Sector",
+        "weight": "Current weight",
+        "category": "Category",
+        "empty": "Empty",
+        "low": "Low load",
+        "mid": "Medium load",
+        "high": "High load",
+        "recommended": "Recommended space"
+      },
+      "splitter": {
+        "title": "Multi-Shelf Allocation",
+        "allAllocated": "Fully allocated",
+        "remaining": "Remaining",
+        "shelf": "Shelf",
+        "qty": "Quantity",
+        "addSplit": "Split to more shelves",
+        "overAllocated": "⚠️ Error: Over-allocated by {{amount}} pcs!"
       }
     }
   },

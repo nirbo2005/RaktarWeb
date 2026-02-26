@@ -1,3 +1,4 @@
+//raktar-backend/src/auth/auth.module.ts
 import { Module } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { AuthController } from './auth.controller';
@@ -6,12 +7,12 @@ import { JwtModule } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
 import { JwtStrategy } from './jwt.strategy';
 import { PrismaService } from '../prisma.service';
-import { EventsModule } from '../events/events.module'; 
+import { EventsModule } from '../events/events.module';
 
 @Module({
   imports: [
     UserModule,
-    EventsModule, 
+    EventsModule,
     PassportModule.register({ defaultStrategy: 'jwt' }),
     JwtModule.register({
       global: true,

@@ -3,7 +3,6 @@ import {
   Injectable,
   UnauthorizedException,
   ForbiddenException,
-  BadRequestException,
 } from '@nestjs/common';
 import { UserService } from '../user/user.service';
 import * as bcrypt from 'bcrypt';
@@ -24,8 +23,8 @@ export class AuthService {
   ) {}
 
   async login(loginDto: LoginDto) {
-    const user = await this.prisma.user.findUnique({ 
-      where: { felhasznalonev: loginDto.felhasznalonev } 
+    const user = await this.prisma.user.findUnique({
+      where: { felhasznalonev: loginDto.felhasznalonev },
     });
 
     if (!user || !(await bcrypt.compare(loginDto.jelszo, user.jelszo))) {
@@ -33,46 +32,51 @@ export class AuthService {
     }
 
     if (user.isBanned) {
-      // Fontos a 'felfüggesztve' szó a frontend SweetAlert logikájához
-      throw new ForbiddenException('Ez a felhasználói fiók fel van függesztve!');
+      throw new ForbiddenException(
+        'Ez a felhasználói fiók fel van függesztve!',
+      );
     }
 
     const updatedUser = await this.prisma.user.update({
       where: { id: user.id },
-      data: { currentTokenVersion: { increment: 1 } }
+      data: { currentTokenVersion: { increment: 1 } },
     });
-  
-    const payload = { 
-      username: updatedUser.felhasznalonev, 
-      sub: updatedUser.id, 
+
+    const payload = {
+      username: updatedUser.felhasznalonev,
+      sub: updatedUser.id,
       rang: updatedUser.rang,
       version: updatedUser.currentTokenVersion,
-      mustChangePassword: updatedUser.mustChangePassword 
+      mustChangePassword: updatedUser.mustChangePassword,
     };
-  
-    this.events.emitToUser(updatedUser.id, 'force_logout', { 
+
+    this.events.emitToUser(updatedUser.id, 'force_logout', {
       userId: updatedUser.id,
-      reason: 'session_expired' 
+      reason: 'session_expired',
     });
-  
+
     return {
       access_token: this.jwtService.sign(payload),
       user: {
         id: updatedUser.id,
-        nev: updatedUser.nev, 
+        nev: updatedUser.nev,
         felhasznalonev: updatedUser.felhasznalonev,
         email: updatedUser.email,
         telefonszam: updatedUser.telefonszam,
         rang: updatedUser.rang,
-        mustChangePassword: updatedUser.mustChangePassword
-      }
+        mustChangePassword: updatedUser.mustChangePassword,
+      },
     };
   }
 
   async forgotPassword(dto: ForgotPasswordDto) {
     const user = await this.userService.findByUsername(dto.felhasznalonev);
-    const dbPhone = user?.telefonszam ? user.telefonszam.replace(/\s+/g, '') : '';
-    const inputPhone = dto.telefonszam ? dto.telefonszam.replace(/\s+/g, '') : '';
+    const dbPhone = user?.telefonszam
+      ? user.telefonszam.replace(/\s+/g, '')
+      : '';
+    const inputPhone = dto.telefonszam
+      ? dto.telefonszam.replace(/\s+/g, '')
+      : '';
 
     if (!user || user.email !== dto.email || dbPhone !== inputPhone) {
       throw new UnauthorizedException('A megadott adatok nem egyeznek!');
@@ -86,18 +90,18 @@ export class AuthService {
       data: {
         jelszo: hashedTemp,
         mustChangePassword: true,
-        currentTokenVersion: { increment: 1 }
-      }
+        currentTokenVersion: { increment: 1 },
+      },
     });
 
-    this.events.emitToUser(user.id, 'force_logout', { 
+    this.events.emitToUser(user.id, 'force_logout', {
       userId: user.id,
-      reason: 'session_expired' 
+      reason: 'security_reset',
     });
 
-    return { 
+    return {
       message: 'Ideiglenes jelszó generálva.',
-      tempPassword 
+      tempPassword,
     };
   }
 
@@ -106,7 +110,8 @@ export class AuthService {
     if (!user) throw new UnauthorizedException('Felhasználó nem található!');
 
     const isMatch = await bcrypt.compare(dto.ideiglenesJelszo, user.jelszo);
-    if (!isMatch) throw new UnauthorizedException('Az ideiglenes jelszó hibás!');
+    if (!isMatch)
+      throw new UnauthorizedException('Az ideiglenes jelszó hibás!');
 
     const hashedNew = await bcrypt.hash(dto.ujJelszo, 10);
 
@@ -115,13 +120,13 @@ export class AuthService {
       data: {
         jelszo: hashedNew,
         mustChangePassword: false,
-        currentTokenVersion: { increment: 1 }
-      }
+        currentTokenVersion: { increment: 1 },
+      },
     });
 
-    this.events.emitToUser(user.id, 'force_logout', { 
+    this.events.emitToUser(user.id, 'force_logout', {
       userId: user.id,
-      reason: 'session_expired' 
+      reason: 'security_reset',
     });
 
     return { message: 'Sikeres jelszóváltás!' };

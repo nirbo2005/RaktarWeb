@@ -1,16 +1,19 @@
+//raktar-frontend/src/components/Auth/ForgotPassword.tsx
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { forgotPassword } from "../../services/api";
-import PhoneInput from 'react-phone-input-2';
-import 'react-phone-input-2/lib/style.css';
-import hu from 'react-phone-input-2/lang/hu.json';
-import Swal from 'sweetalert2';
+import PhoneInput from "react-phone-input-2";
+import "react-phone-input-2/lib/style.css";
+import hu from "react-phone-input-2/lang/hu.json";
+import Swal from "sweetalert2";
 import { useTranslation } from "react-i18next";
 
 const MySwal = Swal.mixin({
   customClass: {
-    popup: 'rounded-[2.5rem] bg-white dark:bg-slate-900 text-slate-900 dark:text-white border border-slate-200 dark:border-slate-800 shadow-2xl font-sans',
-    confirmButton: 'bg-blue-600 hover:bg-blue-500 text-white px-8 py-3 rounded-2xl font-black uppercase text-xs tracking-widest transition-all active:scale-95 mx-2',
+    popup:
+      "rounded-[2.5rem] bg-white dark:bg-slate-900 text-slate-900 dark:text-white border border-slate-200 dark:border-slate-800 shadow-2xl font-sans",
+    confirmButton:
+      "bg-blue-600 hover:bg-blue-500 text-white px-8 py-3 rounded-2xl font-black uppercase text-xs tracking-widest transition-all active:scale-95 mx-2",
   },
   buttonsStyling: false,
 });
@@ -31,47 +34,54 @@ function ForgotPassword() {
     e.preventDefault();
     setError("");
 
-    if (!form.felhasznalonev || !form.email || !form.telefonszam || form.telefonszam.length < 5) {
-      setError(t('auth.forgotPassword.alerts.fillValid'));
+    if (
+      !form.felhasznalonev ||
+      !form.email ||
+      !form.telefonszam ||
+      form.telefonszam.length < 5
+    ) {
+      setError(t("auth.forgotPassword.alerts.fillValid"));
       return;
     }
-    
+
     setLoading(true);
     try {
       const submitData = {
         ...form,
-        telefonszam: form.telefonszam.startsWith('+') ? form.telefonszam : `+${form.telefonszam}`
+        telefonszam: form.telefonszam.startsWith("+")
+          ? form.telefonszam
+          : `+${form.telefonszam}`,
       };
 
       const data = await forgotPassword(submitData);
-      
+
       MySwal.fire({
-        icon: 'success',
-        title: t('auth.forgotPassword.alerts.successTitle'),
+        icon: "success",
+        title: t("auth.forgotPassword.alerts.successTitle"),
         html: `
-          ${t('auth.forgotPassword.alerts.successHtml1')}
+          ${t("auth.forgotPassword.alerts.successHtml1")}
           <div class="bg-slate-100 dark:bg-slate-950 p-4 rounded-2xl border border-slate-200 dark:border-slate-800 select-all font-mono text-2xl font-black tracking-widest text-blue-600 dark:text-blue-400">
             ${data.tempPassword}
           </div>
-          ${t('auth.forgotPassword.alerts.successHtml2')}
+          ${t("auth.forgotPassword.alerts.successHtml2")}
         `,
-        confirmButtonText: t('auth.forgotPassword.alerts.goToLogin'),
+        confirmButtonText: t("auth.forgotPassword.alerts.goToLogin"),
         allowOutsideClick: false,
       }).then((result) => {
         if (result.isConfirmed) {
           navigate("/login");
         }
       });
-      
     } catch (err: any) {
-      const errorMsg = err.message || t('auth.forgotPassword.alerts.verifyError');
+      const errorMsg =
+        err.message || t("auth.forgotPassword.alerts.verifyError");
       setError(errorMsg);
 
       MySwal.fire({
-        icon: 'error',
-        title: t('auth.forgotPassword.alerts.errorOccurred'),
+        icon: "error",
+        title: t("auth.forgotPassword.alerts.errorOccurred"),
         text: errorMsg,
-        confirmButtonText: t('auth.forgotPassword.alerts.understand')
+        confirmButtonText: t("auth.forgotPassword.alerts.understand"),
       });
     } finally {
       setLoading(false);
@@ -79,40 +89,52 @@ function ForgotPassword() {
   };
 
   const inputStyle = `w-full px-5 py-3 bg-gray-50 dark:bg-slate-800/50 border border-gray-300 dark:border-slate-700 rounded-2xl text-gray-900 dark:text-white placeholder-gray-400 focus:ring-2 focus:ring-blue-500 outline-none transition-all text-sm`;
-  const labelStyle = "block mb-1.5 ml-2 text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest text-left";
+  const labelStyle =
+    "block mb-1.5 ml-2 text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest text-left";
 
   return (
     <div className="min-h-[80vh] flex items-center justify-center p-4 transition-colors duration-300">
       <div className="bg-white dark:bg-slate-900 p-8 rounded-[2.5rem] shadow-2xl w-full max-w-md border border-gray-100 dark:border-slate-800 transition-colors">
-        <h1 className="text-3xl font-black text-gray-800 dark:text-white mb-2 text-center italic uppercase tracking-tighter" dangerouslySetInnerHTML={{ __html: t('auth.forgotPassword.title') }}></h1>
+        <h1
+          className="text-3xl font-black text-gray-800 dark:text-white mb-2 text-center italic uppercase tracking-tighter"
+          dangerouslySetInnerHTML={{ __html: t("auth.forgotPassword.title") }}
+        ></h1>
         <p className="text-slate-400 text-xs text-center font-bold mb-8 uppercase tracking-widest leading-relaxed">
-          {t('auth.forgotPassword.subtitle')}
+          {t("auth.forgotPassword.subtitle")}
         </p>
 
         {error && (
           <div className="bg-red-500/10 border border-red-500/20 rounded-xl py-3 mb-6 text-center px-4 animate-in zoom-in-95">
-            <p className="text-red-500 text-[10px] font-black uppercase tracking-widest">{error}</p>
+            <p className="text-red-500 text-[10px] font-black uppercase tracking-widest">
+              {error}
+            </p>
           </div>
         )}
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label className={labelStyle}>{t('auth.forgotPassword.username')}</label>
+            <label className={labelStyle}>
+              {t("auth.forgotPassword.username")}
+            </label>
             <input
               className={inputStyle}
-              placeholder={t('auth.forgotPassword.usernamePlaceholder')}
+              placeholder={t("auth.forgotPassword.usernamePlaceholder")}
               value={form.felhasznalonev}
-              onChange={(e) => setForm({ ...form, felhasznalonev: e.target.value })}
+              onChange={(e) =>
+                setForm({ ...form, felhasznalonev: e.target.value })
+              }
               required
             />
           </div>
 
           <div>
-            <label className={labelStyle}>{t('auth.forgotPassword.email')}</label>
+            <label className={labelStyle}>
+              {t("auth.forgotPassword.email")}
+            </label>
             <input
               type="email"
               className={inputStyle}
-              placeholder={t('auth.forgotPassword.emailPlaceholder')}
+              placeholder={t("auth.forgotPassword.emailPlaceholder")}
               value={form.email}
               onChange={(e) => setForm({ ...form, email: e.target.value })}
               required
@@ -120,21 +142,23 @@ function ForgotPassword() {
           </div>
 
           <div>
-            <label className={labelStyle}>{t('auth.forgotPassword.phone')}</label>
+            <label className={labelStyle}>
+              {t("auth.forgotPassword.phone")}
+            </label>
             <PhoneInput
-              country={'hu'}
+              country={"hu"}
               value={form.telefonszam}
               onChange={(phone) => setForm({ ...form, telefonszam: phone })}
               localization={hu}
-              masks={{ hu: '.. ... ....' }}
+              masks={{ hu: ".. ... ...." }}
               countryCodeEditable={false}
               enableSearch={true}
-              searchPlaceholder={t('common.search')}
+              searchPlaceholder={t("common.search")}
               containerClass="phone-container-fp"
               inputClass="phone-input-fp"
               buttonClass="phone-button-fp"
               dropdownClass="phone-dropdown-fp"
-              dropdownStyle={{ height: '300px' }}
+              dropdownStyle={{ height: "300px" }}
             />
           </div>
 
@@ -143,7 +167,9 @@ function ForgotPassword() {
             disabled={loading}
             className="w-full bg-blue-600 hover:bg-blue-500 text-white font-black py-4 rounded-2xl transition-all shadow-lg shadow-blue-600/20 active:scale-95 uppercase tracking-widest text-xs mt-6 disabled:opacity-50"
           >
-            {loading ? t('auth.forgotPassword.checking') : t('auth.forgotPassword.submit')}
+            {loading
+              ? t("auth.forgotPassword.checking")
+              : t("auth.forgotPassword.submit")}
           </button>
         </form>
 
@@ -152,7 +178,7 @@ function ForgotPassword() {
             to="/login"
             className="text-slate-500 dark:text-slate-400 font-black uppercase text-[10px] tracking-widest hover:text-blue-500 transition-all"
           >
-            {t('auth.forgotPassword.backToLogin')}
+            {t("auth.forgotPassword.backToLogin")}
           </Link>
         </div>
       </div>

@@ -53,9 +53,7 @@
     "eladasiAr": 67184,
     "suly": 1.73,
     "minimumKeszlet": 20,
-    "batches": [
-      { "parcella": "B3-2", "mennyiseg": 194, "lejarat": null }
-    ]
+    "batches": [{ "parcella": "B3-2", "mennyiseg": 194, "lejarat": null }]
   },
   {
     "nev": "Könyvespolc (JYSK special edition 5)",
@@ -65,9 +63,7 @@
     "eladasiAr": 149997,
     "suly": 10.4,
     "minimumKeszlet": 40,
-    "batches": [
-      { "parcella": "C4-3", "mennyiseg": 15, "lejarat": null }
-    ]
+    "batches": [{ "parcella": "C4-3", "mennyiseg": 15, "lejarat": null }]
   },
   {
     "nev": "Sajt trappista (Mizo special edition 6)",
@@ -78,7 +74,11 @@
     "suly": 1.27,
     "minimumKeszlet": 20,
     "batches": [
-      { "parcella": "D2-3", "mennyiseg": 185, "lejarat": "2026-12-31T22:09:23.848188Z" }
+      {
+        "parcella": "D2-3",
+        "mennyiseg": 185,
+        "lejarat": "2026-12-31T22:09:23.848188Z"
+      }
     ]
   },
   {
@@ -115,9 +115,7 @@
     "eladasiAr": 30338,
     "suly": 0.74,
     "minimumKeszlet": 10,
-    "batches": [
-      { "parcella": "B2-3", "mennyiseg": 172, "lejarat": null }
-    ]
+    "batches": [{ "parcella": "B2-3", "mennyiseg": 172, "lejarat": null }]
   },
   {
     "nev": "Távirányítós autó (Lego special edition 10)",
@@ -154,8 +152,16 @@
     "suly": 0.1,
     "minimumKeszlet": 10,
     "batches": [
-      { "parcella": "B5-3", "mennyiseg": 134, "lejarat": "2027-01-12T22:09:23.848530Z" },
-      { "parcella": "C2-2", "mennyiseg": 136, "lejarat": "2026-08-27T22:09:23.848554Z" }
+      {
+        "parcella": "B5-3",
+        "mennyiseg": 134,
+        "lejarat": "2027-01-12T22:09:23.848530Z"
+      },
+      {
+        "parcella": "C2-2",
+        "mennyiseg": 136,
+        "lejarat": "2026-08-27T22:09:23.848554Z"
+      }
     ]
   },
   {
@@ -180,9 +186,7 @@
     "eladasiAr": 199408,
     "suly": 0.56,
     "minimumKeszlet": 10,
-    "batches": [
-      { "parcella": "B4-4", "mennyiseg": 33, "lejarat": null }
-    ]
+    "batches": [{ "parcella": "B4-4", "mennyiseg": 33, "lejarat": null }]
   },
   {
     "nev": "Serpenyő 24cm (Electrolux special edition 15)",
@@ -192,9 +196,7 @@
     "eladasiAr": 219507,
     "suly": 1.08,
     "minimumKeszlet": 50,
-    "batches": [
-      { "parcella": "A5-1", "mennyiseg": 97, "lejarat": null }
-    ]
+    "batches": [{ "parcella": "A5-1", "mennyiseg": 97, "lejarat": null }]
   },
   {
     "nev": "Akkumulátor 72Ah (Michelin special edition 16)",
@@ -204,9 +206,7 @@
     "eladasiAr": 31239,
     "suly": 14.96,
     "minimumKeszlet": 10,
-    "batches": [
-      { "parcella": "D5-1", "mennyiseg": 57, "lejarat": null }
-    ]
+    "batches": [{ "parcella": "D5-1", "mennyiseg": 57, "lejarat": null }]
   },
   {
     "nev": "Vállfa szett (RaktárWeb Brand special edition 17)",
@@ -240,9 +240,7 @@
     "eladasiAr": 168963,
     "suly": 6.18,
     "minimumKeszlet": 10,
-    "batches": [
-      { "parcella": "D2-1", "mennyiseg": 123, "lejarat": null }
-    ]
+    "batches": [{ "parcella": "D2-1", "mennyiseg": 123, "lejarat": null }]
   },
   {
     "nev": "Mérőszalag 5m (Makita special edition 20)",
@@ -279,7 +277,11 @@
     "suly": 1.8,
     "minimumKeszlet": 10,
     "batches": [
-      { "parcella": "A4-2", "mennyiseg": 123, "lejarat": "2027-01-27T22:09:23.848841Z" }
+      {
+        "parcella": "A4-2",
+        "mennyiseg": 123,
+        "lejarat": "2027-01-27T22:09:23.848841Z"
+      }
     ]
   },
   {
@@ -291,8 +293,16 @@
     "suly": 0.1,
     "minimumKeszlet": 30,
     "batches": [
-      { "parcella": "D5-1", "mennyiseg": 174, "lejarat": "2026-06-02T22:09:23.848882Z" },
-      { "parcella": "B1-4", "mennyiseg": 26, "lejarat": "2026-11-24T22:09:23.848903Z" }
+      {
+        "parcella": "D5-1",
+        "mennyiseg": 174,
+        "lejarat": "2026-06-02T22:09:23.848882Z"
+      },
+      {
+        "parcella": "B1-4",
+        "mennyiseg": 26,
+        "lejarat": "2026-11-24T22:09:23.848903Z"
+      }
     ]
   },
   {
@@ -303,9 +313,7 @@
     "eladasiAr": 120343,
     "suly": 0.5,
     "minimumKeszlet": 10,
-    "batches": [
-      { "parcella": "C4-4", "mennyiseg": 79, "lejarat": null }
-    ]
+    "batches": [{ "parcella": "C4-4", "mennyiseg": 79, "lejarat": null }]
   },
   {
     "nev": "Billentyűzet (HP special edition 25)",
@@ -329,8 +337,16 @@
     "suly": 0.5,
     "minimumKeszlet": 20,
     "batches": [
-      { "parcella": "C5-3", "mennyiseg": 99, "lejarat": "2027-01-17T22:09:23.849010Z" },
-      { "parcella": "D2-4", "mennyiseg": 42, "lejarat": "2027-01-20T22:09:23.849033Z" }
+      {
+        "parcella": "C5-3",
+        "mennyiseg": 99,
+        "lejarat": "2027-01-17T22:09:23.849010Z"
+      },
+      {
+        "parcella": "D2-4",
+        "mennyiseg": 42,
+        "lejarat": "2027-01-20T22:09:23.849033Z"
+      }
     ]
   },
   {
@@ -356,8 +372,16 @@
     "suly": 1.43,
     "minimumKeszlet": 50,
     "batches": [
-      { "parcella": "B5-3", "mennyiseg": 75, "lejarat": "2026-09-02T22:09:23.849116Z" },
-      { "parcella": "A5-2", "mennyiseg": 200, "lejarat": "2027-01-08T22:09:23.849129Z" }
+      {
+        "parcella": "B5-3",
+        "mennyiseg": 75,
+        "lejarat": "2026-09-02T22:09:23.849116Z"
+      },
+      {
+        "parcella": "A5-2",
+        "mennyiseg": 200,
+        "lejarat": "2027-01-08T22:09:23.849129Z"
+      }
     ]
   },
   {
@@ -369,7 +393,11 @@
     "suly": 1.47,
     "minimumKeszlet": 10,
     "batches": [
-      { "parcella": "B3-3", "mennyiseg": 46, "lejarat": "2027-03-22T22:09:23.849146Z" }
+      {
+        "parcella": "B3-3",
+        "mennyiseg": 46,
+        "lejarat": "2027-03-22T22:09:23.849146Z"
+      }
     ]
   },
   {
@@ -394,9 +422,7 @@
     "eladasiAr": 117366,
     "suly": 0.48,
     "minimumKeszlet": 20,
-    "batches": [
-      { "parcella": "B2-1", "mennyiseg": 46, "lejarat": null }
-    ]
+    "batches": [{ "parcella": "B2-1", "mennyiseg": 46, "lejarat": null }]
   },
   {
     "nev": "Mosókapszula (Cillit Bang special edition 32)",
@@ -417,7 +443,11 @@
     "suly": 1.4,
     "minimumKeszlet": 40,
     "batches": [
-      { "parcella": "D3-4", "mennyiseg": 176, "lejarat": "2026-08-21T22:09:23.849203Z" }
+      {
+        "parcella": "D3-4",
+        "mennyiseg": 176,
+        "lejarat": "2026-08-21T22:09:23.849203Z"
+      }
     ]
   },
   {
@@ -428,9 +458,7 @@
     "eladasiAr": 51262,
     "suly": 0.2,
     "minimumKeszlet": 10,
-    "batches": [
-      { "parcella": "A3-1", "mennyiseg": 202, "lejarat": null }
-    ]
+    "batches": [{ "parcella": "A3-1", "mennyiseg": 202, "lejarat": null }]
   },
   {
     "nev": "Zokni 3 pár (Nike special edition 35)",
@@ -440,9 +468,7 @@
     "eladasiAr": 144882,
     "suly": 0.1,
     "minimumKeszlet": 40,
-    "batches": [
-      { "parcella": "A5-2", "mennyiseg": 53, "lejarat": null }
-    ]
+    "batches": [{ "parcella": "A5-2", "mennyiseg": 53, "lejarat": null }]
   },
   {
     "nev": "Konyhai mérleg (Philips special edition 36)",
@@ -466,9 +492,7 @@
     "eladasiAr": 133951,
     "suly": 0.2,
     "minimumKeszlet": 10,
-    "batches": [
-      { "parcella": "A3-4", "mennyiseg": 97, "lejarat": null }
-    ]
+    "batches": [{ "parcella": "A3-4", "mennyiseg": 97, "lejarat": null }]
   },
   {
     "nev": "Kenyér fehér (Nestlé special edition 38)",
@@ -479,7 +503,11 @@
     "suly": 0.5,
     "minimumKeszlet": 40,
     "batches": [
-      { "parcella": "D4-1", "mennyiseg": 163, "lejarat": "2026-10-21T22:09:23.849296Z" }
+      {
+        "parcella": "D4-1",
+        "mennyiseg": 163,
+        "lejarat": "2026-10-21T22:09:23.849296Z"
+      }
     ]
   },
   {
@@ -500,9 +528,7 @@
     "eladasiAr": 111641,
     "suly": 0.6,
     "minimumKeszlet": 30,
-    "batches": [
-      { "parcella": "A3-3", "mennyiseg": 75, "lejarat": null }
-    ]
+    "batches": [{ "parcella": "A3-3", "mennyiseg": 75, "lejarat": null }]
   },
   {
     "nev": "Nyomtatópapír 500 lap (Faber-Castell special edition 41)",
@@ -525,9 +551,7 @@
     "eladasiAr": 205847,
     "suly": 0.5,
     "minimumKeszlet": 10,
-    "batches": [
-      { "parcella": "D3-3", "mennyiseg": 154, "lejarat": null }
-    ]
+    "batches": [{ "parcella": "D3-3", "mennyiseg": 154, "lejarat": null }]
   },
   {
     "nev": "Farmer nadrág (Levi's special edition 43)",
@@ -551,9 +575,7 @@
     "eladasiAr": 35154,
     "suly": 0.6,
     "minimumKeszlet": 20,
-    "batches": [
-      { "parcella": "A2-2", "mennyiseg": 167, "lejarat": null }
-    ]
+    "batches": [{ "parcella": "A2-2", "mennyiseg": 167, "lejarat": null }]
   },
   {
     "nev": "Lázmérő (Richter special edition 45)",
@@ -564,8 +586,16 @@
     "suly": 0.1,
     "minimumKeszlet": 40,
     "batches": [
-      { "parcella": "D5-1", "mennyiseg": 167, "lejarat": "2026-05-16T22:09:23.849471Z" },
-      { "parcella": "D2-2", "mennyiseg": 196, "lejarat": "2026-10-12T22:09:23.849485Z" }
+      {
+        "parcella": "D5-1",
+        "mennyiseg": 167,
+        "lejarat": "2026-05-16T22:09:23.849471Z"
+      },
+      {
+        "parcella": "D2-2",
+        "mennyiseg": 196,
+        "lejarat": "2026-10-12T22:09:23.849485Z"
+      }
     ]
   },
   {
@@ -589,9 +619,7 @@
     "eladasiAr": 9984,
     "suly": 0.53,
     "minimumKeszlet": 20,
-    "batches": [
-      { "parcella": "B4-3", "mennyiseg": 194, "lejarat": null }
-    ]
+    "batches": [{ "parcella": "B4-3", "mennyiseg": 194, "lejarat": null }]
   },
   {
     "nev": "Plüss maci (Mattel special edition 48)",
@@ -615,9 +643,7 @@
     "eladasiAr": 193895,
     "suly": 0.4,
     "minimumKeszlet": 40,
-    "batches": [
-      { "parcella": "A1-3", "mennyiseg": 64, "lejarat": null }
-    ]
+    "batches": [{ "parcella": "A1-3", "mennyiseg": 64, "lejarat": null }]
   },
   {
     "nev": "Tej 3.5% (Danone special edition 50)",
@@ -628,8 +654,16 @@
     "suly": 1.05,
     "minimumKeszlet": 40,
     "batches": [
-      { "parcella": "D3-4", "mennyiseg": 118, "lejarat": "2026-04-30T22:09:23.849619Z" },
-      { "parcella": "A5-4", "mennyiseg": 105, "lejarat": "2026-12-15T22:09:23.849631Z" }
+      {
+        "parcella": "D3-4",
+        "mennyiseg": 118,
+        "lejarat": "2026-04-30T22:09:23.849619Z"
+      },
+      {
+        "parcella": "A5-4",
+        "mennyiseg": 105,
+        "lejarat": "2026-12-15T22:09:23.849631Z"
+      }
     ]
   },
   {
@@ -679,9 +713,7 @@
     "eladasiAr": 37335,
     "suly": 0.5,
     "minimumKeszlet": 40,
-    "batches": [
-      { "parcella": "C2-1", "mennyiseg": 140, "lejarat": null }
-    ]
+    "batches": [{ "parcella": "C2-1", "mennyiseg": 140, "lejarat": null }]
   },
   {
     "nev": "Banán (Bonafarm special edition 55)",
@@ -692,7 +724,11 @@
     "suly": 1.0,
     "minimumKeszlet": 10,
     "batches": [
-       { "parcella": "A1-1", "mennyiseg": 150, "lejarat": "2026-03-05T10:00:00Z" }
+      {
+        "parcella": "A1-1",
+        "mennyiseg": 150,
+        "lejarat": "2026-03-05T10:00:00Z"
+      }
     ]
   },
   {
@@ -703,9 +739,7 @@
     "eladasiAr": 235846,
     "suly": 0.8,
     "minimumKeszlet": 40,
-    "batches": [
-      { "parcella": "C4-2", "mennyiseg": 68, "lejarat": null }
-    ]
+    "batches": [{ "parcella": "C4-2", "mennyiseg": 68, "lejarat": null }]
   },
   {
     "nev": "Motorolaj 5W30 (Michelin special edition 57)",
@@ -715,9 +749,7 @@
     "eladasiAr": 226214,
     "suly": 4.8,
     "minimumKeszlet": 30,
-    "batches": [
-      { "parcella": "A3-3", "mennyiseg": 50, "lejarat": null }
-    ]
+    "batches": [{ "parcella": "A3-3", "mennyiseg": 50, "lejarat": null }]
   },
   {
     "nev": "Gemkapocs 100db (Esselte special edition 58)",
@@ -740,9 +772,7 @@
     "eladasiAr": 143727,
     "suly": 0.4,
     "minimumKeszlet": 10,
-    "batches": [
-      { "parcella": "C1-2", "mennyiseg": 80, "lejarat": null }
-    ]
+    "batches": [{ "parcella": "C1-2", "mennyiseg": 80, "lejarat": null }]
   },
   {
     "nev": "Féktárcsa (Bosch special edition 60)",
@@ -752,9 +782,7 @@
     "eladasiAr": 179695,
     "suly": 4.5,
     "minimumKeszlet": 10,
-    "batches": [
-      { "parcella": "B4-4", "mennyiseg": 40, "lejarat": null }
-    ]
+    "batches": [{ "parcella": "B4-4", "mennyiseg": 40, "lejarat": null }]
   },
   {
     "nev": "Elsősegély készlet (Richter special edition 61)",
@@ -765,7 +793,11 @@
     "suly": 0.5,
     "minimumKeszlet": 10,
     "batches": [
-      { "parcella": "B3-1", "mennyiseg": 59, "lejarat": "2026-12-18T22:09:23.849846Z" }
+      {
+        "parcella": "B3-1",
+        "mennyiseg": 59,
+        "lejarat": "2026-12-18T22:09:23.849846Z"
+      }
     ]
   },
   {
@@ -802,9 +834,7 @@
     "eladasiAr": 52929,
     "suly": 2.5,
     "minimumKeszlet": 30,
-    "batches": [
-      { "parcella": "C3-1", "mennyiseg": 101, "lejarat": null }
-    ]
+    "batches": [{ "parcella": "C3-1", "mennyiseg": 101, "lejarat": null }]
   },
   {
     "nev": "WC tisztító (Jar special edition 65)",
@@ -815,7 +845,11 @@
     "suly": 1.2,
     "minimumKeszlet": 30,
     "batches": [
-      { "parcella": "C2-4", "mennyiseg": 215, "lejarat": "2027-06-10T22:09:23.849946Z" }
+      {
+        "parcella": "C2-4",
+        "mennyiseg": 215,
+        "lejarat": "2027-06-10T22:09:23.849946Z"
+      }
     ]
   },
   {
@@ -827,8 +861,16 @@
     "suly": 0.1,
     "minimumKeszlet": 20,
     "batches": [
-      { "parcella": "C2-3", "mennyiseg": 154, "lejarat": "2027-01-10T22:09:23.849971Z" },
-      { "parcella": "A4-3", "mennyiseg": 217, "lejarat": "2026-05-13T22:09:23.849981Z" }
+      {
+        "parcella": "C2-3",
+        "mennyiseg": 154,
+        "lejarat": "2027-01-10T22:09:23.849971Z"
+      },
+      {
+        "parcella": "A4-3",
+        "mennyiseg": 217,
+        "lejarat": "2026-05-13T22:09:23.849981Z"
+      }
     ]
   },
   {
@@ -866,8 +908,16 @@
     "suly": 1.0,
     "minimumKeszlet": 30,
     "batches": [
-      { "parcella": "C5-3", "mennyiseg": 52, "lejarat": "2026-12-02T22:09:23.850059Z" },
-      { "parcella": "D3-4", "mennyiseg": 195, "lejarat": "2026-10-06T22:09:23.850074Z" }
+      {
+        "parcella": "C5-3",
+        "mennyiseg": 52,
+        "lejarat": "2026-12-02T22:09:23.850059Z"
+      },
+      {
+        "parcella": "D3-4",
+        "mennyiseg": 195,
+        "lejarat": "2026-10-06T22:09:23.850074Z"
+      }
     ]
   },
   {
@@ -878,9 +928,7 @@
     "eladasiAr": 138267,
     "suly": 4.5,
     "minimumKeszlet": 10,
-    "batches": [
-       { "parcella": "B1-2", "mennyiseg": 45, "lejarat": null }
-    ]
+    "batches": [{ "parcella": "B1-2", "mennyiseg": 45, "lejarat": null }]
   },
   {
     "nev": "Hátizsák 20L (Decathlon special edition 71)",
@@ -918,7 +966,11 @@
     "suly": 2.1,
     "minimumKeszlet": 40,
     "batches": [
-      { "parcella": "A4-1", "mennyiseg": 149, "lejarat": "2026-09-07T22:09:23.850166Z" }
+      {
+        "parcella": "A4-1",
+        "mennyiseg": 149,
+        "lejarat": "2026-09-07T22:09:23.850166Z"
+      }
     ]
   },
   {
@@ -929,9 +981,7 @@
     "eladasiAr": 246127,
     "suly": 0.4,
     "minimumKeszlet": 30,
-    "batches": [
-       { "parcella": "D1-1", "mennyiseg": 90, "lejarat": null }
-    ]
+    "batches": [{ "parcella": "D1-1", "mennyiseg": 90, "lejarat": null }]
   },
   {
     "nev": "Sampon 400ml (Nivea special edition 75)",
@@ -942,8 +992,16 @@
     "suly": 0.45,
     "minimumKeszlet": 10,
     "batches": [
-      { "parcella": "C4-3", "mennyiseg": 52, "lejarat": "2026-06-02T22:09:23.850196Z" },
-      { "parcella": "B5-1", "mennyiseg": 22, "lejarat": "2027-02-25T22:09:23.850204Z" }
+      {
+        "parcella": "C4-3",
+        "mennyiseg": 52,
+        "lejarat": "2026-06-02T22:09:23.850196Z"
+      },
+      {
+        "parcella": "B5-1",
+        "mennyiseg": 22,
+        "lejarat": "2027-02-25T22:09:23.850204Z"
+      }
     ]
   },
   {
@@ -968,7 +1026,11 @@
     "suly": 1.2,
     "minimumKeszlet": 10,
     "batches": [
-      { "parcella": "C1-4", "mennyiseg": 85, "lejarat": "2026-06-03T22:09:23.850257Z" }
+      {
+        "parcella": "C1-4",
+        "mennyiseg": 85,
+        "lejarat": "2026-06-03T22:09:23.850257Z"
+      }
     ]
   },
   {
@@ -1060,7 +1122,11 @@
     "suly": 1.5,
     "minimumKeszlet": 30,
     "batches": [
-      { "parcella": "A3-3", "mennyiseg": 220, "lejarat": "2027-03-11T22:09:23.851578Z" }
+      {
+        "parcella": "A3-3",
+        "mennyiseg": 220,
+        "lejarat": "2027-03-11T22:09:23.851578Z"
+      }
     ]
   },
   {
@@ -1072,8 +1138,16 @@
     "suly": 0.8,
     "minimumKeszlet": 30,
     "batches": [
-      { "parcella": "D5-3", "mennyiseg": 136, "lejarat": "2026-05-26T22:09:23.851617Z" },
-      { "parcella": "A3-1", "mennyiseg": 200, "lejarat": "2026-04-12T22:09:23.851630Z" }
+      {
+        "parcella": "D5-3",
+        "mennyiseg": 136,
+        "lejarat": "2026-05-26T22:09:23.851617Z"
+      },
+      {
+        "parcella": "A3-1",
+        "mennyiseg": 200,
+        "lejarat": "2026-04-12T22:09:23.851630Z"
+      }
     ]
   },
   {
@@ -1085,7 +1159,11 @@
     "suly": 0.2,
     "minimumKeszlet": 10,
     "batches": [
-      { "parcella": "C4-3", "mennyiseg": 28, "lejarat": "2027-02-28T22:09:23.851648Z" }
+      {
+        "parcella": "C4-3",
+        "mennyiseg": 28,
+        "lejarat": "2027-02-28T22:09:23.851648Z"
+      }
     ]
   },
   {
@@ -1096,9 +1174,7 @@
     "eladasiAr": 441,
     "suly": 2.8,
     "minimumKeszlet": 20,
-    "batches": [
-      { "parcella": "B5-3", "mennyiseg": 4, "lejarat": null }
-    ]
+    "batches": [{ "parcella": "B5-3", "mennyiseg": 4, "lejarat": null }]
   },
   {
     "nev": "Alma Golden (Nestlé special edition 88)",
@@ -1109,7 +1185,11 @@
     "suly": 0.2,
     "minimumKeszlet": 40,
     "batches": [
-      { "parcella": "B2-3", "mennyiseg": 206, "lejarat": "2026-05-15T22:09:23.851677Z" }
+      {
+        "parcella": "B2-3",
+        "mennyiseg": 206,
+        "lejarat": "2026-05-15T22:09:23.851677Z"
+      }
     ]
   },
   {
@@ -1120,9 +1200,7 @@
     "eladasiAr": 174658,
     "suly": 1.2,
     "minimumKeszlet": 50,
-    "batches": [
-       { "parcella": "B3-3", "mennyiseg": 110, "lejarat": null }
-    ]
+    "batches": [{ "parcella": "B3-3", "mennyiseg": 110, "lejarat": null }]
   },
   {
     "nev": "Mosókapszula (Ariel special edition 90)",
@@ -1133,7 +1211,11 @@
     "suly": 1.5,
     "minimumKeszlet": 10,
     "batches": [
-      { "parcella": "B4-1", "mennyiseg": 79, "lejarat": "2026-07-16T22:09:23.851700Z" }
+      {
+        "parcella": "B4-1",
+        "mennyiseg": 79,
+        "lejarat": "2026-07-16T22:09:23.851700Z"
+      }
     ]
   },
   {
@@ -1144,9 +1226,7 @@
     "eladasiAr": 124213,
     "suly": 0.6,
     "minimumKeszlet": 50,
-    "batches": [
-      { "parcella": "D3-2", "mennyiseg": 13, "lejarat": null }
-    ]
+    "batches": [{ "parcella": "D3-2", "mennyiseg": 13, "lejarat": null }]
   },
   {
     "nev": "Ablaktörlő lapát (Bosch special edition 92)",
@@ -1156,9 +1236,7 @@
     "eladasiAr": 192398,
     "suly": 0.5,
     "minimumKeszlet": 10,
-    "batches": [
-      { "parcella": "B5-3", "mennyiseg": 180, "lejarat": null }
-    ]
+    "batches": [{ "parcella": "B5-3", "mennyiseg": 180, "lejarat": null }]
   },
   {
     "nev": "Billentyűzet (Sony special edition 93)",
@@ -1183,7 +1261,11 @@
     "suly": 1.2,
     "minimumKeszlet": 20,
     "batches": [
-      { "parcella": "C1-2", "mennyiseg": 206, "lejarat": "2027-02-05T22:09:23.851812Z" }
+      {
+        "parcella": "C1-2",
+        "mennyiseg": 206,
+        "lejarat": "2027-02-05T22:09:23.851812Z"
+      }
     ]
   },
   {
@@ -1194,9 +1276,7 @@
     "eladasiAr": 104332,
     "suly": 1.2,
     "minimumKeszlet": 40,
-    "batches": [
-       { "parcella": "C4-4", "mennyiseg": 115, "lejarat": null }
-    ]
+    "batches": [{ "parcella": "C4-4", "mennyiseg": 115, "lejarat": null }]
   },
   {
     "nev": "Építőkocka készlet (Lego special edition 96)",
@@ -1206,9 +1286,7 @@
     "eladasiAr": 157251,
     "suly": 1.5,
     "minimumKeszlet": 40,
-    "batches": [
-      { "parcella": "D1-2", "mennyiseg": 37, "lejarat": null }
-    ]
+    "batches": [{ "parcella": "D1-2", "mennyiseg": 37, "lejarat": null }]
   },
   {
     "nev": "Motorolaj 5W30 (Continental special edition 97)",
@@ -1232,9 +1310,7 @@
     "eladasiAr": 64565,
     "suly": 0.5,
     "minimumKeszlet": 10,
-    "batches": [
-      { "parcella": "C2-2", "mennyiseg": 99, "lejarat": null }
-    ]
+    "batches": [{ "parcella": "C2-2", "mennyiseg": 99, "lejarat": null }]
   },
   {
     "nev": "Íróasztal (JYSK special edition 99)",
@@ -1244,9 +1320,7 @@
     "eladasiAr": 40632,
     "suly": 18.73,
     "minimumKeszlet": 10,
-    "batches": [
-      { "parcella": "B1-2", "mennyiseg": 92, "lejarat": null }
-    ]
+    "batches": [{ "parcella": "B1-2", "mennyiseg": 92, "lejarat": null }]
   },
   {
     "nev": "Levegőszűrő (Bosch special edition 100)",
@@ -1256,9 +1330,7 @@
     "eladasiAr": 207957,
     "suly": 0.8,
     "minimumKeszlet": 30,
-    "batches": [
-      { "parcella": "D4-2", "mennyiseg": 90, "lejarat": null }
-    ]
+    "batches": [{ "parcella": "D4-2", "mennyiseg": 90, "lejarat": null }]
   },
   {
     "nev": "Esőkabát (Nike special edition 101)",
@@ -1281,9 +1353,7 @@
     "eladasiAr": 59812,
     "suly": 0.5,
     "minimumKeszlet": 20,
-    "batches": [
-      { "parcella": "B5-1", "mennyiseg": 180, "lejarat": null }
-    ]
+    "batches": [{ "parcella": "B5-1", "mennyiseg": 180, "lejarat": null }]
   },
   {
     "nev": "Plüss maci (Mattel special edition 103)",
@@ -1293,9 +1363,7 @@
     "eladasiAr": 64973,
     "suly": 0.4,
     "minimumKeszlet": 20,
-    "batches": [
-      { "parcella": "C4-4", "mennyiseg": 187, "lejarat": null }
-    ]
+    "batches": [{ "parcella": "C4-4", "mennyiseg": 187, "lejarat": null }]
   },
   {
     "nev": "Esernyő (Generic Co special edition 104)",
@@ -1305,9 +1373,7 @@
     "eladasiAr": 169587,
     "suly": 0.6,
     "minimumKeszlet": 20,
-    "batches": [
-      { "parcella": "A4-1", "mennyiseg": 180, "lejarat": null }
-    ]
+    "batches": [{ "parcella": "A4-1", "mennyiseg": 180, "lejarat": null }]
   },
   {
     "nev": "Okostelefon S21 (HP special edition 105)",
@@ -1317,9 +1383,7 @@
     "eladasiAr": 176954,
     "suly": 0.2,
     "minimumKeszlet": 20,
-    "batches": [
-      { "parcella": "C3-2", "mennyiseg": 63, "lejarat": null }
-    ]
+    "batches": [{ "parcella": "C3-2", "mennyiseg": 63, "lejarat": null }]
   },
   {
     "nev": "Babzsákfotel (Herman Miller special edition 106)",
@@ -1356,9 +1420,7 @@
     "eladasiAr": 95720,
     "suly": 2.2,
     "minimumKeszlet": 10,
-    "batches": [
-      { "parcella": "B2-1", "mennyiseg": 63, "lejarat": null }
-    ]
+    "batches": [{ "parcella": "B2-1", "mennyiseg": 63, "lejarat": null }]
   },
   {
     "nev": "Gemkapocs 100db (Esselte special edition 109)",
@@ -1368,9 +1430,7 @@
     "eladasiAr": 26647,
     "suly": 0.1,
     "minimumKeszlet": 10,
-    "batches": [
-      { "parcella": "C4-4", "mennyiseg": 68, "lejarat": null }
-    ]
+    "batches": [{ "parcella": "C4-4", "mennyiseg": 68, "lejarat": null }]
   },
   {
     "nev": "Dezodor spray (Old Spice special edition 110)",
@@ -1381,7 +1441,11 @@
     "suly": 0.2,
     "minimumKeszlet": 40,
     "batches": [
-      { "parcella": "A2-3", "mennyiseg": 182, "lejarat": "2026-07-10T22:09:23.852126Z" }
+      {
+        "parcella": "A2-3",
+        "mennyiseg": 182,
+        "lejarat": "2026-07-10T22:09:23.852126Z"
+      }
     ]
   },
   {
@@ -1392,9 +1456,7 @@
     "eladasiAr": 125593,
     "suly": 5.87,
     "minimumKeszlet": 30,
-    "batches": [
-      { "parcella": "A1-3", "mennyiseg": 52, "lejarat": null }
-    ]
+    "batches": [{ "parcella": "A1-3", "mennyiseg": 52, "lejarat": null }]
   },
   {
     "nev": "Tojás 10 db (Pékműhely special edition 112)",
@@ -1405,7 +1467,11 @@
     "suly": 0.5,
     "minimumKeszlet": 20,
     "batches": [
-      { "parcella": "D5-4", "mennyiseg": 39, "lejarat": "2027-06-21T22:09:23.852193Z" }
+      {
+        "parcella": "D5-4",
+        "mennyiseg": 39,
+        "lejarat": "2027-06-21T22:09:23.852193Z"
+      }
     ]
   },
   {
@@ -1416,9 +1482,7 @@
     "eladasiAr": 45573,
     "suly": 0.5,
     "minimumKeszlet": 40,
-    "batches": [
-      { "parcella": "C5-1", "mennyiseg": 110, "lejarat": null }
-    ]
+    "batches": [{ "parcella": "C5-1", "mennyiseg": 110, "lejarat": null }]
   },
   {
     "nev": "Távirányítós autó (Hasbro special edition 114)",
@@ -1428,9 +1492,7 @@
     "eladasiAr": 197361,
     "suly": 1.0,
     "minimumKeszlet": 20,
-    "batches": [
-      { "parcella": "C5-3", "mennyiseg": 160, "lejarat": null }
-    ]
+    "batches": [{ "parcella": "C5-3", "mennyiseg": 160, "lejarat": null }]
   },
   {
     "nev": "Porszívó (Tefal special edition 115)",
@@ -1453,9 +1515,7 @@
     "eladasiAr": 25386,
     "suly": 15.53,
     "minimumKeszlet": 10,
-    "batches": [
-      { "parcella": "D1-4", "mennyiseg": 45, "lejarat": null }
-    ]
+    "batches": [{ "parcella": "D1-4", "mennyiseg": 45, "lejarat": null }]
   },
   {
     "nev": "Ablaktörlő lapát (Bosch special edition 117)",
@@ -1465,9 +1525,7 @@
     "eladasiAr": 9493,
     "suly": 0.5,
     "minimumKeszlet": 30,
-    "batches": [
-      { "parcella": "C5-4", "mennyiseg": 145, "lejarat": null }
-    ]
+    "batches": [{ "parcella": "C5-4", "mennyiseg": 145, "lejarat": null }]
   },
   {
     "nev": "Vízforraló (Philips special edition 118)",
@@ -1477,9 +1535,7 @@
     "eladasiAr": 141740,
     "suly": 0.8,
     "minimumKeszlet": 30,
-    "batches": [
-      { "parcella": "B5-4", "mennyiseg": 39, "lejarat": null }
-    ]
+    "batches": [{ "parcella": "B5-4", "mennyiseg": 39, "lejarat": null }]
   },
   {
     "nev": "Tej 3.5% (Biofarm special edition 119)",
@@ -1490,7 +1546,11 @@
     "suly": 1.0,
     "minimumKeszlet": 30,
     "batches": [
-      { "parcella": "A5-2", "mennyiseg": 165, "lejarat": "2027-05-11T22:09:23.852313Z" }
+      {
+        "parcella": "A5-2",
+        "mennyiseg": 165,
+        "lejarat": "2027-05-11T22:09:23.852313Z"
+      }
     ]
   },
   {
@@ -1501,9 +1561,7 @@
     "eladasiAr": 107123,
     "suly": 0.1,
     "minimumKeszlet": 30,
-    "batches": [
-       { "parcella": "A1-2", "mennyiseg": 140, "lejarat": null }
-    ]
+    "batches": [{ "parcella": "A1-2", "mennyiseg": 140, "lejarat": null }]
   },
   {
     "nev": "Gemkapocs 100db (Parker special edition 121)",
@@ -1526,9 +1584,7 @@
     "eladasiAr": 40429,
     "suly": 0.1,
     "minimumKeszlet": 30,
-    "batches": [
-      { "parcella": "A5-1", "mennyiseg": 22, "lejarat": null }
-    ]
+    "batches": [{ "parcella": "A5-1", "mennyiseg": 22, "lejarat": null }]
   },
   {
     "nev": "Történelmi atlasz (Helikon special edition 123)",
@@ -1538,9 +1594,7 @@
     "eladasiAr": 131265,
     "suly": 1.2,
     "minimumKeszlet": 40,
-    "batches": [
-      { "parcella": "C2-4", "mennyiseg": 176, "lejarat": null }
-    ]
+    "batches": [{ "parcella": "C2-4", "mennyiseg": 176, "lejarat": null }]
   },
   {
     "nev": "Kulcstartó (RaktárWeb Brand special edition 124)",
@@ -1550,9 +1604,7 @@
     "eladasiAr": 111806,
     "suly": 0.1,
     "minimumKeszlet": 40,
-    "batches": [
-      { "parcella": "B4-3", "mennyiseg": 178, "lejarat": null }
-    ]
+    "batches": [{ "parcella": "B4-3", "mennyiseg": 178, "lejarat": null }]
   },
   {
     "nev": "Teniszütő (Kipsta special edition 125)",
@@ -1575,9 +1627,7 @@
     "eladasiAr": 7754,
     "suly": 4.56,
     "minimumKeszlet": 50,
-    "batches": [
-       { "parcella": "C2-1", "mennyiseg": 110, "lejarat": null }
-    ]
+    "batches": [{ "parcella": "C2-1", "mennyiseg": 110, "lejarat": null }]
   },
   {
     "nev": "Elem AA 4db (RaktárWeb Brand special edition 127)",
@@ -1587,9 +1637,7 @@
     "eladasiAr": 76340,
     "suly": 0.1,
     "minimumKeszlet": 40,
-    "batches": [
-      { "parcella": "C2-4", "mennyiseg": 145, "lejarat": null }
-    ]
+    "batches": [{ "parcella": "C2-4", "mennyiseg": 145, "lejarat": null }]
   },
   {
     "nev": "Íróasztal (IKEA special edition 128)",
@@ -1599,9 +1647,7 @@
     "eladasiAr": 162783,
     "suly": 21.02,
     "minimumKeszlet": 20,
-    "batches": [
-      { "parcella": "A4-1", "mennyiseg": 173, "lejarat": null }
-    ]
+    "batches": [{ "parcella": "A4-1", "mennyiseg": 173, "lejarat": null }]
   },
   {
     "nev": "Fúrógép (Makita special edition 129)",
@@ -1611,9 +1657,7 @@
     "eladasiAr": 177407,
     "suly": 1.8,
     "minimumKeszlet": 40,
-    "batches": [
-      { "parcella": "B2-4", "mennyiseg": 90, "lejarat": null }
-    ]
+    "batches": [{ "parcella": "B2-4", "mennyiseg": 90, "lejarat": null }]
   },
   {
     "nev": "Gyerekkönyv (Európa special edition 130)",
@@ -1638,7 +1682,11 @@
     "suly": 0.5,
     "minimumKeszlet": 10,
     "batches": [
-      { "parcella": "C5-2", "mennyiseg": 158, "lejarat": "2026-12-27T22:09:23.852532Z" }
+      {
+        "parcella": "C5-2",
+        "mennyiseg": 158,
+        "lejarat": "2026-12-27T22:09:23.852532Z"
+      }
     ]
   },
   {
@@ -1662,9 +1710,7 @@
     "eladasiAr": 254482,
     "suly": 2.2,
     "minimumKeszlet": 30,
-    "batches": [
-      { "parcella": "B5-2", "mennyiseg": 77, "lejarat": null }
-    ]
+    "batches": [{ "parcella": "B5-2", "mennyiseg": 77, "lejarat": null }]
   },
   {
     "nev": "Golyóstoll (Esselte special edition 134)",
@@ -1674,9 +1720,7 @@
     "eladasiAr": 158341,
     "suly": 0.1,
     "minimumKeszlet": 40,
-    "batches": [
-      { "parcella": "B4-3", "mennyiseg": 37, "lejarat": null }
-    ]
+    "batches": [{ "parcella": "B4-3", "mennyiseg": 37, "lejarat": null }]
   },
   {
     "nev": "Vállfa szett (RaktárWeb Brand special edition 135)",
@@ -1700,7 +1744,11 @@
     "suly": 0.5,
     "minimumKeszlet": 40,
     "batches": [
-      { "parcella": "D2-2", "mennyiseg": 220, "lejarat": "2027-07-05T22:09:23.852632Z" }
+      {
+        "parcella": "D2-2",
+        "mennyiseg": 220,
+        "lejarat": "2027-07-05T22:09:23.852632Z"
+      }
     ]
   },
   {
@@ -1738,9 +1786,7 @@
     "eladasiAr": 121151,
     "suly": 0.2,
     "minimumKeszlet": 30,
-    "batches": [
-      { "parcella": "D4-2", "mennyiseg": 88, "lejarat": null }
-    ]
+    "batches": [{ "parcella": "D4-2", "mennyiseg": 88, "lejarat": null }]
   },
   {
     "nev": "Mosókapszula (Jar special edition 140)",
@@ -1750,9 +1796,7 @@
     "eladasiAr": 18980,
     "suly": 1.5,
     "minimumKeszlet": 10,
-    "batches": [
-       { "parcella": "C3-1", "mennyiseg": 65, "lejarat": null }
-    ]
+    "batches": [{ "parcella": "C3-1", "mennyiseg": 65, "lejarat": null }]
   },
   {
     "nev": "Billentyűzet (Dell special edition 141)",
@@ -1775,9 +1819,7 @@
     "eladasiAr": 197339,
     "suly": 1.8,
     "minimumKeszlet": 30,
-    "batches": [
-      { "parcella": "A1-3", "mennyiseg": 123, "lejarat": null }
-    ]
+    "batches": [{ "parcella": "A1-3", "mennyiseg": 123, "lejarat": null }]
   },
   {
     "nev": "Motorolaj 5W30 (Castrol special edition 143)",
@@ -1787,9 +1829,7 @@
     "eladasiAr": 213951,
     "suly": 4.8,
     "minimumKeszlet": 50,
-    "batches": [
-      { "parcella": "A1-1", "mennyiseg": 15, "lejarat": null }
-    ]
+    "batches": [{ "parcella": "A1-1", "mennyiseg": 15, "lejarat": null }]
   },
   {
     "nev": "Monitor 27 inch (Apple special edition 144)",
@@ -1799,9 +1839,7 @@
     "eladasiAr": 73537,
     "suly": 4.8,
     "minimumKeszlet": 10,
-    "batches": [
-      { "parcella": "A5-2", "mennyiseg": 26, "lejarat": null }
-    ]
+    "batches": [{ "parcella": "A5-2", "mennyiseg": 26, "lejarat": null }]
   },
   {
     "nev": "Billentyűzet (Dell special edition 145)",
@@ -1825,8 +1863,16 @@
     "suly": 0.1,
     "minimumKeszlet": 30,
     "batches": [
-      { "parcella": "A4-2", "mennyiseg": 206, "lejarat": "2026-12-05T22:09:23.852813Z" },
-      { "parcella": "B1-4", "mennyiseg": 132, "lejarat": "2026-10-11T22:09:23.852826Z" }
+      {
+        "parcella": "A4-2",
+        "mennyiseg": 206,
+        "lejarat": "2026-12-05T22:09:23.852813Z"
+      },
+      {
+        "parcella": "B1-4",
+        "mennyiseg": 132,
+        "lejarat": "2026-10-11T22:09:23.852826Z"
+      }
     ]
   },
   {
@@ -1837,9 +1883,7 @@
     "eladasiAr": 172038,
     "suly": 0.6,
     "minimumKeszlet": 20,
-    "batches": [
-      { "parcella": "A1-2", "mennyiseg": 2, "lejarat": null }
-    ]
+    "batches": [{ "parcella": "A1-2", "mennyiseg": 2, "lejarat": null }]
   },
   {
     "nev": "Súlyzó 5kg (Decathlon special edition 148)",
@@ -1849,9 +1893,7 @@
     "eladasiAr": 116610,
     "suly": 5.0,
     "minimumKeszlet": 50,
-    "batches": [
-      { "parcella": "B1-2", "mennyiseg": 35, "lejarat": null }
-    ]
+    "batches": [{ "parcella": "B1-2", "mennyiseg": 35, "lejarat": null }]
   },
   {
     "nev": "Laptop T14 (Apple special edition 149)",
@@ -1874,9 +1916,7 @@
     "eladasiAr": 182483,
     "suly": 0.4,
     "minimumKeszlet": 20,
-    "batches": [
-      { "parcella": "D5-1", "mennyiseg": 94, "lejarat": null }
-    ]
+    "batches": [{ "parcella": "D5-1", "mennyiseg": 94, "lejarat": null }]
   },
   {
     "nev": "Lázmérő (Pfizer special edition 151)",
@@ -1887,7 +1927,11 @@
     "suly": 0.1,
     "minimumKeszlet": 50,
     "batches": [
-      { "parcella": "D3-3", "mennyiseg": 24, "lejarat": "2026-05-21T22:09:23.852916Z" }
+      {
+        "parcella": "D3-3",
+        "mennyiseg": 24,
+        "lejarat": "2026-05-21T22:09:23.852916Z"
+      }
     ]
   },
   {
@@ -1898,9 +1942,7 @@
     "eladasiAr": 59677,
     "suly": 0.5,
     "minimumKeszlet": 30,
-    "batches": [
-      { "parcella": "B1-3", "mennyiseg": 184, "lejarat": null }
-    ]
+    "batches": [{ "parcella": "B1-3", "mennyiseg": 184, "lejarat": null }]
   },
   {
     "nev": "Póló pamut (Nike special edition 153)",
@@ -1925,7 +1967,11 @@
     "suly": 1.1,
     "minimumKeszlet": 30,
     "batches": [
-      { "parcella": "B4-1", "mennyiseg": 215, "lejarat": "2026-05-21T22:09:23.852968Z" }
+      {
+        "parcella": "B4-1",
+        "mennyiseg": 215,
+        "lejarat": "2026-05-21T22:09:23.852968Z"
+      }
     ]
   },
   {
@@ -1936,9 +1982,7 @@
     "eladasiAr": 122090,
     "suly": 0.3,
     "minimumKeszlet": 50,
-    "batches": [
-      { "parcella": "C2-4", "mennyiseg": 99, "lejarat": null }
-    ]
+    "batches": [{ "parcella": "C2-4", "mennyiseg": 99, "lejarat": null }]
   },
   {
     "nev": "Elsősegély készlet (Bayer special edition 156)",
@@ -1949,8 +1993,16 @@
     "suly": 0.5,
     "minimumKeszlet": 10,
     "batches": [
-      { "parcella": "B3-4", "mennyiseg": 132, "lejarat": "2027-02-07T22:09:23.853014Z" },
-      { "parcella": "A5-4", "mennyiseg": 55, "lejarat": "2027-01-26T22:09:23.853028Z" }
+      {
+        "parcella": "B3-4",
+        "mennyiseg": 132,
+        "lejarat": "2027-02-07T22:09:23.853014Z"
+      },
+      {
+        "parcella": "A5-4",
+        "mennyiseg": 55,
+        "lejarat": "2027-01-26T22:09:23.853028Z"
+      }
     ]
   },
   {
@@ -1961,9 +2013,7 @@
     "eladasiAr": 43346,
     "suly": 1.1,
     "minimumKeszlet": 40,
-    "batches": [
-      { "parcella": "A1-4", "mennyiseg": 184, "lejarat": null }
-    ]
+    "batches": [{ "parcella": "A1-4", "mennyiseg": 184, "lejarat": null }]
   },
   {
     "nev": "Puzzle 1000 db (Hasbro special edition 158)",
@@ -1973,9 +2023,7 @@
     "eladasiAr": 180532,
     "suly": 0.5,
     "minimumKeszlet": 30,
-    "batches": [
-      { "parcella": "D5-2", "mennyiseg": 123, "lejarat": null }
-    ]
+    "batches": [{ "parcella": "D5-2", "mennyiseg": 123, "lejarat": null }]
   },
   {
     "nev": "Fúrógép (Makita special edition 159)",
@@ -1999,9 +2047,7 @@
     "eladasiAr": 234909,
     "suly": 0.8,
     "minimumKeszlet": 50,
-    "batches": [
-      { "parcella": "B2-4", "mennyiseg": 116, "lejarat": null }
-    ]
+    "batches": [{ "parcella": "B2-4", "mennyiseg": 116, "lejarat": null }]
   },
   {
     "nev": "Gemkapocs 100db (Parker special edition 161)",
@@ -2011,9 +2057,7 @@
     "eladasiAr": 166572,
     "suly": 0.1,
     "minimumKeszlet": 10,
-    "batches": [
-      { "parcella": "A4-1", "mennyiseg": 114, "lejarat": null }
-    ]
+    "batches": [{ "parcella": "A4-1", "mennyiseg": 114, "lejarat": null }]
   },
   {
     "nev": "Motorolaj 5W30 (Michelin special edition 162)",
@@ -2036,9 +2080,7 @@
     "eladasiAr": 171488,
     "suly": 0.5,
     "minimumKeszlet": 40,
-    "batches": [
-      { "parcella": "B2-4", "mennyiseg": 206, "lejarat": null }
-    ]
+    "batches": [{ "parcella": "B2-4", "mennyiseg": 206, "lejarat": null }]
   },
   {
     "nev": "Díszdoboz (RaktárWeb Brand special edition 164)",
@@ -2089,7 +2131,11 @@
     "suly": 0.45,
     "minimumKeszlet": 30,
     "batches": [
-      { "parcella": "A4-3", "mennyiseg": 11, "lejarat": "2027-03-25T22:09:23.853299Z" }
+      {
+        "parcella": "A4-3",
+        "mennyiseg": 11,
+        "lejarat": "2027-03-25T22:09:23.853299Z"
+      }
     ]
   },
   {
@@ -2114,8 +2160,16 @@
     "suly": 0.5,
     "minimumKeszlet": 40,
     "batches": [
-      { "parcella": "A2-2", "mennyiseg": 57, "lejarat": "2026-06-07T22:09:23.853357Z" },
-      { "parcella": "B3-4", "mennyiseg": 44, "lejarat": "2027-05-29T22:09:23.853377Z" }
+      {
+        "parcella": "A2-2",
+        "mennyiseg": 57,
+        "lejarat": "2026-06-07T22:09:23.853357Z"
+      },
+      {
+        "parcella": "B3-4",
+        "mennyiseg": 44,
+        "lejarat": "2027-05-29T22:09:23.853377Z"
+      }
     ]
   },
   {
@@ -2127,7 +2181,11 @@
     "suly": 0.1,
     "minimumKeszlet": 20,
     "batches": [
-      { "parcella": "C5-1", "mennyiseg": 120, "lejarat": "2027-01-10T10:00:00Z" }
+      {
+        "parcella": "C5-1",
+        "mennyiseg": 120,
+        "lejarat": "2027-01-10T10:00:00Z"
+      }
     ]
   },
   {
@@ -2138,9 +2196,7 @@
     "eladasiAr": 115669,
     "suly": 0.5,
     "minimumKeszlet": 10,
-    "batches": [
-      { "parcella": "B2-2", "mennyiseg": 129, "lejarat": null }
-    ]
+    "batches": [{ "parcella": "B2-2", "mennyiseg": 129, "lejarat": null }]
   },
   {
     "nev": "Díszdoboz (Generic Co special edition 172)",
@@ -2165,7 +2221,11 @@
     "suly": 1.0,
     "minimumKeszlet": 20,
     "batches": [
-      { "parcella": "D3-4", "mennyiseg": 206, "lejarat": "2027-02-21T22:09:23.853494Z" }
+      {
+        "parcella": "D3-4",
+        "mennyiseg": 206,
+        "lejarat": "2027-02-21T22:09:23.853494Z"
+      }
     ]
   },
   {
@@ -2177,8 +2237,16 @@
     "suly": 1.0,
     "minimumKeszlet": 40,
     "batches": [
-      { "parcella": "C4-1", "mennyiseg": 165, "lejarat": "2026-04-11T22:09:23.853532Z" },
-      { "parcella": "D5-4", "mennyiseg": 50, "lejarat": "2026-05-12T22:09:23.853545Z" }
+      {
+        "parcella": "C4-1",
+        "mennyiseg": 165,
+        "lejarat": "2026-04-11T22:09:23.853532Z"
+      },
+      {
+        "parcella": "D5-4",
+        "mennyiseg": 50,
+        "lejarat": "2026-05-12T22:09:23.853545Z"
+      }
     ]
   },
   {
@@ -2189,9 +2257,7 @@
     "eladasiAr": 180847,
     "suly": 0.5,
     "minimumKeszlet": 40,
-    "batches": [
-      { "parcella": "C2-3", "mennyiseg": 28, "lejarat": null }
-    ]
+    "batches": [{ "parcella": "C2-3", "mennyiseg": 28, "lejarat": null }]
   },
   {
     "nev": "HDMI kábel (Lenovo special edition 176)",
@@ -2201,9 +2267,7 @@
     "eladasiAr": 164714,
     "suly": 0.2,
     "minimumKeszlet": 20,
-    "batches": [
-      { "parcella": "A2-4", "mennyiseg": 74, "lejarat": null }
-    ]
+    "batches": [{ "parcella": "A2-4", "mennyiseg": 74, "lejarat": null }]
   },
   {
     "nev": "Íróasztal (IKEA special edition 177)",
@@ -2239,9 +2303,7 @@
     "eladasiAr": 96443,
     "suly": 0.6,
     "minimumKeszlet": 40,
-    "batches": [
-      { "parcella": "A1-4", "mennyiseg": 100, "lejarat": null }
-    ]
+    "batches": [{ "parcella": "A1-4", "mennyiseg": 100, "lejarat": null }]
   },
   {
     "nev": "Motorolaj 5W30 (Continental special edition 180)",
@@ -2251,9 +2313,7 @@
     "eladasiAr": 109386,
     "suly": 4.5,
     "minimumKeszlet": 20,
-    "batches": [
-      { "parcella": "B1-2", "mennyiseg": 154, "lejarat": null }
-    ]
+    "batches": [{ "parcella": "B1-2", "mennyiseg": 154, "lejarat": null }]
   },
   {
     "nev": "Babzsákfotel (Herman Miller special edition 181)",
@@ -2263,9 +2323,7 @@
     "eladasiAr": 130965,
     "suly": 6.16,
     "minimumKeszlet": 50,
-    "batches": [
-      { "parcella": "B2-1", "mennyiseg": 80, "lejarat": null }
-    ]
+    "batches": [{ "parcella": "B2-1", "mennyiseg": 80, "lejarat": null }]
   },
   {
     "nev": "Kézfertőtlenítő (Richter special edition 182)",
@@ -2275,9 +2333,7 @@
     "eladasiAr": 211172,
     "suly": 0.5,
     "minimumKeszlet": 10,
-    "batches": [
-      { "parcella": "C5-1", "mennyiseg": 100, "lejarat": null }
-    ]
+    "batches": [{ "parcella": "C5-1", "mennyiseg": 100, "lejarat": null }]
   },
   {
     "nev": "Elsősegély készlet (Bayer special edition 183)",
@@ -2288,7 +2344,11 @@
     "suly": 1.2,
     "minimumKeszlet": 50,
     "batches": [
-      { "parcella": "B3-4", "mennyiseg": 220, "lejarat": "2026-02-21T22:09:23.853683Z" }
+      {
+        "parcella": "B3-4",
+        "mennyiseg": 220,
+        "lejarat": "2026-02-21T22:09:23.853683Z"
+      }
     ]
   },
   {
@@ -2313,9 +2373,7 @@
     "eladasiAr": 207362,
     "suly": 5.0,
     "minimumKeszlet": 40,
-    "batches": [
-      { "parcella": "B1-2", "mennyiseg": 110, "lejarat": null }
-    ]
+    "batches": [{ "parcella": "B1-2", "mennyiseg": 110, "lejarat": null }]
   },
   {
     "nev": "HDMI kábel (LG special edition 186)",
@@ -2325,9 +2383,7 @@
     "eladasiAr": 12553,
     "suly": 0.2,
     "minimumKeszlet": 40,
-    "batches": [
-      { "parcella": "D2-3", "mennyiseg": 209, "lejarat": null }
-    ]
+    "batches": [{ "parcella": "D2-3", "mennyiseg": 209, "lejarat": null }]
   },
   {
     "nev": "Zokni 3 pár (Puma special edition 187)",
@@ -2337,9 +2393,7 @@
     "eladasiAr": 175244,
     "suly": 0.1,
     "minimumKeszlet": 30,
-    "batches": [
-      { "parcella": "B4-4", "mennyiseg": 154, "lejarat": null }
-    ]
+    "batches": [{ "parcella": "B4-4", "mennyiseg": 154, "lejarat": null }]
   },
   {
     "nev": "Mérőszalag 5m (Bosch special edition 188)",
@@ -2362,9 +2416,7 @@
     "eladasiAr": 58380,
     "suly": 4.5,
     "minimumKeszlet": 50,
-    "batches": [
-      { "parcella": "B3-2", "mennyiseg": 138, "lejarat": null }
-    ]
+    "batches": [{ "parcella": "B3-2", "mennyiseg": 138, "lejarat": null }]
   },
   {
     "nev": "Elsősegély készlet (Richter special edition 190)",
@@ -2375,8 +2427,16 @@
     "suly": 1.2,
     "minimumKeszlet": 50,
     "batches": [
-      { "parcella": "D1-3", "mennyiseg": 182, "lejarat": "2027-03-05T22:09:23.853815Z" },
-      { "parcella": "C5-2", "mennyiseg": 33, "lejarat": "2026-07-10T22:09:23.853830Z" }
+      {
+        "parcella": "D1-3",
+        "mennyiseg": 182,
+        "lejarat": "2027-03-05T22:09:23.853815Z"
+      },
+      {
+        "parcella": "C5-2",
+        "mennyiseg": 33,
+        "lejarat": "2026-07-10T22:09:23.853830Z"
+      }
     ]
   },
   {
@@ -2413,9 +2473,7 @@
     "eladasiAr": 185067,
     "suly": 0.5,
     "minimumKeszlet": 40,
-    "batches": [
-       { "parcella": "C3-1", "mennyiseg": 110, "lejarat": null }
-    ]
+    "batches": [{ "parcella": "C3-1", "mennyiseg": 110, "lejarat": null }]
   },
   {
     "nev": "Elsősegély készlet (Richter special edition 194)",
@@ -2426,8 +2484,16 @@
     "suly": 0.5,
     "minimumKeszlet": 20,
     "batches": [
-      { "parcella": "C4-4", "mennyiseg": 184, "lejarat": "2027-03-18T22:09:23.853906Z" },
-      { "parcella": "D1-4", "mennyiseg": 182, "lejarat": "2027-05-08T22:09:23.853918Z" }
+      {
+        "parcella": "C4-4",
+        "mennyiseg": 184,
+        "lejarat": "2027-03-18T22:09:23.853906Z"
+      },
+      {
+        "parcella": "D1-4",
+        "mennyiseg": 182,
+        "lejarat": "2027-05-08T22:09:23.853918Z"
+      }
     ]
   },
   {
@@ -2439,7 +2505,11 @@
     "suly": 0.1,
     "minimumKeszlet": 20,
     "batches": [
-      { "parcella": "A2-4", "mennyiseg": 198, "lejarat": "2027-06-19T22:09:23.853934Z" }
+      {
+        "parcella": "A2-4",
+        "mennyiseg": 198,
+        "lejarat": "2027-06-19T22:09:23.853934Z"
+      }
     ]
   },
   {
@@ -2450,9 +2520,7 @@
     "eladasiAr": 152662,
     "suly": 5.52,
     "minimumKeszlet": 40,
-    "batches": [
-       { "parcella": "B2-2", "mennyiseg": 140, "lejarat": null }
-    ]
+    "batches": [{ "parcella": "B2-2", "mennyiseg": 140, "lejarat": null }]
   },
   {
     "nev": "Akkumulátor 72Ah (Continental special edition 197)",
@@ -2475,9 +2543,7 @@
     "eladasiAr": 157159,
     "suly": 0.8,
     "minimumKeszlet": 30,
-    "batches": [
-      { "parcella": "B5-2", "mennyiseg": 55, "lejarat": null }
-    ]
+    "batches": [{ "parcella": "B5-2", "mennyiseg": 55, "lejarat": null }]
   },
   {
     "nev": "Mosókapszula (CleanPro special edition 199)",
@@ -2488,7 +2554,11 @@
     "suly": 1.5,
     "minimumKeszlet": 50,
     "batches": [
-      { "parcella": "B2-3", "mennyiseg": 151, "lejarat": "2027-04-22T22:09:23.854004Z" }
+      {
+        "parcella": "B2-3",
+        "mennyiseg": 151,
+        "lejarat": "2027-04-22T22:09:23.854004Z"
+      }
     ]
   },
   {
@@ -2499,9 +2569,7 @@
     "eladasiAr": 18000,
     "suly": 0.3,
     "minimumKeszlet": 20,
-    "batches": [
-      { "parcella": "C3-1", "mennyiseg": 150, "lejarat": null }
-    ]
+    "batches": [{ "parcella": "C3-1", "mennyiseg": 150, "lejarat": null }]
   },
   {
     "nev": "Fúrókalapács (Makita special edition 201)",
@@ -2524,9 +2592,7 @@
     "eladasiAr": 89000,
     "suly": 25.0,
     "minimumKeszlet": 10,
-    "batches": [
-      { "parcella": "B1-3", "mennyiseg": 40, "lejarat": null }
-    ]
+    "batches": [{ "parcella": "B1-3", "mennyiseg": 40, "lejarat": null }]
   },
   {
     "nev": "LED Monitor 32' (Sony special 203)",
@@ -2549,9 +2615,7 @@
     "eladasiAr": 14500,
     "suly": 3.8,
     "minimumKeszlet": 50,
-    "batches": [
-      { "parcella": "B5-2", "mennyiseg": 120, "lejarat": null }
-    ]
+    "batches": [{ "parcella": "B5-2", "mennyiseg": 120, "lejarat": null }]
   },
   {
     "nev": "Szakállvágó (Philips special 205)",
@@ -2561,9 +2625,7 @@
     "eladasiAr": 19900,
     "suly": 0.4,
     "minimumKeszlet": 30,
-    "batches": [
-      { "parcella": "A4-3", "mennyiseg": 85, "lejarat": null }
-    ]
+    "batches": [{ "parcella": "A4-3", "mennyiseg": 85, "lejarat": null }]
   },
   {
     "nev": "Kézi fűrész (Bosch special 206)",
@@ -2573,9 +2635,7 @@
     "eladasiAr": 7900,
     "suly": 0.9,
     "minimumKeszlet": 40,
-    "batches": [
-      { "parcella": "A2-1", "mennyiseg": 150, "lejarat": null }
-    ]
+    "batches": [{ "parcella": "A2-1", "mennyiseg": 150, "lejarat": null }]
   },
   {
     "nev": "Vezeték nélküli egér (Sony special 207)",
@@ -2585,9 +2645,7 @@
     "eladasiAr": 9900,
     "suly": 0.1,
     "minimumKeszlet": 100,
-    "batches": [
-      { "parcella": "C2-2", "mennyiseg": 300, "lejarat": null }
-    ]
+    "batches": [{ "parcella": "C2-2", "mennyiseg": 300, "lejarat": null }]
   },
   {
     "nev": "Multivitamin 60db (Bayer special 208)",
@@ -2598,7 +2656,11 @@
     "suly": 0.15,
     "minimumKeszlet": 60,
     "batches": [
-      { "parcella": "D1-1", "mennyiseg": 250, "lejarat": "2027-12-01T00:00:00Z" }
+      {
+        "parcella": "D1-1",
+        "mennyiseg": 250,
+        "lejarat": "2027-12-01T00:00:00Z"
+      }
     ]
   },
   {
@@ -2609,9 +2671,7 @@
     "eladasiAr": 16900,
     "suly": 0.7,
     "minimumKeszlet": 30,
-    "batches": [
-      { "parcella": "B4-4", "mennyiseg": 95, "lejarat": null }
-    ]
+    "batches": [{ "parcella": "B4-4", "mennyiseg": 95, "lejarat": null }]
   },
   {
     "nev": "Jegyzettömb A5 (Parker special 210)",
@@ -2621,9 +2681,7 @@
     "eladasiAr": 1500,
     "suly": 0.2,
     "minimumKeszlet": 150,
-    "batches": [
-      { "parcella": "D5-1", "mennyiseg": 400, "lejarat": null }
-    ]
+    "batches": [{ "parcella": "D5-1", "mennyiseg": 400, "lejarat": null }]
   },
   {
     "nev": "Féktisztító spray (Castrol special 211)",
@@ -2634,7 +2692,11 @@
     "suly": 0.5,
     "minimumKeszlet": 80,
     "batches": [
-      { "parcella": "A1-4", "mennyiseg": 200, "lejarat": "2028-01-01T00:00:00Z" }
+      {
+        "parcella": "A1-4",
+        "mennyiseg": 200,
+        "lejarat": "2028-01-01T00:00:00Z"
+      }
     ]
   },
   {
@@ -2645,9 +2707,7 @@
     "eladasiAr": 45000,
     "suly": 12.5,
     "minimumKeszlet": 10,
-    "batches": [
-      { "parcella": "C5-2", "mennyiseg": 40, "lejarat": null }
-    ]
+    "batches": [{ "parcella": "C5-2", "mennyiseg": 40, "lejarat": null }]
   },
   {
     "nev": "Tollaslabda készlet (Kipsta special 213)",
@@ -2657,9 +2717,7 @@
     "eladasiAr": 4900,
     "suly": 0.3,
     "minimumKeszlet": 40,
-    "batches": [
-      { "parcella": "B2-3", "mennyiseg": 110, "lejarat": null }
-    ]
+    "batches": [{ "parcella": "B2-3", "mennyiseg": 110, "lejarat": null }]
   },
   {
     "nev": "Szemeteszsák 120L (CleanPro 214)",
@@ -2669,9 +2727,7 @@
     "eladasiAr": 2200,
     "suly": 0.4,
     "minimumKeszlet": 100,
-    "batches": [
-      { "parcella": "A3-2", "mennyiseg": 300, "lejarat": null }
-    ]
+    "batches": [{ "parcella": "A3-2", "mennyiseg": 300, "lejarat": null }]
   },
   {
     "nev": "Szatyor textil (RaktárWeb 215)",
@@ -2681,9 +2737,7 @@
     "eladasiAr": 900,
     "suly": 0.05,
     "minimumKeszlet": 200,
-    "batches": [
-      { "parcella": "D4-3", "mennyiseg": 1000, "lejarat": null }
-    ]
+    "batches": [{ "parcella": "D4-3", "mennyiseg": 1000, "lejarat": null }]
   },
   {
     "nev": "Falióra (IKEA special 216)",
@@ -2693,9 +2747,7 @@
     "eladasiAr": 3500,
     "suly": 0.6,
     "minimumKeszlet": 30,
-    "batches": [
-      { "parcella": "B4-1", "mennyiseg": 80, "lejarat": null }
-    ]
+    "batches": [{ "parcella": "B4-1", "mennyiseg": 80, "lejarat": null }]
   },
   {
     "nev": "Elemlámpa LED (Energizer 217)",
@@ -2705,9 +2757,7 @@
     "eladasiAr": 6900,
     "suly": 0.25,
     "minimumKeszlet": 40,
-    "batches": [
-      { "parcella": "A2-4", "mennyiseg": 120, "lejarat": null }
-    ]
+    "batches": [{ "parcella": "A2-4", "mennyiseg": 120, "lejarat": null }]
   },
   {
     "nev": "Törlőkendő 100db (Dove special 218)",
@@ -2718,7 +2768,11 @@
     "suly": 0.3,
     "minimumKeszlet": 150,
     "batches": [
-      { "parcella": "C1-1", "mennyiseg": 400, "lejarat": "2026-06-01T00:00:00Z" }
+      {
+        "parcella": "C1-1",
+        "mennyiseg": 400,
+        "lejarat": "2026-06-01T00:00:00Z"
+      }
     ]
   },
   {
@@ -2729,9 +2783,7 @@
     "eladasiAr": 1200,
     "suly": 0.1,
     "minimumKeszlet": 50,
-    "batches": [
-      { "parcella": "D2-2", "mennyiseg": 200, "lejarat": null }
-    ]
+    "batches": [{ "parcella": "D2-2", "mennyiseg": 200, "lejarat": null }]
   },
   {
     "nev": "Szalagfűrész (Makita special 220)",
@@ -2741,9 +2793,7 @@
     "eladasiAr": 185000,
     "suly": 32.0,
     "minimumKeszlet": 5,
-    "batches": [
-      { "parcella": "A5-1", "mennyiseg": 12, "lejarat": null }
-    ]
+    "batches": [{ "parcella": "A5-1", "mennyiseg": 12, "lejarat": null }]
   },
   {
     "nev": "Hátizsák Túra 50L (Quechua 221)",
@@ -2753,9 +2803,7 @@
     "eladasiAr": 29900,
     "suly": 1.4,
     "minimumKeszlet": 20,
-    "batches": [
-      { "parcella": "B1-4", "mennyiseg": 60, "lejarat": null }
-    ]
+    "batches": [{ "parcella": "B1-4", "mennyiseg": 60, "lejarat": null }]
   },
   {
     "nev": "Kávéfőző (Philips special 222)",
@@ -2765,9 +2813,7 @@
     "eladasiAr": 69000,
     "suly": 4.2,
     "minimumKeszlet": 10,
-    "batches": [
-      { "parcella": "C4-4", "mennyiseg": 35, "lejarat": null }
-    ]
+    "batches": [{ "parcella": "C4-4", "mennyiseg": 35, "lejarat": null }]
   },
   {
     "nev": "Vízmérték 100cm (Bosch special 223)",
@@ -2777,9 +2823,7 @@
     "eladasiAr": 11500,
     "suly": 0.8,
     "minimumKeszlet": 30,
-    "batches": [
-      { "parcella": "A3-4", "mennyiseg": 70, "lejarat": null }
-    ]
+    "batches": [{ "parcella": "A3-4", "mennyiseg": 70, "lejarat": null }]
   },
   {
     "nev": "Szájvíz 500ml (Listerine 224)",
@@ -2790,7 +2834,11 @@
     "suly": 0.55,
     "minimumKeszlet": 60,
     "batches": [
-      { "parcella": "D3-1", "mennyiseg": 180, "lejarat": "2027-03-01T00:00:00Z" }
+      {
+        "parcella": "D3-1",
+        "mennyiseg": 180,
+        "lejarat": "2027-03-01T00:00:00Z"
+      }
     ]
   },
   {
@@ -2801,9 +2849,7 @@
     "eladasiAr": 4900,
     "suly": 0.2,
     "minimumKeszlet": 40,
-    "batches": [
-      { "parcella": "B2-1", "mennyiseg": 150, "lejarat": null }
-    ]
+    "batches": [{ "parcella": "B2-1", "mennyiseg": 150, "lejarat": null }]
   },
   {
     "nev": "Ételhordó doboz (Tupperware 226)",
@@ -2813,9 +2859,7 @@
     "eladasiAr": 8900,
     "suly": 0.3,
     "minimumKeszlet": 50,
-    "batches": [
-      { "parcella": "C2-3", "mennyiseg": 120, "lejarat": null }
-    ]
+    "batches": [{ "parcella": "C2-3", "mennyiseg": 120, "lejarat": null }]
   },
   {
     "nev": "Gumiabroncs 205/55 R16 (Michelin 227)",
@@ -2825,9 +2869,7 @@
     "eladasiAr": 34900,
     "suly": 8.5,
     "minimumKeszlet": 40,
-    "batches": [
-      { "parcella": "D5-4", "mennyiseg": 100, "lejarat": null }
-    ]
+    "batches": [{ "parcella": "D5-4", "mennyiseg": 100, "lejarat": null }]
   },
   {
     "nev": "Zuhanyszűrő (BWT special 228)",
@@ -2837,9 +2879,7 @@
     "eladasiAr": 14900,
     "suly": 0.6,
     "minimumKeszlet": 20,
-    "batches": [
-      { "parcella": "D4-2", "mennyiseg": 45, "lejarat": null }
-    ]
+    "batches": [{ "parcella": "D4-2", "mennyiseg": 45, "lejarat": null }]
   },
   {
     "nev": "Kézkrém (Nivea special 229)",
@@ -2850,7 +2890,11 @@
     "suly": 0.1,
     "minimumKeszlet": 100,
     "batches": [
-      { "parcella": "C5-4", "mennyiseg": 300, "lejarat": "2026-09-01T00:00:00Z" }
+      {
+        "parcella": "C5-4",
+        "mennyiseg": 300,
+        "lejarat": "2026-09-01T00:00:00Z"
+      }
     ]
   },
   {
@@ -2861,9 +2905,7 @@
     "eladasiAr": 24900,
     "suly": 18.0,
     "minimumKeszlet": 20,
-    "batches": [
-      { "parcella": "A4-1", "mennyiseg": 50, "lejarat": null }
-    ]
+    "batches": [{ "parcella": "A4-1", "mennyiseg": 50, "lejarat": null }]
   },
   {
     "nev": "Ugrókötél (Kipsta special 231)",
@@ -2873,9 +2915,7 @@
     "eladasiAr": 2900,
     "suly": 0.2,
     "minimumKeszlet": 50,
-    "batches": [
-      { "parcella": "B3-2", "mennyiseg": 150, "lejarat": null }
-    ]
+    "batches": [{ "parcella": "B3-2", "mennyiseg": 150, "lejarat": null }]
   },
   {
     "nev": "Védőszemüveg (3M special 232)",
@@ -2885,9 +2925,7 @@
     "eladasiAr": 5500,
     "suly": 0.1,
     "minimumKeszlet": 40,
-    "batches": [
-      { "parcella": "A1-3", "mennyiseg": 120, "lejarat": null }
-    ]
+    "batches": [{ "parcella": "A1-3", "mennyiseg": 120, "lejarat": null }]
   },
   {
     "nev": "USB-C Töltő (Apple special 233)",
@@ -2897,9 +2935,7 @@
     "eladasiAr": 12900,
     "suly": 0.15,
     "minimumKeszlet": 50,
-    "batches": [
-      { "parcella": "C3-2", "mennyiseg": 180, "lejarat": null }
-    ]
+    "batches": [{ "parcella": "C3-2", "mennyiseg": 180, "lejarat": null }]
   },
   {
     "nev": "Iratmegsemmisítő (Rexel 234)",
@@ -2909,9 +2945,7 @@
     "eladasiAr": 29900,
     "suly": 5.4,
     "minimumKeszlet": 10,
-    "batches": [
-      { "parcella": "D1-3", "mennyiseg": 30, "lejarat": null }
-    ]
+    "batches": [{ "parcella": "D1-3", "mennyiseg": 30, "lejarat": null }]
   },
   {
     "nev": "Rizsfőző (Xiaomi special 235)",
@@ -2921,9 +2955,7 @@
     "eladasiAr": 24900,
     "suly": 2.8,
     "minimumKeszlet": 20,
-    "batches": [
-      { "parcella": "C1-4", "mennyiseg": 55, "lejarat": null }
-    ]
+    "batches": [{ "parcella": "C1-4", "mennyiseg": 55, "lejarat": null }]
   },
   {
     "nev": "Kutyatáp 10kg (Purina 236)",
@@ -2945,9 +2977,7 @@
     "eladasiAr": 8900,
     "suly": 12.0,
     "minimumKeszlet": 100,
-    "batches": [
-      { "parcella": "A5-4", "mennyiseg": 300, "lejarat": null }
-    ]
+    "batches": [{ "parcella": "A5-4", "mennyiseg": 300, "lejarat": null }]
   },
   {
     "nev": "Szekrény 2-ajtós (IKEA special 238)",
@@ -2957,9 +2987,7 @@
     "eladasiAr": 59900,
     "suly": 42.0,
     "minimumKeszlet": 10,
-    "batches": [
-      { "parcella": "B4-3", "mennyiseg": 20, "lejarat": null }
-    ]
+    "batches": [{ "parcella": "B4-3", "mennyiseg": 20, "lejarat": null }]
   },
   {
     "nev": "Védőmaszk FFP2 (3M special 239)",
@@ -2970,7 +2998,11 @@
     "suly": 0.01,
     "minimumKeszlet": 500,
     "batches": [
-      { "parcella": "D3-3", "mennyiseg": 2000, "lejarat": "2028-12-31T00:00:00Z" }
+      {
+        "parcella": "D3-3",
+        "mennyiseg": 2000,
+        "lejarat": "2028-12-31T00:00:00Z"
+      }
     ]
   },
   {
@@ -2981,9 +3013,7 @@
     "eladasiAr": 3900,
     "suly": 0.15,
     "minimumKeszlet": 40,
-    "batches": [
-      { "parcella": "B5-1", "mennyiseg": 120, "lejarat": null }
-    ]
+    "batches": [{ "parcella": "B5-1", "mennyiseg": 120, "lejarat": null }]
   },
   {
     "nev": "Tűzőgép (Esselte special 241)",
@@ -2993,9 +3023,7 @@
     "eladasiAr": 4900,
     "suly": 0.4,
     "minimumKeszlet": 20,
-    "batches": [
-      { "parcella": "D5-2", "mennyiseg": 60, "lejarat": null }
-    ]
+    "batches": [{ "parcella": "D5-2", "mennyiseg": 60, "lejarat": null }]
   },
   {
     "nev": "Ablaktisztító 500ml (Cif 242)",
@@ -3006,7 +3034,11 @@
     "suly": 0.55,
     "minimumKeszlet": 80,
     "batches": [
-      { "parcella": "A1-1", "mennyiseg": 180, "lejarat": "2026-11-01T00:00:00Z" }
+      {
+        "parcella": "A1-1",
+        "mennyiseg": 180,
+        "lejarat": "2026-11-01T00:00:00Z"
+      }
     ]
   },
   {
@@ -3017,9 +3049,7 @@
     "eladasiAr": 2900,
     "suly": 0.1,
     "minimumKeszlet": 30,
-    "batches": [
-      { "parcella": "B1-1", "mennyiseg": 100, "lejarat": null }
-    ]
+    "batches": [{ "parcella": "B1-1", "mennyiseg": 100, "lejarat": null }]
   },
   {
     "nev": "Szemeteskuka (Philips special 244)",
@@ -3029,9 +3059,7 @@
     "eladasiAr": 11900,
     "suly": 2.2,
     "minimumKeszlet": 20,
-    "batches": [
-      { "parcella": "C4-2", "mennyiseg": 50, "lejarat": null }
-    ]
+    "batches": [{ "parcella": "C4-2", "mennyiseg": 50, "lejarat": null }]
   },
   {
     "nev": "Létra alumínium 3-fokos (Generic 245)",
@@ -3041,9 +3069,7 @@
     "eladasiAr": 19900,
     "suly": 4.5,
     "minimumKeszlet": 10,
-    "batches": [
-      { "parcella": "A5-3", "mennyiseg": 30, "lejarat": null }
-    ]
+    "batches": [{ "parcella": "A5-3", "mennyiseg": 30, "lejarat": null }]
   },
   {
     "nev": "Sakk készlet (Hasbro special 246)",
@@ -3053,9 +3079,7 @@
     "eladasiAr": 6900,
     "suly": 1.2,
     "minimumKeszlet": 20,
-    "batches": [
-      { "parcella": "D1-2", "mennyiseg": 55, "lejarat": null }
-    ]
+    "batches": [{ "parcella": "D1-2", "mennyiseg": 55, "lejarat": null }]
   },
   {
     "nev": "Piknik takaró (IKEA special 247)",
@@ -3065,9 +3089,7 @@
     "eladasiAr": 4900,
     "suly": 0.8,
     "minimumKeszlet": 30,
-    "batches": [
-      { "parcella": "B3-1", "mennyiseg": 80, "lejarat": null }
-    ]
+    "batches": [{ "parcella": "B3-1", "mennyiseg": 80, "lejarat": null }]
   },
   {
     "nev": "WIFI Router (Sony special 248)",
@@ -3077,9 +3099,7 @@
     "eladasiAr": 24900,
     "suly": 0.6,
     "minimumKeszlet": 20,
-    "batches": [
-      { "parcella": "C5-1", "mennyiseg": 65, "lejarat": null }
-    ]
+    "batches": [{ "parcella": "C5-1", "mennyiseg": 65, "lejarat": null }]
   },
   {
     "nev": "Kézi súlyzó 2kg (Kipsta 249)",
@@ -3089,9 +3109,7 @@
     "eladasiAr": 4500,
     "suly": 2.0,
     "minimumKeszlet": 50,
-    "batches": [
-      { "parcella": "B2-2", "mennyiseg": 150, "lejarat": null }
-    ]
+    "batches": [{ "parcella": "B2-2", "mennyiseg": 150, "lejarat": null }]
   },
   {
     "nev": "Vízlágyító só 25kg (BWT 250)",

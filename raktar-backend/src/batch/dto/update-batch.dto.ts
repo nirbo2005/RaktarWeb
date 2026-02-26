@@ -1,9 +1,10 @@
+//raktar-backend/src/batch/dto/update-batch.dto.ts
 import { IsOptional, IsInt, Min, IsString } from 'class-validator';
 
 export class UpdateBatchDto {
   @IsOptional()
   @IsInt()
-  @Min(0) 
+  @Min(0)
   mennyiseg?: number;
 
   @IsOptional()

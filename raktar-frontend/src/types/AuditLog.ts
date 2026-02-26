@@ -1,27 +1,19 @@
+//raktar-frontend/src/types/AuditLog.ts
 export interface AuditLog {
   id: number;
-  muvelet: "CREATE" | "UPDATE" | "DELETE" | "RESTORE" | "BULK_DELETE";
+  muvelet: "PRODUCT_CREATE" | "PRODUCT_UPDATE" | "PRODUCT_DELETE" | "PRODUCT_RESTORE" | "PRODUCT_BULK_DELETE" | "BATCH_CREATE" | "BATCH_UPDATE" | "BATCH_DELETE";
   idopont: string;
-  // A backend most már productId-t küld
-  productId: number | null; 
-  stockId?: number | null; // Megtartjuk a kompatibilitás miatt
+  productId: number | null;
   userId: number;
   user: {
+    id: number;
     nev: string;
-    felhasznalonev?: string;
+    felhasznalonev: string;
   };
-  // A backend 'product' néven küldi az include miatt
   product?: {
+    id: number;
     nev: string;
   } | null;
-  // Megtartjuk a stock-ot is, ha esetleg máshol még kell
-  stock?: {
-    nev: string;
-  } | null;
-  termekNev?: string;
   regiAdat: any | null;
   ujAdat: any | null;
-  isGroup?: boolean;
-  count?: number;
-  items?: AuditLog[];
 }

@@ -1,3 +1,4 @@
+//raktar-backend/src/main.ts
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { NestExpressApplication } from '@nestjs/platform-express';
@@ -18,9 +19,14 @@ async function bootstrap() {
         /^http:\/\/192\.168\.1\.\d{1,3}:5173$/,
       ];
 
-      if (!origin || allowedOrigins.some(allowed => 
-        typeof allowed === 'string' ? allowed === origin : allowed.test(origin)
-      )) {
+      if (
+        !origin ||
+        allowedOrigins.some((allowed) =>
+          typeof allowed === 'string'
+            ? allowed === origin
+            : allowed.test(origin),
+        )
+      ) {
         callback(null, true);
       } else {
         callback(new Error('Not allowed by CORS'));

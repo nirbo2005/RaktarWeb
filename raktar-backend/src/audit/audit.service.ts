@@ -1,3 +1,4 @@
+//raktar-backend/src/audit/audit.service.ts
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma.service';
 import { GetLogsQueryDto } from './dto/get-logs-query.dto';
@@ -8,15 +9,7 @@ export class AuditService {
   constructor(private prisma: PrismaService) {}
 
   async findAll(userId: number, query: GetLogsQueryDto) {
-    const {
-      targetUserId,
-      admin,
-      muvelet,
-      productId,
-      startDate,
-      endDate,
-    } = query;
-
+    const { targetUserId, admin, muvelet, productId, startDate, endDate } = query;
     const where: Prisma.AuditLogWhereInput = {};
 
     if (!admin) {
@@ -73,7 +66,7 @@ export class AuditService {
     tx?: Prisma.TransactionClient,
   ) {
     const client = tx || this.prisma;
-    
+
     const cleanRegi = regiAdat ? JSON.parse(JSON.stringify(regiAdat)) : null;
     const cleanUj = ujAdat ? JSON.parse(JSON.stringify(ujAdat)) : null;
 

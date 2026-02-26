@@ -1,3 +1,4 @@
+//raktar-backend/src/product/product.controller.ts
 import {
   Body,
   Controller,
@@ -81,7 +82,7 @@ export class ProductController {
   @Roles(Role.KEZELO, Role.ADMIN)
   async delete(
     @Param('id', ParseIntPipe) id: number,
-    
+
     @Query('userId', ParseIntPipe) userId: number,
   ) {
     return this.productService.delete(id, userId);

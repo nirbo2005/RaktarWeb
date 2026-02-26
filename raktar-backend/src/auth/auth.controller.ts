@@ -1,4 +1,13 @@
-import { Controller, Post, Body, UseInterceptors, ClassSerializerInterceptor, UsePipes, ValidationPipe } from '@nestjs/common';
+//raktar-backend/src/auth/auth.controller.ts
+import {
+  Controller,
+  Post,
+  Body,
+  UseInterceptors,
+  ClassSerializerInterceptor,
+  UsePipes,
+  ValidationPipe,
+} from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { LoginDto } from './dto/login.dto';
 import { ForgotPasswordDto } from './dto/forgot-password.dto';
@@ -12,7 +21,6 @@ export class AuthController {
   @Post('login')
   @UsePipes(new ValidationPipe({ transform: true, whitelist: true }))
   async login(@Body() loginDto: LoginDto) {
-    
     return this.authService.login(loginDto);
   }
 
@@ -24,7 +32,9 @@ export class AuthController {
 
   @Post('force-change-password')
   @UsePipes(new ValidationPipe({ transform: true, whitelist: true }))
-  async forceChangePassword(@Body() forceChangePasswordDto: ForceChangePasswordDto) {
+  async forceChangePassword(
+    @Body() forceChangePasswordDto: ForceChangePasswordDto,
+  ) {
     return this.authService.forceChangePassword(forceChangePasswordDto);
   }
 }

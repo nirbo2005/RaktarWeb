@@ -1,3 +1,4 @@
+//raktar-backend/src/audit/audit.controller.spec.ts
 import { Test, TestingModule } from '@nestjs/testing';
 import { AuditController } from './audit.controller';
 import { AuditService } from './audit.service';
@@ -32,16 +33,16 @@ describe('AuditController', () => {
   });
 
   it('should call service.findAll when getLogs is called', async () => {
-    
     const mockUser = { id: 1, rang: Role.ADMIN };
     const mockQuery = { admin: true };
-    
-    
+
     const req = { user: mockUser } as any;
 
     await controller.getLogs(req, mockQuery as any);
-    
-    
-    expect(service.findAll).toHaveBeenCalledWith(mockUser.id, expect.any(Object));
+
+    expect(service.findAll).toHaveBeenCalledWith(
+      mockUser.id,
+      expect.any(Object),
+    );
   });
 });

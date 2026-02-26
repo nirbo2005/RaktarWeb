@@ -1,4 +1,4 @@
-//raktar-backend/src/user/user.service.ts
+// raktar-backend/src/user/user.service.ts
 import {
   Injectable,
   NotFoundException,
@@ -20,9 +20,11 @@ export class UserService {
     private events: EventsGateway,
   ) {}
 
-  private normalizePhoneNumber(phone: string | null | undefined): string | null {
+  private normalizePhoneNumber(
+    phone: string | null | undefined,
+  ): string | null {
     if (!phone) return null;
-    const cleaned = phone.replace(/\D/g, ''); 
+    const cleaned = phone.replace(/\D/g, '');
     return cleaned ? `+${cleaned}` : null;
   }
 
@@ -43,10 +45,15 @@ export class UserService {
     } catch (error: any) {
       if (error.code === 'P2002') {
         const target = JSON.stringify(error.meta?.target || '').toLowerCase();
-        if (target.includes('felhasznalonev')) throw new ConflictException('Ez a felhasználónév már foglalt!');
-        if (target.includes('email')) throw new ConflictException('Ez az e-mail cím már regisztrálva van!');
-        if (target.includes('telefonszam') || target.includes('phone')) throw new ConflictException('Ez a telefonszám már használatban van!');
-        throw new ConflictException('Már létezik felhasználó ezekkel az adatokkal.');
+        if (target.includes('felhasznalonev'))
+          throw new ConflictException('Ez a felhasználónév már foglalt!');
+        if (target.includes('email'))
+          throw new ConflictException('Ez az e-mail cím már regisztrálva van!');
+        if (target.includes('telefonszam') || target.includes('phone'))
+          throw new ConflictException('Ez a telefonszám már használatban van!');
+        throw new ConflictException(
+          'Már létezik felhasználó ezekkel az adatokkal.',
+        );
       }
       throw new InternalServerErrorException('Szerveroldali hiba történt.');
     }
@@ -74,23 +81,45 @@ export class UserService {
     const { ujJelszo, regiJelszo, telefonszam, ...validFields } = data;
     const updateData: any = { ...validFields };
 
-    if (telefonszam !== undefined) updateData.telefonszam = this.normalizePhoneNumber(telefonszam);
+    if (telefonszam !== undefined)
+      updateData.telefonszam = this.normalizePhoneNumber(telefonszam);
 
     if (ujJelszo && ujJelszo.trim() !== '') {
       if (!regiJelszo) throw new UnauthorizedException('Régi jelszó kötelező!');
       const isMatch = await bcrypt.compare(regiJelszo, user.jelszo);
-      if (!isMatch) throw new UnauthorizedException('Régi jelszó nem megfelelő!');
+      if (!isMatch)
+        throw new UnauthorizedException('Régi jelszó nem megfelelő!');
       const salt = await bcrypt.genSalt();
       updateData.jelszo = await bcrypt.hash(ujJelszo, salt);
     }
 
     try {
-      const updated = await this.prisma.user.update({ where: { id }, data: updateData });
+      const updated = await this.prisma.user.update({
+        where: { id },
+        data: updateData,
+      });
       this.events.emitToUser(id, 'user_updated', updated);
       return new UserEntity(updated);
     } catch (error: any) {
-      throw new InternalServerErrorException('Szerveroldali hiba a profil frissítése közben.');
+      throw new InternalServerErrorException(
+        'Szerveroldali hiba a profil frissítése közben.',
+      );
     }
+  }
+
+  async revokeAllSessions(id: number): Promise<void> {
+    const user = await this.prisma.user.findUnique({ where: { id } });
+    if (!user) throw new NotFoundException('Felhasználó nem található');
+
+    await this.prisma.user.update({
+      where: { id },
+      data: { currentTokenVersion: { increment: 1 } },
+    });
+
+    this.events.emitToUser(id, 'force_logout', {
+      userId: id,
+      reason: 'security_reset',
+    });
   }
 
   async createChangeRequest(userId: number, tipus: string, ujErtek: string) {
@@ -109,21 +138,46 @@ export class UserService {
   }
 
   async handleRequest(requestId: number, statusz: 'APPROVED' | 'REJECTED') {
-    const request = await this.prisma.changeRequest.findUnique({ where: { id: requestId } });
+    const request = await this.prisma.changeRequest.findUnique({
+      where: { id: requestId },
+    });
     if (!request) throw new NotFoundException('Kérelem nem található');
 
     let updatedUser: any = null;
     if (statusz === 'APPROVED') {
       if (request.tipus === 'NEV_MODOSITAS') {
-        updatedUser = await this.prisma.user.update({ where: { id: request.userId }, data: { nev: request.ujErtek } });
+        updatedUser = await this.prisma.user.update({
+          where: { id: request.userId },
+          data: { nev: request.ujErtek },
+        });
       } else if (request.tipus === 'RANG_MODOSITAS') {
-        updatedUser = await this.prisma.user.update({ where: { id: request.userId }, data: { rang: request.ujErtek as Role } });
+        updatedUser = await this.prisma.user.update({
+          where: { id: request.userId },
+          data: { 
+            rang: request.ujErtek as Role,
+            currentTokenVersion: { increment: 1 }
+          },
+        });
       }
-      if (updatedUser) this.events.emitToUser(request.userId, 'user_updated', updatedUser);
+      if (updatedUser) {
+        if (request.tipus === 'RANG_MODOSITAS') {
+          this.events.emitToUser(request.userId, 'force_logout', {
+            userId: request.userId,
+            reason: 'session_expired',
+          });
+        } else {
+          this.events.emitToUser(request.userId, 'user_updated', updatedUser);
+        }
+      }
     }
 
-    const updatedRequest = await this.prisma.changeRequest.update({ where: { id: requestId }, data: { statusz } });
-    this.events.emitToUser(request.userId, 'notifications_updated', { userId: request.userId });
+    const updatedRequest = await this.prisma.changeRequest.update({
+      where: { id: requestId },
+      data: { statusz },
+    });
+    this.events.emitToUser(request.userId, 'notifications_updated', {
+      userId: request.userId,
+    });
     return updatedRequest;
   }
 
@@ -133,16 +187,16 @@ export class UserService {
 
     const updated = await this.prisma.user.update({
       where: { id },
-      data: { 
+      data: {
         isBanned: !user.isBanned,
-        currentTokenVersion: { increment: 1 } // Token érvénytelenítése
+        currentTokenVersion: { increment: 1 },
       },
     });
 
     if (updated.isBanned) {
       this.events.emitToUser(id, 'force_logout', {
         userId: id,
-        reason: 'banned', // Ez váltja ki a SweetAlertet a Login oldalon
+        reason: 'banned',
       });
     } else {
       this.events.emitToUser(id, 'user_updated', updated);
@@ -160,11 +214,14 @@ export class UserService {
         email: `deleted_${id}@raktar.local`,
         telefonszam: '---',
         isBanned: true,
-        currentTokenVersion: { increment: 1 }
+        currentTokenVersion: { increment: 1 },
       },
     });
 
-    this.events.emitToUser(id, 'force_logout', { userId: id, reason: 'banned' });
+    this.events.emitToUser(id, 'force_logout', {
+      userId: id,
+      reason: 'banned',
+    });
     return new UserEntity(updated);
   }
 }

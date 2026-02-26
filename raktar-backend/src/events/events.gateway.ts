@@ -1,3 +1,4 @@
+//raktar-backend/src/events/events.gateway.ts
 import {
   WebSocketGateway,
   WebSocketServer,
@@ -31,17 +32,13 @@ export class EventsGateway implements OnGatewayConnection, OnGatewayDisconnect {
     @MessageBody() data: { userId: number },
     @ConnectedSocket() client: Socket,
   ) {
-    if (!data.userId) return;
+    if (!data || !data.userId) return;
     const roomName = `user_${data.userId}`;
     client.join(roomName);
     console.log(`Socket ${client.id} csatlakozott a szobához: ${roomName}`);
     return { event: 'joined', room: roomName };
   }
 
-  /**
-   * JAVÍTÁS: Ez a metódus hiányzott az AuthService számára.
-   * Célzott üzenetet küld az adott felhasználó összes socketjének (szobájának).
-   */
   emitToUser(userId: number, event: string, data: any) {
     if (this.server) {
       const roomName = `user_${userId}`;
@@ -50,24 +47,14 @@ export class EventsGateway implements OnGatewayConnection, OnGatewayDisconnect {
     }
   }
 
-  /**
-   * Frissítési események szórása.
-   * Ha van ID, akkor szobába küldi, egyébként globálisan.
-   */
   emitUpdate(event: string, data: any) {
     if (!this.server) return;
 
     const targetId = data.id || data.userId;
-    
+
     if (targetId) {
-      
       this.server.to(`user_${targetId}`).emit(event, data);
-      
-      
-      
-      
     } else {
-      
       this.server.emit(event, data);
     }
   }

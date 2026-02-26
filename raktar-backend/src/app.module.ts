@@ -1,3 +1,4 @@
+// raktar-backend/src/app.module.ts
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { ScheduleModule } from '@nestjs/schedule';
@@ -9,7 +10,9 @@ import { ProductModule } from './product/product.module';
 import { AuditModule } from './audit/audit.module';
 import { BatchModule } from './batch/batch.module';
 import { NotificationModule } from './notification/notification.module';
-import { EventsModule } from './events/events.module'; 
+import { EventsModule } from './events/events.module';
+import { SystemController } from './system/system.controller';
+import { PrismaService } from './prisma.service';
 
 @Module({
   imports: [
@@ -24,9 +27,9 @@ import { EventsModule } from './events/events.module';
     AuditModule,
     BatchModule,
     NotificationModule,
-    EventsModule, 
+    EventsModule,
   ],
-  controllers: [AppController],
-  providers: [AppService],
+  controllers: [AppController, SystemController],
+  providers: [AppService, PrismaService],
 })
 export class AppModule {}
