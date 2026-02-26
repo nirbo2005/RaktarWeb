@@ -22,7 +22,8 @@
     "open": "Megnyitás",
     "filterBtn": "Szűrés",
     "restore": "Visszavonás",
-    "unknown": "Ismeretlen"
+    "unknown": "Ismeretlen",
+    "reset": "Újrakezdés"
   },
   "admin": {
     "editTitle": "Szerkesztés: {{name}}",
@@ -406,8 +407,14 @@
     },
     "splitter": {
       "title": "Többpolcos Elosztás",
+      "chooseMethod": "Hogyan szeretné elhelyezni a készletet?",
+      "autoBtn": "🤖 Automata ajánlat",
+      "manualBtn": "📍 Kézi kiválasztás",
+      "autoTitle": "Automatizált kiosztás",
+      "manualTitle": "Kézi polckiosztás",
       "allAllocated": "Minden tétel elhelyezve",
       "remaining": "Fennmaradó",
+      "remainingQty": "Még kiosztandó: {{count}} db",
       "shelf": "Polc",
       "qty": "Mennyiség",
       "addSplit": "Bontás további polcokra",

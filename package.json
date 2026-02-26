@@ -3,10 +3,16 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
+    "init": "npm run install-all && npm run db-reset && npm run dev",
+    "refresh": "npm run db-push && npm run dev",
+    "dev": "concurrently -n \"BACKEND,FRONTEND\" -c \"bgBlue,bgMagenta\" \"npm run run-backend\" \"npm run run-frontend\"",
     "install-all": "npm install && cd raktar-backend && npm install && cd ../raktar-frontend && npm install",
-    "dev": "concurrently -n \"BACKEND,FRONTEND\" -c \"bgBlue,bgMagenta\" \"cd raktar-backend && npm run start:dev\" \"cd raktar-frontend && npm run dev\"",
-    "seed": "cd raktar-backend && npx prisma generate && npx prisma migrate dev --name init && npx prisma db seed && cd .. && npm run dev",
-    "update": "cd raktar-backend && npx prisma migrate reset --force --skip-seed && npx prisma generate && npx prisma db push && npx prisma db seed && cd .. && npm run dev"
+    "db-generate": "cd raktar-backend && npx prisma generate",
+    "db-push": "npm run db-generate && cd raktar-backend && npx prisma db push && npx prisma db seed",
+    "db-reset": "npm run db-generate && cd raktar-backend && npx prisma migrate reset --force --skip-seed && npx prisma db push && npx prisma db seed",
+    "db-seed": "cd raktar-backend && npx prisma db seed",
+    "run-backend": "cd raktar-backend && npm run start:dev",
+    "run-frontend": "cd raktar-frontend && npm run dev"
   },
   "repository": {
     "type": "git",

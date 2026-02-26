@@ -8,7 +8,7 @@ interface ShelfMapProps {
   onSelectShelf?: (parcella: string) => void;
   selectedShelf?: string;
   highlightCategory?: string;
-  validShelves?: string[]; // ÚJ: Csak ezek a polcok választhatóak (Strict Mode)
+  validShelves?: string[]; // Strict Mode: Csak ezek a polcok választhatóak
 }
 
 const ShelfMap: React.FC<ShelfMapProps> = ({ 
@@ -57,6 +57,7 @@ const ShelfMap: React.FC<ShelfMapProps> = ({
           {sectors.map(s => (
             <button
               key={s}
+              type="button"
               onClick={() => setActiveSector(s)}
               className={`px-4 py-2 rounded-lg text-xs font-black transition-all ${
                 activeSector === s 
@@ -80,7 +81,6 @@ const ShelfMap: React.FC<ShelfMapProps> = ({
               const shelfData = mapData?.shelves[parcella];
               const isSameCategory = highlightCategory && shelfData?.category === highlightCategory;
               
-              // Strict Mode ellenőrzés
               const isDisabled = validShelves && !validShelves.includes(parcella);
 
               return (

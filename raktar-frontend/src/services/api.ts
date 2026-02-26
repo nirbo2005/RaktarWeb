@@ -1,4 +1,4 @@
-//raktar-frontend/src/services/api.ts
+// raktar-frontend/src/services/api.ts
 import type { Batch } from "../types/Batch";
 import type { Product } from "../types/Product";
 import type { AppNotification } from "../types/Notification";
@@ -166,14 +166,11 @@ export async function getPendingRequests() {
 }
 
 export async function handleAdminRequest(requestId: number, statusz: string) {
-  const res = await fetch(
-    `${BASE_URL}/users/handle-request`,
-    {
-      method: "POST",
-      headers: getHeaders(),
-      body: JSON.stringify({ requestId, statusz }),
-    },
-  );
+  const res = await fetch(`${BASE_URL}/users/handle-request`, {
+    method: "POST",
+    headers: getHeaders(),
+    body: JSON.stringify({ requestId, statusz }),
+  });
   return handleResponse(res);
 }
 
@@ -320,17 +317,31 @@ export async function getWarehouseMap(): Promise<any> {
   return handleResponse(res);
 }
 
-export async function findBestSpace(
+export async function suggestPlacement(
   productId: number,
   mennyiseg: number,
+  weight?: number
 ): Promise<any> {
-  const res = await fetch(
-    `${BASE_URL}/batch/best-space?productId=${productId}&mennyiseg=${mennyiseg}`,
-    {
-      headers: getHeaders(),
-    },
+  console.log(
+    `[API] suggestPlacement hívás: productId=${productId}, mennyiseg=${mennyiseg}, weight=${weight}`
   );
-  return handleResponse(res);
+  try {
+    const params = new URLSearchParams({
+      productId: String(productId),
+      mennyiseg: String(mennyiseg),
+    });
+    if (weight) params.append("weight", String(weight));
+
+    const res = await fetch(`${BASE_URL}/batch/suggest-placement?${params.toString()}`, {
+      headers: getHeaders(),
+    });
+    const data = await handleResponse(res);
+    console.log(`[API] suggestPlacement válasz:`, data);
+    return data;
+  } catch (err) {
+    console.error(`[API] suggestPlacement HIBA:`, err);
+    throw err;
+  }
 }
 
 // ==========================================
@@ -421,16 +432,3 @@ export const getSystemStatus = async (): Promise<any> => {
   });
   return handleResponse(res);
 };
-
-export async function suggestPlacement(
-  productId: number,
-  mennyiseg: number
-): Promise<any> {
-  const res = await fetch(
-    `${BASE_URL}/batch/suggest-placement?productId=${productId}&mennyiseg=${mennyiseg}`,
-    {
-      headers: getHeaders(),
-    }
-  );
-  return handleResponse(res);
-}

@@ -9,8 +9,16 @@ const prisma = new PrismaClient();
 async function main() {
   console.log('🌱 Seeding folyamat elindítva...');
 
-  // Hibatűrő törlés: Ha a tábla nem létezik, ne álljon le a folyamat
+  // 1. Táblák meglétének ellenőrzése
   try {
+    await prisma.user.count();
+  } catch (e) {
+    throw new Error('Az adatbázis táblái nem léteznek. Futtasd először: npx prisma db push');
+  }
+
+  // 2. Hibatűrő törlés
+  try {
+    // A törlés sorrendje fontos a kényszerfeltételek (FK) miatt
     await prisma.batch.deleteMany();
     await prisma.auditLog.deleteMany();
     await prisma.changeRequest.deleteMany();
@@ -19,9 +27,10 @@ async function main() {
     await prisma.user.deleteMany();
     console.log('♻️ Korábbi adatok törölve.');
   } catch (e) {
-    console.log('⚠️ Törlés sikertelen (lehet, hogy üres az adatbázis), folytatás...');
+    console.log('⚠️ Törlés során hiba lépett fel, de folytatjuk a betöltést...');
   }
 
+  // 3. Felhasználók betöltése
   const usersPath = path.join(__dirname, 'seed-users.json');
   if (fs.existsSync(usersPath)) {
     const usersData = JSON.parse(fs.readFileSync(usersPath, 'utf-8'));
@@ -42,6 +51,7 @@ async function main() {
     console.log(`✅ ${usersData.length} felhasználó létrehozva.`);
   }
 
+  // 4. Termékek és Sarzsok betöltése
   const productsPath = path.join(__dirname, 'seed-products.json');
   if (fs.existsSync(productsPath)) {
     const productsData = JSON.parse(fs.readFileSync(productsPath, 'utf-8'));
@@ -64,7 +74,7 @@ async function main() {
           productId: product.id,
           parcella: b.parcella,
           mennyiseg: b.mennyiseg,
-          lejarat: b.lejarat ? new Date(b.lejarat) : null, // A sémában "lejarat" van
+          lejarat: b.lejarat ? new Date(b.lejarat) : null,
         }));
 
         await prisma.batch.createMany({
@@ -72,7 +82,7 @@ async function main() {
         });
       }
     }
-    console.log(`✅ ${productsData.length} termék feltöltve.`);
+    console.log(`✅ ${productsData.length} termék (és kapcsolódó sarzsok) feltöltve.`);
   }
 
   console.log('✨ Seeding sikeresen befejeződött!');
@@ -80,7 +90,7 @@ async function main() {
 
 main()
   .catch((e) => {
-    console.error('❌ Hiba a seeding során:', e);
+    console.error('❌ Hiba a seeding során:', e.message);
     process.exit(1);
   })
   .finally(async () => {
