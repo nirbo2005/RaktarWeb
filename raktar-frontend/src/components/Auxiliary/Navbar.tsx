@@ -53,6 +53,16 @@ function Navbar({ isDark, setIsDark }: NavbarProps) {
     }
   }, [user, location.pathname]);
 
+  // A useAutoRefresh hook gondoskodik a WebSocket események figyeléséről is,
+  // de mivel az értesítések kritikusak, feliratkozunk a dedikált eseményre direkt is.
+  useEffect(() => {
+    const handleNotifUpdate = () => {
+      fetchData();
+    };
+    window.addEventListener("notifications_updated", handleNotifUpdate);
+    return () => window.removeEventListener("notifications_updated", handleNotifUpdate);
+  }, [fetchData]);
+
   useAutoRefresh(fetchData);
 
   useEffect(() => {

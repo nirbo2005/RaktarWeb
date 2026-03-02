@@ -1,7 +1,7 @@
 // raktar-frontend/src/components/Product/ProductAdd.tsx
 import { useState, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
-import { addProduct, createBulkBatches, getProducts } from "../../services/api";
+import { addProduct, createBulkBatches, getProducts, deleteProduct } from "../../services/api";
 import { useAuth } from "../../context/AuthContext";
 import type { Product, ProductCategory } from "../../types/Product";
 import Swal from "sweetalert2";
@@ -44,6 +44,7 @@ function ProductAdd() {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [mode, setMode] = useState<"SEARCH" | "NEW_MASTER">("SEARCH");
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const [masterForm, setMasterForm] = useState({
     nev: "",
@@ -63,6 +64,7 @@ function ProductAdd() {
   const [splits, setSplits] = useState<{ parcella: string; mennyiseg: number }[] | null>(null);
   const [selectedShelfFromMap, setSelectedShelfFromMap] = useState<string>("");
   const [showMap, setShowMap] = useState(false);
+  const [mapData, setMapData] = useState<any>(null);
 
   const fetchSearchList = useCallback(async () => {
     try {
@@ -87,17 +89,20 @@ function ProductAdd() {
   const handleBatchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setBatchForm((prev) => ({ ...prev, [name]: value }));
-    setSplits(null); // Reset splits if base quantity changes
+    setSplits(null);
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!user || !splits) return;
+    if (!user || !splits || isSubmitting) return;
+
+    setIsSubmitting(true);
+    let productId = selectedProduct?.id;
+    let isNewProduct = false;
 
     try {
-      let productId = selectedProduct?.id;
-
       if (!productId) {
+        isNewProduct = true;
         const newProduct = await addProduct({
           ...masterForm,
           beszerzesiAr: Number(masterForm.beszerzesiAr),
@@ -125,11 +130,23 @@ function ProductAdd() {
       });
       navigate("/");
     } catch (error: any) {
+      if (isNewProduct && productId) {
+        console.warn("Készletmentési hiba, Cikktörzs Rollback indítása...", productId);
+        try {
+           await deleteProduct(productId, user.id);
+           console.log("Rollback sikeres.");
+        } catch (rollbackError) {
+           console.error("Kritikus hiba: Rollback sikertelen!", rollbackError);
+        }
+      }
+
       MySwal.fire({
         icon: "error",
         title: t("product.add.alerts.errorOccurred"),
         text: error.message || t("product.add.alerts.errorText"),
       });
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -268,9 +285,11 @@ function ProductAdd() {
                   <BatchSplitter
                     productId={selectedProduct?.id || 0}
                     totalQuantity={Number(batchForm.mennyiseg)}
+                    productWeight={selectedProduct?.suly || Number(masterForm.suly)}
                     onSplitsChange={setSplits}
                     onManualSelectRequested={() => setShowMap(true)}
                     externalSelectedShelf={selectedShelfFromMap}
+                    mapData={mapData}
                   />
                 )}
               </div>
@@ -281,6 +300,7 @@ function ProductAdd() {
                     onSelectShelf={setSelectedShelfFromMap} 
                     selectedShelf={selectedShelfFromMap}
                     highlightCategory={selectedProduct?.kategoria || masterForm.kategoria}
+                    onMapDataLoaded={setMapData}
                   />
                 )}
               </div>
@@ -288,9 +308,11 @@ function ProductAdd() {
               <div className="lg:col-span-2 pt-6">
                 <button
                   type="submit"
-                  disabled={!splits}
-                  className="w-full bg-blue-600 hover:bg-blue-500 disabled:bg-slate-300 disabled:cursor-not-allowed text-white font-black py-6 rounded-[2.5rem] shadow-2xl shadow-blue-600/30 transition-all active:scale-95 uppercase tracking-[0.3em] text-[10px]"
-                >{t("product.add.saveToWarehouse")}</button>
+                  disabled={!splits || isSubmitting}
+                  className="w-full bg-blue-600 hover:bg-blue-500 disabled:bg-slate-300 disabled:dark:bg-slate-800 disabled:text-slate-500 disabled:cursor-not-allowed text-white font-black py-6 rounded-[2.5rem] shadow-2xl shadow-blue-600/30 transition-all active:scale-95 uppercase tracking-[0.3em] text-[10px]"
+                >
+                  {isSubmitting ? t("common.identifying") : t("product.add.saveToWarehouse")}
+                </button>
               </div>
             </div>
           )}

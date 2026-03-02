@@ -50,13 +50,13 @@ model Product {
 }
 
 model Batch {
-  id          Int       @id @default(autoincrement())
-  productId   Int
-  product     Product   @relation(fields: [productId], references: [id], onDelete: Cascade)
-  parcella    String    
-  mennyiseg   Int
-  lejarat     DateTime? 
-  bekerules   DateTime  @default(now())
+  id        Int       @id @default(autoincrement())
+  productId Int
+  product   Product   @relation(fields: [productId], references: [id], onDelete: Cascade)
+  parcella  String    
+  mennyiseg Int
+  lejarat   DateTime? 
+  bekerules DateTime  @default(now())
 }
 
 model User {
@@ -76,35 +76,37 @@ model User {
 }
 
 model Notification {
-  id         Int      @id @default(autoincrement())
-  userId     Int
-  user       User     @relation(fields: [userId], references: [id])
-  productId  Int?
-  product    Product? @relation(fields: [productId], references: [id], onDelete: SetNull)
-  uzenet     String
-  tipus      String   
-  isRead     Boolean  @default(false)
+  id        Int       @id @default(autoincrement())
+  userId    Int
+  user      User      @relation(fields: [userId], references: [id])
+  productId Int?
+  product   Product?  @relation(fields: [productId], references: [id], onDelete: SetNull)
+  uzenet    String
+  tipus     String   
+  isRead    Boolean   @default(false)
+  isDeleted Boolean   @default(false)  // ÚJ MEZŐ: Soft Delete
+  deletedAt DateTime?                    // ÚJ MEZŐ: Törlés időpontja
   letrehozva DateTime @default(now())
 }
 
 model AuditLog {
-  id         Int      @id @default(autoincrement())
-  idopont    DateTime @default(now())
-  muvelet    String
-  userId     Int
-  user       User     @relation(fields: [userId], references: [id])
-  productId  Int?     
-  product    Product? @relation(fields: [productId], references: [id], onDelete: SetNull)
-  regiAdat   Json?
-  ujAdat     Json?
+  id        Int       @id @default(autoincrement())
+  idopont   DateTime  @default(now())
+  muvelet   String
+  userId    Int
+  user      User      @relation(fields: [userId], references: [id])
+  productId Int?     
+  product   Product?  @relation(fields: [productId], references: [id], onDelete: SetNull)
+  regiAdat  Json?
+  ujAdat    Json?
 }
 
 model ChangeRequest {
-  id         Int      @id @default(autoincrement())
-  userId     Int
-  user       User     @relation(fields: [userId], references: [id])
-  tipus      String
-  ujErtek    String
-  statusz    String   @default("PENDING")
+  id        Int       @id @default(autoincrement())
+  userId    Int
+  user      User      @relation(fields: [userId], references: [id])
+  tipus     String
+  ujErtek   String
+  statusz   String    @default("PENDING")
   letrehozva DateTime @default(now())
 }

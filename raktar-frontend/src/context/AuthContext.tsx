@@ -8,7 +8,7 @@ import React, {
 } from "react";
 import type { User } from "../types/User";
 import { socket } from "../services/socket";
-import { getMe } from "../services/api";
+import { getMe, triggerNotificationCheck } from "../services/api";
 
 interface AuthContextType {
   user: User | null;
@@ -57,6 +57,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
           const updatedUser = await getMe();
           setUser(updatedUser);
           localStorage.setItem("user", JSON.stringify(updatedUser));
+          
+          // Ha token alapján automatikusan léptetjük be (pl. page refresh),
+          // érdemes itt is megfuttatni a checket.
+          triggerNotificationCheck().catch(console.error);
+
         } catch (e) {
           console.error("Auth inicializálási hiba");
           logout();
@@ -81,6 +86,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
           data.global ||
           (data.userId && Number(data.userId) === Number(user.id))
         ) {
+          // Ahelyett, hogy csak a refreshKey-t növelnénk (ami a komponenseket frissíti),
+          // kilövünk egy dedikált DOM eseményt is, amire a Navbar feliratkozott,
+          // így a csengő ikon azonnal updatelődik!
+          window.dispatchEvent(new CustomEvent("notifications_updated"));
           triggerGlobalRefresh();
         }
       });
@@ -121,6 +130,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     setUser(userData);
     socket.emit("join_user_room", { userId: userData.id });
     triggerGlobalRefresh();
+    
+    // Aszinkron módon elindítjuk a készletellenőrzést bejelentkezéskor
+    triggerNotificationCheck().catch(console.error);
   };
 
   return (

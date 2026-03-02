@@ -103,7 +103,7 @@ export async function forceChangePassword(data: {
 }
 
 // ==========================================
-// USER MANAGEMENT
+// USER MANAGEMENT & CHANGE REQUESTS
 // ==========================================
 
 export async function register(userData: any) {
@@ -145,10 +145,6 @@ export async function deleteUserPermanently(id: number) {
   return handleResponse(res);
 }
 
-// ==========================================
-// CHANGE REQUESTS
-// ==========================================
-
 export async function submitChangeRequest(requestData: any) {
   const res = await fetch(`${BASE_URL}/users/change-request`, {
     method: "POST",
@@ -173,6 +169,14 @@ export async function handleAdminRequest(requestId: number, statusz: string) {
   });
   return handleResponse(res);
 }
+
+export const revokeSessions = async (userId: number): Promise<void> => {
+  const res = await fetch(`${BASE_URL}/users/${userId}/revoke-sessions`, {
+    method: "POST",
+    headers: getHeaders(),
+  });
+  return handleResponse(res);
+};
 
 // ==========================================
 // PRODUCT API
@@ -254,7 +258,7 @@ export async function restoreProduct(id: number, userId: number) {
 }
 
 // ==========================================
-// BATCH API
+// BATCH API (Készlet és Elosztás)
 // ==========================================
 
 export async function createBatch(
@@ -379,6 +383,14 @@ export async function deleteReadNotifications(): Promise<void> {
   return handleResponse(res);
 }
 
+export async function triggerNotificationCheck(): Promise<any> {
+  const res = await fetch(`${BASE_URL}/notification/trigger-check`, {
+    method: "POST",
+    headers: getHeaders(),
+  });
+  return handleResponse(res);
+}
+
 // ==========================================
 // AUDIT LOGS
 // ==========================================
@@ -415,16 +427,8 @@ export async function restoreAction(logId: number, userId: number) {
 }
 
 // ==========================================
-// SYSTEM & SESSIONS
+// SYSTEM
 // ==========================================
-
-export const revokeSessions = async (userId: number): Promise<void> => {
-  const res = await fetch(`${BASE_URL}/users/${userId}/revoke-sessions`, {
-    method: "POST",
-    headers: getHeaders(),
-  });
-  return handleResponse(res);
-};
 
 export const getSystemStatus = async (): Promise<any> => {
   const res = await fetch(`${BASE_URL}/system/status`, {

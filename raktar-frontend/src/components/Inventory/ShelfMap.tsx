@@ -9,13 +9,15 @@ interface ShelfMapProps {
   selectedShelf?: string;
   highlightCategory?: string;
   validShelves?: string[]; // Strict Mode: Csak ezek a polcok választhatóak
+  onMapDataLoaded?: (data: WarehouseMapData) => void; // ÚJ: Visszahívás az adatok betöltésekor
 }
 
 const ShelfMap: React.FC<ShelfMapProps> = ({ 
   onSelectShelf, 
   selectedShelf,
   highlightCategory,
-  validShelves
+  validShelves,
+  onMapDataLoaded
 }) => {
   const { t } = useTranslation();
   const [mapData, setMapData] = useState<WarehouseMapData | null>(null);
@@ -28,10 +30,15 @@ const ShelfMap: React.FC<ShelfMapProps> = ({
 
   useEffect(() => {
     getWarehouseMap()
-      .then(setMapData)
+      .then((data) => {
+        setMapData(data);
+        if (onMapDataLoaded) {
+          onMapDataLoaded(data);
+        }
+      })
       .catch(console.error)
       .finally(() => setLoading(false));
-  }, []);
+  }, [onMapDataLoaded]);
 
   const getShelfStatus = (parcella: string) => {
     const shelf = mapData?.shelves[parcella];

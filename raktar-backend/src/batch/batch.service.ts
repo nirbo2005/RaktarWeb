@@ -55,13 +55,22 @@ export class BatchService {
   /**
    * Intelligens elhelyezési javaslat. 
    * Ha a súlylimit miatt nem fér el egy helyen, több polcot javasol.
-   * Megengedi a kategória keveredést (a rendező gomb miatt).
+   * Megengedi a kategória keveredést.
+   * Új termék esetén (id=0) a küldött weight paramétert használja.
    */
-  async suggestPlacement(productId: number, quantity: number) {
-    const product = await this.prisma.product.findUnique({ where: { id: productId } });
-    if (!product) throw new NotFoundException('Termék nem található');
+  async suggestPlacement(productId: number, quantity: number, weight?: number) {
+    let unitWeight = weight;
 
-    const unitWeight = product.suly;
+    if (productId && productId !== 0) {
+      const product = await this.prisma.product.findUnique({ where: { id: productId } });
+      if (!product) throw new NotFoundException('Termék nem található');
+      unitWeight = product.suly;
+    }
+
+    if (!unitWeight || unitWeight <= 0) {
+      throw new BadRequestException('A súly megadása kötelező a kalkulációhoz!');
+    }
+
     let remainingQuantity = quantity;
     const suggestions: { parcella: string; mennyiseg: number; availableKg: number }[] = [];
 
@@ -85,7 +94,7 @@ export class BatchService {
             suggestions.push({
               parcella,
               mennyiseg: takeQty,
-              availableKg: remainingKg - (takeQty * unitWeight)
+              availableKg: Number((remainingKg - (takeQty * unitWeight)).toFixed(2))
             });
 
             remainingQuantity -= takeQty;
@@ -97,7 +106,7 @@ export class BatchService {
     }
 
     if (remainingQuantity > 0) {
-      throw new BadRequestException('A raktárban nincs elég hely a teljes mennyiségnek!');
+      throw new BadRequestException('A raktárban nincs elég kapacitás a teljes mennyiség elhelyezéséhez!');
     }
 
     return suggestions;
@@ -109,11 +118,14 @@ export class BatchService {
   async createBulk(splits: CreateBatchDto[], userId: number) {
     return await this.prisma.$transaction(async (tx) => {
       const results: Batch[] = [];
+      const affectedProductIds = new Set<number>();
+
       for (const dto of splits) {
         const product = await tx.product.findUnique({ where: { id: Number(dto.productId) } });
         if (!product) throw new NotFoundException('Termék nem található');
 
-        // Szigorú kapacitás-ellenőrzés mentéskor
+        affectedProductIds.add(product.id);
+
         const currentBatches = await tx.batch.findMany({ 
           where: { parcella: dto.parcella }, 
           include: { product: true } 
@@ -151,7 +163,12 @@ export class BatchService {
       }
 
       this.events.emitUpdate('products_updated', { global: true });
-      await this.notification.checkExpiryAndStock();
+      
+      // Csak az érintett termékekre futtatunk ellenőrzést, nem a teljes adatbázisra!
+      for (const pid of affectedProductIds) {
+        await this.notification.checkSingleProduct(pid);
+      }
+      
       return results;
     });
   }
@@ -291,7 +308,10 @@ export class BatchService {
           { source: updatedSource, target: updatedTarget, _moveType: auditType, _movedQty: moveQty }, tx);
         
         this.events.emitUpdate('products_updated', { global: true });
-        await this.notification.checkExpiryAndStock();
+        
+        // Csak az érintett termék ellenőrzése
+        await this.notification.checkSingleProduct(existing.productId);
+        
         return updatedTarget;
       }
 
@@ -305,7 +325,10 @@ export class BatchService {
 
       await this.audit.createLog(userId, 'BATCH_UPDATE', existing.productId, existing, updated, tx);
       this.events.emitUpdate('products_updated', { global: true });
-      await this.notification.checkExpiryAndStock();
+      
+      // Csak az érintett termék ellenőrzése
+      await this.notification.checkSingleProduct(existing.productId);
+      
       return updated;
     });
   }
@@ -321,7 +344,10 @@ export class BatchService {
     });
 
     this.events.emitUpdate('products_updated', { global: true });
-    await this.notification.checkExpiryAndStock();
+    
+    // Csak az érintett termék ellenőrzése
+    await this.notification.checkSingleProduct(batch.productId);
+    
     return { message: 'Sikeres törlés' };
   }
 

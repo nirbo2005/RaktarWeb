@@ -61,6 +61,7 @@ function ProductModify() {
   const [isDeleted, setIsDeleted] = useState(false);
   const [inputValue, setInputValue] = useState<number>(0);
   const [mapData, setMapData] = useState<WarehouseMapData | null>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const [batches, setBatches] = useState<Batch[]>([]);
   const [selectedBatchId, setSelectedBatchId] = useState<number | "NEW">("NEW");
@@ -121,6 +122,26 @@ function ProductModify() {
 
   const handleSelectShelfFromMap = (parcella: string) => {
     setSelectedShelfFromMap(parcella);
+    
+    if (mapData && mapData.shelves && stockMode === "add") {
+        const shelfData = mapData.shelves[parcella];
+        const currentWeight = shelfData?.weight || 0;
+        const maxWeight = mapData.maxWeight || 2000;
+        const availableKg = maxWeight - currentWeight;
+        const canFitQty = Math.floor(availableKg / (masterForm.suly || 1));
+
+        if (canFitQty <= 0) {
+           MySwal.fire({
+               icon: "warning",
+               title: "Hoppá, vak vagy? 😅",
+               text: `A(z) ${parcella} polc már teljesen tele van. Válassz másikat!`,
+           });
+           setInputValue(0);
+           return; 
+        }
+        setInputValue(canFitQty);
+    }
+
     const existingBatch = batches.find(b => b.parcella === parcella);
     if (existingBatch) {
       setSelectedBatchId(existingBatch.id);
@@ -130,7 +151,8 @@ function ProductModify() {
   };
 
   const handleStockUpdate = async () => {
-    if (!id || !user || inputValue === 0) return;
+    if (!id || !user || inputValue === 0 || isSubmitting) return;
+    setIsSubmitting(true);
     
     try {
       if (selectedBatchId === "NEW") {
@@ -174,11 +196,13 @@ function ProductModify() {
       loadData();
     } catch (err: any) {
       MySwal.fire({ icon: "error", title: t("common.error"), text: err.message });
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
   const handleDeleteBatch = async () => {
-    if (selectedBatchId === "NEW" || !user) return;
+    if (selectedBatchId === "NEW" || !user || isSubmitting) return;
     
     const targetBatch = batches.find(b => b.id === selectedBatchId);
     if (!targetBatch) return;
@@ -193,6 +217,7 @@ function ProductModify() {
     });
 
     if (result.isConfirmed) {
+      setIsSubmitting(true);
       try {
         await deleteBatch(targetBatch.id, user.id);
         toast.fire({ icon: "success", title: t("product.modify.alerts.batchDeleted") });
@@ -200,12 +225,14 @@ function ProductModify() {
         loadData();
       } catch (err: any) {
         MySwal.fire(t("common.error"), err.message, "error");
+      } finally {
+        setIsSubmitting(false);
       }
     }
   };
 
   const handleRestore = async () => {
-    if (!id || !user) return;
+    if (!id || !user || isSubmitting) return;
     const result = await MySwal.fire({
       title: t("product.modify.alerts.restoreTitle"),
       icon: "question",
@@ -213,9 +240,14 @@ function ProductModify() {
       confirmButtonText: t("common.yes"),
     });
     if (result.isConfirmed) {
-      await restoreProduct(Number(id), user.id);
-      setIsDeleted(false);
-      loadData();
+      setIsSubmitting(true);
+      try {
+        await restoreProduct(Number(id), user.id);
+        setIsDeleted(false);
+        loadData();
+      } finally {
+        setIsSubmitting(false);
+      }
     }
   };
 
@@ -226,10 +258,15 @@ function ProductModify() {
 
   const handleMasterSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!id || !user || !canSeeDataTab) return;
-    await updateProduct(Number(id), masterForm, user.id);
-    toast.fire({ icon: "success", title: t("product.modify.alerts.dataUpdated") });
-    navigate(`/product/${id}`);
+    if (!id || !user || !canSeeDataTab || isSubmitting) return;
+    setIsSubmitting(true);
+    try {
+      await updateProduct(Number(id), masterForm, user.id);
+      toast.fire({ icon: "success", title: t("product.modify.alerts.dataUpdated") });
+      navigate(`/product/${id}`);
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const inputStyle = "w-full p-3 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl focus:ring-2 focus:ring-blue-500 outline-none transition-all font-medium text-slate-900 dark:text-white text-center";
@@ -255,7 +292,7 @@ function ProductModify() {
           <div className="absolute inset-0 z-50 bg-slate-950/40 backdrop-blur-[2px] flex items-center justify-center p-6">
             <div className="bg-white dark:bg-slate-900 p-10 rounded-[3rem] shadow-2xl text-center">
               <h2 className="text-2xl font-black text-red-500 uppercase mb-4">{t("product.modify.deletedTitle")}</h2>
-              <button onClick={handleRestore} className="w-full bg-blue-600 text-white py-4 rounded-2xl font-black mb-4">{t("product.modify.restoreBtn")}</button>
+              <button onClick={handleRestore} disabled={isSubmitting} className="w-full bg-blue-600 hover:bg-blue-500 disabled:bg-slate-300 text-white py-4 rounded-2xl font-black mb-4 transition-all">{t("product.modify.restoreBtn")}</button>
               <button onClick={() => navigate("/")} className="text-slate-400 font-black uppercase text-[10px]">{t("product.details.backToHome")}</button>
             </div>
           </div>
@@ -272,7 +309,8 @@ function ProductModify() {
                 {selectedBatchId !== "NEW" && (
                   <button 
                     onClick={handleDeleteBatch}
-                    className="text-[10px] font-black text-rose-500 hover:text-rose-700 uppercase tracking-widest mb-1 underline"
+                    disabled={isSubmitting}
+                    className="text-[10px] font-black text-rose-500 hover:text-rose-700 disabled:text-slate-400 uppercase tracking-widest mb-1 underline"
                   >
                     {t("product.details.delete")}
                   </button>
@@ -308,7 +346,7 @@ function ProductModify() {
 
               <div className="flex gap-4 pt-6">
                 <button onClick={() => navigate(-1)} className="flex-1 py-4 text-slate-400 font-black uppercase text-[10px] tracking-widest">{t("common.cancel")}</button>
-                <button onClick={handleStockUpdate} disabled={inputValue === 0} className="flex-[2] bg-blue-600 disabled:bg-slate-300 text-white py-4 rounded-2xl font-black shadow-xl uppercase text-xs tracking-widest italic">{t("product.modify.execute")}</button>
+                <button onClick={handleStockUpdate} disabled={inputValue === 0 || isSubmitting} className="flex-[2] bg-blue-600 disabled:bg-slate-300 disabled:dark:bg-slate-800 disabled:text-slate-500 text-white py-4 rounded-2xl font-black shadow-xl uppercase text-xs tracking-widest italic">{isSubmitting ? t("common.updating") : t("product.modify.execute")}</button>
               </div>
             </div>
 
@@ -317,6 +355,7 @@ function ProductModify() {
                 onSelectShelf={handleSelectShelfFromMap} 
                 selectedShelf={selectedShelfFromMap || batches.find(b => b.id === selectedBatchId)?.parcella}
                 highlightCategory={masterForm.kategoria}
+                onMapDataLoaded={setMapData}
               />
             </div>
           </>
@@ -359,7 +398,7 @@ function ProductModify() {
               </div>
               <div className="md:col-span-2 flex gap-4 pt-8 border-t border-slate-200 dark:border-slate-800">
                 <button type="button" onClick={() => navigate(-1)} className="flex-1 py-4 text-slate-400 font-black uppercase text-[10px] tracking-widest">{t("common.cancel")}</button>
-                <button type="submit" className="flex-[2] bg-indigo-600 text-white py-4 rounded-2xl font-black shadow-xl uppercase text-xs tracking-widest italic">{t("common.save")}</button>
+                <button type="submit" disabled={isSubmitting} className="flex-[2] bg-indigo-600 disabled:bg-slate-300 disabled:dark:bg-slate-800 text-white py-4 rounded-2xl font-black shadow-xl uppercase text-xs tracking-widest italic">{isSubmitting ? t("common.updating") : t("common.save")}</button>
               </div>
           </form>
         )}

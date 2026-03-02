@@ -52,8 +52,10 @@ export class BatchController {
   suggestPlacement(
     @Query('productId', ParseIntPipe) productId: number,
     @Query('mennyiseg', ParseIntPipe) mennyiseg: number,
+    @Query('weight') weight?: string,
   ) {
-    return this.batchService.suggestPlacement(productId, mennyiseg);
+    const parsedWeight = weight ? parseFloat(weight) : undefined;
+    return this.batchService.suggestPlacement(productId, mennyiseg, parsedWeight);
   }
 
   @Roles(Role.KEZELO, Role.ADMIN)

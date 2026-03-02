@@ -2,6 +2,7 @@
 import {
   Controller,
   Get,
+  Post,
   Patch,
   Delete,
   Param,
@@ -49,5 +50,12 @@ export class NotificationController {
     return this.notificationService.deleteReadNotifications(
       this.getUserId(req),
     );
+  }
+
+  // ÚJ: Manuális trigger bejelentkezéshez
+  @Post('trigger-check')
+  async triggerCheck() {
+    await this.notificationService.checkExpiryAndStock();
+    return { success: true, message: 'Globális készletellenőrzés lefutott.' };
   }
 }

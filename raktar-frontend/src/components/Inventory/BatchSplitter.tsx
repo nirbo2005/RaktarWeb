@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from "react";
 import { suggestPlacement } from "../../services/api";
 import { useTranslation } from "react-i18next";
+import Swal from "sweetalert2";
 
 interface SplitRow {
   id: string;
@@ -16,15 +17,25 @@ interface BatchSplitterProps {
   onSplitsChange: (splits: { parcella: string; mennyiseg: number }[] | null) => void;
   onManualSelectRequested: () => void;
   externalSelectedShelf?: string;
+  mapData?: any; // A térképtől kapott adatok az előkalkulációhoz
 }
+
+const MySwal = Swal.mixin({
+  customClass: {
+    popup: "rounded-[2.5rem] bg-white dark:bg-slate-900 text-slate-900 dark:text-white border border-slate-200 dark:border-slate-800 shadow-2xl font-sans",
+    confirmButton: "bg-blue-600 hover:bg-blue-500 text-white px-8 py-3 rounded-2xl font-black uppercase text-xs tracking-widest transition-all active:scale-95 mx-2",
+  },
+  buttonsStyling: false,
+});
 
 const BatchSplitter: React.FC<BatchSplitterProps> = ({
   productId,
   totalQuantity,
-  productWeight,
+  productWeight = 1, // Biztosítjuk, hogy sose osszunk 0-val
   onSplitsChange,
   onManualSelectRequested,
   externalSelectedShelf,
+  mapData,
 }) => {
   const { t } = useTranslation();
   const [splits, setSplits] = useState<SplitRow[]>([]);
@@ -36,20 +47,53 @@ const BatchSplitter: React.FC<BatchSplitterProps> = ({
 
   useEffect(() => {
     if (externalSelectedShelf && mode === "MANUAL") {
+      // 1. Kapacitás kiszámítása a mapData alapján
+      let maxAllowedQty = remainingQuantity;
+      
+      if (mapData && mapData.shelves) {
+        const shelfData = mapData.shelves[externalSelectedShelf];
+        const currentWeight = shelfData?.weight || 0;
+        const maxWeight = mapData.maxWeight || 2000;
+        const availableKg = maxWeight - currentWeight;
+        const canFitQty = Math.floor(availableKg / productWeight);
+
+        // 2. Ha tele van a polc (Vak vagy validáció)
+        if (canFitQty <= 0) {
+          MySwal.fire({
+            icon: "warning",
+            title: "Hoppá, vak vagy? 😅",
+            text: `A(z) ${externalSelectedShelf} polc már teljesen tele van. Válassz másikat!`,
+          });
+          return; // Kilépünk, nem adjuk hozzá a polcot
+        }
+
+        // 3. Mennyiségi korlátozás: Ne tegyünk többet, mint amennyi elfér, vagy amennyire szükség van
+        maxAllowedQty = Math.min(remainingQuantity, canFitQty);
+      }
+
       setSplits((prev) => {
+        // Ha az utolsó sor még üres (nincs benne polcnév), frissítjük azt
         const last = prev[prev.length - 1];
         if (last && !last.parcella) {
           return prev.map((s, idx) =>
-            idx === prev.length - 1 ? { ...s, parcella: externalSelectedShelf } : s
+            idx === prev.length - 1 ? { ...s, parcella: externalSelectedShelf, mennyiseg: maxAllowedQty } : s
           );
         }
+        
+        // Egyébként megnézzük, hogy ez a polc szerepel-e már a listában
+        const isAlreadyAdded = prev.some(s => s.parcella === externalSelectedShelf);
+        if (isAlreadyAdded) {
+          return prev; // Ha már hozzáadtuk, nem adjuk hozzá duplán
+        }
+
+        // Új sor hozzáadása az előkalkulált mennyiséggel
         return [
           ...prev,
-          { id: Math.random().toString(), parcella: externalSelectedShelf, mennyiseg: 0 },
+          { id: Math.random().toString(), parcella: externalSelectedShelf, mennyiseg: maxAllowedQty },
         ];
       });
     }
-  }, [externalSelectedShelf, mode]);
+  }, [externalSelectedShelf, mode, mapData, productWeight, remainingQuantity]);
 
   useEffect(() => {
     if (mode !== "IDLE" && remainingQuantity === 0 && splits.length > 0) {
@@ -81,7 +125,8 @@ const BatchSplitter: React.FC<BatchSplitterProps> = ({
   };
 
   const handleManualStart = () => {
-    setSplits([{ id: Math.random().toString(), parcella: "", mennyiseg: totalQuantity }]);
+    // Alapból egy üres sort adunk hozzá, majd várjuk a térképkattintást
+    setSplits([{ id: Math.random().toString(), parcella: "", mennyiseg: 0 }]);
     setMode("MANUAL");
     onManualSelectRequested();
   };
