@@ -9,7 +9,7 @@ interface ShelfMapProps {
   selectedShelf?: string;
   highlightCategory?: string;
   validShelves?: string[]; // Strict Mode: Csak ezek a polcok választhatóak
-  onMapDataLoaded?: (data: WarehouseMapData) => void; // ÚJ: Visszahívás az adatok betöltésekor
+  onMapDataLoaded?: (data: WarehouseMapData) => void; 
 }
 
 const ShelfMap: React.FC<ShelfMapProps> = ({ 
@@ -93,7 +93,8 @@ const ShelfMap: React.FC<ShelfMapProps> = ({
               return (
                 <div
                   key={parcella}
-                  onClick={() => !isDisabled && onSelectShelf?.(parcella)}
+                  // JAVÍTÁS: Ha már ki van választva, akkor üres stringet küldünk (Deselect/Toggle)
+                  onClick={() => !isDisabled && onSelectShelf?.(isSelected ? "" : parcella)}
                   className={`relative group h-20 rounded-xl border-2 transition-all overflow-hidden ${
                     isDisabled 
                       ? "opacity-20 grayscale cursor-not-allowed border-transparent" 

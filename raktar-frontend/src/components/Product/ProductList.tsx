@@ -60,6 +60,7 @@ const getAlertPriority = (p: Product) => {
   const earliestExpiry = getEarliestExpiry(p);
   const totalQty = getTotalQuantity(p);
 
+  if (totalQty === 0) return 110; // Készlethiány a legmagasabb prioritás
   if (earliestExpiry && earliestExpiry <= now) return 100;
   if (earliestExpiry && earliestExpiry <= oneWeekLater) return 90;
   if (totalQty < p.minimumKeszlet) return 80;
@@ -211,7 +212,7 @@ function ProductList() {
 
       if (
         (earliestExpiry && earliestExpiry <= now) ||
-        totalQty < p.minimumKeszlet
+        totalQty < p.minimumKeszlet || totalQty === 0
       ) {
         row.eachCell((cell) => {
           cell.fill = {
@@ -445,10 +446,13 @@ function ProductList() {
                   {filteredAndSortedProducts.map((p) => {
                     const totalQty = getTotalQuantity(p);
                     const isExpanded = expandedRowIds.includes(p.id);
+                    // Nullás termék jelzése (teljesen piros hátteret és stílust kap)
+                    const zeroStockStyles = totalQty === 0 ? "bg-rose-50/50 dark:bg-rose-950/30" : "";
+
                     return (
                       <React.Fragment key={p.id}>
                         <tr
-                          className={`transition-colors group ${selectedIds.includes(p.id) ? "bg-blue-50/50 dark:bg-blue-900/20" : "hover:bg-blue-50/30 dark:hover:bg-blue-900/10"}`}
+                          className={`transition-colors group ${zeroStockStyles} ${selectedIds.includes(p.id) ? "bg-blue-50/50 dark:bg-blue-900/20" : "hover:bg-blue-50/30 dark:hover:bg-blue-900/10"}`}
                         >
                           <td
                             className="p-6 text-center cursor-pointer"
@@ -483,7 +487,7 @@ function ProductList() {
                           </td>
                           <td className="p-6 text-left">
                             <div
-                              className="font-black text-slate-800 dark:text-slate-100 text-lg cursor-pointer hover:text-blue-500"
+                              className={`font-black text-lg cursor-pointer hover:text-blue-500 ${totalQty === 0 ? "text-rose-600 dark:text-rose-500" : "text-slate-800 dark:text-slate-100"}`}
                               onClick={() => navigate(`/product/${p.id}`)}
                             >
                               {p.nev}
@@ -499,7 +503,13 @@ function ProductList() {
                           </td>
                           <td className="p-6 text-left">
                             <span
-                              className={`px-4 py-1.5 rounded-full text-xs font-black border ${totalQty < p.minimumKeszlet ? "bg-red-50 text-red-600 border-red-200" : "bg-emerald-50 text-emerald-600 border-emerald-200"}`}
+                              className={`px-4 py-1.5 rounded-full text-xs font-black border ${
+                                totalQty === 0
+                                  ? "bg-rose-100 text-rose-700 border-rose-300 dark:bg-rose-900/50 dark:text-rose-300"
+                                  : totalQty < p.minimumKeszlet
+                                    ? "bg-red-50 text-red-600 border-red-200"
+                                    : "bg-emerald-50 text-emerald-600 border-emerald-200"
+                              }`}
                             >
                               {totalQty} {t("common.pieces")}
                             </span>
@@ -533,42 +543,48 @@ function ProductList() {
                                 <h4 className="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-4">
                                   {t("product.list.batches")}
                                 </h4>
-                                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                                  {p.batches?.map((batch) => (
-                                    <div
-                                      key={batch.id}
-                                      className="bg-white dark:bg-slate-800 p-4 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm flex justify-between items-center group"
-                                    >
-                                      <div>
-                                        <button
-                                          onClick={() =>
-                                            navigate(
-                                              `/grid?parcel=${batch.parcella}&productId=${p.id}`,
-                                            )
-                                          }
-                                          className="block text-xl font-black italic text-slate-800 dark:text-white mb-1 hover:text-blue-500"
-                                        >
-                                          {batch.parcella}
-                                        </button>
-                                        <span
-                                          className={`px-2 py-0.5 rounded text-[10px] font-bold border ${getDateStyles(batch.lejarat)}`}
-                                        >
-                                          {batch.lejarat
-                                            ? new Date(
-                                                batch.lejarat,
-                                              ).toLocaleDateString("hu-HU")
-                                            : t("product.list.nonPerishable")}
-                                        </span>
+                                {p.batches && p.batches.length > 0 ? (
+                                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                    {p.batches.map((batch) => (
+                                      <div
+                                        key={batch.id}
+                                        className="bg-white dark:bg-slate-800 p-4 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm flex justify-between items-center group"
+                                      >
+                                        <div>
+                                          <button
+                                            onClick={() =>
+                                              navigate(
+                                                `/grid?parcel=${batch.parcella}&productId=${p.id}`,
+                                              )
+                                            }
+                                            className="block text-xl font-black italic text-slate-800 dark:text-white mb-1 hover:text-blue-500"
+                                          >
+                                            {batch.parcella}
+                                          </button>
+                                          <span
+                                            className={`px-2 py-0.5 rounded text-[10px] font-bold border ${getDateStyles(batch.lejarat)}`}
+                                          >
+                                            {batch.lejarat
+                                              ? new Date(
+                                                  batch.lejarat,
+                                                ).toLocaleDateString("hu-HU")
+                                              : t("product.list.nonPerishable")}
+                                          </span>
+                                        </div>
+                                        <div className="text-2xl font-black text-blue-600 dark:text-blue-400">
+                                          {batch.mennyiseg}{" "}
+                                          <span className="text-xs">
+                                            {t("common.pieces")}
+                                          </span>
+                                        </div>
                                       </div>
-                                      <div className="text-2xl font-black text-blue-600 dark:text-blue-400">
-                                        {batch.mennyiseg}{" "}
-                                        <span className="text-xs">
-                                          {t("common.pieces")}
-                                        </span>
-                                      </div>
-                                    </div>
-                                  ))}
-                                </div>
+                                    ))}
+                                  </div>
+                                ) : (
+                                  <div className="text-sm font-bold text-rose-500 bg-rose-50 dark:bg-rose-900/20 p-4 rounded-xl inline-block border border-rose-200 dark:border-rose-800/50 uppercase tracking-widest">
+                                     Nincs elérhető készlet a raktárban.
+                                  </div>
+                                )}
                               </div>
                             </td>
                           </tr>
@@ -580,14 +596,17 @@ function ProductList() {
               </table>
             </div>
 
+            {/* MOBIL NÉZET */}
             <div className="lg:hidden grid grid-cols-1 sm:grid-cols-2 gap-6">
               {filteredAndSortedProducts.map((p) => {
                 const totalQty = getTotalQuantity(p);
                 const isExpanded = expandedRowIds.includes(p.id);
+                const zeroStockStyles = totalQty === 0 ? "bg-rose-50/50 dark:bg-rose-950/30 border-rose-300" : "bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800";
+
                 return (
                   <div
                     key={p.id}
-                    className={`rounded-[2rem] p-6 border shadow-lg relative transition-all ${selectedIds.includes(p.id) ? "bg-blue-50/50 dark:bg-blue-900/40 border-blue-400" : "bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800"}`}
+                    className={`rounded-[2rem] p-6 border shadow-lg relative transition-all ${selectedIds.includes(p.id) ? "bg-blue-50/50 dark:bg-blue-900/40 border-blue-400" : zeroStockStyles}`}
                   >
                     {canEdit && isSelectionMode && (
                       <div className="absolute top-4 right-4">
@@ -614,7 +633,7 @@ function ProductList() {
                           {t(`product.categories.${p.kategoria}`)}
                         </span>
                         <span
-                          className={`px-3 py-1 rounded-lg text-[10px] font-black border ${totalQty < p.minimumKeszlet ? "bg-red-50 text-red-600 border-red-200" : "bg-emerald-50 text-emerald-600 border-emerald-200"}`}
+                          className={`px-3 py-1 rounded-lg text-[10px] font-black border ${totalQty === 0 ? "bg-rose-100 text-rose-700 border-rose-300" : totalQty < p.minimumKeszlet ? "bg-red-50 text-red-600 border-red-200" : "bg-emerald-50 text-emerald-600 border-emerald-200"}`}
                         >
                           📦 {totalQty} {t("common.pieces")}
                         </span>
@@ -622,7 +641,7 @@ function ProductList() {
                     </div>
                     <div className="mb-6">
                       <h3
-                        className="text-2xl font-black text-slate-800 dark:text-slate-100 tracking-tight cursor-pointer hover:text-blue-500"
+                        className={`text-2xl font-black tracking-tight cursor-pointer hover:text-blue-500 ${totalQty === 0 ? "text-rose-600 dark:text-rose-500" : "text-slate-800 dark:text-slate-100"}`}
                         onClick={() => navigate(`/product/${p.id}`)}
                       >
                         {p.nev}
@@ -646,7 +665,8 @@ function ProductList() {
                     </button>
                     {isExpanded && (
                       <div className="mb-6 space-y-2">
-                        {p.batches?.map((batch) => (
+                         {p.batches && p.batches.length > 0 ? (
+                           p.batches.map((batch) => (
                           <div
                             key={batch.id}
                             className="flex justify-between items-center bg-slate-100 dark:bg-slate-800/50 p-3 rounded-xl border border-slate-200 dark:border-slate-700"
@@ -667,7 +687,12 @@ function ProductList() {
                               {batch.mennyiseg} {t("common.pieces")}
                             </span>
                           </div>
-                        ))}
+                           ))
+                         ) : (
+                           <div className="text-xs font-bold text-rose-500 bg-rose-50 dark:bg-rose-900/20 p-3 rounded-xl text-center border border-rose-200 dark:border-rose-800/50 uppercase tracking-widest">
+                                Készlethiány
+                           </div>
+                         )}
                       </div>
                     )}
                     <div className="flex gap-3 pt-4 border-t border-slate-100 dark:border-slate-800">

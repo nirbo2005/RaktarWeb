@@ -17,7 +17,7 @@ interface BatchSplitterProps {
   onSplitsChange: (splits: { parcella: string; mennyiseg: number }[] | null) => void;
   onManualSelectRequested: () => void;
   externalSelectedShelf?: string;
-  mapData?: any; // A térképtől kapott adatok az előkalkulációhoz
+  mapData?: any; 
 }
 
 const MySwal = Swal.mixin({
@@ -28,10 +28,13 @@ const MySwal = Swal.mixin({
   buttonsStyling: false,
 });
 
+// Szigorú regex a polcokra: A-D szektor, 1-5 sor, 1-4 oszlop (pl. A1-1, D5-4)
+const isValidShelf = (shelf: string) => /^[A-D][1-5]-[1-4]$/i.test(shelf);
+
 const BatchSplitter: React.FC<BatchSplitterProps> = ({
   productId,
   totalQuantity,
-  productWeight = 1, // Biztosítjuk, hogy sose osszunk 0-val
+  productWeight = 1, 
   onSplitsChange,
   onManualSelectRequested,
   externalSelectedShelf,
@@ -41,64 +44,79 @@ const BatchSplitter: React.FC<BatchSplitterProps> = ({
   const [splits, setSplits] = useState<SplitRow[]>([]);
   const [mode, setMode] = useState<"IDLE" | "AUTO" | "MANUAL">("IDLE");
   const [loading, setLoading] = useState(false);
+  
+  const [processedShelfToken, setProcessedShelfToken] = useState<string>("");
 
   const allocatedQuantity = splits.reduce((sum, s) => sum + s.mennyiseg, 0);
   const remainingQuantity = totalQuantity - allocatedQuantity;
 
+  const sortSplits = (a: SplitRow, b: SplitRow) => {
+    if (!a.parcella) return 1;
+    if (!b.parcella) return -1;
+    return a.parcella.localeCompare(b.parcella);
+  };
+
   useEffect(() => {
-    if (externalSelectedShelf && mode === "MANUAL") {
-      // 1. Kapacitás kiszámítása a mapData alapján
-      let maxAllowedQty = remainingQuantity;
-      
-      if (mapData && mapData.shelves) {
-        const shelfData = mapData.shelves[externalSelectedShelf];
-        const currentWeight = shelfData?.weight || 0;
-        const maxWeight = mapData.maxWeight || 2000;
-        const availableKg = maxWeight - currentWeight;
-        const canFitQty = Math.floor(availableKg / productWeight);
-
-        // 2. Ha tele van a polc (Vak vagy validáció)
-        if (canFitQty <= 0) {
-          MySwal.fire({
-            icon: "warning",
-            title: "Hoppá, vak vagy? 😅",
-            text: `A(z) ${externalSelectedShelf} polc már teljesen tele van. Válassz másikat!`,
-          });
-          return; // Kilépünk, nem adjuk hozzá a polcot
-        }
-
-        // 3. Mennyiségi korlátozás: Ne tegyünk többet, mint amennyi elfér, vagy amennyire szükség van
-        maxAllowedQty = Math.min(remainingQuantity, canFitQty);
-      }
-
-      setSplits((prev) => {
-        // Ha az utolsó sor még üres (nincs benne polcnév), frissítjük azt
-        const last = prev[prev.length - 1];
-        if (last && !last.parcella) {
-          return prev.map((s, idx) =>
-            idx === prev.length - 1 ? { ...s, parcella: externalSelectedShelf, mennyiseg: maxAllowedQty } : s
-          );
-        }
+    if (mode === "MANUAL") {
+      if (externalSelectedShelf && externalSelectedShelf !== processedShelfToken) {
+        let maxAllowedQty = remainingQuantity;
         
-        // Egyébként megnézzük, hogy ez a polc szerepel-e már a listában
-        const isAlreadyAdded = prev.some(s => s.parcella === externalSelectedShelf);
-        if (isAlreadyAdded) {
-          return prev; // Ha már hozzáadtuk, nem adjuk hozzá duplán
+        if (mapData && mapData.shelves) {
+          const shelfData = mapData.shelves[externalSelectedShelf];
+          const currentWeight = shelfData?.weight || 0;
+          const maxWeight = mapData.maxWeight || 2000;
+          const availableKg = maxWeight - currentWeight;
+          const canFitQty = Math.floor(availableKg / productWeight);
+
+          if (canFitQty <= 0) {
+            MySwal.fire({
+              icon: "warning",
+              title: "Hoppá, vak vagy? 😅",
+              text: `A(z) ${externalSelectedShelf} polc már teljesen tele van. Válassz másikat!`,
+            });
+            setProcessedShelfToken(externalSelectedShelf);
+            return; 
+          }
+
+          maxAllowedQty = Math.min(remainingQuantity, canFitQty);
         }
 
-        // Új sor hozzáadása az előkalkulált mennyiséggel
-        return [
-          ...prev,
-          { id: Math.random().toString(), parcella: externalSelectedShelf, mennyiseg: maxAllowedQty },
-        ];
-      });
+        setSplits((prev) => {
+          const isAlreadyAdded = prev.some(s => s.parcella === externalSelectedShelf);
+          if (isAlreadyAdded) return prev;
+
+          const last = prev[prev.length - 1];
+          let newSplits;
+          if (last && !last.parcella) {
+            newSplits = prev.map((s, idx) =>
+              idx === prev.length - 1 ? { ...s, parcella: externalSelectedShelf, mennyiseg: maxAllowedQty } : s
+            );
+          } else {
+            newSplits = [
+              ...prev,
+              { id: Math.random().toString(), parcella: externalSelectedShelf, mennyiseg: maxAllowedQty },
+            ];
+          }
+          return [...newSplits].sort(sortSplits);
+        });
+
+        setProcessedShelfToken(externalSelectedShelf);
+      } else if (!externalSelectedShelf) {
+        setProcessedShelfToken("");
+      }
     }
-  }, [externalSelectedShelf, mode, mapData, productWeight, remainingQuantity]);
+  }, [externalSelectedShelf, mode, mapData, productWeight, remainingQuantity, processedShelfToken]);
 
   useEffect(() => {
-    if (mode !== "IDLE" && remainingQuantity === 0 && splits.length > 0) {
-      onSplitsChange(splits.map((s) => ({ parcella: s.parcella, mennyiseg: s.mennyiseg })));
+    // 1. Kiszűrjük a 0-ás mennyiségeket (nem küldjük be a backendnek)
+    const activeSplits = splits.filter(s => s.mennyiseg > 0);
+    // 2. Megvizsgáljuk, hogy minden polcnév formailag helyes-e
+    const allValid = activeSplits.every(s => isValidShelf(s.parcella));
+
+    if (mode !== "IDLE" && remainingQuantity === 0 && activeSplits.length > 0 && allValid) {
+      onSplitsChange([...activeSplits].sort(sortSplits).map((s) => ({ parcella: s.parcella.toUpperCase(), mennyiseg: s.mennyiseg })));
     } else {
+      // Ha hibás a polcnév, vagy üres a lista, letiltjuk a mentést a szülőben!
       onSplitsChange(null);
     }
   }, [splits, mode, remainingQuantity, onSplitsChange]);
@@ -114,7 +132,7 @@ const BatchSplitter: React.FC<BatchSplitterProps> = ({
           id: Math.random().toString(),
           parcella: s.parcella,
           mennyiseg: s.mennyiseg,
-        }))
+        })).sort(sortSplits)
       );
       setMode("AUTO");
     } catch (err) {
@@ -125,19 +143,27 @@ const BatchSplitter: React.FC<BatchSplitterProps> = ({
   };
 
   const handleManualStart = () => {
-    // Alapból egy üres sort adunk hozzá, majd várjuk a térképkattintást
+    setProcessedShelfToken("");
     setSplits([{ id: Math.random().toString(), parcella: "", mennyiseg: 0 }]);
     setMode("MANUAL");
     onManualSelectRequested();
   };
 
   const updateSplit = (id: string, field: keyof SplitRow, value: any) => {
-    setSplits(splits.map((s) => (s.id === id ? { ...s, [field]: value } : s)));
+    setSplits(prev => {
+      const updated = prev.map((s) => (s.id === id ? { ...s, [field]: value } : s));
+      if (field === "parcella") return [...updated].sort(sortSplits);
+      return updated;
+    });
   };
 
   const removeSplit = (id: string) => {
-    if (splits.length <= 1) return;
-    setSplits(splits.filter((s) => s.id !== id));
+    setSplits(prev => {
+        if (prev.length <= 1) {
+            return [{ id: Math.random().toString(), parcella: "", mennyiseg: 0 }];
+        }
+        return prev.filter((s) => s.id !== id);
+    });
   };
 
   if (mode === "IDLE") {
@@ -178,6 +204,7 @@ const BatchSplitter: React.FC<BatchSplitterProps> = ({
           onClick={() => {
             setMode("IDLE");
             setSplits([]);
+            setProcessedShelfToken("");
           }}
           className="text-[9px] font-black text-rose-500 hover:text-rose-700 uppercase underline"
         >
@@ -186,55 +213,68 @@ const BatchSplitter: React.FC<BatchSplitterProps> = ({
       </div>
 
       <div className="space-y-3">
-        {splits.map((split) => (
-          <div
-            key={split.id}
-            className="flex gap-3 items-end bg-white dark:bg-slate-900 p-4 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-800"
-          >
-            <div className="flex-1">
-              <label className="text-[9px] font-black uppercase text-slate-400 ml-2">
-                {t("inventory.splitter.shelf")}
-              </label>
-              <input
-                type="text"
-                value={split.parcella}
-                readOnly={mode === "AUTO"}
-                onChange={(e) => updateSplit(split.id, "parcella", e.target.value.toUpperCase())}
-                className="w-full bg-slate-50 dark:bg-slate-800 p-2.5 rounded-xl text-xs font-bold outline-none border border-slate-200 dark:border-slate-700 focus:border-blue-500 dark:text-white"
-              />
+        {splits.map((split) => {
+          // Ha írt valamit a mezőbe, de nem passzol a regexhez, akkor pirosan kiemeljük
+          const isInvalidShelf = split.parcella.length > 0 && !isValidShelf(split.parcella);
+
+          return (
+            <div
+              key={split.id}
+              className="flex gap-3 items-start bg-white dark:bg-slate-900 p-4 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-800"
+            >
+              <div className="flex-1">
+                <label className="text-[9px] font-black uppercase text-slate-400 ml-2 block mb-1">
+                  {t("inventory.splitter.shelf")}
+                </label>
+                <input
+                  type="text"
+                  value={split.parcella}
+                  readOnly={mode === "AUTO"}
+                  onChange={(e) => updateSplit(split.id, "parcella", e.target.value.toUpperCase())}
+                  className={`w-full p-2.5 rounded-xl text-xs font-bold outline-none border transition-colors ${
+                    isInvalidShelf
+                      ? "border-rose-500 bg-rose-50 text-rose-700 focus:border-rose-600 dark:bg-rose-900/20 dark:text-rose-300 dark:border-rose-500/50"
+                      : "bg-slate-50 dark:bg-slate-800 border-slate-200 dark:border-slate-700 focus:border-blue-500 dark:text-white"
+                  }`}
+                />
+                {isInvalidShelf && mode === "MANUAL" && (
+                  <span className="text-[8px] text-rose-500 font-black uppercase tracking-widest mt-1.5 ml-2 block">
+                    ❌ Érvénytelen (Pl: A1-1)
+                  </span>
+                )}
+              </div>
+              <div className="w-24">
+                <label className="text-[9px] font-black uppercase text-slate-400 ml-2 block mb-1">
+                  {t("inventory.splitter.qty")}
+                </label>
+                <input
+                  type="number"
+                  value={split.mennyiseg}
+                  onChange={(e) => updateSplit(split.id, "mennyiseg", parseInt(e.target.value) || 0)}
+                  className="w-full bg-slate-50 dark:bg-slate-800 p-2.5 rounded-xl text-xs font-bold outline-none border border-slate-200 dark:border-slate-700 focus:border-blue-500 dark:text-white"
+                />
+              </div>
+              {mode === "MANUAL" && (
+                <div className="pt-[18px]">
+                  <button
+                    type="button"
+                    onClick={() => removeSplit(split.id)}
+                    className="p-2.5 text-rose-500 hover:bg-rose-50 rounded-xl transition-colors"
+                  >
+                    🗑️
+                  </button>
+                </div>
+              )}
             </div>
-            <div className="w-24">
-              <label className="text-[9px] font-black uppercase text-slate-400 ml-2">
-                {t("inventory.splitter.qty")}
-              </label>
-              <input
-                type="number"
-                value={split.mennyiseg}
-                onChange={(e) => updateSplit(split.id, "mennyiseg", parseInt(e.target.value) || 0)}
-                className="w-full bg-slate-50 dark:bg-slate-800 p-2.5 rounded-xl text-xs font-bold outline-none border border-slate-200 dark:border-slate-700 focus:border-blue-500 dark:text-white"
-              />
-            </div>
-            {mode === "MANUAL" && splits.length > 1 && (
-              <button
-                type="button"
-                onClick={() => removeSplit(split.id)}
-                className="p-2.5 text-rose-500 hover:bg-rose-50 rounded-xl transition-colors"
-              >
-                🗑️
-              </button>
-            )}
-          </div>
-        ))}
+          );
+        })}
       </div>
 
       {mode === "MANUAL" && remainingQuantity > 0 && (
         <button
           type="button"
           onClick={() =>
-            setSplits([
-              ...splits,
-              { id: Math.random().toString(), parcella: "", mennyiseg: remainingQuantity },
-            ])
+            setSplits(prev => [...prev, { id: Math.random().toString(), parcella: "", mennyiseg: remainingQuantity }].sort(sortSplits))
           }
           className="w-full py-4 border-2 border-dashed border-slate-300 dark:border-slate-700 rounded-2xl text-slate-400 hover:text-blue-500 hover:border-blue-500 transition-all text-[10px] font-black uppercase tracking-widest"
         >

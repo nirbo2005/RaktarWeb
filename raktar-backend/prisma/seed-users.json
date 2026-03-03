@@ -9,6 +9,15 @@
     "isBanned": false
   },
   {
+    "nev": "NigaBiga",
+    "felhasznalonev": "adi",
+    "jelszo": "User!123",
+    "email": "adi@raktarweb.hu",
+    "telefonszam": "+36123456789",
+    "rang": "ADMIN",
+    "isBanned": false
+  },
+  {
     "nev": "Kovács János",
     "felhasznalonev": "kjanos",
     "jelszo": "User!123",

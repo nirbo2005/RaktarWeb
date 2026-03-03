@@ -1,11 +1,6 @@
 # Node csomagok (BÁRHOL is legyenek a projektben: frontend, backend, stb.)
 node_modules/
 
-# Környezeti változók (SOHA ne töltsd fel a jelszavakat GitHubra!)
-.env
-.env.*
-!.env.example
-
 # Build, dist mappák és logok
 dist/
 build/

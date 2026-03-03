@@ -1,7 +1,7 @@
 //raktar-frontend/src/components/Product/ProductDetails.tsx
 import { useState, useCallback } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { getProductById, deleteProduct } from "../../services/api";
+import { getProductById, deleteProduct, deleteBatch } from "../../services/api";
 import { useAuth } from "../../context/AuthContext";
 import { useAutoRefresh } from "../../hooks/useAutoRefresh";
 import type { Product } from "../../types/Product";
@@ -94,12 +94,45 @@ function ProductDetails() {
     }
   };
 
+  const handleDeleteBatch = async (batchId: number, parcella: string, mennyiseg: number) => {
+    if (!user || !canEdit) return;
+
+    const result = await MySwal.fire({
+      title: t("product.modify.alerts.deletePhysicalBatch"),
+      text: `${parcella} (${mennyiseg} ${t("common.pieces")})`,
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonText: t("common.yes"),
+      cancelButtonText: t("common.cancel"),
+      reverseButtons: true,
+    });
+
+    if (result.isConfirmed) {
+      try {
+        await deleteBatch(batchId, user.id);
+        toast.fire({
+          icon: "success",
+          title: t("product.modify.alerts.batchDeleted") || t("product.details.alerts.deletedSuccess"),
+        });
+        fetchProductData();
+      } catch (err: any) {
+        MySwal.fire({
+          icon: "error",
+          title: t("common.error"),
+          text: err.message || t("product.details.alerts.deleteFailed"),
+        });
+      }
+    }
+  };
+
   const getTotalQuantity = (p: Product) => {
     if (!p.batches || p.batches.length === 0) return 0;
     return p.batches.reduce((sum, b) => sum + b.mennyiseg, 0);
   };
 
   const getStockStyle = (amount: number, minimum: number) => {
+    if (amount <= 0)
+      return "bg-rose-500/10 border-rose-500/50 text-rose-600 dark:text-rose-400";
     if (amount < minimum)
       return "bg-red-500/10 border-red-500/30 text-red-600 dark:text-red-400";
     if (amount < minimum * 2)
@@ -252,9 +285,14 @@ function ProductDetails() {
                   {totalQty}{" "}
                   <span className="text-lg font-medium lowercase">db</span>
                 </span>
-                {totalQty < product.minimumKeszlet && (
+                {totalQty < product.minimumKeszlet && totalQty > 0 && (
                   <span className="block text-[10px] font-black mt-2 uppercase tracking-tighter bg-white/20 dark:bg-black/20 px-2 py-0.5 rounded inline-block italic">
                     {t("product.details.criticalStock")}
+                  </span>
+                )}
+                {totalQty <= 0 && (
+                  <span className="block text-[10px] font-black mt-2 uppercase tracking-tighter bg-white/20 dark:bg-black/20 px-2 py-0.5 rounded inline-block italic">
+                    KÉSZLETHIÁNY!
                   </span>
                 )}
               </div>
@@ -274,19 +312,30 @@ function ProductDetails() {
                     className="bg-white dark:bg-slate-900 p-5 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-sm flex flex-col gap-3 group"
                   >
                     <div className="flex justify-between items-start">
-                      <button
-                        onClick={() =>
-                          navigate(
-                            `/grid?parcel=${batch.parcella}&productId=${product.id}`,
-                          )
-                        }
-                        className="text-2xl font-black text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 transition-colors flex items-center gap-2 italic uppercase"
-                      >
-                        {batch.parcella}{" "}
-                        <span className="text-base opacity-0 group-hover:opacity-100 group-hover:translate-x-1 transition-all">
-                          →
-                        </span>
-                      </button>
+                      <div className="flex items-center gap-2">
+                        <button
+                          onClick={() =>
+                            navigate(
+                              `/grid?parcel=${batch.parcella}&productId=${product.id}`,
+                            )
+                          }
+                          className="text-2xl font-black text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 transition-colors flex items-center gap-2 italic uppercase"
+                        >
+                          {batch.parcella}
+                          <span className="text-base opacity-0 group-hover:opacity-100 group-hover:translate-x-1 transition-all">
+                            →
+                          </span>
+                        </button>
+                        {canEdit && !(product as any).isDeleted && (
+                          <button
+                            onClick={() => handleDeleteBatch(batch.id, batch.parcella, batch.mennyiseg)}
+                            className="p-1.5 text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-colors ml-1 opacity-50 hover:opacity-100"
+                            title={t("product.details.delete")}
+                          >
+                            🗑️
+                          </button>
+                        )}
+                      </div>
                       <span className="text-2xl font-black text-slate-800 dark:text-white italic">
                         {batch.mennyiseg} <span className="text-sm">db</span>
                       </span>

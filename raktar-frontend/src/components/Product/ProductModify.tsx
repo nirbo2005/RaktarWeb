@@ -155,6 +155,8 @@ function ProductModify() {
     setIsSubmitting(true);
     
     try {
+      let isZeroedOut = false;
+
       if (selectedBatchId === "NEW") {
         const parcella = selectedShelfFromMap;
         if (!parcella) return MySwal.fire(t("common.error"), t("product.modify.alerts.missingShelf"), "error");
@@ -191,8 +193,20 @@ function ProductModify() {
 
         await updateBatch(targetBatch.id, { mennyiseg: newQuantity }, user.id);
         toast.fire({ icon: "success", title: t("product.modify.alerts.stockUpdated") });
+
+        // Ha a kiválasztott sarzs elfogyott, jelezzük
+        if (newQuantity === 0) {
+          isZeroedOut = true;
+        }
       }
+
       setInputValue(0);
+      
+      // Ha a sarzs 0 lett és ezáltal törlődött, visszaváltunk NEW módba
+      if (isZeroedOut) {
+        setSelectedBatchId("NEW");
+      }
+      
       loadData();
     } catch (err: any) {
       MySwal.fire({ icon: "error", title: t("common.error"), text: err.message });

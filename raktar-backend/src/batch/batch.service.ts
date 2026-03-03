@@ -54,9 +54,6 @@ export class BatchService {
 
   /**
    * Intelligens elhelyezési javaslat. 
-   * Ha a súlylimit miatt nem fér el egy helyen, több polcot javasol.
-   * Megengedi a kategória keveredést.
-   * Új termék esetén (id=0) a küldött weight paramétert használja.
    */
   async suggestPlacement(productId: number, quantity: number, weight?: number) {
     let unitWeight = weight;
@@ -164,7 +161,6 @@ export class BatchService {
 
       this.events.emitUpdate('products_updated', { global: true });
       
-      // Csak az érintett termékekre futtatunk ellenőrzést, nem a teljes adatbázisra!
       for (const pid of affectedProductIds) {
         await this.notification.checkSingleProduct(pid);
       }
@@ -272,8 +268,11 @@ export class BatchService {
     if (!existing) throw new NotFoundException('Sarzs nem található!');
 
     return await this.prisma.$transaction(async (tx) => {
+      // 1. Eset: Áthelyezés másik polcra
       if (updateBatchDto.parcella && updateBatchDto.parcella !== existing.parcella) {
         const moveQty = updateBatchDto.mennyiseg ?? existing.mennyiseg;
+        
+        // Célpolc validálása
         const targetBatches = await tx.batch.findMany({ where: { parcella: updateBatchDto.parcella }, include: { product: true } });
         const targetWeight = targetBatches.reduce((sum, b) => sum + (b.mennyiseg * b.product.suly), 0);
 
@@ -288,6 +287,7 @@ export class BatchService {
         let updatedTarget;
         let auditType = moveQty < existing.mennyiseg ? 'MOVE_SPLIT' : 'MOVE_FULL';
 
+        // Létrehozzuk/frissítjük a cél sarzsot
         if (targetSameBatch) {
           updatedTarget = await tx.batch.update({ where: { id: targetSameBatch.id }, data: { mennyiseg: targetSameBatch.mennyiseg + moveQty } });
           auditType = moveQty < existing.mennyiseg ? 'MOVE_SPLIT_MERGE' : 'MOVE_MERGE';
@@ -297,24 +297,38 @@ export class BatchService {
           });
         }
 
+        // Frissítjük/Töröljük a forrás sarzsot
         let updatedSource: Batch | null = null;
-        if (moveQty < existing.mennyiseg) {
-          updatedSource = await tx.batch.update({ where: { id: batchId }, data: { mennyiseg: existing.mennyiseg - moveQty } });
-        } else {
+        const newSourceQty = existing.mennyiseg - moveQty;
+        
+        if (newSourceQty <= 0) {
           await tx.batch.delete({ where: { id: batchId } });
+        } else {
+          updatedSource = await tx.batch.update({ where: { id: batchId }, data: { mennyiseg: newSourceQty } });
         }
 
         await this.audit.createLog(userId, 'BATCH_UPDATE', existing.productId, { ...existing, _logType: 'SOURCE' }, 
           { source: updatedSource, target: updatedTarget, _moveType: auditType, _movedQty: moveQty }, tx);
         
         this.events.emitUpdate('products_updated', { global: true });
-        
-        // Csak az érintett termék ellenőrzése
         await this.notification.checkSingleProduct(existing.productId);
         
         return updatedTarget;
       }
 
+      // 2. Eset: Normál mennyiség/dátum módosítás ugyanazon a polcon
+      // JAVÍTÁS: Ha a végleges mennyiség <= 0, akkor TÖRLÜK a sarzsot Update helyett!
+      if (updateBatchDto.mennyiseg !== undefined && updateBatchDto.mennyiseg <= 0) {
+          await tx.batch.delete({ where: { id: batchId } });
+          await this.audit.createLog(userId, 'BATCH_DELETE', existing.productId, existing, null, tx);
+          
+          this.events.emitUpdate('products_updated', { global: true });
+          await this.notification.checkSingleProduct(existing.productId);
+          
+          return { message: 'Sarzs törölve, mivel a mennyiség 0-ra csökkent.' };
+      }
+
+      // 3. Eset: Csak sima frissítés (ha a mennyiség még > 0)
       const updated = await tx.batch.update({
         where: { id: batchId },
         data: {
@@ -325,8 +339,6 @@ export class BatchService {
 
       await this.audit.createLog(userId, 'BATCH_UPDATE', existing.productId, existing, updated, tx);
       this.events.emitUpdate('products_updated', { global: true });
-      
-      // Csak az érintett termék ellenőrzése
       await this.notification.checkSingleProduct(existing.productId);
       
       return updated;
@@ -344,8 +356,6 @@ export class BatchService {
     });
 
     this.events.emitUpdate('products_updated', { global: true });
-    
-    // Csak az érintett termék ellenőrzése
     await this.notification.checkSingleProduct(batch.productId);
     
     return { message: 'Sikeres törlés' };
