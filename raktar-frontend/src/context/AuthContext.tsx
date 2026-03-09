@@ -1,4 +1,4 @@
-//raktar-frontend/src/context/AuthContext.tsx
+// raktar-frontend/src/context/AuthContext.tsx
 import React, {
   createContext,
   useContext,
@@ -57,11 +57,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
           const updatedUser = await getMe();
           setUser(updatedUser);
           localStorage.setItem("user", JSON.stringify(updatedUser));
-          
-          // Ha token alapján automatikusan léptetjük be (pl. page refresh),
-          // érdemes itt is megfuttatni a checket.
           triggerNotificationCheck().catch(console.error);
-
         } catch (e) {
           console.error("Auth inicializálási hiba");
           logout();
@@ -86,9 +82,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
           data.global ||
           (data.userId && Number(data.userId) === Number(user.id))
         ) {
-          // Ahelyett, hogy csak a refreshKey-t növelnénk (ami a komponenseket frissíti),
-          // kilövünk egy dedikált DOM eseményt is, amire a Navbar feliratkozott,
-          // így a csengő ikon azonnal updatelődik!
           window.dispatchEvent(new CustomEvent("notifications_updated"));
           triggerGlobalRefresh();
         }
@@ -103,12 +96,21 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
       socket.on("user_updated", async (data: any) => {
         if (Number(data.id || data.userId) === Number(user?.id)) {
           if (window.location.pathname === "/force-change-password") return;
-          try {
-            const updatedUser = await getMe();
-            setUser(updatedUser);
-            localStorage.setItem("user", JSON.stringify(updatedUser));
-          } catch (err) {
-            console.error("Szinkron hiba", err);
+          
+          // MODERNIZÁLT LOGIKA: Ha a socket küldi az adatokat, ne hívjunk feleslegesen API-t
+          // Ez megkerüli a getMe() 400-as hibáját szinkronizációkor
+          if (data.felhasznalonev && (data.avatarUrl !== undefined || data.nev)) {
+            const newUserState = { ...user, ...data };
+            setUser(newUserState);
+            localStorage.setItem("user", JSON.stringify(newUserState));
+          } else {
+            try {
+              const updatedUser = await getMe();
+              setUser(updatedUser);
+              localStorage.setItem("user", JSON.stringify(updatedUser));
+            } catch (err) {
+              console.error("Szinkron hiba a getMe hívásakor:", err);
+            }
           }
         }
       });
@@ -130,8 +132,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     setUser(userData);
     socket.emit("join_user_room", { userId: userData.id });
     triggerGlobalRefresh();
-    
-    // Aszinkron módon elindítjuk a készletellenőrzést bejelentkezéskor
     triggerNotificationCheck().catch(console.error);
   };
 

@@ -4,7 +4,7 @@ import type { Product } from "../types/Product";
 import type { AppNotification } from "../types/Notification";
 import type { User } from "../types/User";
 
-const BASE_URL = import.meta.env.VITE_API_BASE_URL || "http://localhost:3000";
+export const BASE_URL = import.meta.env.VITE_API_BASE_URL || "http://localhost:3000";
 
 // ==========================================
 // SEGÉDFÜGGVÉNYEK (HELPERS)
@@ -18,6 +18,13 @@ function getHeaders() {
   const token = localStorage.getItem("token");
   return {
     "Content-Type": "application/json",
+    ...(token ? { Authorization: `Bearer ${token}` } : {}),
+  };
+}
+
+function getUploadHeaders() {
+  const token = localStorage.getItem("token");
+  return {
     ...(token ? { Authorization: `Bearer ${token}` } : {}),
   };
 }
@@ -120,6 +127,11 @@ export async function getAllUsers() {
   return handleResponse(res);
 }
 
+export async function getUsers() {
+  const res = await fetch(`${BASE_URL}/users`, { headers: getHeaders() });
+  return handleResponse(res);
+}
+
 export async function updateProfile(id: number, data: any) {
   const res = await fetch(`${BASE_URL}/users/${id}/profile`, {
     method: "PATCH",
@@ -128,6 +140,19 @@ export async function updateProfile(id: number, data: any) {
   });
   return handleResponse(res);
 }
+
+export const uploadAvatar = async (userId: number | string, imageBlob: Blob): Promise<User> => {
+  const formData = new FormData();
+  formData.append("avatar", imageBlob, "avatar.jpg");
+  
+  const response = await fetch(`${BASE_URL}/users/${userId}/avatar`, {
+    method: "POST",
+    headers: getUploadHeaders(),
+    body: formData,
+  });
+
+  return handleResponse(response);
+};
 
 export async function toggleUserBan(id: number) {
   const res = await fetch(`${BASE_URL}/users/${id}/ban`, {
@@ -138,6 +163,14 @@ export async function toggleUserBan(id: number) {
 }
 
 export async function deleteUserPermanently(id: number) {
+  const res = await fetch(`${BASE_URL}/users/${id}`, {
+    method: "DELETE",
+    headers: getHeaders(),
+  });
+  return handleResponse(res);
+}
+
+export async function deleteUser(id: number) {
   const res = await fetch(`${BASE_URL}/users/${id}`, {
     method: "DELETE",
     headers: getHeaders(),
@@ -252,7 +285,7 @@ export async function restoreProduct(id: number, userId: number) {
     {
       method: "PATCH",
       headers: getHeaders(),
-    },
+    }
   );
   return handleResponse(res);
 }
@@ -326,9 +359,6 @@ export async function suggestPlacement(
   mennyiseg: number,
   weight?: number
 ): Promise<any> {
-  console.log(
-    `[API] suggestPlacement hívás: productId=${productId}, mennyiseg=${mennyiseg}, weight=${weight}`
-  );
   try {
     const params = new URLSearchParams({
       productId: String(productId),
@@ -339,11 +369,8 @@ export async function suggestPlacement(
     const res = await fetch(`${BASE_URL}/batch/suggest-placement?${params.toString()}`, {
       headers: getHeaders(),
     });
-    const data = await handleResponse(res);
-    console.log(`[API] suggestPlacement válasz:`, data);
-    return data;
+    return await handleResponse(res);
   } catch (err) {
-    console.error(`[API] suggestPlacement HIBA:`, err);
     throw err;
   }
 }

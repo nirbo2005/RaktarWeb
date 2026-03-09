@@ -1,4 +1,4 @@
-//raktar-frontend/src/types/User.ts
+// raktar-frontend/src/types/User.ts
 export type UserRole = "NEZELODO" | "KEZELO" | "ADMIN";
 
 export interface User {
@@ -8,6 +8,7 @@ export interface User {
   rang: UserRole;
   email?: string;
   telefonszam?: string;
+  avatarUrl?: string;
   isBanned?: boolean;
   mustChangePassword?: boolean;
 }

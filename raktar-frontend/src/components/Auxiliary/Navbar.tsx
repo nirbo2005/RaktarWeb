@@ -11,6 +11,7 @@ import { useAutoRefresh } from "../../hooks/useAutoRefresh";
 import type { Product } from "../../types/Product";
 import type { AppNotification } from "../../types/Notification";
 import { useTranslation } from "react-i18next";
+import ProfileAvatar from "../Profile/ProfileAvatar";
 
 interface NavbarProps {
   isDark: boolean;
@@ -53,8 +54,6 @@ function Navbar({ isDark, setIsDark }: NavbarProps) {
     }
   }, [user, location.pathname]);
 
-  // A useAutoRefresh hook gondoskodik a WebSocket események figyeléséről is,
-  // de mivel az értesítések kritikusak, feliratkozunk a dedikált eseményre direkt is.
   useEffect(() => {
     const handleNotifUpdate = () => {
       fetchData();
@@ -337,12 +336,8 @@ function Navbar({ isDark, setIsDark }: NavbarProps) {
             {user ? (
               <div className="hidden md:flex items-center gap-3">
                 <Link to="/profile" className={linkStyle("/profile")}>
-                  <div className="w-8 h-8 bg-blue-600/10 text-blue-600 rounded-lg flex items-center justify-center font-black text-xs border border-blue-600/20">
-                    {user?.nev
-                      ? user.nev.charAt(0).toUpperCase()
-                      : user?.felhasznalonev
-                        ? user.felhasznalonev.charAt(0).toUpperCase()
-                        : "?"}
+                  <div className="h-8 w-8 shrink-0 overflow-hidden rounded-lg pointer-events-none">
+                    <ProfileAvatar user={user} onUploadSuccess={() => {}} />
                   </div>
                   <div className="flex flex-col items-start leading-none">
                     <span className="dark:text-slate-200 text-xs font-black uppercase tracking-tight">
@@ -418,8 +413,12 @@ function Navbar({ isDark, setIsDark }: NavbarProps) {
               <div className="h-px bg-slate-200 dark:border-slate-800 my-4" />
 
               <Link to="/profile" className={linkStyle("/profile")}>
-                {t("auxiliary.navbar.profile")} (
-                {user?.nev || user?.felhasznalonev})
+                <div className="h-8 w-8 shrink-0 overflow-hidden rounded-lg pointer-events-none">
+                  <ProfileAvatar user={user} onUploadSuccess={() => {}} />
+                </div>
+                <span className="ml-2">
+                   {t("auxiliary.navbar.profile")} ({user?.nev || user?.felhasznalonev})
+                </span>
               </Link>
 
               <div className="flex items-center justify-between px-4 py-3 bg-slate-50 dark:bg-slate-900 rounded-xl border border-slate-100 dark:border-slate-800 mt-2">

@@ -12,6 +12,7 @@ import { EventsGateway } from '../events/events.gateway';
 import { LoginDto } from './dto/login.dto';
 import { ForgotPasswordDto } from './dto/forgot-password.dto';
 import { ForceChangePasswordDto } from './dto/force-change-password.dto';
+import { NotificationService } from '../notification/notification.service';
 
 @Injectable()
 export class AuthService {
@@ -20,6 +21,7 @@ export class AuthService {
     private jwtService: JwtService,
     private prisma: PrismaService,
     private events: EventsGateway,
+    private notificationService: NotificationService, // Injektálva az értesítésekhez
   ) {}
 
   async login(loginDto: LoginDto) {
@@ -94,6 +96,12 @@ export class AuthService {
       },
     });
 
+    // Értesítjük az adminokat a biztonsági eseményről (valaki új jelszót kért)
+    await this.notificationService.createAdminNotification(
+      `Biztonsági esemény: @${user.felhasznalonev} új ideiglenes jelszót igényelt az elfelejtett jelszó funkcióval!`,
+      'WARNING'
+    );
+
     this.events.emitToUser(user.id, 'force_logout', {
       userId: user.id,
       reason: 'security_reset',
@@ -123,6 +131,13 @@ export class AuthService {
         currentTokenVersion: { increment: 1 },
       },
     });
+
+    // Célzott értesítés a felhasználónak, ami a következő belépéskor fogja várni
+    await this.notificationService.createTargetedNotification(
+      user.id,
+      'A jelszavadat biztonsági okokból sikeresen frissítettük.',
+      'INFO'
+    );
 
     this.events.emitToUser(user.id, 'force_logout', {
       userId: user.id,

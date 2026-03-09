@@ -12,12 +12,16 @@ import * as bcrypt from 'bcrypt';
 import { UserEntity } from './entities/user.entity';
 import { Role } from '@prisma/client';
 import { EventsGateway } from '../events/events.gateway';
+import { NotificationService } from '../notification/notification.service';
+import * as fs from 'fs';
+import * as path from 'path';
 
 @Injectable()
 export class UserService {
   constructor(
     private prisma: PrismaService,
     private events: EventsGateway,
+    private notificationService: NotificationService,
   ) {}
 
   private normalizePhoneNumber(
@@ -41,6 +45,12 @@ export class UserService {
           rang: createUserDto.rang || Role.NEZELODO,
         },
       });
+
+      await this.notificationService.createAdminNotification(
+        `Új felhasználó regisztrált: ${user.nev} (@${user.felhasznalonev})`,
+        'INFO'
+      );
+
       return new UserEntity(user);
     } catch (error: any) {
       if (error.code === 'P2002') {
@@ -107,6 +117,29 @@ export class UserService {
     }
   }
 
+  async updateAvatar(id: number, filename: string): Promise<UserEntity> {
+    const user = await this.prisma.user.findUnique({ where: { id } });
+    if (!user) throw new NotFoundException('Felhasználó nem található');
+
+    const oldAvatar = user.avatarUrl;
+    const newAvatarUrl = `/uploads/avatars/${filename}`;
+
+    const updated = await this.prisma.user.update({
+      where: { id },
+      data: { avatarUrl: newAvatarUrl },
+    });
+
+    if (oldAvatar) {
+      const oldPath = path.join(__dirname, '..', '..', oldAvatar);
+      if (fs.existsSync(oldPath)) {
+        fs.unlinkSync(oldPath);
+      }
+    }
+
+    this.events.emitToUser(id, 'user_updated', updated);
+    return new UserEntity(updated);
+  }
+
   async revokeAllSessions(id: number): Promise<void> {
     const user = await this.prisma.user.findUnique({ where: { id } });
     if (!user) throw new NotFoundException('Felhasználó nem található');
@@ -126,6 +159,15 @@ export class UserService {
     const request = await this.prisma.changeRequest.create({
       data: { userId, tipus, ujErtek },
     });
+    
+    const user = await this.prisma.user.findUnique({ where: { id: userId } });
+    
+    const reqText = tipus === 'RANG_MODOSITAS' ? 'Jogosultság módosítás' : 'Név módosítás';
+    await this.notificationService.createAdminNotification(
+      `Új ${reqText} kérelem érkezett: ${user?.nev} (@${user?.felhasznalonev}) -> ${ujErtek}`,
+      'INFO'
+    );
+
     this.events.emitUpdate('notifications_updated', { role: 'ADMIN' });
     return request;
   }
@@ -140,10 +182,14 @@ export class UserService {
   async handleRequest(requestId: number, statusz: 'APPROVED' | 'REJECTED') {
     const request = await this.prisma.changeRequest.findUnique({
       where: { id: requestId },
+      include: { user: true }
     });
     if (!request) throw new NotFoundException('Kérelem nem található');
 
     let updatedUser: any = null;
+    let notifType = statusz === 'APPROVED' ? 'INFO' : 'WARNING';
+    let reqText = request.tipus === 'RANG_MODOSITAS' ? 'jogosultság' : 'név';
+
     if (statusz === 'APPROVED') {
       if (request.tipus === 'NEV_MODOSITAS') {
         updatedUser = await this.prisma.user.update({
@@ -159,6 +205,13 @@ export class UserService {
           },
         });
       }
+
+      await this.notificationService.createTargetedNotification(
+        request.userId,
+        `A(z) ${reqText} módosítási kérelmedet ELFOGADTÁK. Új érték: ${request.ujErtek}`,
+        notifType
+      );
+
       if (updatedUser) {
         if (request.tipus === 'RANG_MODOSITAS') {
           this.events.emitToUser(request.userId, 'force_logout', {
@@ -169,12 +222,19 @@ export class UserService {
           this.events.emitToUser(request.userId, 'user_updated', updatedUser);
         }
       }
+    } else {
+      await this.notificationService.createTargetedNotification(
+        request.userId,
+        `A(z) ${reqText} módosítási kérelmedet ELUTASÍTOTTÁK.`,
+        notifType
+      );
     }
 
     const updatedRequest = await this.prisma.changeRequest.update({
       where: { id: requestId },
       data: { statusz },
     });
+    
     this.events.emitToUser(request.userId, 'notifications_updated', {
       userId: request.userId,
     });
@@ -194,11 +254,13 @@ export class UserService {
     });
 
     if (updated.isBanned) {
+      await this.notificationService.createAdminNotification(`Felhasználó kitiltva: ${updated.nev} (@${updated.felhasznalonev})`, 'WARNING');
       this.events.emitToUser(id, 'force_logout', {
         userId: id,
         reason: 'banned',
       });
     } else {
+      await this.notificationService.createAdminNotification(`Felhasználó kitiltása feloldva: ${updated.nev} (@${updated.felhasznalonev})`, 'INFO');
       this.events.emitToUser(id, 'user_updated', updated);
     }
 
@@ -206,6 +268,8 @@ export class UserService {
   }
 
   async remove(id: number): Promise<UserEntity> {
+    const user = await this.prisma.user.findUnique({ where: { id } });
+    
     const updated = await this.prisma.user.update({
       where: { id },
       data: {
@@ -217,6 +281,13 @@ export class UserService {
         currentTokenVersion: { increment: 1 },
       },
     });
+
+    if (user) {
+       await this.notificationService.createAdminNotification(
+          `Profil törölve: ${user.nev} (@${user.felhasznalonev}) fiókja megsemmisült.`,
+          'ERROR'
+       );
+    }
 
     this.events.emitToUser(id, 'force_logout', {
       userId: id,

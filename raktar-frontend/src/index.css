@@ -1,4 +1,37 @@
-/*raktar-frontend/src/index.css */
+/* raktar-frontend/src/index.css */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --bg-main: 241 245 249; /* slate-100 - picit sötétebb alap, hogy a fehér panelek kiugorjanak */
+    --bg-panel: 255 255 255; /* white */
+    --bg-input: 248 250 252; /* slate-50 */
+    --bg-hover: 226 232 240; /* slate-200 - észrevehetőbb hover */
+    --border-main: 203 213 225; /* slate-300 - erősebb, láthatóbb szegélyek */
+    --border-subtle: 226 232 240; /* slate-200 */
+    --text-main: 15 23 42; /* slate-900 */
+    --text-muted: 71 85 105; /* slate-600 - sötétebb, olvashatóbb másodlagos szöveg */
+  }
+
+  .dark {
+    --bg-main: 2 6 23; /* slate-950 */
+    --bg-panel: 15 23 42; /* slate-900 */
+    --bg-input: 30 41 59; /* slate-800 */
+    --bg-hover: 51 65 85; /* slate-700 */
+    --border-main: 51 65 85; /* slate-700 */
+    --border-subtle: 30 41 59; /* slate-800 */
+    --text-main: 248 250 252; /* slate-50 */
+    --text-muted: 148 163 184; /* slate-400 */
+  }
+}
+
+body {
+  background-color: rgb(var(--bg-main));
+  color: rgb(var(--text-main));
+}
+
 body,
 nav,
 div,
@@ -81,11 +114,11 @@ button {
 }
 
 .polc {
-  border: 1px solid #e2e8f0;
+  border: 1px solid rgb(var(--border-main));
   padding: 1.25rem;
   border-radius: 1.5rem;
   width: 240px;
-  background-color: white;
+  background-color: rgb(var(--bg-panel));
   box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
 }
 
@@ -94,13 +127,13 @@ button {
   font-weight: 900;
   text-transform: uppercase;
   font-size: 0.875rem;
-  color: #1e293b;
+  color: rgb(var(--text-main));
 }
 
 .dark .polc {
   background-color: rgba(30, 41, 59, 0.5);
-  border-color: #334155;
-  color: #f1f5f9;
+  border-color: rgb(var(--border-main));
+  color: rgb(var(--text-main));
 }
 
 .dark .polc h4 {
@@ -128,4 +161,68 @@ button {
 .backdrop-blur-3xl {
   backdrop-filter: none !important;
   -webkit-backdrop-filter: none !important;
+}
+
+.profile-avatar-container {
+  @apply flex flex-col items-center;
+}
+
+.avatar-wrapper {
+  @apply relative w-20 h-20 md:w-24 md:h-24 cursor-pointer group overflow-hidden rounded-2xl shadow-2xl border-4 border-white dark:border-slate-900 bg-white dark:bg-slate-800 flex items-center justify-center;
+}
+
+.avatar-img {
+  @apply w-full h-full object-cover;
+}
+
+.avatar-placeholder {
+  @apply text-4xl font-black italic text-blue-600;
+}
+
+.avatar-overlay {
+  @apply absolute inset-0 bg-black/50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-200;
+}
+
+.avatar-overlay span {
+  @apply text-[10px] font-black uppercase tracking-tighter text-white;
+}
+
+.cropper-modal {
+  @apply fixed inset-0 z-[100] flex items-center justify-center bg-slate-950/80 backdrop-blur-sm p-4;
+}
+
+.cropper-content {
+  @apply bg-white dark:bg-slate-900 w-full max-w-md rounded-[2.5rem] p-8 shadow-2xl border border-slate-200 dark:border-slate-800;
+}
+
+.cropper-content h3 {
+  @apply text-xl font-black uppercase italic tracking-tight mb-6 text-slate-900 dark:text-white;
+}
+
+.cropper-container {
+  @apply relative w-full h-64 md:h-80 bg-slate-100 dark:bg-slate-800 rounded-3xl overflow-hidden mb-6;
+}
+
+.cropper-controls {
+  @apply space-y-6;
+}
+
+.cropper-controls input[type="range"] {
+  @apply w-full h-2 bg-slate-200 dark:bg-slate-700 rounded-lg appearance-none cursor-pointer accent-blue-600;
+}
+
+.cropper-buttons {
+  @apply flex gap-4;
+}
+
+.cropper-buttons button {
+  @apply flex-1 py-3 rounded-xl font-black uppercase text-xs tracking-widest transition-all active:scale-95;
+}
+
+.cropper-buttons .cancel-btn {
+  @apply bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-700;
+}
+
+.cropper-buttons .save-btn {
+  @apply bg-blue-600 text-white hover:bg-blue-500 disabled:opacity-50;
 }

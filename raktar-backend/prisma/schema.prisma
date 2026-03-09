@@ -34,7 +34,7 @@ enum ProductCategory {
 }
 
 model Product {
-  id             Int             @id @default(autoincrement())
+  id             Int            @id @default(autoincrement())
   nev            String
   gyarto         String
   kategoria      ProductCategory @default(EGYEB)
@@ -66,6 +66,7 @@ model User {
   jelszo              String
   email               String?         @unique
   telefonszam         String?         @unique
+  avatarUrl           String?         // ÚJ MEZŐ: Profilkép eléréséhez
   rang                Role            @default(NEZELODO)
   isBanned            Boolean         @default(false)
   mustChangePassword  Boolean         @default(false)
@@ -84,8 +85,8 @@ model Notification {
   uzenet    String
   tipus     String   
   isRead    Boolean   @default(false)
-  isDeleted Boolean   @default(false)  // ÚJ MEZŐ: Soft Delete
-  deletedAt DateTime?                    // ÚJ MEZŐ: Törlés időpontja
+  isDeleted Boolean   @default(false)  
+  deletedAt DateTime?                    
   letrehozva DateTime @default(now())
 }
 

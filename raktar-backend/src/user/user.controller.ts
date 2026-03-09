@@ -9,8 +9,12 @@ import {
   Delete, 
   UseGuards, 
   ParseIntPipe,
-  SetMetadata
+  SetMetadata,
+  UseInterceptors,
+  UploadedFile,
+  BadRequestException
 } from '@nestjs/common';
+import { FileInterceptor } from '@nestjs/platform-express';
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
@@ -60,6 +64,19 @@ export class UserController {
   @UseGuards(JwtAuthGuard)
   updateProfile(@Param('id', ParseIntPipe) id: number, @Body() data: any) {
     return this.userService.updateProfile(id, data);
+  }
+
+  @Post(':id/avatar')
+  @UseGuards(JwtAuthGuard)
+  @UseInterceptors(FileInterceptor('avatar'))
+  uploadAvatar(
+    @Param('id', ParseIntPipe) id: number,
+    @UploadedFile() file: Express.Multer.File,
+  ) {
+    if (!file) {
+      throw new BadRequestException('Nem érkezett fájl vagy nem megfelelő formátum!');
+    }
+    return this.userService.updateAvatar(id, file.filename);
   }
 
   @Post('change-request')

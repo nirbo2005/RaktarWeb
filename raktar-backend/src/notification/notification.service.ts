@@ -51,12 +51,53 @@ export class NotificationService {
     return result;
   }
 
+  // =========================================================================
+  // ÉRTESÍTÉSKÜLDŐ FUNKCIÓK
+  // =========================================================================
+
+  // 1. Célzott értesítés egyetlen felhasználónak (pl. jóváhagyott kérelem)
+  async createTargetedNotification(userId: number, uzenet: string, tipus: string = 'INFO') {
+    await this.prisma.notification.create({
+      data: {
+        userId: Number(userId),
+        uzenet,
+        tipus,
+        isRead: false,
+        isDeleted: false
+      }
+    });
+    this.events.emitUpdate('notifications_updated', { userId: Number(userId) });
+  }
+
+  // 2. Csak ADMIN-oknak szóló értesítések (pl. új kérelem, új regisztráció)
+  async createAdminNotification(uzenet: string, tipus: string = 'INFO') {
+    const admins = await this.prisma.user.findMany({
+      where: { rang: 'ADMIN', isBanned: false },
+      select: { id: true },
+    });
+
+    if (admins.length === 0) return;
+
+    await this.prisma.notification.createMany({
+      data: admins.map((a) => ({
+        userId: a.id,
+        uzenet,
+        tipus,
+        isRead: false,
+        isDeleted: false
+      })),
+    });
+
+    admins.forEach((a) => {
+      this.events.emitUpdate('notifications_updated', { userId: a.id });
+    });
+  }
+
+  // 3. Globális, termékekhez kötött riasztások okos spamszűrővel
   async createGlobalNotification(uzenet: string, tipus: string = 'INFO', productId?: number) {
     const sevenDaysAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
     let isDuplicate = false;
 
-    // Okosabb spam-szűrő: Ha van productId, elég ha az üzenet prefixe egyezik.
-    // Ezzel elkerüljük, hogy minden egyes darabos fogyásnál új értesítés menjen ki.
     if (productId) {
       const prefix = uzenet.split(':')[0]; // pl. "ALACSONY KÉSZLET"
       const existing = await this.prisma.notification.findFirst({
@@ -99,12 +140,14 @@ export class NotificationService {
     });
   }
 
-  // Segédfüggvény a dátumok magyaros formázására
+  // =========================================================================
+  // KÉSZLET ÉS LEJÁRAT ELLENŐRZŐ FUNKCIÓK
+  // =========================================================================
+
   private formatDate(date: Date): string {
     return date.toLocaleDateString('hu-HU', { year: 'numeric', month: '2-digit', day: '2-digit' });
   }
 
-  // ÚJ FÜGGVÉNY: Csak egyetlen terméket ellenőriz (készletmozgáskor hívjuk)
   async checkSingleProduct(productId: number) {
     const product = await this.prisma.product.findUnique({
       where: { id: productId, isDeleted: false },
@@ -134,7 +177,6 @@ export class NotificationService {
       const diffDays = Math.ceil((expiryDate.getTime() - today.getTime()) / (1000 * 3600 * 24));
       const formattedExpiry = this.formatDate(expiryDate);
 
-      // Abszolút dátumokat használunk, hogy később visszaolvasva is egyértelmű legyen!
       if (diffDays === 7 || diffDays === 2) {
         await this.createGlobalNotification(
           `LEJÁRAT FIGYELMEZTETÉS: A(z) ${product.nev} (${batch.parcella}) lejár ekkor: ${formattedExpiry}!`,
@@ -167,7 +209,6 @@ export class NotificationService {
     if (result.count > 0) this.logger.log(`${result.count} db régi értesítés véglegesen törölve.`);
   }
 
-  // Globális napi ellenőrzés (minden nap reggel 8-kor lefut)
   @Cron(CronExpression.EVERY_DAY_AT_8AM)
   async checkExpiryAndStock() {
     this.logger.log('Napi globális készlet és lejárat ellenőrzés indítása...');
