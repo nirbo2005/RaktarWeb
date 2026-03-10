@@ -21,7 +21,6 @@ const ProfileStats = () => {
   const loadStats = useCallback(async () => {
     if (!user) return;
     try {
-      // Csak a saját logokat kérjük le a statisztikához
       const logs = await getAuditLogs(user.id, false, { targetUserId: user.id.toString() });
       
       const counts = logs.reduce((acc: any, log: any) => {
@@ -39,11 +38,11 @@ const ProfileStats = () => {
         deletes: counts.deletes,
       });
     } catch (err) {
-      console.error("Hiba a statisztikák számításakor:", err);
+      console.error(t("profile.stats.fetchError"), err);
     } finally {
       setLoading(false);
     }
-  }, [user]);
+  }, [user, t]);
 
   useAutoRefresh(loadStats);
 
@@ -74,7 +73,6 @@ const ProfileStats = () => {
         </div>
       ) : (
         <div className="space-y-8 animate-in fade-in duration-500">
-          {/* FŐ STATISZTIKAI RÁCS */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {statCards.map((card, idx) => (
               <div key={idx} className="bg-white dark:bg-slate-900 p-8 rounded-[2.5rem] border border-slate-100 dark:border-slate-800 shadow-sm relative overflow-hidden group">
@@ -85,7 +83,6 @@ const ProfileStats = () => {
             ))}
           </div>
 
-          {/* AKTIVITÁSI ÖSSZEGZŐ */}
           <div className="bg-white dark:bg-slate-900 rounded-[2.5rem] p-10 border border-slate-100 dark:border-slate-800 shadow-xl">
             <h3 className="text-lg font-black uppercase italic tracking-tighter dark:text-white mb-8 border-b border-slate-50 dark:border-slate-800 pb-4">
               {t("profile.stats.activityDistribution")}

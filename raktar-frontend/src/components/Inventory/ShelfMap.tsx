@@ -52,7 +52,7 @@ const ShelfMap: React.FC<ShelfMapProps> = ({
     return { percent, color: "bg-emerald-500", text: "text-white" };
   };
 
-  if (loading) return <div className="h-64 flex items-center justify-center animate-pulse text-slate-400">Loading Map...</div>;
+  if (loading) return <div className="h-64 flex items-center justify-center animate-pulse text-slate-400 font-black uppercase text-xs tracking-widest">{t("common.loading")}...</div>;
 
   return (
     <div className="bg-white dark:bg-slate-900 rounded-[2rem] p-6 border border-slate-100 dark:border-slate-800 shadow-xl">
@@ -93,7 +93,6 @@ const ShelfMap: React.FC<ShelfMapProps> = ({
               return (
                 <div
                   key={parcella}
-                  // JAVÍTÁS: Ha már ki van választva, akkor üres stringet küldünk (Deselect/Toggle)
                   onClick={() => !isDisabled && onSelectShelf?.(isSelected ? "" : parcella)}
                   className={`relative group h-20 rounded-xl border-2 transition-all overflow-hidden ${
                     isDisabled 
@@ -120,7 +119,7 @@ const ShelfMap: React.FC<ShelfMapProps> = ({
                     <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-32 p-2 bg-slate-900 text-white text-[9px] rounded-lg opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity z-20">
                       <p className="font-black border-b border-slate-700 pb-1 mb-1">{parcella}</p>
                       <p>{t("inventory.shelfMap.weight")}: {Math.round(shelfData?.weight || 0)} kg</p>
-                      <p>{t("inventory.shelfMap.category")}: {shelfData?.category || "---"}</p>
+                      <p>{t("inventory.shelfMap.category")}: {shelfData?.category ? t(`product.categories.${shelfData.category}`) : "---"}</p>
                     </div>
                   )}
                 </div>

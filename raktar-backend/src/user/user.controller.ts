@@ -1,4 +1,3 @@
-// raktar-backend/src/user/user.controller.ts
 import { 
   Controller, 
   Get, 
@@ -12,9 +11,13 @@ import {
   SetMetadata,
   UseInterceptors,
   UploadedFile,
-  BadRequestException
+  BadRequestException,
+  Request
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
+import { diskStorage } from 'multer';
+import { extname, join } from 'path';
+import * as fs from 'fs';
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
@@ -47,6 +50,15 @@ export class UserController {
     return this.userService.findAll();
   }
 
+  // FIGYELEM: Ennek feltétlenül a :id előtt kell lennie!
+  @Get('me')
+  @UseGuards(JwtAuthGuard)
+  getMe(@Request() req: any) {
+    // Biztosítjuk, hogy oldalfrissítéskor a legfrissebb DB adatokat kapja meg a frontend
+    const userId = req.user?.id || req.user?.sub;
+    return this.userService.findOne(userId);
+  }
+
   @Get('pending-requests')
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(Role.ADMIN)
@@ -74,7 +86,23 @@ export class UserController {
 
   @Post(':id/avatar')
   @UseGuards(JwtAuthGuard)
-  @UseInterceptors(FileInterceptor('avatar'))
+  @UseInterceptors(FileInterceptor('avatar', {
+    storage: diskStorage({
+      destination: (req, file, cb) => {
+        // Garantáltan a főkönyvtár uploads/avatars mappájába ment
+        const uploadPath = join(process.cwd(), 'uploads', 'avatars');
+        if (!fs.existsSync(uploadPath)) {
+          fs.mkdirSync(uploadPath, { recursive: true });
+        }
+        cb(null, uploadPath);
+      },
+      filename: (req, file, cb) => {
+        const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
+        const ext = extname(file.originalname) || '.jpg';
+        cb(null, `avatar-${req.params.id}-${uniqueSuffix}${ext}`);
+      }
+    })
+  }))
   uploadAvatar(
     @Param('id', ParseIntPipe) id: number,
     @UploadedFile() file: Express.Multer.File,

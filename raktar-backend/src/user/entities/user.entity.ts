@@ -1,4 +1,3 @@
-//raktar-backend/src/user/entities/user.entity.ts
 import { Role } from '@prisma/client';
 import { Exclude } from 'class-transformer';
 
@@ -11,6 +10,7 @@ export class UserEntity {
   rang: Role;
   isBanned: boolean;
   mustChangePassword: boolean;
+  avatarUrl: string | null; // Ezt a sort adtam hozzá
 
   @Exclude()
   jelszo: string;

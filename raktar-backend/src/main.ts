@@ -1,4 +1,3 @@
-// raktar-backend/src/main.ts
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { NestExpressApplication } from '@nestjs/platform-express';
@@ -45,8 +44,9 @@ async function bootstrap() {
     }),
   );
 
-  app.useStaticAssets(join(__dirname, '..', 'uploads'), {
-    prefix: '/uploads/',
+  // GARANTÁLT STATIKUS FÁJL KISZOLGÁLÁS A FŐKÖNYVTÁRBÓL
+  app.useStaticAssets(join(process.cwd(), 'uploads'), {
+    prefix: '/uploads',
   });
 
   const port = process.env.PORT || 3000;

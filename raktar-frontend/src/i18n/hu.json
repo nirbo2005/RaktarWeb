@@ -17,13 +17,19 @@
     "updating": "Frissítés...",
     "close": "Bezárás",
     "yes": "Igen",
+    "no": "Nem",
     "back": "Vissza",
     "pieces": "db",
     "open": "Megnyitás",
     "filterBtn": "Szűrés",
-    "restore": "Visszavonás",
+    "restore": "Visszaállítás",
     "unknown": "Ismeretlen",
-    "reset": "Újrakezdés"
+    "reset": "Újrakezdés",
+    "loading": "Betöltés",
+    "next": "Következő",
+    "prev": "Előző",
+    "perPage": "Megjelenítés:",
+    "languageSelector": "Nyelvválasztó"
   },
   "admin": {
     "editTitle": "Szerkesztés: {{name}}",
@@ -54,7 +60,8 @@
       "userDeleted": "Felhasználó törölve",
       "deleteFailed": "A törlés nem sikerült.",
       "accepted": "Elfogadva",
-      "rejected": "Elutasítva"
+      "rejected": "Elutasítva",
+      "fetchError": "Hiba az admin adatok betöltésekor:"
     }
   },
   "details": {
@@ -87,13 +94,34 @@
   },
   "profile": {
     "dashboard": {
-      "details": { "title": "Személyes Adatok", "desc": "Név, elérhetőség és jelszókezelés" },
-      "stats": { "title": "Statisztikák", "desc": "Saját aktivitás és teljesítmény elemzése" },
-      "logs": { "title": "Tevékenységnapló", "desc": "Rendszerműveletek visszakövetése" },
-      "security": { "title": "Biztonsági Központ", "desc": "Munkamenetek és fiókvédelem" },
-      "stock": { "title": "Raktárérték", "desc": "Pénzügyi kimutatások és készletadatok" },
-      "admin": { "title": "Adminisztráció", "desc": "Felhasználók és kérelmek kezelése" },
-      "system": { "title": "Rendszerállapot", "desc": "Szerver diagnosztika és metrikák" }
+      "details": {
+        "title": "Személyes Adatok",
+        "desc": "Név, elérhetőség és jelszókezelés"
+      },
+      "stats": {
+        "title": "Statisztikák",
+        "desc": "Saját aktivitás és teljesítmény elemzése"
+      },
+      "logs": {
+        "title": "Tevékenységnapló",
+        "desc": "Rendszerműveletek visszakövetése"
+      },
+      "security": {
+        "title": "Biztonsági Központ",
+        "desc": "Munkamenetek és fiókvédelem"
+      },
+      "stock": {
+        "title": "Raktárérték",
+        "desc": "Pénzügyi kimutatások és készletadatok"
+      },
+      "admin": {
+        "title": "Adminisztráció",
+        "desc": "Felhasználók és kérelmek kezelése"
+      },
+      "system": {
+        "title": "Rendszerállapot",
+        "desc": "Szerver diagnosztika és metrikák"
+      }
     },
     "tabs": {
       "myProfile": "👤 Saját profil",
@@ -104,10 +132,12 @@
       "restoreTitle": "Visszaállítás?",
       "restoreText": "Biztosan vissza szeretnéd állítani az eredeti állapotot?",
       "restoreBtn": "Visszaállítás",
-      "restored": "Sikeresen visszavonva!",
+      "restored": "Sikeresen visszaállítva!",
       "restoreFailed": "Sikertelen művelet.",
       "groupRestoreTitle": "Csoportos visszaállítás",
-      "groupRestoreText": "Biztosan visszaállítod mind a {{count}} elemet?",
+      "groupRestoreText": "Szeretnéd visszaállítani mind a {{count}} törölt elemet?",
+      "groupRestoreConfirmAll": "Igen, mindet",
+      "groupRestoreChoose": "Nem mindet, kiválasztom",
       "partialError": "Részleges hiba történt."
     },
     "security": {
@@ -136,7 +166,8 @@
       "deletes": "Törlések",
       "activityDistribution": "Aktivitás megoszlása",
       "movesThisMonth": "Művelet ebben a hónapban",
-      "newProducts": "Új termék rögzítve"
+      "newProducts": "Új termék rögzítve",
+      "fetchError": "Hiba a statisztikák számításakor:"
     },
     "system": {
       "database": "Adatbázis",
@@ -148,7 +179,49 @@
       "recentEvents": "Legutóbbi rendszerműveletek",
       "maintenance": "Karbantartás",
       "maintenanceDesc": "Futtasson diagnosztikai eszközöket az adatbázis integritásának és a szerver optimális működésének ellenőrzéséhez.",
-      "runDiagnostic": "Diagnosztika indítása"
+      "runDiagnostic": "Diagnosztika indítása",
+      "fetchError": "Hiba a rendszerállapot lekérésekor:"
+    },
+    "details": {
+      "requestRankTitle": "{{rank}} Jogosultság Kérése",
+      "requestRankText": "Biztosan szeretnél {{rank}} hozzáférést kérni a rendszerhez?",
+      "deleteTitle": "Fiók végleges törlése",
+      "deleteText": "Biztosan törölni szeretnéd a fiókodat? Ez a művelet visszafordíthatatlan!",
+      "deleteConfirm": "Igen, véglegesen törlöm",
+      "deleteAccount": "Fiók törlése",
+      "deletedTitle": "Törölve",
+      "deletedText": "A fiókod sikeresen törlésre került.",
+      "namePending": "Névváltoztatási kérelem függőben...",
+      "requestKezelo": "Kezelő kérése",
+      "requestAdmin": "Admin kérése",
+      "kezeloPending": "⏳ Kezelő kérés függőben",
+      "adminPending": "⏳ Admin kérés függőben",
+      "nameChangedWarning": "Admin jóváhagyás szükséges",
+      "alerts": {
+        "deleteTitle": "Fiók végleges törlése",
+        "deleteText": "Biztosan törölni szeretnéd a fiókodat? Ez a művelet visszafordíthatatlan!",
+        "deleteConfirm": "Igen, véglegesen törlöm",
+        "fetchRequestsError": "Nem sikerült lekérni a kérelmeket.",
+        "requestSent": "Jogosultság kérelem elküldve!",
+        "deleteDeniedTitle": "Törlés megtagadva",
+        "deleteDeniedText": "Te vagy az egyetlen aktív adminisztrátor!",
+        "checkAdminError": "Nem sikerült ellenőrizni az adminisztrátorok számát."
+      },
+      "buttons": {
+        "updateRequest": "Kérelem Frissítése"
+      }
+    },
+    "avatar": {
+      "cropTitle": "Kép vágása",
+      "sourceTitle": "Kép forrása",
+      "uploadFile": "Fájl feltöltése",
+      "pasteHint": "Vagy nyomj CTRL+V-t",
+      "urlPlaceholder": "Illessz be egy közvetlen kép URL-t...",
+      "urlError": "Hiba a kép betöltésekor.",
+      "zoom": "Nagyítás",
+      "uploading": "Mentés folyamatban...",
+      "saveBtn": "Kép Mentése",
+      "modifyOverlay": "Módosítás"
     }
   },
   "logs": {
@@ -169,7 +242,7 @@
       "create": "✨ Létrehozás",
       "update": "📝 Módosítás",
       "delete": "🗑️ Törlés",
-      "bulkDelete": "🗑️ Tömeges Törlés",
+      "bulkDelete": "🗑️ tömeges törlés",
       "restore": "♻️ Visszaállítás",
       "filterBtn": "Szűrés",
       "exportBtn": "Export"
@@ -179,7 +252,7 @@
       "update": "Módosítás",
       "batch": "Készletmozgás",
       "delete": "Törlés",
-      "bulkDelete": "TÖMEGES TÖRLÉS",
+      "bulkDelete": "tömeges törlés",
       "bulkItems": "Termékek törölve ({{count}} db)",
       "productCreate": "Új termék felvéve",
       "productDelete": "Termék törölve",
@@ -190,7 +263,7 @@
       "productDeleted": "Termék törölve",
       "dataChanged": "Adatváltozás történt",
       "productRestored": "Termék helyreállítva",
-      "reverted": "Módosítás visszavonva:"
+      "reverted": "Módosítás visszaállítva:"
     },
     "types": {
       "split": "Részleges áthelyezés",
@@ -201,7 +274,8 @@
       "sourceShelf": "Forrás polc",
       "targetShelf": "Cél polc",
       "total": "Összesen",
-      "system": "Rendszerfolyamat"
+      "system": "Rendszerfolyamat",
+      "na": "N/A"
     },
     "excel": {
       "sheetName": "Tevékenységnapló",
@@ -215,10 +289,11 @@
       "ready": "Excel export kész!"
     },
     "misc": {
-      "bulkDeleteCount": "Tömeges Törlés ({{count}} tétel)",
+      "bulkDeleteCount": "tömeges törlés ({{count}} tétel)",
       "systemProcess": "Rendszerfolyamat",
       "viewDetails": "Részletek megtekintése →",
-      "noLogs": "Nincs megjeleníthető naplóbejegyzés."
+      "noLogs": "Nincs megjeleníthető naplóbejegyzés.",
+      "fetchError": "Hiba a napló betöltésekor:"
     }
   },
   "product": {
@@ -267,6 +342,7 @@
         "productCreated": "Termék rögzítve! ✨",
         "errorOccurred": "Hiba történt",
         "errorText": "Hálózati hiba vagy megtelt polc.",
+        "fetchError": "Hiba a terméklista frissítésekor:",
         "missingShelf": "Kérlek, rendelj polcot minden tételhez!",
         "invalidAllocation": "Az elosztott mennyiség nem egyezik az összmennyiséggel!"
       }
@@ -286,6 +362,7 @@
       "stockStatus": "Készlet Állapot",
       "totalStock": "Aktuális Összesített Készlet",
       "criticalStock": "🚨 Kritikus készlet",
+      "outOfStockAlert": "KÉSZLETHIÁNY!",
       "physicalLocation": "Fizikai Elhelyezkedés (Sarzsok)",
       "expiry": "Szavatossági idő",
       "nonPerishable": "Nem romlandó",
@@ -329,6 +406,7 @@
       "selectModeOn": "✖ Kijelölés vége",
       "selectModeOff": "☑️ Több kijelölése",
       "newProduct": "+ Új Termék",
+      "searchPlaceholder": "Keresés név, gyártó vagy ID alapján...",
       "headers": {
         "qr": "QR",
         "product": "Termék",
@@ -350,6 +428,9 @@
         "quantity": "Össz. Mennyiség (db)",
         "earliestExpiry": "Legkorábbi Lejárat"
       },
+      "emptyTitle": "Nincs találat",
+      "emptySubtitle": "A keresési vagy szűrési feltételeknek nem felel meg egyetlen termék sem.",
+      "outOfStock": "Készlethiány",
       "alerts": {
         "bulkDeleteTitle": "Tömeges törlés",
         "bulkDeleteText": "{{count}} tétel törlése?",
@@ -363,12 +444,15 @@
       }
     },
     "modify": {
-      "tabs": { "physicalStock": "📦 Fizikai Készlet", "masterData": "⚙️ Cikktörzs" },
+      "tabs": {
+        "physicalStock": "📦 Fizikai Készlet",
+        "masterData": "⚙️ Cikktörzs"
+      },
       "deletedTitle": "Termék törölve",
       "restoreBtn": "Visszaállítás",
       "stockManagement": "Készletkezelés",
-      "selectBatch": "Célzott Fizikai Polc (Sarzs) Kiválasztása",
-      "createNewBatch": "➕ ÚJ SARZS LÉTREHOZÁSA (Új polcra)",
+      "selectBatch": "Célzott Fizikai Polc Kiválasztása",
+      "createNewBatch": "➕ ÚJ SARZS LÉTREHOZÁSA",
       "newBatchData": "Új Sarzs Adatok",
       "location": "Helyszín (Polc)",
       "expiry": "Lejárati Idő",
@@ -413,16 +497,20 @@
       "autoTitle": "Automatizált kiosztás",
       "manualTitle": "Kézi polckiosztás",
       "allAllocated": "Minden tétel elhelyezve",
-      "remaining": "Fennmaradó",
       "remainingQty": "Még kiosztandó: {{count}} db",
       "shelf": "Polc",
       "qty": "Mennyiség",
       "addSplit": "Bontás további polcokra",
-      "overAllocated": "⚠️ Hiba: {{amount}} db-bal többet osztottál el!"
+      "overAllocated": "⚠️ Hiba: {{amount}} db-bal többet osztottál el!",
+      "invalidFormat": "Érvénytelen (Pl: A1-1)",
+      "alerts": {
+        "shelfFullTitle": "Hoppá, vak vagy? 😅",
+        "shelfFullText": "A(z) {{shelf}} polc már teljesen tele van. Válassz másikat!"
+      }
     }
   },
   "stockValue": {
-    "title": "Készlet<span class=\"text-emerald-500\">érték</span> Kalkulátor",
+    "title": "Készletérték Kalkulátor",
     "subtitle": "Élő pénzügyi elemzés",
     "manualRefresh": "🔄 Manuális frissítés",
     "totalValue": "Teljes Raktárérték",
@@ -437,7 +525,9 @@
     "billionFt": "milliárd Ft",
     "millionFt": "millió Ft",
     "calculating": "Pénzügyi adatok kalkulálása...",
-    "loadError": "Nem sikerült betölteni a készletadatokat."
+    "loadError": "Nem sikerült betölteni a készletadatokat.",
+    "categoryDistribution": "📦 Kategória szerinti megoszlás",
+    "sectorValues": "📍 Szektorok értéke"
   },
   "auxiliary": {
     "connection": {
@@ -461,18 +551,19 @@
       "noNotifications": "Nincs értesítés"
     },
     "notifications": {
-      "title": "🔔 Értesítési <span class=\"text-blue-600\">Központ</span>",
+      "title": "🔔 Értesítési Központ",
       "unreadCount": "{{count}} olvasatlan értesítés",
       "allRead": "Minden értesítés elolvasva",
       "deleteReadBtn": "🗑️ Olvasottak törlése",
       "markAllReadBtn": "✓ Mind olvasott",
-      "acknowledge": "Nyugtázom",
       "emptyTitle": "Nincs értesítés",
       "emptyText": "Jelenleg nincs semmilyen riasztás a rendszerben.",
+      "readStatus": "Olvasva",
+      "markAsRead": "Olvasott",
       "alerts": {
         "allMarkedRead": "Minden értesítés olvasottnak jelölve!",
         "deleteConfirmTitle": "Olvasottak törlése?",
-        "deleteConfirmText": "Minden már nyugtázott (olvasott) értesítésed véglegesen törlődik!",
+        "deleteConfirmText": "Minden már nyugtázott értesítésed véglegesen törlődik!",
         "yesDelete": "Igen, töröld őket!",
         "deletedSuccess": "Olvasott értesítések törölve!"
       }
@@ -496,26 +587,18 @@
       }
     },
     "search": {
-      "title": "Keresési <span class=\"text-blue-600\">találatok</span>",
+      "title": "Keresési találatok",
       "expression": "Kifejezés:",
       "resultsCount": "{{count}} találat",
       "scanningStock": "Készlet átfésülése...",
       "lowStock": "Alacsony készlet",
+      "noStock": "Nincs készleten",
       "inStock": "Raktáron",
       "location": "Helyszín",
       "stock": "Készlet",
       "noResultsTitle": "Nincs találat...",
       "noResultsText": "A keresett tétel nem található a rendszerben.",
-      "backToHub": "Vissza a bázisra",
-      "noStock": "Nincs készleten"
-    }
-  },
-  "hooks": {
-    "realTime": {
-      "alerts": {
-        "accountSuspended": "A fiókodat felfüggesztették.",
-        "connectionLost": "Megszakadt a kapcsolat a szerverrel."
-      }
+      "backToHub": "Vissza a bázisra"
     }
   },
   "auth": {
@@ -562,20 +645,20 @@
       "alerts": {
         "accessDenied": "Hozzáférés megtagadva",
         "sessionLost": "Munkamenet megszakítva",
-        "bannedText": "Ezt a fiókot biztonsági okokból vagy szabálysértés miatt felfüggesztettük.",
-        "sessionExpiredText": "A munkamenet lejárt vagy megszakadt. Kérjük, jelentkezzen be újra.",
+        "bannedText": "Ezt a fiókot felfüggesztettük.",
+        "sessionExpiredText": "A munkamenet lejárt. Jelentkezzen be újra.",
         "gotIt": "Értettem",
         "welcomeBack": "Üdv újra!",
         "bannedTitle": "Ki vagy tiltva!",
-        "bannedFooter": "<span style=\"color: #94a3b8; font-size: 10px; font-weight: 900; text-transform: uppercase;\">Lépj kapcsolatba az adminisztrátorral</span>",
-        "bannedServerMsg": "Sajnáljuk, de ez a felhasználói fiók nem léphet be a rendszerbe.",
+        "bannedFooter": "Lépj kapcsolatba az adminisztrátorral",
+        "bannedServerMsg": "A fiók nem léphet be a rendszerbe.",
         "wrongCredentials": "Hibás felhasználónév vagy jelszó!",
         "oops": "Hoppá..."
       }
     },
     "forgotPassword": {
-      "title": "Jelszó <span class=\"text-blue-600\">visszaállítás</span>",
-      "subtitle": "Kérjük, add meg a fiókodhoz tartozó biztonsági adatokat a jelszó cseréjéhez.",
+      "title": "Jelszó visszaállítás",
+      "subtitle": "Add meg a fiókodhoz tartozó biztonsági adatokat.",
       "username": "Felhasználónév",
       "usernamePlaceholder": "Pl. kjanos88",
       "email": "Regisztrált Email",
@@ -585,10 +668,10 @@
       "checking": "Ellenőrzés...",
       "backToLogin": "← Vissza a bejelentkezéshez",
       "alerts": {
-        "fillValid": "Kérjük, tölts ki minden mezőt érvényes adatokkal!",
+        "fillValid": "Tölts ki minden mezőt!",
         "successTitle": "Sikeres azonosítás!",
-        "successHtml1": "<p class=\"text-slate-500 dark:text-slate-400 text-sm mb-4\">A rendszer legenerálta az ideiglenes jelszavadat. Kérjük, másold ki, mert csak most látod!</p>",
-        "successHtml2": "<p class=\"text-[10px] uppercase font-bold text-red-500 mt-4 tracking-widest\">Belépés után kötelező lesz megváltoztatnod!</p>",
+        "successHtml1": "Ideiglenes jelszavad legenerálva.",
+        "successHtml2": "Belépés után kötelező lesz megváltoztatnod!",
         "goToLogin": "Irány a belépés",
         "errorOccurred": "Hiba történt",
         "verifyError": "Hiba az adatok ellenőrzésekor.",
@@ -596,29 +679,51 @@
       }
     },
     "forceChange": {
-      "title": "Kötelező <span class=\"text-red-500\">Jelszócsere</span>",
-      "subtitle": "Ideiglenes jelszóval léptél be. A továbblépéshez adj meg egy új, biztonságos jelszót!",
-      "tempPassword": "Ideiglenes (Jelenlegi) jelszó",
+      "title": "Kötelező Jelszócsere",
+      "subtitle": "Adj meg egy új, biztonságos jelszót!",
+      "tempPassword": "Ideiglenes jelszó",
       "tempPlaceholder": "Amit az előbb kaptál...",
       "newPassword": "Új jelszó",
-      "newPlaceholder": "Min. 8 karakter, kis-, nagybetű és szám",
+      "newPlaceholder": "Min. 8 karakter",
       "newPasswordAgain": "Új jelszó újra",
-      "newAgainPlaceholder": "Erősítsd meg az új jelszót",
+      "newAgainPlaceholder": "Erősítsd meg",
       "submit": "Jelszó cseréje",
       "updating": "Frissítés...",
-      "logoutAndCancel": "← Kijelentkezés és megszakítás",
+      "logoutAndCancel": "← Megszakítás",
       "alerts": {
-        "missingSession": "Hiányzó felhasználói munkamenet!",
-        "shortPassword": "Az új jelszónak legalább 8 karakternek kell lennie!",
-        "weakPassword": "A jelszónak tartalmaznia kell kisbetűt, nagybetűt és számot/jelet!",
-        "passwordMismatch": "A két új jelszó nem egyezik!",
+        "missingSession": "Hiányzó munkamenet!",
+        "shortPassword": "Minimum 8 karakter!",
+        "weakPassword": "Kisbetű, nagybetű és szám/jel kell!",
+        "passwordMismatch": "A két jelszó nem egyezik!",
         "successTitle": "Jelszó sikeresen frissítve! ✨",
-        "successText": "A biztonság érdekében most kérjük, jelentkezz be az új jelszavaddal.",
-        "goToLogin": "Értem, irány a belépés",
+        "successText": "Jelentkezz be az új jelszavaddal.",
+        "goToLogin": "Irány a belépés",
         "errorTitle": "Hiba történt",
         "updateError": "Hiba a jelszó frissítésekor.",
         "understand": "Értem"
       }
     }
+  },
+  "hooks": {
+    "realTime": {
+      "alerts": {
+        "accountSuspended": "A fiókodat felfüggesztették.",
+        "connectionLost": "Megszakadt a kapcsolat a szerverrel."
+      }
+    }
+  },
+  "languages": {
+    "hu": "Magyar",
+    "en": "Angol",
+    "de": "Német",
+    "it": "Olasz",
+    "fr": "Francia",
+    "es": "Spanyol",
+    "pt": "Portugál",
+    "pl": "Lengyel",
+    "ru": "Orosz",
+    "ko": "Koreai",
+    "zh": "Kínai",
+    "ja": "Japán"
   }
 }

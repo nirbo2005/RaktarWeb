@@ -1,4 +1,3 @@
-//raktar-backend/src/auth/auth.service.ts
 import {
   Injectable,
   UnauthorizedException,
@@ -67,6 +66,7 @@ export class AuthService {
         telefonszam: updatedUser.telefonszam,
         rang: updatedUser.rang,
         mustChangePassword: updatedUser.mustChangePassword,
+        avatarUrl: updatedUser.avatarUrl, // Ezt a sort adtam hozzá
       },
     };
   }

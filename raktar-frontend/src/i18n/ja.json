@@ -1,0 +1,692 @@
+{
+  "header": {
+    "admin": "管理者",
+    "handler": "担当者",
+    "viewer": "閲覧者",
+    "anonymous": "匿名ユーザー",
+    "logout": "ログアウト"
+  },
+  "common": {
+    "save": "保存",
+    "cancel": "キャンセル",
+    "error": "エラー！",
+    "success": "成功しました！",
+    "search": "検索...",
+    "noResults": "結果なし",
+    "identifying": "識別中...",
+    "updating": "更新中...",
+    "close": "閉じる",
+    "yes": "はい",
+    "back": "戻る",
+    "pieces": "個",
+    "open": "開く",
+    "filterBtn": "フィルター",
+    "restore": "元に戻す",
+    "unknown": "不明",
+    "reset": "リセット",
+    "loading": "読み込み中",
+    "next": "次へ"
+  },
+  "admin": {
+    "editTitle": "編集: {{name}}",
+    "fullName": "氏名",
+    "rank": "権限",
+    "phone": "電話番号（必須）",
+    "newPassword": "新パスワード（変更しない場合は空欄）",
+    "pendingRequests": "承認待ちのリクエスト",
+    "noRequests": "承認待ちのリクエストはありません。",
+    "systemUsers": "システムユーザー",
+    "validation": {
+      "nameRequired": "氏名は必須です！",
+      "nameNoNumbers": "氏名に数字を含めることはできません！",
+      "phoneRequired": "電話番号は必須です！"
+    },
+    "alerts": {
+      "fixErrors": "エラーを修正してください！",
+      "userUpdated": "ユーザー情報を更新しました！",
+      "saveFailed": "保存に失敗しました。",
+      "cantBanSelf": "自分自身を停止させることはできません！",
+      "accountUnbanned": "アカウントの停止を解除しました",
+      "accountBanned": "アカウントを停止しました",
+      "actionFailed": "操作に失敗しました。",
+      "cantDeleteSelf": "自分の管理者アカウントは削除できません！",
+      "deleteTitle": "完全に削除しますか？",
+      "deleteText": "ユーザー {{name}} を削除してもよろしいですか？この操作は取り消せません！",
+      "yesDelete": "はい、削除します",
+      "userDeleted": "ユーザーを削除しました",
+      "deleteFailed": "削除に失敗しました。",
+      "accepted": "承認済み",
+      "rejected": "却下済み",
+      "fetchError": "管理者データの読み込みエラー:"
+    }
+  },
+  "details": {
+    "fullName": "氏名",
+    "adminApprovalNeeded": "管理者の承認が必要",
+    "phoneLabel": "電話番号（国際形式）*",
+    "username": "ユーザー名",
+    "email": "メールアドレス",
+    "oldPassword": "旧パスワード",
+    "newPassword": "新パスワード",
+    "buttons": {
+      "fixErrors": "エラーを修正中...",
+      "noChanges": "🤔 変更なし...",
+      "saveAndRequest": "💾 保存して名前変更を申請",
+      "saveData": "💾 データを保存"
+    },
+    "validation": {
+      "nameEmpty": "氏名は必須です！",
+      "nameNumbers": "氏名に数字を含めることはできません！",
+      "emailInvalid": "無効なメール形式です！",
+      "phoneRequired": "電話番号の入力は必須です！"
+    },
+    "alerts": {
+      "noChanges": "変更箇所がありません... 😴",
+      "fixBeforeSave": "保存する前にエラーを修正してください！",
+      "oldPassRequired": "旧パスワードが必要です！",
+      "dataUpdated": "データを更新しました！ ✨",
+      "errorOccurred": "エラーが発生しました！"
+    }
+  },
+  "profile": {
+    "dashboard": {
+      "details": { "title": "個人情報", "desc": "氏名、連絡先、パスワード管理" },
+      "stats": { "title": "統計", "desc": "自分の活動と実績の分析" },
+      "logs": { "title": "操作ログ", "desc": "システム操作の履歴追跡" },
+      "security": { "title": "セキュリティ", "desc": "セッションとアカウント保護" },
+      "stock": { "title": "在庫資産価値", "desc": "財務レポートと在庫データ" },
+      "admin": { "title": "管理", "desc": "ユーザーとリクエストの管理" },
+      "system": { "title": "システムステータス", "desc": "サーバー診断とメトリクス" }
+    },
+    "tabs": {
+      "myProfile": "👤 プロフィール",
+      "activityLog": "📜 操作ログ",
+      "administration": "🛡️ 管理"
+    },
+    "alerts": {
+      "restoreTitle": "復元しますか？",
+      "restoreText": "元の状態に戻してもよろしいですか？",
+      "restoreBtn": "復元",
+      "restored": "正常に取り消されました！",
+      "restoreFailed": "操作に失敗しました。",
+      "groupRestoreTitle": "一括復元",
+      "groupRestoreText": "選択した {{count}} 件をすべて復元しますか？",
+      "partialError": "一部のエラーが発生しました。"
+    },
+    "security": {
+      "passwordStatus": "パスワード状態",
+      "passwordActive": "有効",
+      "accountStatus": "アカウント状態",
+      "active": "有効",
+      "banned": "停止中",
+      "rankLevel": "権限レベル",
+      "revokeSessionsTitle": "全セッションからログアウト",
+      "revokeSessionsDesc": "現在のデバイスを含むすべてのデバイスから即座にログアウトします。不正アクセスの疑いがある場合に使用してください。",
+      "revokeBtn": "すべてのデバイスからログアウト",
+      "revokeTitle": "全員をログアウトさせますか？",
+      "revokeText": "すべての有効なトークンが無効化されます。",
+      "revokeConfirm": "はい、ログアウトします",
+      "successTitle": "成功",
+      "successText": "すべてのセッションが終了しました。再度ログインしてください。",
+      "loginHistory": "ログイン履歴",
+      "comingSoon": "近日公開予定...",
+      "revokeError": "セッションの取り消しに失敗しました。"
+    },
+    "stats": {
+      "totalActions": "総操作数",
+      "creates": "作成数",
+      "updates": "更新数",
+      "deletes": "削除数",
+      "activityDistribution": "活動分布",
+      "movesThisMonth": "今月の操作数",
+      "newProducts": "登録された新商品",
+      "fetchError": "統計の計算エラー:"
+    },
+    "system": {
+      "database": "データベース",
+      "connected": "接続済み",
+      "error": "エラー",
+      "uptime": "稼働時間",
+      "memory": "メモリ使用量",
+      "latency": "API遅延",
+      "recentEvents": "最近のシステムイベント",
+      "maintenance": "メンテナンス",
+      "maintenanceDesc": "データベースの整合性チェックとサーバー最適化のために診断ツールを実行してください。",
+      "runDiagnostic": "診断開始",
+      "fetchError": "システムステータスの取得エラー:"
+    },
+    "details": {
+      "requestRankTitle": "{{rank}} 権限のリクエスト",
+      "requestRankText": "システムに {{rank}} アクセスをリクエストしますか？",
+      "deleteTitle": "アカウントの完全削除",
+      "deleteText": "アカウントを削除してもよろしいですか？この操作は取り消せません！",
+      "deleteConfirm": "はい、永久に削除します",
+      "deleteAccount": "アカウントを削除",
+      "deletedTitle": "削除完了",
+      "deletedText": "アカウントが正常に削除されました。",
+      "namePending": "名前変更リクエストが保留中...",
+      "requestKezelo": "担当者権限をリクエスト",
+      "requestAdmin": "管理者権限をリクエスト",
+      "kezeloPending": "⏳ 担当者リクエスト保留中",
+      "adminPending": "⏳ 管理者リクエスト保留中",
+      "nameChangedWarning": "管理者の承認が必要",
+      "alerts": {
+        "fetchRequestsError": "リクエストの取得に失敗しました。",
+        "requestSent": "権限リクエストを送信しました！",
+        "deleteDeniedTitle": "削除が拒否されました",
+        "deleteDeniedText": "現在、唯一の有効な管理者です！",
+        "checkAdminError": "管理者数の確認に失敗しました。"
+      },
+      "buttons": {
+        "updateRequest": "リクエストを更新"
+      }
+    },
+    "avatar": {
+      "cropTitle": "画像の切り抜き",
+      "sourceTitle": "画像のソース",
+      "uploadFile": "ファイルをアップロード",
+      "pasteHint": "または CTRL+V を押してください",
+      "urlPlaceholder": "画像の直接リンクを貼り付け...",
+      "urlError": "画像の読み込みエラー。",
+      "zoom": "ズーム",
+      "uploading": "保存中...",
+      "saveBtn": "画像を保存",
+      "modifyOverlay": "変更"
+    }
+  },
+  "logs": {
+    "labels": {
+      "name": "名称",
+      "quantity": "数量",
+      "plot": "区画/ロケーション",
+      "manufacturer": "メーカー",
+      "price": "価格"
+    },
+    "filters": {
+      "user": "ユーザー",
+      "allUsers": "すべてのユーザー",
+      "operation": "操作",
+      "allOperations": "すべての操作",
+      "allActions": "すべての動作",
+      "date": "開始日",
+      "create": "✨ 作成",
+      "update": "📝 更新",
+      "delete": "🗑️ 削除",
+      "bulkDelete": "🗑️ 一括削除",
+      "restore": "♻️ 復元",
+      "filterBtn": "フィルター",
+      "exportBtn": "エクスポート"
+    },
+    "operations": {
+      "create": "作成",
+      "update": "更新",
+      "batch": "在庫移動",
+      "delete": "削除",
+      "bulkDelete": "一括削除",
+      "bulkItems": "削除された商品（{{count}} 件）",
+      "productCreate": "新商品の登録",
+      "productDelete": "商品の削除",
+      "restored": "復元済み"
+    },
+    "diff": {
+      "productAdded": "商品を追加しました",
+      "productDeleted": "商品を削除しました",
+      "dataChanged": "データが変更されました",
+      "productRestored": "商品を復元しました",
+      "reverted": "変更が取り消されました:"
+    },
+    "types": {
+      "split": "部分移動",
+      "move": "全量移動",
+      "merge": "統合"
+    },
+    "fields": {
+      "sourceShelf": "移動元棚",
+      "targetShelf": "移動先棚",
+      "total": "合計",
+      "system": "システムプロセス",
+      "na": "該当なし"
+    },
+    "excel": {
+      "sheetName": "操作ログ",
+      "product": "商品",
+      "changes": "変更内容",
+      "action": "操作",
+      "user": "ユーザー",
+      "date": "日時",
+      "system": "システム",
+      "unknown": "不明",
+      "ready": "Excelエクスポート完了！"
+    },
+    "misc": {
+      "bulkDeleteCount": "一括削除（{{count}} 項目）",
+      "systemProcess": "システムプロセス",
+      "viewDetails": "詳細を表示 →",
+      "noLogs": "表示するログはありません。",
+      "fetchError": "ログの読み込みエラー:"
+    }
+  },
+  "product": {
+    "categories": {
+      "ELEKTRONIKA": "電子機器",
+      "ELELMISZER": "食品",
+      "VEGYSZER": "化学製品",
+      "IRODASZER": "事務用品",
+      "AUTO_MOTOR": "自動車・バイク",
+      "RUHAZAT": "衣類",
+      "BARKACS": "DIY・工具",
+      "SPORT": "スポーツ",
+      "JATEK": "玩具",
+      "HAZTARTAS": "家電・生活用品",
+      "KOZMETIKA": "化粧品",
+      "KONYVEK": "書籍",
+      "BUTOR": "家具",
+      "EGESZSEGUGY": "医療・健康",
+      "EGYEB": "その他"
+    },
+    "add": {
+      "title": "📦 倉庫 <span class=\"text-blue-600\">入庫管理</span>",
+      "searchExisting": "既存のマスタデータから検索",
+      "searchPlaceholder": "名称またはメーカーで検索...",
+      "select": "選択 →",
+      "or": "または",
+      "createNew": "+ 新規マスタデータの作成",
+      "selectedMaster": "選択中のマスタ",
+      "masterData": "マスタデータ",
+      "name": "商品名",
+      "namePlaceholder": "例：スチールネジ",
+      "manufacturer": "メーカー",
+      "manufacturerPlaceholder": "例：株式会社アイアンワークス",
+      "category": "カテゴリー",
+      "weight": "重量（kg / 個）",
+      "purchasePrice": "仕入価格（円）",
+      "salePrice": "販売価格（円）",
+      "minStock": "最小在庫数",
+      "batchIntake": "バッチ入庫",
+      "expiry": "有効期限（任意）",
+      "location": "ロケーション（入庫先棚）",
+      "quantity": "数量（個）",
+      "saveToWarehouse": "倉庫に保存",
+      "alerts": {
+        "intakeSuccess": "入庫完了！ 📦",
+        "productCreated": "商品の登録完了！ ✨",
+        "errorOccurred": "エラーが発生しました",
+        "errorText": "ネットワークエラーまたは棚の容量超過です。",
+        "fetchError": "商品リストの更新エラー:",
+        "missingShelf": "すべての項目に棚を割り当ててください！",
+        "invalidAllocation": "割り当てられた数量が合計と一致しません！"
+      }
+    },
+    "details": {
+      "back": "戻る",
+      "backToHome": "ホームに戻る",
+      "notFoundTitle": "商品が見つかりません",
+      "fetching": "データを取得中...",
+      "deletedWarning": "⚠️ 注意：この商品は削除された状態です！",
+      "itemNumber": "品番 (ID)",
+      "masterData": "マスタデータ詳細",
+      "weightUnit": "重量（単位）",
+      "minStock": "最小在庫",
+      "purchasePrice": "仕入価格",
+      "salePrice": "販売価格",
+      "stockStatus": "在庫状態",
+      "totalStock": "現在の総在庫数",
+      "criticalStock": "🚨 在庫危険",
+      "outOfStockAlert": "在庫切れ！",
+      "physicalLocation": "保管場所（バッチ）",
+      "expiry": "有効期限・賞味期限",
+      "nonPerishable": "該当なし",
+      "outOfStock": "在庫なし。",
+      "modify": "修正",
+      "delete": "削除",
+      "alerts": {
+        "deleteConfirmTitle": "本当によろしいですか？",
+        "deleteConfirmText": "「{{name}}」のすべてのマスタデータと実在庫がシステムから削除されます！",
+        "yesDelete": "はい、削除します",
+        "deletedSuccess": "商品を削除しました！ 🗑️",
+        "deleteFailed": "削除に失敗しました。"
+      }
+    },
+    "grid": {
+      "title": "倉庫マップ",
+      "subtitle": "対話型在庫管理",
+      "sorting": "🪄 並び替え",
+      "sector": "セクター",
+      "emptyShelf": "空の棚",
+      "selectSector": "概要を表示するセクターを選択してください",
+      "alerts": {
+        "weightStop": "重量制限！ 🛑",
+        "shelfFull": "{{shelf}} 棚はいっぱいです。",
+        "moveHowMuch": "移動する数量を入力してください",
+        "weightWarning": "⚠️ 容量制限：最大 {{max}} 個までです！",
+        "moveBtn": "📦 移動",
+        "movedSuccess": "移動完了！",
+        "sortTitle": "最適化しますか？",
+        "sortText": "カテゴリー別に倉庫を整理します。",
+        "start": "開始",
+        "sortedSuccess": "最適化完了！"
+      }
+    },
+    "list": {
+      "title": "在庫リスト",
+      "bulkDelete": "🗑️ 削除 ({{count}})",
+      "filterErrors": "🚨 エラー項目",
+      "filterAll": "⚠️ フィルター",
+      "export": "📊 エクスポート",
+      "selectModeOn": "✖ 選択終了",
+      "selectModeOff": "☑️ 複数選択",
+      "newProduct": "+ 新規商品",
+      "searchPlaceholder": "名称、メーカー、またはIDで検索...",
+      "headers": {
+        "qr": "QR",
+        "product": "商品",
+        "category": "カテゴリー",
+        "totalStock": "総在庫",
+        "actions": "操作"
+      },
+      "batches": "バッチ一覧",
+      "nonPerishable": "非生鮮品・工業製品",
+      "details": "詳細",
+      "allGoodTitle": "すべての棚は正常です",
+      "allGoodSubtitle": "対応が必要な項目はありません",
+      "print": "🖨️ 印刷",
+      "excel": {
+        "sheetName": "在庫現況",
+        "name": "商品名",
+        "manufacturer": "メーカー",
+        "category": "カテゴリー",
+        "quantity": "総数量（個）",
+        "earliestExpiry": "最短有効期限"
+      },
+      "alerts": {
+        "bulkDeleteTitle": "一括削除",
+        "bulkDeleteText": "{{count}} 件を削除してもよろしいですか？",
+        "bulkDeleted": "項目が削除されました。",
+        "bulkDeleteFailed": "一括削除に失敗しました。",
+        "deleteTitle": "商品の削除",
+        "deleteText": "本当に削除しますか？",
+        "deleted": "商品が削除されました。",
+        "deleteFailed": "削除に失敗しました。",
+        "excelReady": "Excelレポート作成完了！ 📊"
+      }
+    },
+    "modify": {
+      "tabs": { "physicalStock": "📦 実在庫", "masterData": "⚙️ マスタデータ" },
+      "deletedTitle": "削除された商品",
+      "restoreBtn": "復元する",
+      "stockManagement": "在庫管理",
+      "selectBatch": "操作対象のバッチを選択",
+      "createNewBatch": "➕ 新規バッチ作成",
+      "newBatchData": "新規バッチ情報",
+      "location": "ロケーション（棚）",
+      "expiry": "有効期限",
+      "quantity": "数量（個）",
+      "execute": "実行",
+      "editData": "データを修正",
+      "alerts": {
+        "restoreTitle": "復元しますか？",
+        "restoreText": "商品が再度有効になります。",
+        "restored": "再有効化完了！",
+        "restoreFailed": "失敗しました。",
+        "chooseBatch": "既存のバッチを選択してください！",
+        "intakeSuccess": "+{{count}} 個入庫しました。",
+        "notEnoughStock": "在庫が不足しています。最大：{{max}} 個",
+        "batchDeleted": "バッチが空になり削除されました。",
+        "lastBatchEmpty": "最後のバッチが空です",
+        "deletePhysicalBatch": "実在庫バッチを削除しますか？",
+        "keepZero": "0のまま残す",
+        "stockUpdated": "在庫を更新しました。",
+        "dataUpdated": "データを更新しました！ ✨",
+        "saveFailed": "保存に失敗しました。"
+      }
+    }
+  },
+  "inventory": {
+    "shelfMap": {
+      "title": "対話型倉庫マップ",
+      "sector": "セクター",
+      "weight": "現在の重量",
+      "category": "カテゴリー",
+      "empty": "空き",
+      "low": "低負荷",
+      "mid": "中負荷",
+      "high": "高負荷",
+      "recommended": "推奨場所"
+    },
+    "splitter": {
+      "title": "複数棚への割り当て",
+      "chooseMethod": "在庫をどのように配置しますか？",
+      "autoBtn": "🤖 自動提案",
+      "manualBtn": "📍 手動選択",
+      "autoTitle": "自動割り当て計画",
+      "manualTitle": "手動棚割り当て",
+      "allAllocated": "すべての項目が配置されました",
+      "remainingQty": "未割り当て数：{{count}} 個",
+      "shelf": "棚",
+      "qty": "数量",
+      "addSplit": "棚を更に追加分割",
+      "overAllocated": "⚠️ エラー：{{amount}} 個多く割り当てられています！",
+      "invalidFormat": "形式エラー（例：A1-1）",
+      "alerts": {
+        "shelfFullTitle": "あら、見えていませんか？ 😅",
+        "shelfFullText": "{{shelf}} 棚は既にいっぱいです。別の場所を選んでください！"
+      }
+    }
+  },
+  "stockValue": {
+    "title": "在庫価値計算機",
+    "subtitle": "リアルタイム財務分析",
+    "manualRefresh": "🔄 手動更新",
+    "totalValue": "総在庫資産価値",
+    "totalItems": "総アイテム数",
+    "activeSectors": "有効なセクター数",
+    "sectors": "セクター",
+    "topProducts": "🏆 資産価値ランキング",
+    "territorialDistribution": "📍 エリア別分布",
+    "sectorLabel": "セクター「{{sector}}」",
+    "share": "シェア：{{percent}}%",
+    "noLocation": "ロケーション情報なし",
+    "billionFt": "10億円",
+    "millionFt": "100万円",
+    "calculating": "財務データを計算中...",
+    "loadError": "在庫データを読み込めませんでした。",
+    "categoryDistribution": "📦 カテゴリー別分布",
+    "sectorValues": "📍 セクター別価値"
+  },
+  "auxiliary": {
+    "connection": {
+      "serverOffline": "サーバーオフライン",
+      "reconnecting": "自動再接続中..."
+    },
+    "navbar": {
+      "products": "🏠 商品管理",
+      "overview": "📊 状況",
+      "scanner": "📷 スキャン",
+      "notifications": "🔔 通知",
+      "new": "新規",
+      "profile": "👤 プロフィール",
+      "darkTheme": "ダークモード",
+      "logout": "🚪 ログアウト",
+      "login": "ログイン",
+      "register": "会員登録",
+      "searchPlaceholder": "検索...",
+      "jump": "移動 →",
+      "viewAll": "すべて表示 →",
+      "noNotifications": "通知なし"
+    },
+    "notifications": {
+      "title": "🔔 通知センター",
+      "unreadCount": "未読通知 {{count}} 件",
+      "allRead": "すべての通知を読みました",
+      "deleteReadBtn": "🗑️ 既読通知を削除",
+      "markAllReadBtn": "✓ すべて既読にする",
+      "emptyTitle": "通知なし",
+      "emptyText": "現在システムに登録された通知はありません。",
+      "readStatus": "既読",
+      "markAsRead": "既読にする",
+      "alerts": {
+        "allMarkedRead": "すべての通知を既読にしました！",
+        "deleteConfirmTitle": "既読通知を削除しますか？",
+        "deleteConfirmText": "既に確認済みのすべての通知が永久に削除されます！",
+        "yesDelete": "はい、削除します",
+        "deletedSuccess": "既読通知を削除しました！"
+      }
+    },
+    "scanner": {
+      "title": "📷 QRスキャナー",
+      "camError": "カメラを使用できないか、拒否されました。",
+      "searching": "検索中...",
+      "locations": "保管場所",
+      "totalStock": "総在庫",
+      "detailsBtn": "商品詳細",
+      "newScanBtn": "再度スキャン",
+      "backToMenu": "← メニューに戻る",
+      "noStock": "在庫なし",
+      "unknownLocation": "不明な場所",
+      "alerts": {
+        "invalidCodeTitle": "無効なコード",
+        "invalidCodeText": "有効なWarehouseWeb QRコードではありません！",
+        "noMatchTitle": "結果なし",
+        "noMatchText": "検索した商品はシステムで見つかりませんでした。"
+      }
+    },
+    "search": {
+      "title": "検索結果",
+      "expression": "キーワード:",
+      "resultsCount": "結果 {{count}} 件",
+      "scanningStock": "在庫を確認中...",
+      "lowStock": "在庫僅少",
+      "inStock": "在庫あり",
+      "location": "場所",
+      "stock": "在庫量",
+      "noResultsTitle": "結果なし...",
+      "noResultsText": "検索したアイテムはシステムで見つかりませんでした。",
+      "backToHub": "拠点に戻る"
+    }
+  },
+  "auth": {
+    "register": {
+      "title": "アカウント作成",
+      "fullName": "氏名 *",
+      "fullNamePlaceholder": "例：日本 太郎",
+      "username": "ユーザー名 *",
+      "usernamePlaceholder": "tarojp88",
+      "email": "メールアドレス *",
+      "emailPlaceholder": "example@email.com",
+      "phone": "電話番号（国際形式）*",
+      "password": "パスワード *",
+      "passwordPlaceholder": "••••••••",
+      "submit": "登録を完了する",
+      "backToLogin": "ログイン画面に戻る",
+      "validation": {
+        "nameEmpty": "氏名は必須です！",
+        "nameNumbers": "氏名に数字を含めることはできません！",
+        "nameTwoWords": "姓と名の両方を入力してください！",
+        "usernameShort": "最小4文字以上です！",
+        "emailInvalid": "無効なメール形式です！",
+        "phoneRequired": "電話番号の入力は必須です！",
+        "passwordShort": "最小8文字以上です！",
+        "passwordWeak": "大文字、小文字、数字・記号を組み合わせてください！"
+      },
+      "alerts": {
+        "fillAll": "すべての項目を正しく入力してください！",
+        "successTitle": "登録成功！ ✨",
+        "successText": "これでログインが可能になりました。",
+        "errorTitle": "登録エラー"
+      }
+    },
+    "login": {
+      "title": "ログイン",
+      "fillDemo": "🔑 パスワードを自動入力",
+      "username": "ユーザー名",
+      "usernamePlaceholder": "名前を入力してください...",
+      "password": "パスワード",
+      "passwordPlaceholder": "••••••••",
+      "forgotPassword": "パスワードを忘れましたか？",
+      "submit": "システムに接続",
+      "registerNew": "新規アカウント登録",
+      "alerts": {
+        "accessDenied": "アクセス拒否",
+        "sessionLost": "セッション切断",
+        "bannedText": "このアカウントは停止されています。",
+        "sessionExpiredText": "セッションが期限切れです。再度ログインしてください。",
+        "gotIt": "確認",
+        "welcomeBack": "おかえりなさい！",
+        "bannedTitle": "アクセスが禁止されています！",
+        "bannedFooter": "管理者に問い合わせてください",
+        "bannedServerMsg": "このアカウントはシステムに接続できません。",
+        "wrongCredentials": "ユーザー名またはパスワードが正しくありません！",
+        "oops": "おっと..."
+      }
+    },
+    "forgotPassword": {
+      "title": "パスワードの再設定",
+      "subtitle": "アカウントに登録されたセキュリティ情報を入力してください。",
+      "username": "ユーザー名",
+      "usernamePlaceholder": "例：tarojp88",
+      "email": "登録済みメールアドレス",
+      "emailPlaceholder": "example@email.com",
+      "phone": "登録済み電話番号",
+      "submit": "仮パスワードをリクエスト",
+      "checking": "確認中...",
+      "backToLogin": "← ログイン画面に戻る",
+      "alerts": {
+        "fillValid": "すべての項目を入力してください！",
+        "successTitle": "認証成功！",
+        "successHtml1": "仮パスワードが生成されました。",
+        "successHtml2": "ログイン後、必ずパスワードを変更してください！",
+        "goToLogin": "ログインへ移動",
+        "errorOccurred": "エラーが発生しました",
+        "verifyError": "情報の確認中にエラーが発生しました。",
+        "understand": "了解しました"
+      }
+    },
+    "forceChange": {
+      "title": "パスワード変更のお願い",
+      "subtitle": "新しい安全なパスワードを設定してください！",
+      "tempPassword": "仮パスワード",
+      "tempPlaceholder": "先ほど受け取ったパスワード...",
+      "newPassword": "新パスワード",
+      "newPlaceholder": "最小8文字",
+      "newPasswordAgain": "新パスワード（確認）",
+      "newAgainPlaceholder": "パスワードを再入力",
+      "submit": "パスワードを変更",
+      "updating": "変更中...",
+      "logoutAndCancel": "← キャンセル",
+      "alerts": {
+        "missingSession": "セッション情報がありません！",
+        "shortPassword": "最小8文字以上必要です！",
+        "weakPassword": "小文字、大文字、数字・記号が必要です！",
+        "passwordMismatch": "パスワードが一致しません！",
+        "successTitle": "パスワードの更新完了！ ✨",
+        "successText": "新しいパスワードで再度ログインしてください。",
+        "goToLogin": "ログイン画面へ",
+        "errorTitle": "エラーが発生しました",
+        "updateError": "パスワード更新中にエラーが発生しました。",
+        "understand": "了解しました"
+      }
+    }
+  },
+  "hooks": {
+    "realTime": {
+      "alerts": {
+        "accountSuspended": "アカウントが停止されました。",
+        "connectionLost": "サーバーとの接続が切れました。"
+      }
+    }
+  },
+  "languages": {
+    "hu": "ハンガリー語",
+    "en": "英語",
+    "de": "ドイツ語",
+    "it": "イタリア語",
+    "fr": "フランス語",
+    "es": "スペイン語",
+    "pt": "ポルトガル語",
+    "pl": "ポーランド語",
+    "ru": "ロシア語",
+    "ko": "韓国語",
+    "zh": "中国語",
+    "ja": "日本語"
+  }
+}

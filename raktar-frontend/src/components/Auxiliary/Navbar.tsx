@@ -123,7 +123,7 @@ function Navbar({ isDark, setIsDark }: NavbarProps) {
       } catch (err) {}
     }
     
-    setIsNotifOpen(false); // Navbar leugró bezárása kattintás után
+    setIsNotifOpen(false);
 
     if (notif.productId) {
       navigate(`/product/${notif.productId}`);

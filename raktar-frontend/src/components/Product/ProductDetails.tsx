@@ -34,7 +34,7 @@ function ProductDetails() {
   const { id } = useParams();
   const navigate = useNavigate();
   const { user } = useAuth();
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const [product, setProduct] = useState<Product | null>(null);
   const [loading, setLoading] = useState(true);
   const [isDeletedError, setIsDeletedError] = useState(false);
@@ -246,7 +246,7 @@ function ProductDetails() {
                 </span>
                 <span className="text-2xl font-black text-slate-800 dark:text-slate-100 italic">
                   {product.minimumKeszlet}{" "}
-                  <span className="text-sm font-medium">db</span>
+                  <span className="text-sm font-medium">{t("common.pieces")}</span>
                 </span>
               </div>
               <div className="bg-slate-50 dark:bg-slate-800/50 p-6 rounded-3xl border border-slate-100 dark:border-slate-700">
@@ -283,7 +283,7 @@ function ProductDetails() {
                 </span>
                 <span className="text-4xl font-black italic">
                   {totalQty}{" "}
-                  <span className="text-lg font-medium lowercase">db</span>
+                  <span className="text-lg font-medium lowercase">{t("common.pieces")}</span>
                 </span>
                 {totalQty < product.minimumKeszlet && totalQty > 0 && (
                   <span className="block text-[10px] font-black mt-2 uppercase tracking-tighter bg-white/20 dark:bg-black/20 px-2 py-0.5 rounded inline-block italic">
@@ -292,7 +292,7 @@ function ProductDetails() {
                 )}
                 {totalQty <= 0 && (
                   <span className="block text-[10px] font-black mt-2 uppercase tracking-tighter bg-white/20 dark:bg-black/20 px-2 py-0.5 rounded inline-block italic">
-                    KÉSZLETHIÁNY!
+                    {t("product.details.outOfStockAlert")}
                   </span>
                 )}
               </div>
@@ -337,7 +337,7 @@ function ProductDetails() {
                         )}
                       </div>
                       <span className="text-2xl font-black text-slate-800 dark:text-white italic">
-                        {batch.mennyiseg} <span className="text-sm">db</span>
+                        {batch.mennyiseg} <span className="text-sm">{t("common.pieces")}</span>
                       </span>
                     </div>
                     <div
@@ -348,7 +348,7 @@ function ProductDetails() {
                       </span>
                       <span className="text-sm font-black italic">
                         {batch.lejarat
-                          ? new Date(batch.lejarat).toLocaleDateString("hu-HU")
+                          ? new Date(batch.lejarat).toLocaleDateString(i18n.language === "hu" ? "hu-HU" : "en-US")
                           : t("product.details.nonPerishable")}
                       </span>
                     </div>

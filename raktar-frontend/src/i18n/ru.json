@@ -1,0 +1,692 @@
+{
+  "header": {
+    "admin": "Админ",
+    "handler": "Оператор",
+    "viewer": "Наблюдатель",
+    "anonymous": "Анонимный пользователь",
+    "logout": "Выйти"
+  },
+  "common": {
+    "save": "Сохранить",
+    "cancel": "Отмена",
+    "error": "Ошибка!",
+    "success": "Успешно!",
+    "search": "Поиск...",
+    "noResults": "Нет результатов",
+    "identifying": "Идентификация...",
+    "updating": "Обновление...",
+    "close": "Закрыть",
+    "yes": "Да",
+    "back": "Назад",
+    "pieces": "шт",
+    "open": "Открыть",
+    "filterBtn": "Фильтр",
+    "restore": "Восстановить",
+    "unknown": "Неизвестно",
+    "reset": "Сброс",
+    "loading": "Загрузка",
+    "next": "Далее"
+  },
+  "admin": {
+    "editTitle": "Правка: {{name}}",
+    "fullName": "Полное имя",
+    "rank": "Роль",
+    "phone": "Телефон (Обязательно)",
+    "newPassword": "Новый пароль (оставьте пустым, если без изменений)",
+    "pendingRequests": "Ожидающие заявки",
+    "noRequests": "Нет ожидающих заявок.",
+    "systemUsers": "Пользователи системы",
+    "validation": {
+      "nameRequired": "Имя обязательно!",
+      "nameNoNumbers": "Цифры в имени не допускаются!",
+      "phoneRequired": "Номер телефона обязателен!"
+    },
+    "alerts": {
+      "fixErrors": "Пожалуйста, исправьте ошибки!",
+      "userUpdated": "Пользователь обновлен!",
+      "saveFailed": "Ошибка сохранения.",
+      "cantBanSelf": "Вы не можете заблокировать себя!",
+      "accountUnbanned": "Аккаунт разблокирован",
+      "accountBanned": "Аккаунт заблокирован",
+      "actionFailed": "Действие не удалось.",
+      "cantDeleteSelf": "Вы не можете удалить свой админ-аккаунт!",
+      "deleteTitle": "Удалить навсегда?",
+      "deleteText": "Вы уверены, что хотите удалить {{name}}? Это действие необратимо!",
+      "yesDelete": "Да, удалить!",
+      "userDeleted": "Пользователь удален",
+      "deleteFailed": "Удаление не удалось.",
+      "accepted": "Принято",
+      "rejected": "Отклонено",
+      "fetchError": "Ошибка загрузки данных админа:"
+    }
+  },
+  "details": {
+    "fullName": "Полное имя",
+    "adminApprovalNeeded": "Требуется одобрение админа",
+    "phoneLabel": "Телефон (Международный) *",
+    "username": "Имя пользователя",
+    "email": "E-mail",
+    "oldPassword": "Старый пароль",
+    "newPassword": "Новый пароль",
+    "buttons": {
+      "fixErrors": "Исправьте ошибки...",
+      "noChanges": "🤔 Без изменений...",
+      "saveAndRequest": "💾 Сохранить и запросить имя",
+      "saveData": "💾 Сохранить данные"
+    },
+    "validation": {
+      "nameEmpty": "Имя не может быть пустым!",
+      "nameNumbers": "Имя не может содержать цифры!",
+      "emailInvalid": "Неверный формат e-mail!",
+      "phoneRequired": "Номер телефона обязателен!"
+    },
+    "alerts": {
+      "noChanges": "Ничего не изменилось... 😴",
+      "fixBeforeSave": "Исправьте ошибки перед сохранением!",
+      "oldPassRequired": "Старый пароль обязателен!",
+      "dataUpdated": "Данные обновлены! ✨",
+      "errorOccurred": "Произошла ошибка!"
+    }
+  },
+  "profile": {
+    "dashboard": {
+      "details": { "title": "Личные данные", "desc": "Имя, контакты и управление паролем" },
+      "stats": { "title": "Статистика", "desc": "Анализ личной активности и продуктивности" },
+      "logs": { "title": "Журнал действий", "desc": "Отслеживание системных операций" },
+      "security": { "title": "Центр безопасности", "desc": "Сессии и защита аккаунта" },
+      "stock": { "title": "Стоимость склада", "desc": "Финансовые отчеты и остатки" },
+      "admin": { "title": "Администрирование", "desc": "Управление пользователями и заявками" },
+      "system": { "title": "Состояние системы", "desc": "Диагностика сервера и метрики" }
+    },
+    "tabs": {
+      "myProfile": "👤 Мой профиль",
+      "activityLog": "📜 Журнал действий",
+      "administration": "🛡️ Администрирование"
+    },
+    "alerts": {
+      "restoreTitle": "Восстановить?",
+      "restoreText": "Вы уверены, что хотите вернуть исходное состояние?",
+      "restoreBtn": "Восстановить",
+      "restored": "Изменения отменены!",
+      "restoreFailed": "Действие не удалось.",
+      "groupRestoreTitle": "Массовое восстановление",
+      "groupRestoreText": "Восстановить все элементы ({{count}} шт.)?",
+      "partialError": "Произошла частичная ошибка."
+    },
+    "security": {
+      "passwordStatus": "Статус пароля",
+      "passwordActive": "Активен",
+      "accountStatus": "Статус аккаунта",
+      "active": "Активен",
+      "banned": "Заблокирован",
+      "rankLevel": "Уровень доступа",
+      "revokeSessionsTitle": "Выйти на всех устройствах",
+      "revokeSessionsDesc": "Немедленный выход из всех сессий. Используйте при подозрении на взлом.",
+      "revokeBtn": "Выйти отовсюду",
+      "revokeTitle": "Завершить все сессии?",
+      "revokeText": "Все активные токены будут аннулированы.",
+      "revokeConfirm": "Да, выйти",
+      "successTitle": "Успешно",
+      "successText": "Все сессии закрыты. Пожалуйста, войдите снова.",
+      "loginHistory": "История входов",
+      "comingSoon": "Скоро будет доступно...",
+      "revokeError": "Не удалось отозвать сессии."
+    },
+    "stats": {
+      "totalActions": "Всего операций",
+      "creates": "Создания",
+      "updates": "Изменения",
+      "deletes": "Удаления",
+      "activityDistribution": "Распределение активности",
+      "movesThisMonth": "Операций в этом месяце",
+      "newProducts": "Новых товаров добавлено",
+      "fetchError": "Ошибка при расчете статистики:"
+    },
+    "system": {
+      "database": "База данных",
+      "connected": "Подключено",
+      "error": "Ошибка",
+      "uptime": "Время работы",
+      "memory": "Использование памяти",
+      "latency": "Задержка API",
+      "recentEvents": "Последние события системы",
+      "maintenance": "Обслуживание",
+      "maintenanceDesc": "Запуск диагностических утилит для проверки целостности базы данных.",
+      "runDiagnostic": "Запустить диагностику",
+      "fetchError": "Ошибка получения статуса системы:"
+    },
+    "details": {
+      "requestRankTitle": "Запрос прав {{rank}}",
+      "requestRankText": "Вы уверены, что хотите запросить доступ уровня {{rank}}?",
+      "deleteTitle": "Удаление аккаунта",
+      "deleteText": "Вы уверены, что хотите удалить аккаунт? Это действие необратимо!",
+      "deleteConfirm": "Да, удалить навсегда",
+      "deleteAccount": "Удалить аккаунт",
+      "deletedTitle": "Удалено",
+      "deletedText": "Ваш аккаунт успешно удален.",
+      "namePending": "Запрос на смену имени ожидает...",
+      "requestKezelo": "Запросить Оператора",
+      "requestAdmin": "Запросить Админа",
+      "kezeloPending": "⏳ Заявка на Оператора в процессе",
+      "adminPending": "⏳ Заявка на Админа в процессе",
+      "nameChangedWarning": "Требуется одобрение админа",
+      "alerts": {
+        "fetchRequestsError": "Не удалось загрузить заявки.",
+        "requestSent": "Заявка отправлена!",
+        "deleteDeniedTitle": "Удаление отклонено",
+        "deleteDeniedText": "Вы — единственный активный администратор!",
+        "checkAdminError": "Не удалось проверить количество админов."
+      },
+      "buttons": {
+        "updateRequest": "Обновить запрос"
+      }
+    },
+    "avatar": {
+      "cropTitle": "Обрезать фото",
+      "sourceTitle": "Источник фото",
+      "uploadFile": "Загрузить файл",
+      "pasteHint": "Или нажмите CTRL+V",
+      "urlPlaceholder": "Вставьте прямую ссылку на фото...",
+      "urlError": "Ошибка загрузки изображения.",
+      "zoom": "Масштаб",
+      "uploading": "Сохранение...",
+      "saveBtn": "Сохранить фото",
+      "modifyOverlay": "Изменить"
+    }
+  },
+  "logs": {
+    "labels": {
+      "name": "Имя",
+      "quantity": "Количество",
+      "plot": "Ячейка",
+      "manufacturer": "Производитель",
+      "price": "Цена"
+    },
+    "filters": {
+      "user": "Пользователь",
+      "allUsers": "Все пользователи",
+      "operation": "Операция",
+      "allOperations": "Все операции",
+      "allActions": "Все действия",
+      "date": "С даты",
+      "create": "✨ Создание",
+      "update": "📝 Изменение",
+      "delete": "🗑️ Удаление",
+      "bulkDelete": "🗑️ Массовое удаление",
+      "restore": "♻️ Восстановление",
+      "filterBtn": "Фильтр",
+      "exportBtn": "Экспорт"
+    },
+    "operations": {
+      "create": "Создание",
+      "update": "Изменение",
+      "batch": "Движение запасов",
+      "delete": "Удаление",
+      "bulkDelete": "МАССОВОЕ УДАЛЕНИЕ",
+      "bulkItems": "Товары удалены ({{count}} шт.)",
+      "productCreate": "Добавлен новый товар",
+      "productDelete": "Товар удален",
+      "restored": "Восстановлено"
+    },
+    "diff": {
+      "productAdded": "Товар добавлен",
+      "productDeleted": "Товар удален",
+      "dataChanged": "Данные изменены",
+      "productRestored": "Товар восстановлен",
+      "reverted": "Изменение отменено:"
+    },
+    "types": {
+      "split": "Частичное перемещение",
+      "move": "Полное перемещение",
+      "merge": "Слияние"
+    },
+    "fields": {
+      "sourceShelf": "Исходная ячейка",
+      "targetShelf": "Целевая ячейка",
+      "total": "Итого",
+      "system": "Системный процесс",
+      "na": "Н/Д"
+    },
+    "excel": {
+      "sheetName": "Журнал действий",
+      "product": "ТОВАР",
+      "changes": "ИЗМЕНЕНИЯ",
+      "action": "ОПЕРАЦИЯ",
+      "user": "ПОЛЬЗОВАТЕЛЬ",
+      "date": "ВРЕМЯ",
+      "system": "Система",
+      "unknown": "Неизвестно",
+      "ready": "Экспорт в Excel готов!"
+    },
+    "misc": {
+      "bulkDeleteCount": "Массовое удаление ({{count}} поз.)",
+      "systemProcess": "Системный процесс",
+      "viewDetails": "Подробнее →",
+      "noLogs": "Записей в журнале нет.",
+      "fetchError": "Ошибка загрузки журнала:"
+    }
+  },
+  "product": {
+    "categories": {
+      "ELEKTRONIKA": "Электроника",
+      "ELELMISZER": "Продукты питания",
+      "VEGYSZER": "Бытовая химия",
+      "IRODASZER": "Канцтовары",
+      "AUTO_MOTOR": "Авто-Мото",
+      "RUHAZAT": "Одежда",
+      "BARKACS": "Инструменты",
+      "SPORT": "Спорт",
+      "JATEK": "Игрушки",
+      "HAZTARTAS": "Дом и сад",
+      "KOZMETIKA": "Косметика",
+      "KONYVEK": "Книги",
+      "BUTOR": "Мебель",
+      "EGESZSEGUGY": "Здоровье",
+      "EGYEB": "Прочее"
+    },
+    "add": {
+      "title": "📦 <span class=\"text-blue-600\">Приемка</span> товара",
+      "searchExisting": "Поиск в существующем справочнике",
+      "searchPlaceholder": "Поиск по названию или производителю...",
+      "select": "Выбрать →",
+      "or": "ИЛИ",
+      "createNew": "+ Создать новую карточку товара",
+      "selectedMaster": "Выбранная карточка",
+      "masterData": "Мастер-данные",
+      "name": "Название товара",
+      "namePlaceholder": "Напр. Стальной болт",
+      "manufacturer": "Производитель",
+      "manufacturerPlaceholder": "Напр. ООО СтальПром",
+      "category": "Категория",
+      "weight": "Вес (кг / шт)",
+      "purchasePrice": "Цена закупки (RUB)",
+      "salePrice": "Цена продажи (RUB)",
+      "minStock": "Мин. остаток",
+      "batchIntake": "Приемка партии",
+      "expiry": "Срок годности (Опционально)",
+      "location": "Расположение (Ячейка)",
+      "quantity": "Количество (шт)",
+      "saveToWarehouse": "Сохранить на склад",
+      "alerts": {
+        "intakeSuccess": "Приемка успешна! 📦",
+        "productCreated": "Товар зарегистрирован! ✨",
+        "errorOccurred": "Произошла ошибка",
+        "errorText": "Ошибка сети или ячейка переполнена.",
+        "fetchError": "Ошибка обновления списка товаров:",
+        "missingShelf": "Назначьте ячейку для каждой позиции!",
+        "invalidAllocation": "Распределенное количество не совпадает с общим!"
+      }
+    },
+    "details": {
+      "back": "Назад",
+      "backToHome": "На главную",
+      "notFoundTitle": "Товар не найден",
+      "fetching": "Получение данных...",
+      "deletedWarning": "⚠️ Внимание: Этот товар удален!",
+      "itemNumber": "Артикул (ID)",
+      "masterData": "Мастер-данные",
+      "weightUnit": "Вес (Ед. изм.)",
+      "minStock": "Мин. остаток",
+      "purchasePrice": "Цена закупки",
+      "salePrice": "Цена продажи",
+      "stockStatus": "Статус склада",
+      "totalStock": "Общий текущий запас",
+      "criticalStock": "🚨 Критический остаток",
+      "outOfStockAlert": "НЕТ В НАЛИЧИИ!",
+      "physicalLocation": "Физическое расположение (Партии)",
+      "expiry": "Срок годности",
+      "nonPerishable": "Неограничен",
+      "outOfStock": "Нет на складе.",
+      "modify": "Изменить",
+      "delete": "Удалить",
+      "alerts": {
+        "deleteConfirmTitle": "Вы уверены?",
+        "deleteConfirmText": "Вся карточка товара \"{{name}}\" и все его партии будут удалены!",
+        "yesDelete": "Да, удалить!",
+        "deletedSuccess": "Товар удален! 🗑️",
+        "deleteFailed": "Удаление не удалось."
+      }
+    },
+    "grid": {
+      "title": "Карта склада",
+      "subtitle": "Интерактивное управление запасами",
+      "sorting": "🪄 Сортировка",
+      "sector": "СЕКТОР",
+      "emptyShelf": "Пустая ячейка",
+      "selectSector": "Выберите сектор для обзора",
+      "alerts": {
+        "weightStop": "Лимит веса! 🛑",
+        "shelfFull": "Ячейка {{shelf}} переполнена.",
+        "moveHowMuch": "Сколько вы хотите переместить?",
+        "weightWarning": "⚠️ ЛИМИТ: Макс. вместимость {{max}} шт.!",
+        "moveBtn": "📦 Переместить",
+        "movedSuccess": "Перемещено!",
+        "sortTitle": "Оптимизация?",
+        "sortText": "Сортировать склад по категориям.",
+        "start": "Начать",
+        "sortedSuccess": "Оптимизировано!"
+      }
+    },
+    "list": {
+      "title": "Склад",
+      "bulkDelete": "🗑️ Удалить ({{count}})",
+      "filterErrors": "🚨 Только ошибки",
+      "filterAll": "⚠️ Фильтр",
+      "export": "📊 Экспорт",
+      "selectModeOn": "✖ Завершить выбор",
+      "selectModeOff": "☑️ Выбрать несколько",
+      "newProduct": "+ Новый товар",
+      "searchPlaceholder": "Поиск по имени, производителю или ID...",
+      "headers": {
+        "qr": "QR",
+        "product": "Товар",
+        "category": "Категория",
+        "totalStock": "Общий остаток",
+        "actions": "Действие"
+      },
+      "batches": "Партии",
+      "nonPerishable": "Без срока",
+      "details": "Детали",
+      "allGoodTitle": "Все ячейки в порядке",
+      "allGoodSubtitle": "Нет товаров, требующих внимания",
+      "print": "🖨️ Печать",
+      "excel": {
+        "sheetName": "Складские остатки",
+        "name": "Название товара",
+        "manufacturer": "Производитель",
+        "category": "Категория",
+        "quantity": "Общее кол-во (шт.)",
+        "earliestExpiry": "Ближайший срок"
+      },
+      "alerts": {
+        "bulkDeleteTitle": "Массовое удаление",
+        "bulkDeleteText": "Удалить {{count}} поз.?",
+        "bulkDeleted": "Позиции удалены.",
+        "bulkDeleteFailed": "Массовое удаление не удалось.",
+        "deleteTitle": "Удаление товара",
+        "deleteText": "Вы действительно хотите удалить?",
+        "deleted": "Товар удален.",
+        "deleteFailed": "Удаление не удалось.",
+        "excelReady": "Excel-отчет готов! 📊"
+      }
+    },
+    "modify": {
+      "tabs": { "physicalStock": "📦 Наличие", "masterData": "⚙️ Карточка" },
+      "deletedTitle": "Товар удален",
+      "restoreBtn": "Восстановить",
+      "stockManagement": "Управление запасами",
+      "selectBatch": "Выбор целевой ячейки (Партии)",
+      "createNewBatch": "➕ СОЗДАТЬ НОВУЮ ПАРТИЮ",
+      "newBatchData": "Данные новой партии",
+      "location": "Расположение (Ячейка)",
+      "expiry": "Срок годности",
+      "quantity": "Количество (шт.)",
+      "execute": "Выполнить",
+      "editData": "Редактировать данные",
+      "alerts": {
+        "restoreTitle": "Восстановить?",
+        "restoreText": "Товар снова станет доступен.",
+        "restored": "Реактивировано!",
+        "restoreFailed": "Ошибка.",
+        "chooseBatch": "Выберите существующую партию!",
+        "intakeSuccess": "+{{count}} шт. принято.",
+        "notEnoughStock": "Недостаточно товара. Макс: {{max}} шт.",
+        "batchDeleted": "Партия пуста и удалена.",
+        "lastBatchEmpty": "Последняя партия пуста",
+        "deletePhysicalBatch": "Удалить физическую партию?",
+        "keepZero": "Оставить 0",
+        "stockUpdated": "Запасы обновлены.",
+        "dataUpdated": "Данные обновлены! ✨",
+        "saveFailed": "Ошибка сохранения."
+      }
+    }
+  },
+  "inventory": {
+    "shelfMap": {
+      "title": "Интерактивная карта",
+      "sector": "Сектор",
+      "weight": "Текущий вес",
+      "category": "Категория",
+      "empty": "Пусто",
+      "low": "Низкая загрузка",
+      "mid": "Средняя загрузка",
+      "high": "Высокая загрузка",
+      "recommended": "Рекомендуемое место"
+    },
+    "splitter": {
+      "title": "Распределение по ячейкам",
+      "chooseMethod": "Как вы хотите разместить товар?",
+      "autoBtn": "🤖 Авто-предложение",
+      "manualBtn": "📍 Ручной выбор",
+      "autoTitle": "Автоматическое распределение",
+      "manualTitle": "Ручное распределение по полкам",
+      "allAllocated": "Все товары распределены",
+      "remainingQty": "Осталось распределить: {{count}} шт.",
+      "shelf": "Ячейка",
+      "qty": "Количество",
+      "addSplit": "Добавить еще ячейку",
+      "overAllocated": "⚠️ Ошибка: Вы распределили на {{amount}} шт. больше!",
+      "invalidFormat": "Неверно (Напр: A1-1)",
+      "alerts": {
+        "shelfFullTitle": "Ты что, не видишь? 😅",
+        "shelfFullText": "Ячейка {{shelf}} уже полностью забита. Выбери другую!"
+      }
+    }
+  },
+  "stockValue": {
+    "title": "Калькулятор стоимости",
+    "subtitle": "Живой финансовый анализ",
+    "manualRefresh": "🔄 Обновить вручную",
+    "totalValue": "Общая стоимость склада",
+    "totalItems": "Общее кол-во единиц",
+    "activeSectors": "Активные сектора",
+    "sectors": "секторов",
+    "topProducts": "🏆 Рейтинг по стоимости",
+    "territorialDistribution": "📍 Территориальное распределение",
+    "sectorLabel": "Сектор \"{{sector}}\"",
+    "share": "Доля: {{percent}}%",
+    "noLocation": "Без ячейки",
+    "billionFt": "млрд руб.",
+    "millionFt": "млн руб.",
+    "calculating": "Расчет финансовых данных...",
+    "loadError": "Не удалось загрузить данные об остатках.",
+    "categoryDistribution": "📦 Распределение по категориям",
+    "sectorValues": "📍 Стоимость по секторам"
+  },
+  "auxiliary": {
+    "connection": {
+      "serverOffline": "Сервер оффлайн",
+      "reconnecting": "Автоматическое переподключение..."
+    },
+    "navbar": {
+      "products": "🏠 Товары",
+      "overview": "📊 Обзор",
+      "scanner": "📷 Сканер",
+      "notifications": "🔔 Уведомления",
+      "new": "новое",
+      "profile": "👤 Профиль",
+      "darkTheme": "Темная тема",
+      "logout": "🚪 Выход",
+      "login": "Вход",
+      "register": "Регистрация",
+      "searchPlaceholder": "Поиск...",
+      "jump": "Перейти →",
+      "viewAll": "Показать все →",
+      "noNotifications": "Нет уведомлений"
+    },
+    "notifications": {
+      "title": "🔔 Центр уведомлений",
+      "unreadCount": "{{count}} непрочитанных",
+      "allRead": "Все прочитано",
+      "deleteReadBtn": "🗑️ Удалить прочитанные",
+      "markAllReadBtn": "✓ Отметить все",
+      "emptyTitle": "Нет уведомлений",
+      "emptyText": "На данный момент системных оповещений нет.",
+      "readStatus": "Прочитано",
+      "markAsRead": "Прочитано",
+      "alerts": {
+        "allMarkedRead": "Все уведомления отмечены как прочитанные!",
+        "deleteConfirmTitle": "Удалить прочитанные?",
+        "deleteConfirmText": "Все подтвержденные уведомления будут удалены навсегда!",
+        "yesDelete": "Да, удалить!",
+        "deletedSuccess": "Прочитанные уведомления удалены!"
+      }
+    },
+    "scanner": {
+      "title": "📷 QR-СКАНЕР",
+      "camError": "Камера недоступна или заблокирована.",
+      "searching": "Поиск...",
+      "locations": "Ячейки",
+      "totalStock": "Общий остаток",
+      "detailsBtn": "Карточка товара",
+      "newScanBtn": "Новое сканирование",
+      "backToMenu": "← В меню",
+      "noStock": "Нет в наличии",
+      "unknownLocation": "Неизвестное место",
+      "alerts": {
+        "invalidCodeTitle": "Неверный код",
+        "invalidCodeText": "Это не валидный QR-код WarehouseWeb!",
+        "noMatchTitle": "Нет совпадений",
+        "noMatchText": "Искомый товар не найден в системе."
+      }
+    },
+    "search": {
+      "title": "Результаты поиска",
+      "expression": "Запрос:",
+      "resultsCount": "Найдено: {{count}}",
+      "scanningStock": "Поиск по складу...",
+      "lowStock": "Мало товара",
+      "inStock": "В наличии",
+      "location": "Ячейка",
+      "stock": "Запас",
+      "noResultsTitle": "Ничего не найдено...",
+      "noResultsText": "Искомая позиция отсутствует в системе.",
+      "backToHub": "Вернуться на базу"
+    }
+  },
+  "auth": {
+    "register": {
+      "title": "Создание аккаунта",
+      "fullName": "Полное имя *",
+      "fullNamePlaceholder": "Напр. Иван Иванов",
+      "username": "Имя пользователя *",
+      "usernamePlaceholder": "ivan88",
+      "email": "E-mail *",
+      "emailPlaceholder": "example@mail.ru",
+      "phone": "Телефон (Международный) *",
+      "password": "Пароль *",
+      "passwordPlaceholder": "••••••••",
+      "submit": "Завершить регистрацию",
+      "backToLogin": "Назад ко входу",
+      "validation": {
+        "nameEmpty": "Имя обязательно!",
+        "nameNumbers": "Имя не может содержать цифры!",
+        "nameTwoWords": "Введите имя и фамилию!",
+        "usernameShort": "Минимум 4 символа!",
+        "emailInvalid": "Неверный формат e-mail!",
+        "phoneRequired": "Номер телефона обязателен!",
+        "passwordShort": "Минимум 8 символов!",
+        "passwordWeak": "Нужны заглавные, строчные буквы и цифры!"
+      },
+      "alerts": {
+        "fillAll": "Пожалуйста, заполните все поля правильно!",
+        "successTitle": "Регистрация успешна! ✨",
+        "successText": "Теперь вы можете войти в свой аккаунт.",
+        "errorTitle": "Ошибка регистрации"
+      }
+    },
+    "login": {
+      "title": "Вход в систему",
+      "fillDemo": "🔑 Заполнить пароль",
+      "username": "Имя пользователя",
+      "usernamePlaceholder": "Введите ваше имя...",
+      "password": "Пароль",
+      "passwordPlaceholder": "••••••••",
+      "forgotPassword": "Забыли?",
+      "submit": "Войти в систему",
+      "registerNew": "Регистрация нового аккаунта",
+      "alerts": {
+        "accessDenied": "Доступ запрещен",
+        "sessionLost": "Сессия прервана",
+        "bannedText": "Этот аккаунт заблокирован.",
+        "sessionExpiredText": "Сессия истекла. Войдите снова.",
+        "gotIt": "Понятно",
+        "welcomeBack": "С возвращением!",
+        "bannedTitle": "Вы заблокированы!",
+        "bannedFooter": "Свяжитесь с администратором",
+        "bannedServerMsg": "Аккаунт не может войти в систему.",
+        "wrongCredentials": "Неверное имя пользователя или пароль!",
+        "oops": "Ой..."
+      }
+    },
+    "forgotPassword": {
+      "title": "Восстановление пароля",
+      "subtitle": "Введите данные безопасности вашего аккаунта.",
+      "username": "Имя пользователя",
+      "usernamePlaceholder": "Напр. ivan88",
+      "email": "Зарегистрированный E-mail",
+      "emailPlaceholder": "example@mail.ru",
+      "phone": "Зарегистрированный телефон",
+      "submit": "Запросить новый пароль",
+      "checking": "Проверка...",
+      "backToLogin": "← Назад ко входу",
+      "alerts": {
+        "fillValid": "Заполните все поля!",
+        "successTitle": "Идентификация успешна!",
+        "successHtml1": "Ваш временный пароль сгенерирован.",
+        "successHtml2": "Вы обязаны изменить его после входа!",
+        "goToLogin": "Перейти ко входу",
+        "errorOccurred": "Произошла ошибка",
+        "verifyError": "Ошибка проверки данных.",
+        "understand": "Понятно"
+      }
+    },
+    "forceChange": {
+      "title": "Обязательная смена пароля",
+      "subtitle": "Установите новый надежный пароль!",
+      "tempPassword": "Временный пароль",
+      "tempPlaceholder": "Тот, что вы только что получили...",
+      "newPassword": "Новый пароль",
+      "newPlaceholder": "Мин. 8 символов",
+      "newPasswordAgain": "Повторите новый пароль",
+      "newAgainPlaceholder": "Подтвердите пароль",
+      "submit": "Сменить пароль",
+      "updating": "Обновление...",
+      "logoutAndCancel": "← Отмена",
+      "alerts": {
+        "missingSession": "Сессия отсутствует!",
+        "shortPassword": "Минимум 8 символов!",
+        "weakPassword": "Нужны строчные, заглавные буквы и цифры!",
+        "passwordMismatch": "Пароли не совпадают!",
+        "successTitle": "Пароль успешно обновлен! ✨",
+        "successText": "Войдите с вашим новым паролем.",
+        "goToLogin": "Перейти ко входу",
+        "errorTitle": "Произошла ошибка",
+        "updateError": "Ошибка при обновлении пароля.",
+        "understand": "Понятно"
+      }
+    }
+  },
+  "hooks": {
+    "realTime": {
+      "alerts": {
+        "accountSuspended": "Ваш аккаунт был заблокирован.",
+        "connectionLost": "Связь с сервером потеряна."
+      }
+    }
+  },
+  "languages": {
+    "hu": "Венгерский",
+    "en": "Английский",
+    "de": "Немецкий",
+    "it": "Итальянский",
+    "fr": "Французский",
+    "es": "Испанский",
+    "pt": "Португальский",
+    "pl": "Польский",
+    "ru": "Русский",
+    "ko": "Корейский",
+    "zh": "Китайский",
+    "ja": "Японский"
+  }
+}

@@ -94,19 +94,19 @@ function Notifications() {
       triggerGlobalRefresh();
       toast.fire({
         icon: "success",
-        title: t("auxiliary.notifications.alerts.allMarkedRead", "Összes olvasottnak jelölve"),
+        title: t("auxiliary.notifications.alerts.allMarkedRead"),
       });
     } catch (err) {}
   };
 
   const handleDeleteRead = async () => {
     const result = await Swal.fire({
-      title: t("auxiliary.notifications.alerts.deleteConfirmTitle", "Olvasottak törlése"),
-      text: t("auxiliary.notifications.alerts.deleteConfirmText", "Biztosan törlöd az összes olvasott értesítést?"),
+      title: t("auxiliary.notifications.alerts.deleteConfirmTitle"),
+      text: t("auxiliary.notifications.alerts.deleteConfirmText"),
       icon: "warning",
       showCancelButton: true,
-      confirmButtonText: t("auxiliary.notifications.alerts.yesDelete", "Igen, törlés"),
-      cancelButtonText: t("common.cancel", "Mégse"),
+      confirmButtonText: t("auxiliary.notifications.alerts.yesDelete"),
+      cancelButtonText: t("common.cancel"),
       customClass: {
         popup: "rounded-[2rem] bg-white dark:bg-slate-900 text-slate-900 dark:text-white",
         confirmButton: "bg-red-600 hover:bg-red-500 text-white px-6 py-2 rounded-xl font-bold mx-2",
@@ -122,7 +122,7 @@ function Notifications() {
         triggerGlobalRefresh();
         toast.fire({
           icon: "success",
-          title: t("auxiliary.notifications.alerts.deletedSuccess", "Sikeres törlés"),
+          title: t("auxiliary.notifications.alerts.deletedSuccess"),
         });
       } catch (err) {
       } finally {
@@ -193,12 +193,12 @@ function Notifications() {
             </button>
             <div>
               <h1 className="text-3xl md:text-4xl font-black text-slate-900 dark:text-white uppercase italic tracking-tighter">
-                {t("auxiliary.notifications.title", "Értesítések")}
+                {t("auxiliary.notifications.title")}
               </h1>
               <p className="text-slate-500 font-bold text-xs uppercase tracking-widest mt-1">
                 {unreadCount > 0
-                  ? t("auxiliary.notifications.unreadCount", { count: unreadCount, defaultValue: "{{count}} új értesítés" })
-                  : t("auxiliary.notifications.allRead", "Minden értesítés olvasva")}
+                  ? t("auxiliary.notifications.unreadCount", { count: unreadCount })
+                  : t("auxiliary.notifications.allRead")}
               </p>
             </div>
           </div>
@@ -209,7 +209,7 @@ function Notifications() {
                 onClick={handleDeleteRead}
                 className="bg-red-600 hover:bg-red-500 text-white px-5 py-3 rounded-xl font-black uppercase text-[10px] tracking-widest shadow-lg transition-all active:scale-95"
               >
-                {t("auxiliary.notifications.deleteReadBtn", "Olvasottak törlése")}
+                {t("auxiliary.notifications.deleteReadBtn")}
               </button>
             )}
             {unreadCount > 0 && (
@@ -217,7 +217,7 @@ function Notifications() {
                 onClick={handleMarkAllAsRead}
                 className="bg-slate-900 dark:bg-white text-white dark:text-slate-900 px-5 py-3 rounded-xl font-black uppercase text-[10px] tracking-widest shadow-lg transition-all active:scale-95"
               >
-                {t("auxiliary.notifications.markAllReadBtn", "Összes olvasottnak jelölése")}
+                {t("auxiliary.notifications.markAllReadBtn")}
               </button>
             )}
           </div>
@@ -263,14 +263,14 @@ function Notifications() {
                             : "bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 active:scale-95"
                         }`}
                       >
-                        <span>✔️</span> {notif.isRead ? "Olvasva" : "Olvasott"}
+                        <span>✔️</span> {notif.isRead ? t("auxiliary.notifications.readStatus") : t("auxiliary.notifications.markAsRead")}
                       </button>
 
                       <button
                         onClick={() => handleNavigate(notif)}
                         className="flex-1 sm:flex-none bg-blue-600 hover:bg-blue-500 text-white px-4 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all shadow-md flex items-center justify-center gap-2 active:scale-95"
                       >
-                        Tovább <span className="text-sm leading-none">➔</span>
+                        {t("common.next")} <span className="text-sm leading-none">➔</span>
                       </button>
                     </div>
                   </div>
@@ -281,10 +281,10 @@ function Notifications() {
             <div className="py-20 text-center">
               <span className="text-6xl mb-4 block opacity-40">📭</span>
               <h3 className="text-xl font-black text-slate-800 dark:text-slate-200 uppercase tracking-tighter italic">
-                {t("auxiliary.notifications.emptyTitle", "Nincsenek értesítések")}
+                {t("auxiliary.notifications.emptyTitle")}
               </h3>
               <p className="text-slate-500 font-bold text-xs uppercase tracking-widest mt-2">
-                {t("auxiliary.notifications.emptyText", "Itt jelennek meg a legújabb rendszerszintű üzenetek.")}
+                {t("auxiliary.notifications.emptyText")}
               </p>
             </div>
           )}

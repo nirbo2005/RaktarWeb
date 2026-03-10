@@ -1,0 +1,692 @@
+{
+  "header": {
+    "admin": "Admin",
+    "handler": "Operatore",
+    "viewer": "Osservatore",
+    "anonymous": "Utente anonimo",
+    "logout": "Disconnetti"
+  },
+  "common": {
+    "save": "Salva",
+    "cancel": "Annulla",
+    "error": "Errore!",
+    "success": "Successo!",
+    "search": "Cerca...",
+    "noResults": "Nessun risultato",
+    "identifying": "Identificazione...",
+    "updating": "Aggiornamento...",
+    "close": "Chiudi",
+    "yes": "Sì",
+    "back": "Indietro",
+    "pieces": "pz",
+    "open": "Apri",
+    "filterBtn": "Filtra",
+    "restore": "Ripristina",
+    "unknown": "Sconosciuto",
+    "reset": "Reimposta",
+    "loading": "Caricamento",
+    "next": "Avanti"
+  },
+  "admin": {
+    "editTitle": "Modifica: {{name}}",
+    "fullName": "Nome completo",
+    "rank": "Ruolo",
+    "phone": "Numero di telefono (Obbligatorio)",
+    "newPassword": "Nuova password (lascia vuoto se non cambia)",
+    "pendingRequests": "Richieste in attesa",
+    "noRequests": "Nessuna richiesta in attesa.",
+    "systemUsers": "Utenti del sistema",
+    "validation": {
+      "nameRequired": "Il nome è obbligatorio!",
+      "nameNoNumbers": "I numeri non sono ammessi nel nome!",
+      "phoneRequired": "Il numero di telefono è obbligatorio!"
+    },
+    "alerts": {
+      "fixErrors": "Correggi gli errori!",
+      "userUpdated": "Utente aggiornato!",
+      "saveFailed": "Salvataggio fallito.",
+      "cantBanSelf": "Non puoi sospendere te stesso!",
+      "accountUnbanned": "Account riattivato",
+      "accountBanned": "Account sospeso",
+      "actionFailed": "Operazione fallita.",
+      "cantDeleteSelf": "Non puoi eliminare il tuo account admin!",
+      "deleteTitle": "Eliminazione definitiva?",
+      "deleteText": "Sei sicuro di voler eliminare l'utente {{name}}? L'azione è irreversibile!",
+      "yesDelete": "Sì, elimina!",
+      "userDeleted": "Utente eliminato",
+      "deleteFailed": "Eliminazione fallita.",
+      "accepted": "Accettato",
+      "rejected": "Rifiutato",
+      "fetchError": "Errore nel caricamento dei dati admin:"
+    }
+  },
+  "details": {
+    "fullName": "Nome completo",
+    "adminApprovalNeeded": "Approvazione admin necessaria",
+    "phoneLabel": "Numero di telefono (Internazionale) *",
+    "username": "Nome utente",
+    "email": "Indirizzo e-mail",
+    "oldPassword": "Vecchia password",
+    "newPassword": "Nuova password",
+    "buttons": {
+      "fixErrors": "Correggi gli errori...",
+      "noChanges": "🤔 Nessuna modifica...",
+      "saveAndRequest": "💾 Salva e richiedi",
+      "saveData": "💾 Salva dati"
+    },
+    "validation": {
+      "nameEmpty": "Il nome non può essere vuoto!",
+      "nameNumbers": "Il nome non può contenere numeri!",
+      "emailInvalid": "Formato e-mail non valido!",
+      "phoneRequired": "Il numero di telefono è obbligatorio!"
+    },
+    "alerts": {
+      "noChanges": "Tutto invariato... 😴",
+      "fixBeforeSave": "Correggi gli errori prima di salvare!",
+      "oldPassRequired": "La vecchia password è obbligatoria!",
+      "dataUpdated": "Dati aggiornati! ✨",
+      "errorOccurred": "Si è verificato un errore!"
+    }
+  },
+  "profile": {
+    "dashboard": {
+      "details": { "title": "Dati Personali", "desc": "Nome, contatti e gestione password" },
+      "stats": { "title": "Statistiche", "desc": "Analisi della propria attività" },
+      "logs": { "title": "Registro Attività", "desc": "Tracciamento operazioni di sistema" },
+      "security": { "title": "Centro Sicurezza", "desc": "Sessioni e protezione account" },
+      "stock": { "title": "Valore Magazzino", "desc": "Rapporti finanziari e giacenze" },
+      "admin": { "title": "Amministrazione", "desc": "Gestione utenti e richieste" },
+      "system": { "title": "Stato Sistema", "desc": "Diagnostica server e metriche" }
+    },
+    "tabs": {
+      "myProfile": "👤 Mio Profilo",
+      "activityLog": "📜 Registro Attività",
+      "administration": "🛡️ Amministrazione"
+    },
+    "alerts": {
+      "restoreTitle": "Ripristinare?",
+      "restoreText": "Sei sicuro di voler ripristinare lo stato originale?",
+      "restoreBtn": "Ripristina",
+      "restored": "Annullato con successo!",
+      "restoreFailed": "Operazione fallita.",
+      "groupRestoreTitle": "Ripristino di massa",
+      "groupRestoreText": "Sei sicuro di voler ripristinare tutti i {{count}} elementi?",
+      "partialError": "Si è verificato un errore parziale."
+    },
+    "security": {
+      "passwordStatus": "Stato password",
+      "passwordActive": "Attiva",
+      "accountStatus": "Stato account",
+      "active": "Attivo",
+      "banned": "Sospeso",
+      "rankLevel": "Livello permessi",
+      "revokeSessionsTitle": "Disconnetti tutte le sessioni",
+      "revokeSessionsDesc": "Ti disconnette immediatamente da tutti i dispositivi. Usalo se sospetti accessi non autorizzati.",
+      "revokeBtn": "Disconnetti ovunque",
+      "revokeTitle": "Disconnettere tutti?",
+      "revokeText": "Tutti i token attivi saranno invalidati.",
+      "revokeConfirm": "Sì, disconnetti",
+      "successTitle": "Successo",
+      "successText": "Tutte le sessioni chiuse. Per favore, accedi di nuovo.",
+      "loginHistory": "Cronologia accessi",
+      "comingSoon": "Prossimamente disponibile...",
+      "revokeError": "Impossibile revocare le sessioni."
+    },
+    "stats": {
+      "totalActions": "Operazioni totali",
+      "creates": "Creazioni",
+      "updates": "Modifiche",
+      "deletes": "Eliminazioni",
+      "activityDistribution": "Distribuzione attività",
+      "movesThisMonth": "Operazioni questo mese",
+      "newProducts": "Nuovi prodotti registrati",
+      "fetchError": "Errore nel calcolo delle statistiche:"
+    },
+    "system": {
+      "database": "Database",
+      "connected": "Connesso",
+      "error": "Errore",
+      "uptime": "Tempo di attività",
+      "memory": "Utilizzo memoria",
+      "latency": "Latenza API",
+      "recentEvents": "Eventi di sistema recenti",
+      "maintenance": "Manutenzione",
+      "maintenanceDesc": "Esegui strumenti di diagnostica per verificare l'integrità del database.",
+      "runDiagnostic": "Avvia diagnostica",
+      "fetchError": "Errore nel recupero dello stato del sistema:"
+    },
+    "details": {
+      "requestRankTitle": "Richiesta permessi {{rank}}",
+      "requestRankText": "Sei sicuro di voler richiedere l'accesso come {{rank}}?",
+      "deleteTitle": "Eliminazione definitiva account",
+      "deleteText": "Sei sicuro di voler eliminare il tuo account? L'azione è irreversibile!",
+      "deleteConfirm": "Sì, elimina definitivamente",
+      "deleteAccount": "Elimina account",
+      "deletedTitle": "Eliminato",
+      "deletedText": "Il tuo account è stato eliminato con successo.",
+      "namePending": "Modifica nome in attesa...",
+      "requestKezelo": "Richiedi Operatore",
+      "requestAdmin": "Richiedi Admin",
+      "kezeloPending": "⏳ Richiesta Operatore in corso",
+      "adminPending": "⏳ Richiesta Admin in corso",
+      "nameChangedWarning": "Approvazione admin necessaria",
+      "alerts": {
+        "fetchRequestsError": "Impossibile recuperare le richieste.",
+        "requestSent": "Richiesta inviata!",
+        "deleteDeniedTitle": "Eliminazione negata",
+        "deleteDeniedText": "Sei l'unico amministratore attivo!",
+        "checkAdminError": "Impossibile verificare il numero di admin."
+      },
+      "buttons": {
+        "updateRequest": "Aggiorna richiesta"
+      }
+    },
+    "avatar": {
+      "cropTitle": "Ritaglia immagine",
+      "sourceTitle": "Sorgente immagine",
+      "uploadFile": "Carica file",
+      "pasteHint": "O premi CTRL+V",
+      "urlPlaceholder": "Incolla un URL diretto immagine...",
+      "urlError": "Errore nel caricamento dell'immagine.",
+      "zoom": "Zoom",
+      "uploading": "Salvataggio in corso...",
+      "saveBtn": "Salva immagine",
+      "modifyOverlay": "Modifica"
+    }
+  },
+  "logs": {
+    "labels": {
+      "name": "Nome",
+      "quantity": "Quantità",
+      "plot": "Settore",
+      "manufacturer": "Produttore",
+      "price": "Prezzo"
+    },
+    "filters": {
+      "user": "Utente",
+      "allUsers": "Tutti gli utenti",
+      "operation": "Operazione",
+      "allOperations": "Tutte le operazioni",
+      "allActions": "Tutte le azioni",
+      "date": "Dalla data",
+      "create": "✨ Creazione",
+      "update": "📝 Modifica",
+      "delete": "🗑️ Eliminazione",
+      "bulkDelete": "🗑️ Eliminazione di massa",
+      "restore": "♻️ Ripristino",
+      "filterBtn": "Filtra",
+      "exportBtn": "Esporta"
+    },
+    "operations": {
+      "create": "Creazione",
+      "update": "Modifica",
+      "batch": "Movimento scorte",
+      "delete": "Eliminazione",
+      "bulkDelete": "ELIMINAZIONE DI MASSA",
+      "bulkItems": "Prodotti eliminati ({{count}} pz)",
+      "productCreate": "Nuovo prodotto inserito",
+      "productDelete": "Prodotto eliminato",
+      "restored": "Ripristinato"
+    },
+    "diff": {
+      "productAdded": "Prodotto aggiunto",
+      "productDeleted": "Prodotto eliminato",
+      "dataChanged": "Dati modificati",
+      "productRestored": "Prodotto riattivato",
+      "reverted": "Modifica annullata:"
+    },
+    "types": {
+      "split": "Spostamento parziale",
+      "move": "Spostamento totale",
+      "merge": "Unione"
+    },
+    "fields": {
+      "sourceShelf": "Scaffale origine",
+      "targetShelf": "Scaffale destinazione",
+      "total": "Totale",
+      "system": "Processo di sistema",
+      "na": "N/D"
+    },
+    "excel": {
+      "sheetName": "Registro Attività",
+      "product": "PRODOTTO",
+      "changes": "MODIFICHE",
+      "action": "OPERAZIONE",
+      "user": "UTENTE",
+      "date": "ORARIO",
+      "system": "Sistema",
+      "unknown": "Sconosciuto",
+      "ready": "Export completato!"
+    },
+    "misc": {
+      "bulkDeleteCount": "Eliminazione massa ({{count}} voci)",
+      "systemProcess": "Processo di sistema",
+      "viewDetails": "Vedi dettagli →",
+      "noLogs": "Nessun log da mostrare.",
+      "fetchError": "Errore nel caricamento del registro:"
+    }
+  },
+  "product": {
+    "categories": {
+      "ELEKTRONIKA": "Elettronica",
+      "ELELMISZER": "Alimentare",
+      "VEGYSZER": "Chimica",
+      "IRODASZER": "Cancelleria",
+      "AUTO_MOTOR": "Auto-Moto",
+      "RUHAZAT": "Abbigliamento",
+      "BARKACS": "Fai da te",
+      "SPORT": "Sport",
+      "JATEK": "Giocattoli",
+      "HAZTARTAS": "Casalinghi",
+      "KOZMETIKA": "Cosmetica",
+      "KONYVEK": "Libri",
+      "BUTOR": "Mobili",
+      "EGESZSEGUGY": "Sanità",
+      "EGYEB": "Altro"
+    },
+    "add": {
+      "title": "📦 Carico <span class=\"text-blue-600\">Magazzino</span>",
+      "searchExisting": "Cerca nell'anagrafica esistente",
+      "searchPlaceholder": "Cerca per nome o produttore...",
+      "select": "Seleziona →",
+      "or": "OPPURE",
+      "createNew": "+ Crea Nuova Anagrafica",
+      "selectedMaster": "Anagrafica Selezionata",
+      "masterData": "Dati Principali",
+      "name": "Nome Prodotto",
+      "namePlaceholder": "Es: Vite in acciaio",
+      "manufacturer": "Produttore",
+      "manufacturerPlaceholder": "Es: IronWorks S.r.l.",
+      "category": "Categoria",
+      "weight": "Peso (kg / pz)",
+      "purchasePrice": "Prezzo d'Acquisto (EUR)",
+      "salePrice": "Prezzo di Vendita (EUR)",
+      "minStock": "Scorta Minima",
+      "batchIntake": "Carico Lotto",
+      "expiry": "Scadenza (Opzionale)",
+      "location": "Ubicazione (Scaffale)",
+      "quantity": "Quantità (pz)",
+      "saveToWarehouse": "Salva in Magazzino",
+      "alerts": {
+        "intakeSuccess": "Carico completato! 📦",
+        "productCreated": "Prodotto registrato! ✨",
+        "errorOccurred": "Si è verificato un errore",
+        "errorText": "Errore di rete o scaffale pieno.",
+        "fetchError": "Errore nell'aggiornamento prodotti:",
+        "missingShelf": "Assegna uno scaffale a ogni voce!",
+        "invalidAllocation": "La quantità allocata non coincide con il totale!"
+      }
+    },
+    "details": {
+      "back": "Indietro",
+      "backToHome": "Torna alla Home",
+      "notFoundTitle": "Prodotto non trovato",
+      "fetching": "Recupero dati...",
+      "deletedWarning": "⚠️ Attenzione: Prodotto in stato eliminato!",
+      "itemNumber": "Codice Prodotto (ID)",
+      "masterData": "Dati Principali",
+      "weightUnit": "Peso (Unità)",
+      "minStock": "Scorta Min.",
+      "purchasePrice": "Prezzo d'Acquisto",
+      "salePrice": "Prezzo di Vendita",
+      "stockStatus": "Stato Scorte",
+      "totalStock": "Giacenza Totale Attuale",
+      "criticalStock": "🚨 Scorte critiche",
+      "outOfStockAlert": "ESAURITO!",
+      "physicalLocation": "Ubicazione Fisica (Lotti)",
+      "expiry": "Scadenza",
+      "nonPerishable": "Non deperibile",
+      "outOfStock": "Nessuna giacenza.",
+      "modify": "Modifica",
+      "delete": "Elimina",
+      "alerts": {
+        "deleteConfirmTitle": "Sei sicuro?",
+        "deleteConfirmText": "L'intera anagrafica di \"{{name}}\" e tutti i suoi lotti fisici saranno eliminati!",
+        "yesDelete": "Sì, elimina!",
+        "deletedSuccess": "Prodotto eliminato! 🗑️",
+        "deleteFailed": "Eliminazione fallita."
+      }
+    },
+    "grid": {
+      "title": "Mappa Magazzino",
+      "subtitle": "Gestione Interattiva Scorte",
+      "sorting": "🪄 Ordina",
+      "sector": "SETTORE",
+      "emptyShelf": "Scaffale vuoto",
+      "selectSector": "Scegli un settore per la panoramica",
+      "alerts": {
+        "weightStop": "Stop peso! 🛑",
+        "shelfFull": "Lo scaffale {{shelf}} è pieno.",
+        "moveHowMuch": "Quanto vuoi spostare?",
+        "weightWarning": "⚠️ STOP PESO: Capacità max {{max}} pz!",
+        "moveBtn": "📦 Sposta",
+        "movedSuccess": "Spostato!",
+        "sortTitle": "Ottimizzazione?",
+        "sortText": "Ordina il magazzino per categorie.",
+        "start": "Avvia",
+        "sortedSuccess": "Ottimizzato!"
+      }
+    },
+    "list": {
+      "title": "Magazzino",
+      "bulkDelete": "🗑️ Elimina ({{count}})",
+      "filterErrors": "🚨 Solo errori",
+      "filterAll": "⚠️ Filtra",
+      "export": "📊 Export",
+      "selectModeOn": "✖ Fine selezione",
+      "selectModeOff": "☑️ Selezione multipla",
+      "newProduct": "+ Nuovo Prodotto",
+      "searchPlaceholder": "Cerca per nome, produttore o ID...",
+      "headers": {
+        "qr": "QR",
+        "product": "Prodotto",
+        "category": "Categoria",
+        "totalStock": "Giacenza Tot.",
+        "actions": "Azioni"
+      },
+      "batches": "Lotti",
+      "nonPerishable": "Non deperibile",
+      "details": "Dettagli",
+      "allGoodTitle": "Tutti gli scaffali sono ok",
+      "allGoodSubtitle": "Nessuna voce richiede intervento",
+      "print": "🖨️ Stampa",
+      "excel": {
+        "sheetName": "Giacenze Magazzino",
+        "name": "Nome Prodotto",
+        "manufacturer": "Produttore",
+        "category": "Categoria",
+        "quantity": "Quantità Tot. (pz)",
+        "earliestExpiry": "Scadenza più vicina"
+      },
+      "alerts": {
+        "bulkDeleteTitle": "Eliminazione di massa",
+        "bulkDeleteText": "Eliminare {{count}} voci?",
+        "bulkDeleted": "Voci eliminate.",
+        "bulkDeleteFailed": "Eliminazione di massa fallita.",
+        "deleteTitle": "Elimina Prodotto",
+        "deleteText": "Sei sicuro di voler eliminare?",
+        "deleted": "Prodotto eliminato.",
+        "deleteFailed": "Eliminazione fallita.",
+        "excelReady": "Report Excel pronto! 📊"
+      }
+    },
+    "modify": {
+      "tabs": { "physicalStock": "📦 Scorte Fisiche", "masterData": "⚙️ Anagrafica" },
+      "deletedTitle": "Prodotto eliminato",
+      "restoreBtn": "Ripristina",
+      "stockManagement": "Gestione Giacenze",
+      "selectBatch": "Seleziona Scaffale Fisico (Lotto)",
+      "createNewBatch": "➕ CREA NUOVO LOTTO",
+      "newBatchData": "Dati Nuovo Lotto",
+      "location": "Ubicazione (Scaffale)",
+      "expiry": "Scadenza",
+      "quantity": "Quantità (pz)",
+      "execute": "Esegui",
+      "editData": "Modifica Dati",
+      "alerts": {
+        "restoreTitle": "Ripristinare?",
+        "restoreText": "Il prodotto sarà di nuovo disponibile.",
+        "restored": "Riattivato!",
+        "restoreFailed": "Fallito.",
+        "chooseBatch": "Seleziona un lotto esistente!",
+        "intakeSuccess": "+{{count}} pz caricati.",
+        "notEnoughStock": "Scorte insufficienti. Max: {{max}} pz",
+        "batchDeleted": "Lotto esaurito ed eliminato.",
+        "lastBatchEmpty": "L'ultimo lotto è vuoto",
+        "deletePhysicalBatch": "Eliminiamo il lotto fisico?",
+        "keepZero": "Lascia a 0",
+        "stockUpdated": "Scorte aggiornate.",
+        "dataUpdated": "Dati aggiornati! ✨",
+        "saveFailed": "Salvataggio fallito."
+      }
+    }
+  },
+  "inventory": {
+    "shelfMap": {
+      "title": "Mappa Interattiva",
+      "sector": "Settore",
+      "weight": "Peso attuale",
+      "category": "Categoria",
+      "empty": "Vuoto",
+      "low": "Carico basso",
+      "mid": "Carico medio",
+      "high": "Carico alto",
+      "recommended": "Posizione consigliata"
+    },
+    "splitter": {
+      "title": "Allocazione Multi-scaffale",
+      "chooseMethod": "Come vuoi posizionare le scorte?",
+      "autoBtn": "🤖 Suggerimento Auto",
+      "manualBtn": "📍 Selezione Manuale",
+      "autoTitle": "Allocazione Automatizzata",
+      "manualTitle": "Allocazione Manuale",
+      "allAllocated": "Tutte le voci posizionate",
+      "remainingQty": "Da allocare: {{count}} pz",
+      "shelf": "Scaffale",
+      "qty": "Quantità",
+      "addSplit": "Aggiungi scaffale",
+      "overAllocated": "⚠️ Errore: Allocati {{amount}} pz di troppo!",
+      "invalidFormat": "Invalido (Es: A1-1)",
+      "alerts": {
+        "shelfFullTitle": "Ehi, è pieno! 😅",
+        "shelfFullText": "Lo scaffale {{shelf}} è già al completo. Scegline un altro!"
+      }
+    }
+  },
+  "stockValue": {
+    "title": "Calcolatore Valore Scorte",
+    "subtitle": "Analisi finanziaria live",
+    "manualRefresh": "🔄 Aggiorna manualmente",
+    "totalValue": "Valore Totale Magazzino",
+    "totalItems": "Totale Pezzi",
+    "activeSectors": "Settori Attivi",
+    "sectors": "settori",
+    "topProducts": "🏆 Classifica per Valore",
+    "territorialDistribution": "📍 Distribuzione Territoriale",
+    "sectorLabel": "Settore \"{{sector}}\"",
+    "share": "Quota: {{percent}}%",
+    "noLocation": "Nessuna ubicazione",
+    "billionFt": "miliardi EUR",
+    "millionFt": "milioni EUR",
+    "calculating": "Calcolo dati finanziari...",
+    "loadError": "Impossibile caricare i dati delle scorte.",
+    "categoryDistribution": "📦 Distribuzione per categoria",
+    "sectorValues": "📍 Valore dei settori"
+  },
+  "auxiliary": {
+    "connection": {
+      "serverOffline": "Server Offline",
+      "reconnecting": "Riconnessione automatica..."
+    },
+    "navbar": {
+      "products": "🏠 Prodotti",
+      "overview": "📊 Panoramica",
+      "scanner": "📷 Scan",
+      "notifications": "🔔 Notifiche",
+      "new": "nuovo",
+      "profile": "👤 Profilo",
+      "darkTheme": "Tema Scuro",
+      "logout": "🚪 Esci",
+      "login": "Accedi",
+      "register": "Registrati",
+      "searchPlaceholder": "Cerca...",
+      "jump": "Vai a →",
+      "viewAll": "Vedi tutte →",
+      "noNotifications": "Nessuna notifica"
+    },
+    "notifications": {
+      "title": "🔔 Centro Notifiche",
+      "unreadCount": "{{count}} notifiche non lette",
+      "allRead": "Tutte le notifiche lette",
+      "deleteReadBtn": "🗑️ Elimina lette",
+      "markAllReadBtn": "✓ Segna tutto come letto",
+      "emptyTitle": "Nessuna notifica",
+      "emptyText": "Al momento non ci sono avvisi nel sistema.",
+      "readStatus": "Letta",
+      "markAsRead": "Letta",
+      "alerts": {
+        "allMarkedRead": "Tutte le notifiche segnate come lette!",
+        "deleteConfirmTitle": "Eliminare le lette?",
+        "deleteConfirmText": "Tutte le notifiche già visualizzate saranno eliminate!",
+        "yesDelete": "Sì, eliminale!",
+        "deletedSuccess": "Notifiche lette eliminate!"
+      }
+    },
+    "scanner": {
+      "title": "📷 SCANNER QR",
+      "camError": "Fotocamera non disponibile.",
+      "searching": "Ricerca...",
+      "locations": "Ubicazioni",
+      "totalStock": "Totale Giacenza",
+      "detailsBtn": "Scheda Prodotto",
+      "newScanBtn": "Nuova scansione",
+      "backToMenu": "← Torna al menù",
+      "noStock": "Non in stock",
+      "unknownLocation": "Ubicazione sconosciuta",
+      "alerts": {
+        "invalidCodeTitle": "Codice non valido",
+        "invalidCodeText": "Questo non è un codice QR valido per il sistema!",
+        "noMatchTitle": "Nessun risultato",
+        "noMatchText": "Il prodotto cercato non è presente nel sistema."
+      }
+    },
+    "search": {
+      "title": "Risultati Ricerca",
+      "expression": "Termine:",
+      "resultsCount": "{{count}} risultati",
+      "scanningStock": "Scansione giacenze...",
+      "lowStock": "Scorta bassa",
+      "inStock": "Disponibile",
+      "location": "Ubicazione",
+      "stock": "Scorte",
+      "noResultsTitle": "Nessun risultato...",
+      "noResultsText": "L'articolo cercato non è stato trovato.",
+      "backToHub": "Torna alla base"
+    }
+  },
+  "auth": {
+    "register": {
+      "title": "Crea Account",
+      "fullName": "Nome Completo *",
+      "fullNamePlaceholder": "Es: Mario Rossi",
+      "username": "Nome utente *",
+      "usernamePlaceholder": "mrossi88",
+      "email": "E-mail *",
+      "emailPlaceholder": "esempio@email.it",
+      "phone": "Numero di telefono (Internazionale) *",
+      "password": "Password *",
+      "passwordPlaceholder": "••••••••",
+      "submit": "Finalizza Registrazione",
+      "backToLogin": "Torna al login",
+      "validation": {
+        "nameEmpty": "Il nome è obbligatorio!",
+        "nameNumbers": "Il nome non può contenere numeri!",
+        "nameTwoWords": "Inserisci nome e cognome!",
+        "usernameShort": "Minimo 4 caratteri!",
+        "emailInvalid": "E-mail non valida!",
+        "phoneRequired": "Il telefono è obbligatorio!",
+        "passwordShort": "Minimo 8 caratteri richiesti!",
+        "passwordWeak": "Usa maiuscole, minuscole e numeri/simboli!"
+      },
+      "alerts": {
+        "fillAll": "Compila correttamente tutti i campi!",
+        "successTitle": "Registrazione completata! ✨",
+        "successText": "Ora puoi accedere al tuo account.",
+        "errorTitle": "Errore Registrazione"
+      }
+    },
+    "login": {
+      "title": "Accesso",
+      "fillDemo": "🔑 Inserisci password",
+      "username": "Nome utente",
+      "usernamePlaceholder": "Inserisci il tuo nome...",
+      "password": "Password",
+      "passwordPlaceholder": "••••••••",
+      "forgotPassword": "Dimenticata?",
+      "submit": "Accedi al Sistema",
+      "registerNew": "Registra un nuovo account",
+      "alerts": {
+        "accessDenied": "Accesso negato",
+        "sessionLost": "Sessione interrotta",
+        "bannedText": "Questo account è stato sospeso.",
+        "sessionExpiredText": "Sessione scaduta. Per favore, riaccedi.",
+        "gotIt": "Ho capito",
+        "welcomeBack": "Bentornato!",
+        "bannedTitle": "Sei sospeso!",
+        "bannedFooter": "Contatta l'amministratore",
+        "bannedServerMsg": "L'account non può accedere al sistema.",
+        "wrongCredentials": "Nome utente o password errati!",
+        "oops": "Ops..."
+      }
+    },
+    "forgotPassword": {
+      "title": "Recupero Password",
+      "subtitle": "Inserisci i dati di sicurezza del tuo account.",
+      "username": "Nome utente",
+      "usernamePlaceholder": "Es: mrossi88",
+      "email": "E-mail registrata",
+      "emailPlaceholder": "esempio@email.it",
+      "phone": "Telefono registrato",
+      "submit": "Richiedi Nuova Password",
+      "checking": "Verifica in corso...",
+      "backToLogin": "← Login",
+      "alerts": {
+        "fillValid": "Compila tutti i campi!",
+        "successTitle": "Identificazione riuscita!",
+        "successHtml1": "Password temporanea generata.",
+        "successHtml2": "Sarà obbligatorio cambiarla dopo l'accesso!",
+        "goToLogin": "Vai al Login",
+        "errorOccurred": "Errore",
+        "verifyError": "Errore nella verifica dei dati.",
+        "understand": "Capito"
+      }
+    },
+    "forceChange": {
+      "title": "Cambio Password Obbligatorio",
+      "subtitle": "Imposta una nuova password sicura!",
+      "tempPassword": "Password temporanea",
+      "tempPlaceholder": "Quella ricevuta poco fa...",
+      "newPassword": "Nuova password",
+      "newPlaceholder": "Min. 8 caratteri",
+      "newPasswordAgain": "Conferma password",
+      "newAgainPlaceholder": "Conferma",
+      "submit": "Cambia Password",
+      "updating": "Aggiornamento...",
+      "logoutAndCancel": "← Annulla",
+      "alerts": {
+        "missingSession": "Sessione mancante!",
+        "shortPassword": "Minimo 8 caratteri!",
+        "weakPassword": "Richiede maiuscole, minuscole e numeri!",
+        "passwordMismatch": "Le password non coincidono!",
+        "successTitle": "Password aggiornata! ✨",
+        "successText": "Accedi con la tua nuova password.",
+        "goToLogin": "Al Login",
+        "errorTitle": "Errore",
+        "updateError": "Errore nell'aggiornamento password.",
+        "understand": "Capito"
+      }
+    }
+  },
+  "hooks": {
+    "realTime": {
+      "alerts": {
+        "accountSuspended": "Il tuo account è stato sospeso.",
+        "connectionLost": "Connessione al server interrotta."
+      }
+    }
+  },
+  "languages": {
+    "hu": "Ungherese",
+    "en": "Inglese",
+    "de": "Tedesco",
+    "it": "Italiano",
+    "fr": "Francese",
+    "es": "Spagnolo",
+    "pt": "Portoghese",
+    "pl": "Polacco",
+    "ru": "Russo",
+    "ko": "Coreano",
+    "zh": "Cinese",
+    "ja": "Giapponese"
+  }
+}

@@ -1,0 +1,692 @@
+{
+  "header": {
+    "admin": "Admin",
+    "handler": "Mitarbeiter",
+    "viewer": "Betrachter",
+    "anonymous": "Anonymer Benutzer",
+    "logout": "Abmelden"
+  },
+  "common": {
+    "save": "Speichern",
+    "cancel": "Abbrechen",
+    "error": "Fehler!",
+    "success": "Erfolgreich!",
+    "search": "Suche...",
+    "noResults": "Keine Treffer",
+    "identifying": "Identifizierung...",
+    "updating": "Aktualisierung...",
+    "close": "Schließen",
+    "yes": "Ja",
+    "back": "Zurück",
+    "pieces": "Stk",
+    "open": "Öffnen",
+    "filterBtn": "Filtern",
+    "restore": "Rückgängig",
+    "unknown": "Unbekannt",
+    "reset": "Zurücksetzen",
+    "loading": "Laden",
+    "next": "Weiter"
+  },
+  "admin": {
+    "editTitle": "Bearbeiten: {{name}}",
+    "fullName": "Vollständiger Name",
+    "rank": "Rang",
+    "phone": "Telefonnummer (Pflichtfeld)",
+    "newPassword": "Neues Passwort (leer lassen, wenn keine Änderung)",
+    "pendingRequests": "Ausstehende Anfragen",
+    "noRequests": "Keine ausstehenden Anfragen.",
+    "systemUsers": "Systembenutzer",
+    "validation": {
+      "nameRequired": "Name ist erforderlich!",
+      "nameNoNumbers": "Zahlen sind im Namen nicht erlaubt!",
+      "phoneRequired": "Telefonnummer ist erforderlich!"
+    },
+    "alerts": {
+      "fixErrors": "Bitte beheben Sie die Fehler!",
+      "userUpdated": "Benutzer aktualisiert!",
+      "saveFailed": "Fehler beim Speichern.",
+      "cantBanSelf": "Sie können sich nicht selbst sperren!",
+      "accountUnbanned": "Konto entsperrt",
+      "accountBanned": "Konto gesperrt",
+      "actionFailed": "Aktion fehlgeschlagen.",
+      "cantDeleteSelf": "Sie können Ihr eigenes Admin-Konto nicht löschen!",
+      "deleteTitle": "Endgültig löschen?",
+      "deleteText": "Möchten Sie den Benutzer {{name}} wirklich löschen? Dies kann nicht rückgängig gemacht werden!",
+      "yesDelete": "Ja, löschen!",
+      "userDeleted": "Benutzer gelöscht",
+      "deleteFailed": "Löschen fehlgeschlagen.",
+      "accepted": "Akzeptiert",
+      "rejected": "Abgelehnt",
+      "fetchError": "Fehler beim Laden der Admin-Daten:"
+    }
+  },
+  "details": {
+    "fullName": "Vollständiger Name",
+    "adminApprovalNeeded": "Admin-Genehmigung erforderlich",
+    "phoneLabel": "Telefonnummer (International) *",
+    "username": "Benutzername",
+    "email": "E-Mail-Adresse",
+    "oldPassword": "Altes Passwort",
+    "newPassword": "Neues Passwort",
+    "buttons": {
+      "fixErrors": "Fehler beheben...",
+      "noChanges": "🤔 Keine Änderungen...",
+      "saveAndRequest": "💾 Speichern & Anfrage",
+      "saveData": "💾 Daten speichern"
+    },
+    "validation": {
+      "nameEmpty": "Name darf nicht leer sein!",
+      "nameNumbers": "Name darf keine Zahlen enthalten!",
+      "emailInvalid": "Ungültiges E-Mail-Format!",
+      "phoneRequired": "Telefonnummer ist erforderlich!"
+    },
+    "alerts": {
+      "noChanges": "Alles unverändert... 😴",
+      "fixBeforeSave": "Bitte beheben Sie die Fehler vor dem Speichern!",
+      "oldPassRequired": "Altes Passwort ist erforderlich!",
+      "dataUpdated": "Daten aktualisiert! ✨",
+      "errorOccurred": "Ein Fehler ist aufgetreten!"
+    }
+  },
+  "profile": {
+    "dashboard": {
+      "details": { "title": "Persönliche Daten", "desc": "Name, Kontakt und Passwortverwaltung" },
+      "stats": { "title": "Statistiken", "desc": "Analyse der eigenen Aktivitäten" },
+      "logs": { "title": "Aktivitätsprotokoll", "desc": "Systemvorgänge nachverfolgen" },
+      "security": { "title": "Sicherheitszentrum", "desc": "Sitzungen und Kontoschutz" },
+      "stock": { "title": "Lagerwert", "desc": "Finanzberichte und Bestandsdaten" },
+      "admin": { "title": "Administration", "desc": "Benutzer und Anfragen verwalten" },
+      "system": { "title": "Systemstatus", "desc": "Serverdiagnose und Metriken" }
+    },
+    "tabs": {
+      "myProfile": "👤 Mein Profil",
+      "activityLog": "📜 Aktivitätsprotokoll",
+      "administration": "🛡️ Administration"
+    },
+    "alerts": {
+      "restoreTitle": "Wiederherstellen?",
+      "restoreText": "Möchten Sie den ursprünglichen Zustand wiederherstellen?",
+      "restoreBtn": "Wiederherstellen",
+      "restored": "Erfolgreich zurückgesetzt!",
+      "restoreFailed": "Aktion fehlgeschlagen.",
+      "groupRestoreTitle": "Massen-Wiederherstellung",
+      "groupRestoreText": "Möchten Sie alle {{count}} Elemente wiederherstellen?",
+      "partialError": "Ein teilweiser Fehler ist aufgetreten."
+    },
+    "security": {
+      "passwordStatus": "Passwort-Status",
+      "passwordActive": "Aktiv",
+      "accountStatus": "Kontostatus",
+      "active": "Aktiv",
+      "banned": "Gesperrt",
+      "rankLevel": "Berechtigungsstufe",
+      "revokeSessionsTitle": "Alle Sitzungen beenden",
+      "revokeSessionsDesc": "Meldet Sie sofort von allen Geräten ab. Nutzen Sie dies bei unbefugtem Zugriff.",
+      "revokeBtn": "Überall abmelden",
+      "revokeTitle": "Alle abmelden?",
+      "revokeText": "Alle aktiven Token werden ungültig.",
+      "revokeConfirm": "Ja, abmelden",
+      "successTitle": "Erfolg",
+      "successText": "Alle Sitzungen beendet. Bitte neu anmelden.",
+      "loginHistory": "Anmeldeverlauf",
+      "comingSoon": "Demnächst verfügbar...",
+      "revokeError": "Sitzungen konnten nicht widerrufen werden."
+    },
+    "stats": {
+      "totalActions": "Gesamte Operationen",
+      "creates": "Erstellungen",
+      "updates": "Änderungen",
+      "deletes": "Löschungen",
+      "activityDistribution": "Aktivitätsverteilung",
+      "movesThisMonth": "Vorgänge diesen Monat",
+      "newProducts": "Neue Produkte erfasst",
+      "fetchError": "Fehler bei der Statistikberechnung:"
+    },
+    "system": {
+      "database": "Datenbank",
+      "connected": "Verbunden",
+      "error": "Fehler",
+      "uptime": "Betriebszeit",
+      "memory": "Speichernutzung",
+      "latency": "API-Latenz",
+      "recentEvents": "Letzte Systemereignisse",
+      "maintenance": "Wartung",
+      "maintenanceDesc": "Diagnosewerkzeuge zur Überprüfung der Datenbankintegrität ausführen.",
+      "runDiagnostic": "Diagnose starten",
+      "fetchError": "Fehler beim Abrufen des Systemstatus:"
+    },
+    "details": {
+      "requestRankTitle": "{{rank}} Berechtigung anfordern",
+      "requestRankText": "Möchten Sie wirklich {{rank}} Zugriff beantragen?",
+      "deleteTitle": "Konto endgültig löschen",
+      "deleteText": "Möchten Sie Ihr Konto wirklich löschen? Dies ist unwiderruflich!",
+      "deleteConfirm": "Ja, endgültig löschen",
+      "deleteAccount": "Konto löschen",
+      "deletedTitle": "Gelöscht",
+      "deletedText": "Ihr Konto wurde erfolgreich gelöscht.",
+      "namePending": "Namensänderung ausstehend...",
+      "requestKezelo": "Mitarbeiter anfordern",
+      "requestAdmin": "Admin anfordern",
+      "kezeloPending": "⏳ Mitarbeiter-Anfrage läuft",
+      "adminPending": "⏳ Admin-Anfrage läuft",
+      "nameChangedWarning": "Admin-Genehmigung erforderlich",
+      "alerts": {
+        "fetchRequestsError": "Anfragen konnten nicht geladen werden.",
+        "requestSent": "Anfrage gesendet!",
+        "deleteDeniedTitle": "Löschen verweigert",
+        "deleteDeniedText": "Sie sind der einzige aktive Administrator!",
+        "checkAdminError": "Admin-Anzahl konnte nicht geprüft werden."
+      },
+      "buttons": {
+        "updateRequest": "Anfrage aktualisieren"
+      }
+    },
+    "avatar": {
+      "cropTitle": "Bild zuschneiden",
+      "sourceTitle": "Bildquelle",
+      "uploadFile": "Datei hochladen",
+      "pasteHint": "Oder STRG+V drücken",
+      "urlPlaceholder": "Direkten Bild-URL einfügen...",
+      "urlError": "Fehler beim Laden des Bildes.",
+      "zoom": "Zoom",
+      "uploading": "Wird gespeichert...",
+      "saveBtn": "Bild speichern",
+      "modifyOverlay": "Ändern"
+    }
+  },
+  "logs": {
+    "labels": {
+      "name": "Name",
+      "quantity": "Menge",
+      "plot": "Parzelle",
+      "manufacturer": "Hersteller",
+      "price": "Preis"
+    },
+    "filters": {
+      "user": "Benutzer",
+      "allUsers": "Alle Benutzer",
+      "operation": "Vorgang",
+      "allOperations": "Alle Vorgänge",
+      "allActions": "Alle Aktionen",
+      "date": "Ab Datum",
+      "create": "✨ Erstellung",
+      "update": "📝 Änderung",
+      "delete": "🗑️ Löschung",
+      "bulkDelete": "🗑️ Massenlöschung",
+      "restore": "♻️ Wiederherstellen",
+      "filterBtn": "Filtern",
+      "exportBtn": "Export"
+    },
+    "operations": {
+      "create": "Erstellung",
+      "update": "Änderung",
+      "batch": "Lagerbewegung",
+      "delete": "Löschung",
+      "bulkDelete": "MASSENLÖSCHUNG",
+      "bulkItems": "Produkte gelöscht ({{count}} Stk)",
+      "productCreate": "Produkt neu angelegt",
+      "productDelete": "Produkt gelöscht",
+      "restored": "Wiederhergestellt"
+    },
+    "diff": {
+      "productAdded": "Produkt hinzugefügt",
+      "productDeleted": "Produkt gelöscht",
+      "dataChanged": "Daten geändert",
+      "productRestored": "Produkt reaktiviert",
+      "reverted": "Änderung rückgängig gemacht:"
+    },
+    "types": {
+      "split": "Teilumbuchung",
+      "move": "Umbuchung",
+      "merge": "Zusammenführung"
+    },
+    "fields": {
+      "sourceShelf": "Quellregal",
+      "targetShelf": "Zielregal",
+      "total": "Gesamt",
+      "system": "Systemprozess",
+      "na": "N/V"
+    },
+    "excel": {
+      "sheetName": "Protokoll",
+      "product": "PRODUKT",
+      "changes": "ÄNDERUNGEN",
+      "action": "VORGANG",
+      "user": "BENUTZER",
+      "date": "ZEITPUNKT",
+      "system": "System",
+      "unknown": "Unbekannt",
+      "ready": "Export fertig!"
+    },
+    "misc": {
+      "bulkDeleteCount": "Massenlöschung ({{count}} Pos.)",
+      "systemProcess": "Systemprozess",
+      "viewDetails": "Details anzeigen →",
+      "noLogs": "Keine Einträge vorhanden.",
+      "fetchError": "Fehler beim Laden des Protokolls:"
+    }
+  },
+  "product": {
+    "categories": {
+      "ELEKTRONIKA": "Elektronik",
+      "ELELMISZER": "Lebensmittel",
+      "VEGYSZER": "Chemie",
+      "IRODASZER": "Bürobedarf",
+      "AUTO_MOTOR": "Auto-Motor",
+      "RUHAZAT": "Kleidung",
+      "BARKACS": "Heimwerken",
+      "SPORT": "Sport",
+      "JATEK": "Spielzeug",
+      "HAZTARTAS": "Haushalt",
+      "KOZMETIKA": "Kosmetik",
+      "KONYVEK": "Bücher",
+      "BUTOR": "Möbel",
+      "EGESZSEGUGY": "Gesundheit",
+      "EGYEB": "Sonstiges"
+    },
+    "add": {
+      "title": "📦 Lager <span class=\"text-blue-600\">Einlagerung</span>",
+      "searchExisting": "Im Stammbestand suchen",
+      "searchPlaceholder": "Suche nach Name oder Hersteller...",
+      "select": "Wählen →",
+      "or": "ODER",
+      "createNew": "+ Neuen Artikel anlegen",
+      "selectedMaster": "Gewählter Stammartikel",
+      "masterData": "Stammdaten",
+      "name": "Produktname",
+      "namePlaceholder": "z.B. Stahlschraube",
+      "manufacturer": "Hersteller",
+      "manufacturerPlaceholder": "z.B. IronWorks GmbH",
+      "category": "Kategorie",
+      "weight": "Gewicht (kg / Stk)",
+      "purchasePrice": "Einkaufspreis (EUR)",
+      "salePrice": "Verkaufspreis (EUR)",
+      "minStock": "Mindestbestand",
+      "batchIntake": "Charge einlagern",
+      "expiry": "Haltbarkeit (Optional)",
+      "location": "Lagerort (Zielregal)",
+      "quantity": "Menge (Stk)",
+      "saveToWarehouse": "Im Lager speichern",
+      "alerts": {
+        "intakeSuccess": "Einlagerung erfolgreich! 📦",
+        "productCreated": "Produkt erfasst! ✨",
+        "errorOccurred": "Ein Fehler ist aufgetreten",
+        "errorText": "Netzwerkfehler oder Regal voll.",
+        "fetchError": "Fehler bei der Produktliste:",
+        "missingShelf": "Bitte Regal für alle Positionen wählen!",
+        "invalidAllocation": "Verteilte Menge stimmt nicht mit Gesamtmenge überein!"
+      }
+    },
+    "details": {
+      "back": "Zurück",
+      "backToHome": "Zur Startseite",
+      "notFoundTitle": "Produkt nicht gefunden",
+      "fetching": "Daten werden geladen...",
+      "deletedWarning": "⚠️ Achtung: Dieses Produkt ist gelöscht!",
+      "itemNumber": "Artikelnummer (ID)",
+      "masterData": "Stammdaten",
+      "weightUnit": "Gewicht (Einheit)",
+      "minStock": "Min. Bestand",
+      "purchasePrice": "Einkaufspreis",
+      "salePrice": "Verkaufspreis",
+      "stockStatus": "Lagerstatus",
+      "totalStock": "Gesamter Lagerbestand",
+      "criticalStock": "🚨 Kritischer Bestand",
+      "outOfStockAlert": "NICHT VORRÄTIG!",
+      "physicalLocation": "Lagerorte (Chargen)",
+      "expiry": "Haltbarkeitsdatum",
+      "nonPerishable": "Nicht verderblich",
+      "outOfStock": "Kein Bestand.",
+      "modify": "Bearbeiten",
+      "delete": "Löschen",
+      "alerts": {
+        "deleteConfirmTitle": "Sind Sie sicher?",
+        "deleteConfirmText": "Das gesamte Produkt \"{{name}}\" und alle Chargen werden unwiderruflich gelöscht!",
+        "yesDelete": "Ja, löschen!",
+        "deletedSuccess": "Produkt gelöscht! 🗑️",
+        "deleteFailed": "Löschen fehlgeschlagen."
+      }
+    },
+    "grid": {
+      "title": "Lagerplan",
+      "subtitle": "Interaktive Bestandsführung",
+      "sorting": "🪄 Sortieren",
+      "sector": "SEKTOR",
+      "emptyShelf": "Leeres Regal",
+      "selectSector": "Wählen Sie einen Sektor zur Übersicht",
+      "alerts": {
+        "weightStop": "Gewichtsstopp! 🛑",
+        "shelfFull": "Regal {{shelf}} ist voll.",
+        "moveHowMuch": "Wie viel möchten Sie umbuchen?",
+        "weightWarning": "⚠️ STOPP: Max. Kapazität {{max}} Stk!",
+        "moveBtn": "📦 Umbuchen",
+        "movedSuccess": "Umgebucht!",
+        "sortTitle": "Optimierung?",
+        "sortText": "Lager nach Kategorien sortieren.",
+        "start": "Starten",
+        "sortedSuccess": "Optimiert!"
+      }
+    },
+    "list": {
+      "title": "Lagerbestand",
+      "bulkDelete": "🗑️ Löschen ({{count}})",
+      "filterErrors": "🚨 Nur Fehler",
+      "filterAll": "⚠️ Filtern",
+      "export": "📊 Export",
+      "selectModeOn": "✖ Auswahl beenden",
+      "selectModeOff": "☑️ Mehrfachauswahl",
+      "newProduct": "+ Neu",
+      "searchPlaceholder": "Suche nach Name, Hersteller oder ID...",
+      "headers": {
+        "qr": "QR",
+        "product": "Produkt",
+        "category": "Kategorie",
+        "totalStock": "Bestand",
+        "actions": "Aktion"
+      },
+      "batches": "Chargen",
+      "nonPerishable": "Dauerware",
+      "details": "Details",
+      "allGoodTitle": "Alles in Ordnung",
+      "allGoodSubtitle": "Keine Maßnahmen erforderlich",
+      "print": "🖨️ Drucken",
+      "excel": {
+        "sheetName": "Bestand",
+        "name": "Artikelname",
+        "manufacturer": "Hersteller",
+        "category": "Kategorie",
+        "quantity": "Gesamtmenge",
+        "earliestExpiry": "Nächstes Ablaufdatum"
+      },
+      "alerts": {
+        "bulkDeleteTitle": "Massenlöschung",
+        "bulkDeleteText": "{{count}} Pos. löschen?",
+        "bulkDeleted": "Elemente gelöscht.",
+        "bulkDeleteFailed": "Fehler beim Massenlöschen.",
+        "deleteTitle": "Produkt löschen",
+        "deleteText": "Sicher löschen?",
+        "deleted": "Gelöscht.",
+        "deleteFailed": "Fehler.",
+        "excelReady": "Bericht fertig! 📊"
+      }
+    },
+    "modify": {
+      "tabs": { "physicalStock": "📦 Bestand", "masterData": "⚙️ Stammdaten" },
+      "deletedTitle": "Produkt gelöscht",
+      "restoreBtn": "Wiederherstellen",
+      "stockManagement": "Bestandsführung",
+      "selectBatch": "Zielregal (Charge) wählen",
+      "createNewBatch": "➕ NEUE CHARGE ANLEGEN",
+      "newBatchData": "Neue Chargendaten",
+      "location": "Lagerort (Regal)",
+      "expiry": "Haltbarkeit",
+      "quantity": "Menge (Stk)",
+      "execute": "Ausführen",
+      "editData": "Stammdaten bearbeiten",
+      "alerts": {
+        "restoreTitle": "Wiederherstellen?",
+        "restoreText": "Das Produkt wird wieder aktiviert.",
+        "restored": "Reaktiviert!",
+        "restoreFailed": "Fehlgeschlagen.",
+        "chooseBatch": "Wählen Sie eine Charge!",
+        "intakeSuccess": "+{{count}} Stk erhalten.",
+        "notEnoughStock": "Zu wenig Bestand. Max: {{max}} Stk",
+        "batchDeleted": "Charge leer und entfernt.",
+        "lastBatchEmpty": "Letzte Charge leer",
+        "deletePhysicalBatch": "Charge entfernen?",
+        "keepZero": "Als 0 belassen",
+        "stockUpdated": "Bestand aktualisiert.",
+        "dataUpdated": "Daten aktualisiert! ✨",
+        "saveFailed": "Fehler beim Speichern."
+      }
+    }
+  },
+  "inventory": {
+    "shelfMap": {
+      "title": "Interaktiver Lagerplan",
+      "sector": "Sektor",
+      "weight": "Aktuelles Gewicht",
+      "category": "Kategorie",
+      "empty": "Leer",
+      "low": "Geringe Last",
+      "mid": "Mittlere Last",
+      "high": "Hohe Last",
+      "recommended": "Empfohlener Platz"
+    },
+    "splitter": {
+      "title": "Mehrfach-Zuweisung",
+      "chooseMethod": "Wie soll der Bestand verteilt werden?",
+      "autoBtn": "🤖 Auto-Vorschlag",
+      "manualBtn": "📍 Manuell",
+      "autoTitle": "Automatisierte Verteilung",
+      "manualTitle": "Manuelle Zuweisung",
+      "allAllocated": "Alles zugewiesen",
+      "remainingQty": "Noch zuzuweisen: {{count}} Stk",
+      "shelf": "Regal",
+      "qty": "Menge",
+      "addSplit": "Weiteres Regal hinzufügen",
+      "overAllocated": "⚠️ Fehler: {{amount}} Stk zu viel verteilt!",
+      "invalidFormat": "Ungültig (z.B. A1-1)",
+      "alerts": {
+        "shelfFullTitle": "Hoppla, voll! 😅",
+        "shelfFullText": "Regal {{shelf}} ist bereits komplett voll."
+      }
+    }
+  },
+  "stockValue": {
+    "title": "Lagerwert-Rechner",
+    "subtitle": "Finanzanalyse in Echtzeit",
+    "manualRefresh": "🔄 Manuelle Aktualisierung",
+    "totalValue": "Gesamter Lagerwert",
+    "totalItems": "Gesamtstückzahl",
+    "activeSectors": "Aktive Sektoren",
+    "sectors": "Sektor",
+    "topProducts": "🏆 Wert-Ranking",
+    "territorialDistribution": "📍 Räumliche Verteilung",
+    "sectorLabel": "Sektor \"{{sector}}\"",
+    "share": "{{percent}}% Anteil",
+    "noLocation": "Kein Ort",
+    "billionFt": "Mrd. EUR",
+    "millionFt": "Mio. EUR",
+    "calculating": "Finanzdaten werden berechnet...",
+    "loadError": "Bestandsdaten konnten nicht geladen werden.",
+    "categoryDistribution": "📦 Verteilung nach Kategorien",
+    "sectorValues": "📍 Wert der Sektoren"
+  },
+  "auxiliary": {
+    "connection": {
+      "serverOffline": "Server offline",
+      "reconnecting": "Automatische Verbindung..."
+    },
+    "navbar": {
+      "products": "🏠 Produkte",
+      "overview": "📊 Übersicht",
+      "scanner": "📷 Scan",
+      "notifications": "🔔 Nachrichten",
+      "new": "neu",
+      "profile": "👤 Profil",
+      "darkTheme": "Dunkel",
+      "logout": "🚪 Abmelden",
+      "login": "Login",
+      "register": "Registrieren",
+      "searchPlaceholder": "Suche...",
+      "jump": "Gehe zu →",
+      "viewAll": "Alle anzeigen →",
+      "noNotifications": "Keine Nachrichten"
+    },
+    "notifications": {
+      "title": "🔔 Benachrichtigungen",
+      "unreadCount": "{{count}} ungelesen",
+      "allRead": "Alle gelesen",
+      "deleteReadBtn": "🗑️ Gelesene löschen",
+      "markAllReadBtn": "✓ Alles gelesen",
+      "emptyTitle": "Keine Nachrichten",
+      "emptyText": "Es liegen aktuell keine Warnungen vor.",
+      "readStatus": "Gelesen",
+      "markAsRead": "Gelesen",
+      "alerts": {
+        "allMarkedRead": "Alle als gelesen markiert!",
+        "deleteConfirmTitle": "Gelesene löschen?",
+        "deleteConfirmText": "Alle quittierten Nachrichten werden endgültig gelöscht!",
+        "yesDelete": "Ja, löschen!",
+        "deletedSuccess": "Nachrichten gelöscht!"
+      }
+    },
+    "scanner": {
+      "title": "📷 QR-SCANNER",
+      "camError": "Kamera nicht verfügbar.",
+      "searching": "Suche...",
+      "locations": "Orte",
+      "totalStock": "Gesamtbestand",
+      "detailsBtn": "Produktdatenblatt",
+      "newScanBtn": "Neuer Scan",
+      "backToMenu": "← Menü",
+      "noStock": "Nicht auf Lager",
+      "unknownLocation": "Unbekannter Ort",
+      "alerts": {
+        "invalidCodeTitle": "Ungültiger Code",
+        "invalidCodeText": "Dies ist kein gültiger WarehouseWeb-Code!",
+        "noMatchTitle": "Kein Treffer",
+        "noMatchText": "Produkt wurde im System nicht gefunden."
+      }
+    },
+    "search": {
+      "title": "Suchergebnisse",
+      "expression": "Begriff:",
+      "resultsCount": "{{count}} Treffer",
+      "scanningStock": "Bestand wird durchsucht...",
+      "lowStock": "Niedriger Bestand",
+      "inStock": "Auf Lager",
+      "location": "Ort",
+      "stock": "Bestand",
+      "noResultsTitle": "Keine Treffer...",
+      "noResultsText": "Der gesuchte Artikel wurde nicht gefunden.",
+      "backToHub": "Zur Basis"
+    }
+  },
+  "auth": {
+    "register": {
+      "title": "Konto erstellen",
+      "fullName": "Vollständiger Name *",
+      "fullNamePlaceholder": "z.B. Max Mustermann",
+      "username": "Benutzername *",
+      "usernamePlaceholder": "maxm88",
+      "email": "E-Mail-Adresse *",
+      "emailPlaceholder": "beispiel@mail.de",
+      "phone": "Telefonnummer (International) *",
+      "password": "Passwort *",
+      "passwordPlaceholder": "••••••••",
+      "submit": "Registrierung abschließen",
+      "backToLogin": "Zurück zum Login",
+      "validation": {
+        "nameEmpty": "Name ist erforderlich!",
+        "nameNumbers": "Name darf keine Zahlen enthalten!",
+        "nameTwoWords": "Vor- und Nachname erforderlich!",
+        "usernameShort": "Mind. 4 Zeichen!",
+        "emailInvalid": "Ungültige E-Mail!",
+        "phoneRequired": "Telefonnummer erforderlich!",
+        "passwordShort": "Mind. 8 Zeichen erforderlich!",
+        "passwordWeak": "Groß-, Kleinschreibung und Zahl/Symbol nötig!"
+      },
+      "alerts": {
+        "fillAll": "Bitte füllen Sie alle Felder korrekt aus!",
+        "successTitle": "Registrierung erfolgreich! ✨",
+        "successText": "Sie können sich jetzt anmelden.",
+        "errorTitle": "Fehler"
+      }
+    },
+    "login": {
+      "title": "Login",
+      "fillDemo": "🔑 Passwort einfügen",
+      "username": "Benutzername",
+      "usernamePlaceholder": "Name eingeben...",
+      "password": "Passwort",
+      "passwordPlaceholder": "••••••••",
+      "forgotPassword": "Vergessen?",
+      "submit": "Anmelden",
+      "registerNew": "Neues Konto erstellen",
+      "alerts": {
+        "accessDenied": "Zugriff verweigert",
+        "sessionLost": "Sitzung unterbrochen",
+        "bannedText": "Dieses Konto wurde gesperrt.",
+        "sessionExpiredText": "Sitzung abgelaufen. Bitte neu anmelden.",
+        "gotIt": "Verstanden",
+        "welcomeBack": "Willkommen zurück!",
+        "bannedTitle": "Gesperrt!",
+        "bannedFooter": "Admin kontaktieren",
+        "bannedServerMsg": "Konto darf sich nicht anmelden.",
+        "wrongCredentials": "Benutzername oder Passwort falsch!",
+        "oops": "Hoppla..."
+      }
+    },
+    "forgotPassword": {
+      "title": "Passwort zurücksetzen",
+      "subtitle": "Sicherheitsdaten eingeben.",
+      "username": "Benutzername",
+      "usernamePlaceholder": "z.B. maxm88",
+      "email": "Registrierte E-Mail",
+      "emailPlaceholder": "beispiel@mail.de",
+      "phone": "Registrierte Telefonnummer",
+      "submit": "Neues Passwort anfordern",
+      "checking": "Wird geprüft...",
+      "backToLogin": "← Login",
+      "alerts": {
+        "fillValid": "Alle Felder ausfüllen!",
+        "successTitle": "Identifizierung erfolgreich!",
+        "successHtml1": "Temporäres Passwort generiert.",
+        "successHtml2": "Nach dem Login müssen Sie es ändern!",
+        "goToLogin": "Zum Login",
+        "errorOccurred": "Fehler",
+        "verifyError": "Fehler bei der Datenprüfung.",
+        "understand": "Verstanden"
+      }
+    },
+    "forceChange": {
+      "title": "Passwortänderung erforderlich",
+      "subtitle": "Legen Sie ein neues, sicheres Passwort fest!",
+      "tempPassword": "Temporäres Passwort",
+      "tempPlaceholder": "Das eben erhaltene...",
+      "newPassword": "Neues Passwort",
+      "newPlaceholder": "Mind. 8 Zeichen",
+      "newPasswordAgain": "Passwort bestätigen",
+      "newAgainPlaceholder": "Bestätigen",
+      "submit": "Passwort ändern",
+      "updating": "Wird aktualisiert...",
+      "logoutAndCancel": "← Abbrechen",
+      "alerts": {
+        "missingSession": "Sitzung fehlt!",
+        "shortPassword": "Mindestens 8 Zeichen!",
+        "weakPassword": "Groß-, Kleinschreibung und Zahl/Symbol!",
+        "passwordMismatch": "Passwörter stimmen nicht überein!",
+        "successTitle": "Passwort aktualisiert! ✨",
+        "successText": "Mit neuem Passwort anmelden.",
+        "goToLogin": "Zum Login",
+        "errorTitle": "Fehler",
+        "updateError": "Fehler beim Ändern des Passworts.",
+        "understand": "Verstanden"
+      }
+    }
+  },
+  "hooks": {
+    "realTime": {
+      "alerts": {
+        "accountSuspended": "Ihr Konto wurde gesperrt.",
+        "connectionLost": "Verbindung zum Server unterbrochen."
+      }
+    }
+  },
+  "languages": {
+    "hu": "Ungarisch",
+    "en": "Englisch",
+    "de": "Deutsch",
+    "it": "Italienisch",
+    "fr": "Französisch",
+    "es": "Spanisch",
+    "pt": "Portugiesisch",
+    "pl": "Polnisch",
+    "ru": "Russisch",
+    "ko": "Koreanisch",
+    "zh": "Chinesisch",
+    "ja": "Japanisch"
+  }
+}

@@ -108,9 +108,9 @@ function ProductModify() {
         setIsDeleted(data.isDeleted);
       }
     } catch (err) {
-      console.error("Hiba az adatok frissítésekor:", err);
+      console.error(t("product.add.alerts.fetchError"), err);
     }
-  }, [id, isAdmin, user, inputValue, selectedBatchId, selectedShelfFromMap]);
+  }, [id, isAdmin, user, inputValue, selectedBatchId, selectedShelfFromMap, t]);
 
   useAutoRefresh(loadData);
 
@@ -133,8 +133,8 @@ function ProductModify() {
         if (canFitQty <= 0) {
            MySwal.fire({
                icon: "warning",
-               title: "Hoppá, vak vagy? 😅",
-               text: `A(z) ${parcella} polc már teljesen tele van. Válassz másikat!`,
+               title: t("inventory.splitter.alerts.shelfFullTitle"),
+               text: t("inventory.splitter.alerts.shelfFullText", { shelf: parcella }),
            });
            setInputValue(0);
            return; 
@@ -159,7 +159,7 @@ function ProductModify() {
 
       if (selectedBatchId === "NEW") {
         const parcella = selectedShelfFromMap;
-        if (!parcella) return MySwal.fire(t("common.error"), t("product.modify.alerts.missingShelf"), "error");
+        if (!parcella) return MySwal.fire(t("common.error"), t("product.add.alerts.missingShelf"), "error");
         
         const shelfWeight = mapData?.shelves[parcella]?.weight || 0;
         const addedWeight = inputValue * masterForm.suly;
@@ -194,7 +194,6 @@ function ProductModify() {
         await updateBatch(targetBatch.id, { mennyiseg: newQuantity }, user.id);
         toast.fire({ icon: "success", title: t("product.modify.alerts.stockUpdated") });
 
-        // Ha a kiválasztott sarzs elfogyott, jelezzük
         if (newQuantity === 0) {
           isZeroedOut = true;
         }
@@ -202,7 +201,6 @@ function ProductModify() {
 
       setInputValue(0);
       
-      // Ha a sarzs 0 lett és ezáltal törlődött, visszaváltunk NEW módba
       if (isZeroedOut) {
         setSelectedBatchId("NEW");
       }
@@ -375,7 +373,7 @@ function ProductModify() {
           </>
         ) : (
           <form onSubmit={handleMasterSubmit} className="lg:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-8 animate-in fade-in">
-             <div className="md:col-span-2 border-b border-slate-100 dark:border-slate-800 pb-4">
+              <div className="md:col-span-2 border-b border-slate-100 dark:border-slate-800 pb-4">
                 <h2 className="text-3xl font-black dark:text-white uppercase italic tracking-tighter">{t("product.modify.editData")}</h2>
               </div>
               <div className="md:col-span-2">

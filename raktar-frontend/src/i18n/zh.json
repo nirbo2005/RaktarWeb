@@ -1,0 +1,692 @@
+{
+  "header": {
+    "admin": "管理员",
+    "handler": "操作员",
+    "viewer": "查看者",
+    "anonymous": "匿名用户",
+    "logout": "退出登录"
+  },
+  "common": {
+    "save": "保存",
+    "cancel": "取消",
+    "error": "错误！",
+    "success": "操作成功！",
+    "search": "搜索...",
+    "noResults": "无结果",
+    "identifying": "识别中...",
+    "updating": "更新中...",
+    "close": "关闭",
+    "yes": "是",
+    "back": "返回",
+    "pieces": "件",
+    "open": "打开",
+    "filterBtn": "筛选",
+    "restore": "撤销",
+    "unknown": "未知",
+    "reset": "重置",
+    "loading": "加载中",
+    "next": "下一步"
+  },
+  "admin": {
+    "editTitle": "编辑：{{name}}",
+    "fullName": "姓名",
+    "rank": "职级",
+    "phone": "电话号码（必填）",
+    "newPassword": "新密码（如不修改请留空）",
+    "pendingRequests": "待处理申请",
+    "noRequests": "暂无待处理申请。",
+    "systemUsers": "系统用户",
+    "validation": {
+      "nameRequired": "姓名必填！",
+      "nameNoNumbers": "姓名中不能包含数字！",
+      "phoneRequired": "电话号码必填！"
+    },
+    "alerts": {
+      "fixErrors": "请修正错误！",
+      "userUpdated": "用户信息已更新！",
+      "saveFailed": "保存失败。",
+      "cantBanSelf": "你不能禁用你自己！",
+      "accountUnbanned": "账号已解锁",
+      "accountBanned": "账号已停用",
+      "actionFailed": "操作失败。",
+      "cantDeleteSelf": "你不能删除自己的管理员账号！",
+      "deleteTitle": "永久删除？",
+      "deleteText": "确定要删除用户 {{name}} 吗？此操作不可撤销！",
+      "yesDelete": "是的，删除！",
+      "userDeleted": "用户已删除",
+      "deleteFailed": "删除失败。",
+      "accepted": "已接受",
+      "rejected": "已拒绝",
+      "fetchError": "加载管理员数据时出错："
+    }
+  },
+  "details": {
+    "fullName": "姓名",
+    "adminApprovalNeeded": "需要管理员审批",
+    "phoneLabel": "电话号码（国际格式）*",
+    "username": "用户名",
+    "email": "电子邮箱",
+    "oldPassword": "旧密码",
+    "newPassword": "新密码",
+    "buttons": {
+      "fixErrors": "修正错误中...",
+      "noChanges": "🤔 没有任何变化...",
+      "saveAndRequest": "💾 保存并申请改名",
+      "saveData": "💾 保存数据"
+    },
+    "validation": {
+      "nameEmpty": "姓名不能为空！",
+      "nameNumbers": "姓名不能包含数字！",
+      "emailInvalid": "邮箱格式不正确！",
+      "phoneRequired": "必须填写电话号码！"
+    },
+    "alerts": {
+      "noChanges": "一切照旧... 😴",
+      "fixBeforeSave": "保存前请先修正错误！",
+      "oldPassRequired": "必须提供旧密码！",
+      "dataUpdated": "数据已更新！ ✨",
+      "errorOccurred": "发生了一个错误！"
+    }
+  },
+  "profile": {
+    "dashboard": {
+      "details": { "title": "个人资料", "desc": "姓名、联系方式和密码管理" },
+      "stats": { "title": "统计数据", "desc": "个人活跃度与绩效分析" },
+      "logs": { "title": "操作日志", "desc": "追踪系统操作记录" },
+      "security": { "title": "安全中心", "desc": "会话管理与账号保护" },
+      "stock": { "title": "库存价值", "desc": "财务报告与库存数据" },
+      "admin": { "title": "系统管理", "desc": "用户管理与权限申请处理" },
+      "system": { "title": "系统状态", "desc": "服务器诊断与性能指标" }
+    },
+    "tabs": {
+      "myProfile": "👤 我的资料",
+      "activityLog": "📜 操作日志",
+      "administration": "🛡️ 系统管理"
+    },
+    "alerts": {
+      "restoreTitle": "还原？",
+      "restoreText": "确定要还原到原始状态吗？",
+      "restoreBtn": "还原",
+      "restored": "撤销成功！",
+      "restoreFailed": "操作失败。",
+      "groupRestoreTitle": "批量还原",
+      "groupRestoreText": "确定要还原所有 {{count}} 个项目吗？",
+      "partialError": "发生了部分错误。"
+    },
+    "security": {
+      "passwordStatus": "密码状态",
+      "passwordActive": "有效",
+      "accountStatus": "账号状态",
+      "active": "正常",
+      "banned": "已禁用",
+      "rankLevel": "权限等级",
+      "revokeSessionsTitle": "注销所有会话",
+      "revokeSessionsDesc": "立即从所有设备注销，包括当前设备。如果您怀疑账号被盗，请使用此功能。",
+      "revokeBtn": "注销所有设备",
+      "revokeTitle": "注销所有人？",
+      "revokeText": "所有有效的令牌都将失效。",
+      "revokeConfirm": "是的，注销",
+      "successTitle": "成功",
+      "successText": "所有会话已关闭。请重新登录。",
+      "loginHistory": "登录历史",
+      "comingSoon": "即将推出...",
+      "revokeError": "无法注销会话。"
+    },
+    "stats": {
+      "totalActions": "总操作数",
+      "creates": "创建次数",
+      "updates": "修改次数",
+      "deletes": "删除次数",
+      "activityDistribution": "活跃度分布",
+      "movesThisMonth": "本月操作数",
+      "newProducts": "新增产品记录",
+      "fetchError": "计算统计数据时出错："
+    },
+    "system": {
+      "database": "数据库",
+      "connected": "已连接",
+      "error": "错误",
+      "uptime": "运行时间",
+      "memory": "内存占用",
+      "latency": "接口延迟",
+      "recentEvents": "最近系统事件",
+      "maintenance": "系统维护",
+      "maintenanceDesc": "运行诊断工具以检查数据库完整性和服务器优化。",
+      "runDiagnostic": "开始诊断",
+      "fetchError": "获取系统状态时出错："
+    },
+    "details": {
+      "requestRankTitle": "申请 {{rank}} 权限",
+      "requestRankText": "确定要向系统申请 {{rank}} 访问权限吗？",
+      "deleteTitle": "永久注销账号",
+      "deleteText": "确定要删除您的账号吗？此操作无法撤销，所有个人数据都将丢失！",
+      "deleteConfirm": "是的，永久删除",
+      "deleteAccount": "注销账号",
+      "deletedTitle": "已注销",
+      "deletedText": "您的账号已成功删除。",
+      "namePending": "更名申请审核中...",
+      "requestKezelo": "申请操作员",
+      "requestAdmin": "申请管理员",
+      "kezeloPending": "⏳ 操作员权限申请中",
+      "adminPending": "⏳ 管理员权限申请中",
+      "nameChangedWarning": "需要管理员审批",
+      "alerts": {
+        "fetchRequestsError": "无法获取申请记录。",
+        "requestSent": "权限申请已发送！",
+        "deleteDeniedTitle": "注销被拒绝",
+        "deleteDeniedText": "您是系统中唯一的活跃管理员！",
+        "checkAdminError": "无法验证管理员数量。"
+      },
+      "buttons": {
+        "updateRequest": "更新申请"
+      }
+    },
+    "avatar": {
+      "cropTitle": "裁剪图片",
+      "sourceTitle": "图片来源",
+      "uploadFile": "上传文件",
+      "pasteHint": "或按 CTRL+V 粘贴",
+      "urlPlaceholder": "粘贴图片直链地址...",
+      "urlError": "加载图片时出错。",
+      "zoom": "缩放",
+      "uploading": "正在保存...",
+      "saveBtn": "保存图片",
+      "modifyOverlay": "修改"
+    }
+  },
+  "logs": {
+    "labels": {
+      "name": "名称",
+      "quantity": "数量",
+      "plot": "货位",
+      "manufacturer": "生产商",
+      "price": "价格"
+    },
+    "filters": {
+      "user": "用户",
+      "allUsers": "所有用户",
+      "operation": "操作类型",
+      "allOperations": "所有操作",
+      "allActions": "所有动作",
+      "date": "起始日期",
+      "create": "✨ 创建",
+      "update": "📝 修改",
+      "delete": "🗑️ 删除",
+      "bulkDelete": "🗑️ 批量删除",
+      "restore": "♻️ 恢复",
+      "filterBtn": "筛选",
+      "exportBtn": "导出"
+    },
+    "operations": {
+      "create": "创建",
+      "update": "修改",
+      "batch": "库存变动",
+      "delete": "删除",
+      "bulkDelete": "批量删除",
+      "bulkItems": "已删除产品（{{count}} 件）",
+      "productCreate": "录入新产品",
+      "productDelete": "删除产品",
+      "restored": "已恢复"
+    },
+    "diff": {
+      "productAdded": "产品已添加",
+      "productDeleted": "产品已删除",
+      "dataChanged": "数据发生变更",
+      "productRestored": "产品已还原",
+      "reverted": "修改已撤销："
+    },
+    "types": {
+      "split": "部分移库",
+      "move": "全量移库",
+      "merge": "库存合并"
+    },
+    "fields": {
+      "sourceShelf": "原始货架",
+      "targetShelf": "目标货架",
+      "total": "总计",
+      "system": "系统进程",
+      "na": "不适用"
+    },
+    "excel": {
+      "sheetName": "操作日志",
+      "product": "产品",
+      "changes": "变更详情",
+      "action": "操作",
+      "user": "操作员",
+      "date": "时间",
+      "system": "系统",
+      "unknown": "未知",
+      "ready": "Excel 导出成功！"
+    },
+    "misc": {
+      "bulkDeleteCount": "批量删除（{{count}} 项）",
+      "systemProcess": "系统进程",
+      "viewDetails": "查看详情 →",
+      "noLogs": "暂无日志记录。",
+      "fetchError": "加载日志时出错："
+    }
+  },
+  "product": {
+    "categories": {
+      "ELEKTRONIKA": "电子产品",
+      "ELELMISZER": "食品",
+      "VEGYSZER": "化学制品",
+      "IRODASZER": "办公用品",
+      "AUTO_MOTOR": "汽车配件",
+      "RUHAZAT": "服装鞋帽",
+      "BARKACS": "五金工具",
+      "SPORT": "体育用品",
+      "JATEK": "玩具",
+      "HAZTARTAS": "家用电器",
+      "KOZMETIKA": "化妆品",
+      "KONYVEK": "图书",
+      "BUTOR": "家具",
+      "EGESZSEGUGY": "医疗保健",
+      "EGYEB": "其他"
+    },
+    "add": {
+      "title": "📦 仓库 <span class=\"text-blue-600\">入库管理</span>",
+      "searchExisting": "在现有品类中搜索",
+      "searchPlaceholder": "按名称或生产商搜索...",
+      "select": "选择 →",
+      "or": "或者",
+      "createNew": "+ 创建新品类",
+      "selectedMaster": "已选品类",
+      "masterData": "主数据",
+      "name": "产品名称",
+      "namePlaceholder": "例如：钢制螺丝",
+      "manufacturer": "生产商",
+      "manufacturerPlaceholder": "例如：钢铁工业有限公司",
+      "category": "类别",
+      "weight": "重量（公斤/件）",
+      "purchasePrice": "进货价 (元)",
+      "salePrice": "销售价 (元)",
+      "minStock": "最低库存",
+      "batchIntake": "批次入库",
+      "expiry": "保质期（可选）",
+      "location": "存放货位（目标货架）",
+      "quantity": "数量（件）",
+      "saveToWarehouse": "保存入库",
+      "alerts": {
+        "intakeSuccess": "入库成功！ 📦",
+        "productCreated": "产品已登记！ ✨",
+        "errorOccurred": "发生错误",
+        "errorText": "网络错误或货架已满。",
+        "fetchError": "更新产品列表时出错：",
+        "missingShelf": "请为所有项目分配货位！",
+        "invalidAllocation": "分配数量与总数量不符！"
+      }
+    },
+    "details": {
+      "back": "返回",
+      "backToHome": "返回首页",
+      "notFoundTitle": "未找到该产品",
+      "fetching": "正在获取数据...",
+      "deletedWarning": "⚠️ 警告：此产品处于已删除状态！",
+      "itemNumber": "产品编号 (ID)",
+      "masterData": "主数据详情",
+      "weightUnit": "重量 (单位)",
+      "minStock": "最低库存量",
+      "purchasePrice": "进货价格",
+      "salePrice": "销售价格",
+      "stockStatus": "库存状态",
+      "totalStock": "当前总库存量",
+      "criticalStock": "🚨 库存告急",
+      "outOfStockAlert": "库存短缺！",
+      "physicalLocation": "物理库位 (批次)",
+      "expiry": "有效期/过期时间",
+      "nonPerishable": "非易腐品",
+      "outOfStock": "无库存。",
+      "modify": "修改",
+      "delete": "删除",
+      "alerts": {
+        "deleteConfirmTitle": "您确定吗？",
+        "deleteConfirmText": "“{{name}}”的所有主数据及相关物理批次将从系统中彻底删除！",
+        "yesDelete": "是的，删除！",
+        "deletedSuccess": "产品已删除！ 🗑️",
+        "deleteFailed": "删除失败。"
+      }
+    },
+    "grid": {
+      "title": "仓库平面图",
+      "subtitle": "交互式库存管理",
+      "sorting": "🪄 自动排列",
+      "sector": "区域",
+      "emptyShelf": "空货架",
+      "selectSector": "请选择一个区域以查看详情",
+      "alerts": {
+        "weightStop": "重量超限！ 🛑",
+        "shelfFull": "货架 {{shelf}} 已完全装满。",
+        "moveHowMuch": "您想要移动多少数量？",
+        "weightWarning": "⚠️ 重量超限：最大承载 {{max}} 件！",
+        "moveBtn": "📦 移库",
+        "movedSuccess": "移库成功！",
+        "sortTitle": "需要优化吗？",
+        "sortText": "按类别重新排列仓库布局。",
+        "start": "开始",
+        "sortedSuccess": "优化完成！"
+      }
+    },
+    "list": {
+      "title": "库存看板",
+      "bulkDelete": "🗑️ 删除 ({{count}})",
+      "filterErrors": "🚨 仅显示异常",
+      "filterAll": "⚠️ 筛选",
+      "export": "📊 导出",
+      "selectModeOn": "✖ 取消选择",
+      "selectModeOff": "☑️ 批量选择",
+      "newProduct": "+ 新增产品",
+      "searchPlaceholder": "按名称、生产商或 ID 搜索...",
+      "headers": {
+        "qr": "二维码",
+        "product": "产品",
+        "category": "类别",
+        "totalStock": "总库存",
+        "actions": "操作"
+      },
+      "batches": "批次详情",
+      "nonPerishable": "常年有效",
+      "details": "查看详情",
+      "allGoodTitle": "所有货架正常",
+      "allGoodSubtitle": "目前没有需要干预的项目",
+      "print": "🖨️ 打印",
+      "excel": {
+        "sheetName": "库存列表",
+        "name": "产品名称",
+        "manufacturer": "生产商",
+        "category": "类别",
+        "quantity": "总计数量 (件)",
+        "earliestExpiry": "最近过期时间"
+      },
+      "alerts": {
+        "bulkDeleteTitle": "批量删除",
+        "bulkDeleteText": "确定要删除这 {{count}} 个项目吗？",
+        "bulkDeleted": "项目已删除。",
+        "bulkDeleteFailed": "批量删除失败。",
+        "deleteTitle": "删除产品",
+        "deleteText": "确定要删除吗？",
+        "deleted": "产品已删除。",
+        "deleteFailed": "删除失败。",
+        "excelReady": "Excel 报表已生成！ 📊"
+      }
+    },
+    "modify": {
+      "tabs": { "physicalStock": "📦 实物库存", "masterData": "⚙️ 品类属性" },
+      "deletedTitle": "产品已删除",
+      "restoreBtn": "立即恢复",
+      "stockManagement": "库存管理",
+      "selectBatch": "请选择具体存放货位（批次）",
+      "createNewBatch": "➕ 创建新批次",
+      "newBatchData": "新批次数据",
+      "location": "货位 (货架)",
+      "expiry": "过期时间",
+      "quantity": "数量 (件)",
+      "execute": "执行操作",
+      "editData": "编辑主数据",
+      "alerts": {
+        "restoreTitle": "还原产品？",
+        "restoreText": "产品将重新恢复为可用状态。",
+        "restored": "已重新激活！",
+        "restoreFailed": "还原失败。",
+        "chooseBatch": "请选择一个现有批次！",
+        "intakeSuccess": "已入库 +{{count}} 件。",
+        "notEnoughStock": "库存不足。最大可用：{{max}} 件",
+        "batchDeleted": "该批次已清空并被系统移除。",
+        "lastBatchEmpty": "最后一个批次已清空",
+        "deletePhysicalBatch": "确定要删除实物批次吗？",
+        "keepZero": "保持为 0",
+        "stockUpdated": "库存已更新。",
+        "dataUpdated": "数据已更新！ ✨",
+        "saveFailed": "保存失败。"
+      }
+    }
+  },
+  "inventory": {
+    "shelfMap": {
+      "title": "交互式货架分布图",
+      "sector": "区域",
+      "weight": "当前负载",
+      "category": "存放类别",
+      "empty": "空仓",
+      "low": "轻度负载",
+      "mid": "中度负载",
+      "high": "重度负载",
+      "recommended": "推荐货位"
+    },
+    "splitter": {
+      "title": "多货位分配",
+      "chooseMethod": "您希望如何摆放这些货物？",
+      "autoBtn": "🤖 智能推荐",
+      "manualBtn": "📍 手动选择",
+      "autoTitle": "自动分配计划",
+      "manualTitle": "手动货架分配",
+      "allAllocated": "所有货物已就位",
+      "remainingQty": "待分配数量：{{count}} 件",
+      "shelf": "货架",
+      "qty": "分配数量",
+      "addSplit": "分配到更多货架",
+      "overAllocated": "⚠️ 错误：您多分配了 {{amount}} 件！",
+      "invalidFormat": "格式无效（例如：A1-1）",
+      "alerts": {
+        "shelfFullTitle": "哎呀，你没看到吗？ 😅",
+        "shelfFullText": "货架 {{shelf}} 已经完全装满了。换一个吧！"
+      }
+    }
+  },
+  "stockValue": {
+    "title": "库存价值计算器",
+    "subtitle": "实时财务数据分析",
+    "manualRefresh": "🔄 手动刷新",
+    "totalValue": "仓库总资产价值",
+    "totalItems": "货件总数",
+    "activeSectors": "活跃区域数",
+    "sectors": "个区域",
+    "topProducts": "🏆 高价值资产排行",
+    "territorialDistribution": "📍 地域分布统计",
+    "sectorLabel": "“{{sector}}”区域",
+    "share": "占比 {{percent}}%",
+    "noLocation": "未分配货位",
+    "billionFt": "十亿元",
+    "millionFt": "百万元",
+    "calculating": "正在计算财务数据...",
+    "loadError": "无法加载库存价值数据。",
+    "categoryDistribution": "📦 按类别分布情况",
+    "sectorValues": "📍 各区域资产价值"
+  },
+  "auxiliary": {
+    "connection": {
+      "serverOffline": "服务器离线",
+      "reconnecting": "正在尝试自动重连..."
+    },
+    "navbar": {
+      "products": "🏠 产品列表",
+      "overview": "📊 系统概览",
+      "scanner": "📷 扫描入库",
+      "notifications": "🔔 通知",
+      "new": "条新",
+      "profile": "👤 个人中心",
+      "darkTheme": "深色模式",
+      "logout": "🚪 退出登录",
+      "login": "登录",
+      "register": "注册",
+      "searchPlaceholder": "搜索中...",
+      "jump": "跳转至 →",
+      "viewAll": "查看全部 →",
+      "noNotifications": "暂无通知"
+    },
+    "notifications": {
+      "title": "🔔 通知中心",
+      "unreadCount": "{{count}} 条未读消息",
+      "allRead": "所有消息已读",
+      "deleteReadBtn": "🗑️ 删除已读",
+      "markAllReadBtn": "✓ 全部设为已读",
+      "emptyTitle": "暂无通知",
+      "emptyText": "目前系统内没有任何告警。",
+      "readStatus": "已读",
+      "markAsRead": "设为已读",
+      "alerts": {
+        "allMarkedRead": "所有通知已标为已读！",
+        "deleteConfirmTitle": "确定删除已读消息？",
+        "deleteConfirmText": "所有已确认的通知将永久消失！",
+        "yesDelete": "是的，删除它们！",
+        "deletedSuccess": "已读通知已清理！"
+      }
+    },
+    "scanner": {
+      "title": "📷 二维码扫描器",
+      "camError": "无法调用摄像头或权限被拒绝。",
+      "searching": "检索中...",
+      "locations": "货位详情",
+      "totalStock": "总库存量",
+      "detailsBtn": "查看产品档案",
+      "newScanBtn": "重新扫描",
+      "backToMenu": "← 返回菜单",
+      "noStock": "暂无库存",
+      "unknownLocation": "未知货位",
+      "alerts": {
+        "invalidCodeTitle": "无效代码",
+        "invalidCodeText": "这不是有效的 WarehouseWeb 二维码！",
+        "noMatchTitle": "未找到匹配项",
+        "noMatchText": "系统中不存在所扫描的产品。"
+      }
+    },
+    "search": {
+      "title": "搜索结果",
+      "expression": "搜索关键词：",
+      "resultsCount": "{{count}} 个匹配项",
+      "scanningStock": "正在检索库存...",
+      "lowStock": "库存不足",
+      "inStock": "有货",
+      "location": "货位",
+      "stock": "现货",
+      "noResultsTitle": "未找到相关结果...",
+      "noResultsText": "系统中没有找到您查询的物品。",
+      "backToHub": "返回中心"
+    }
+  },
+  "auth": {
+    "register": {
+      "title": "创建新账号",
+      "fullName": "真实姓名 *",
+      "fullNamePlaceholder": "例如：张三",
+      "username": "用户名 *",
+      "usernamePlaceholder": "zhangsan88",
+      "email": "电子邮箱 *",
+      "emailPlaceholder": "example@email.com",
+      "phone": "电话号码（国际格式）*",
+      "password": "密码 *",
+      "passwordPlaceholder": "••••••••",
+      "submit": "完成注册",
+      "backToLogin": "返回登录页面",
+      "validation": {
+        "nameEmpty": "姓名为必填项！",
+        "nameNumbers": "姓名中不应包含数字！",
+        "nameTwoWords": "请输入完整的姓和名！",
+        "usernameShort": "至少 4 个字符！",
+        "emailInvalid": "电子邮箱格式不正确！",
+        "phoneRequired": "必须填写电话号码！",
+        "passwordShort": "密码至少需要 8 个字符！",
+        "passwordWeak": "需包含大小写字母、数字及符号！"
+      },
+      "alerts": {
+        "fillAll": "请正确填写所有必填字段！",
+        "successTitle": "注册成功！ ✨",
+        "successText": "您现在可以登录您的账号了。",
+        "errorTitle": "注册失败"
+      }
+    },
+    "login": {
+      "title": "系统登录",
+      "fillDemo": "🔑 自动填充密码",
+      "username": "用户名",
+      "usernamePlaceholder": "请输入您的用户名...",
+      "password": "密码",
+      "passwordPlaceholder": "••••••••",
+      "forgotPassword": "忘记密码了？",
+      "submit": "进入系统",
+      "registerNew": "注册新账号",
+      "alerts": {
+        "accessDenied": "访问被拒绝",
+        "sessionLost": "会话已中断",
+        "bannedText": "此账号已被停用。",
+        "sessionExpiredText": "登录已超时，请重新登录。",
+        "gotIt": "知道了",
+        "welcomeBack": "欢迎回来！",
+        "bannedTitle": "您已被禁止访问！",
+        "bannedFooter": "请联系系统管理员",
+        "bannedServerMsg": "该账号无法进入系统。",
+        "wrongCredentials": "用户名或密码错误！",
+        "oops": "哎呀..."
+      }
+    },
+    "forgotPassword": {
+      "title": "重置密码",
+      "subtitle": "请输入您账号绑定的安全信息。",
+      "username": "用户名",
+      "usernamePlaceholder": "例如：zhangsan88",
+      "email": "绑定邮箱",
+      "emailPlaceholder": "example@email.com",
+      "phone": "绑定手机号",
+      "submit": "获取临时密码",
+      "checking": "正在验证信息...",
+      "backToLogin": "← 返回登录页面",
+      "alerts": {
+        "fillValid": "请填写所有信息！",
+        "successTitle": "身份验证通过！",
+        "successHtml1": "您的临时密码已生成。",
+        "successHtml2": "登录后必须立即修改密码！",
+        "goToLogin": "前往登录",
+        "errorOccurred": "发生错误",
+        "verifyError": "验证信息时出错。",
+        "understand": "明白"
+      }
+    },
+    "forceChange": {
+      "title": "强制修改密码",
+      "subtitle": "请设置一个新的安全密码！",
+      "tempPassword": "临时密码",
+      "tempPlaceholder": "您刚才收到的密码...",
+      "newPassword": "新密码",
+      "newPlaceholder": "至少 8 个字符",
+      "newPasswordAgain": "再次输入新密码",
+      "newAgainPlaceholder": "请确认新密码",
+      "submit": "更新密码",
+      "updating": "正在更新...",
+      "logoutAndCancel": "← 取消操作",
+      "alerts": {
+        "missingSession": "会话信息缺失！",
+        "shortPassword": "至少 8 个字符！",
+        "weakPassword": "需包含大小写字母、数字及符号！",
+        "passwordMismatch": "两次输入的密码不一致！",
+        "successTitle": "密码更新成功！ ✨",
+        "successText": "请使用您的新密码重新登录。",
+        "goToLogin": "前往登录页面",
+        "errorTitle": "发生错误",
+        "updateError": "更新密码时出错。",
+        "understand": "明白"
+      }
+    }
+  },
+  "hooks": {
+    "realTime": {
+      "alerts": {
+        "accountSuspended": "您的账号已被停用。",
+        "connectionLost": "与服务器的连接已断开。"
+      }
+    }
+  },
+  "languages": {
+    "hu": "匈牙利语",
+    "en": "英语",
+    "de": "德语",
+    "it": "意大利语",
+    "fr": "法语",
+    "es": "西班牙语",
+    "pt": "葡萄牙语",
+    "pl": "波兰语",
+    "ru": "俄语",
+    "ko": "韩语",
+    "zh": "中文",
+    "ja": "日语"
+  }
+}

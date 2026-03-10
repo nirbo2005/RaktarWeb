@@ -31,11 +31,11 @@ function ProfileValue() {
       const data = await getProducts();
       setProducts(data);
     } catch (err: any) {
-      console.error("Hiba a készletadatok betöltésekor");
+      console.error(t("stockValue.loadError"));
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [t]);
 
   useAutoRefresh(fetchData);
 
@@ -86,7 +86,7 @@ function ProfileValue() {
     }));
 
     const sectorData = Object.entries(valueBySector).map(([name, value]) => ({
-      name: `${name} szektor`,
+      name: t("stockValue.sectorLabel", { sector: name }),
       value,
     }));
 
@@ -154,7 +154,7 @@ function ProfileValue() {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <div className="bg-white dark:bg-slate-900 p-8 rounded-[2.5rem] border border-slate-100 dark:border-slate-800 shadow-xl">
           <h3 className="text-lg font-black uppercase italic tracking-tighter mb-6 dark:text-white">
-            📦 Kategória szerinti megoszlás
+            {t("stockValue.categoryDistribution")}
           </h3>
           <div className="h-[300px] w-full">
             <ResponsiveContainer width="100%" height="100%">
@@ -181,7 +181,7 @@ function ProfileValue() {
 
         <div className="bg-white dark:bg-slate-900 p-8 rounded-[2.5rem] border border-slate-100 dark:border-slate-800 shadow-xl">
           <h3 className="text-lg font-black uppercase italic tracking-tighter mb-6 dark:text-white">
-            📍 Szektorok értéke
+            {t("stockValue.sectorValues")}
           </h3>
           <div className="h-[300px] w-full">
             <ResponsiveContainer width="100%" height="100%">
@@ -201,14 +201,14 @@ function ProfileValue() {
 
         <div className="lg:col-span-2 bg-white dark:bg-slate-900 p-8 rounded-[2.5rem] border border-slate-100 dark:border-slate-800 shadow-xl">
           <h3 className="text-lg font-black uppercase italic tracking-tighter mb-6 dark:text-white">
-            🏆 Legértékesebb készletek
+            {t("stockValue.topProducts")}
           </h3>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {stats.topProducts.map((item, idx) => (
               <div key={idx} className="flex justify-between items-center p-4 bg-slate-50 dark:bg-slate-800/40 rounded-2xl border border-slate-100 dark:border-slate-800">
                 <div>
                   <p className="text-xs font-black dark:text-white uppercase italic">{item.p.nev}</p>
-                  <p className="text-[9px] text-slate-400 font-bold uppercase">{t(`product.categories.${item.p.kategoria}`)} • {item.totalQty} db</p>
+                  <p className="text-[9px] text-slate-400 font-bold uppercase">{t(`product.categories.${item.p.kategoria}`)} • {item.totalQty} {t("common.pieces")}</p>
                 </div>
                 <div className="text-right font-black text-blue-600 dark:text-blue-400 text-sm">
                   {formatHUF(item.totalValue)}

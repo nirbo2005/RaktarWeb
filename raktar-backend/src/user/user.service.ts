@@ -1,9 +1,8 @@
-// raktar-backend/src/user/user.service.ts
 import {
   Injectable,
   NotFoundException,
-  UnauthorizedException,
   ConflictException,
+  BadRequestException,
   InternalServerErrorException,
 } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -30,6 +29,21 @@ export class UserService {
     if (!phone) return null;
     const cleaned = phone.replace(/\D/g, '');
     return cleaned ? `+${cleaned}` : null;
+  }
+
+  // Segédfüggvény a fizikai képfájl biztonságos törléséhez
+  private deleteAvatarFile(avatarUrl: string | null) {
+    if (!avatarUrl) return;
+    try {
+      const filename = path.basename(avatarUrl);
+      const filePath = path.join(process.cwd(), 'uploads', 'avatars', filename);
+      
+      if (fs.existsSync(filePath)) {
+        fs.unlinkSync(filePath);
+      }
+    } catch (err) {
+      console.error('Hiba a profilkép fizikai törlésekor:', err);
+    }
   }
 
   async create(createUserDto: CreateUserDto): Promise<UserEntity> {
@@ -95,10 +109,11 @@ export class UserService {
       updateData.telefonszam = this.normalizePhoneNumber(telefonszam);
 
     if (ujJelszo && ujJelszo.trim() !== '') {
-      if (!regiJelszo) throw new UnauthorizedException('Régi jelszó kötelező!');
+      if (!regiJelszo) throw new BadRequestException('Régi jelszó kötelező!');
       const isMatch = await bcrypt.compare(regiJelszo, user.jelszo);
       if (!isMatch)
-        throw new UnauthorizedException('Régi jelszó nem megfelelő!');
+        throw new BadRequestException('A régi jelszó nem megfelelő!');
+      
       const salt = await bcrypt.genSalt();
       updateData.jelszo = await bcrypt.hash(ujJelszo, salt);
     }
@@ -129,12 +144,8 @@ export class UserService {
       data: { avatarUrl: newAvatarUrl },
     });
 
-    if (oldAvatar) {
-      const oldPath = path.join(__dirname, '..', '..', oldAvatar);
-      if (fs.existsSync(oldPath)) {
-        fs.unlinkSync(oldPath);
-      }
-    }
+    // Ha volt régi képe, töröljük a lemezről
+    this.deleteAvatarFile(oldAvatar);
 
     this.events.emitToUser(id, 'user_updated', updated);
     return new UserEntity(updated);
@@ -159,7 +170,6 @@ export class UserService {
     const user = await this.prisma.user.findUnique({ where: { id: userId } });
     const reqText = tipus === 'RANG_MODOSITAS' ? 'Jogosultság módosítás' : 'Név módosítás';
 
-    // 1. Töröljük a korábbi értesítéseket, amik a lecserélt kéréshez tartoztak
     await this.prisma.notification.deleteMany({
       where: {
         uzenet: {
@@ -168,7 +178,6 @@ export class UserService {
       }
     });
 
-    // 2. Töröljük a korábbi, még feldolgozatlan (PENDING) azonos típusú kéréseket ettől a felhasználótól
     await this.prisma.changeRequest.deleteMany({
       where: {
         userId: userId,
@@ -177,12 +186,10 @@ export class UserService {
       },
     });
 
-    // 3. Létrehozzuk az új kérést
     const request = await this.prisma.changeRequest.create({
       data: { userId, tipus, ujErtek },
     });
     
-    // 4. Kiküldjük az új értesítést
     await this.notificationService.createAdminNotification(
       `Új ${reqText} kérelem érkezett: ${user?.nev} (@${user?.felhasznalonev}) -> ${ujErtek}`,
       'INFO'
@@ -296,7 +303,10 @@ export class UserService {
 
   async remove(id: number): Promise<UserEntity> {
     const user = await this.prisma.user.findUnique({ where: { id } });
+    if (!user) throw new NotFoundException('Felhasználó nem található');
     
+    const oldAvatar = user.avatarUrl;
+
     const updated = await this.prisma.user.update({
       where: { id },
       data: {
@@ -304,10 +314,14 @@ export class UserService {
         felhasznalonev: `torolt_${id}_${Math.floor(Math.random() * 1000)}`,
         email: `deleted_${id}@raktar.local`,
         telefonszam: '---',
+        avatarUrl: null, // Töröljük a képre mutató hivatkozást
         isBanned: true,
         currentTokenVersion: { increment: 1 },
       },
     });
+
+    // Ha volt képe, azt a szerverről is töröljük
+    this.deleteAvatarFile(oldAvatar);
 
     if (user) {
        await this.notificationService.createAdminNotification(

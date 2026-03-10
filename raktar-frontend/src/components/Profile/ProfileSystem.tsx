@@ -26,12 +26,12 @@ const ProfileSystem = () => {
       const data = await getSystemStatus();
       setStatus(data);
     } catch (err) {
-      console.error("Hiba a rendszerállapot lekérésekor:", err);
+      console.error(t("profile.system.fetchError"), err);
     } finally {
       setLoading(false);
       setRefreshing(false);
     }
-  }, []);
+  }, [t]);
 
   useAutoRefresh(loadStatus);
 

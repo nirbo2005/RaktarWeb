@@ -218,11 +218,27 @@ export const ProductGridView: React.FC = () => {
       confirmButtonText: t("product.grid.alerts.start"),
       cancelButtonText: t("common.cancel"),
     });
+    
     if (res.isConfirmed) {
       setLoading(true);
+      MySwal.fire({
+        title: t("common.loading"),
+        allowOutsideClick: false,
+        allowEscapeKey: false,
+        didOpen: () => {
+          MySwal.showLoading();
+        },
+      });
+
       try {
         await sortWarehouse(user.id);
         triggerGlobalRefresh();
+        MySwal.fire({
+          icon: "success",
+          title: t("product.grid.alerts.sortedSuccess"),
+          showConfirmButton: false,
+          timer: 1500
+        });
       } catch (err: any) {
         MySwal.fire(t("common.error"), err.message, "error");
       } finally {
@@ -276,7 +292,7 @@ export const ProductGridView: React.FC = () => {
                   return (
                     <button key={name} onClick={() => setSelectedParcella(name)}
                       className={`flex-1 py-4 rounded-2xl font-black transition-all border-2 
-                         ${selectedParcella === name ? "bg-blue-600 text-white border-blue-500 scale-105 shadow-xl" : "bg-white dark:bg-slate-900 border-slate-100 dark:border-slate-800 text-slate-400 hover:border-blue-400"}`}>
+                          ${selectedParcella === name ? "bg-blue-600 text-white border-blue-500 scale-105 shadow-xl" : "bg-white dark:bg-slate-900 border-slate-100 dark:border-slate-800 text-slate-400 hover:border-blue-400"}`}>
                       {name}
                     </button>
                   );
@@ -333,7 +349,7 @@ export const ProductGridView: React.FC = () => {
                           >
                             <div className="font-black text-[11px] uppercase truncate mb-1 dark:text-white tracking-tight italic">{b.productNev}</div>
                             <div className="flex justify-between items-center text-[10px] font-bold text-slate-500">
-                              <span className="bg-slate-100 dark:bg-slate-700 px-1.5 py-0.5 rounded text-blue-600 dark:text-blue-400 font-black">{b.mennyiseg} DB</span>
+                              <span className="bg-slate-100 dark:bg-slate-700 px-1.5 py-0.5 rounded text-blue-600 dark:text-blue-400 font-black">{b.mennyiseg} {t("common.pieces")}</span>
                               <span className="italic">{(b.mennyiseg * b.suly).toFixed(1)} KG</span>
                             </div>
                           </li>

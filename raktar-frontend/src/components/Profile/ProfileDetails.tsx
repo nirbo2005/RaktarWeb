@@ -1,5 +1,5 @@
 // raktar-frontend/src/components/Profile/ProfileDetails.tsx
-import { useState, useMemo, useEffect } from "react";
+import { useState, useMemo, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 import { updateProfile, submitChangeRequest, getUsers, deleteUser, getUserPendingRequests } from "../../services/api";
@@ -12,9 +12,9 @@ import hu from "react-phone-input-2/lang/hu.json";
 
 const MySwal = Swal.mixin({
   customClass: {
-    popup: "rounded-[2.5rem] bg-white dark:bg-slate-900 text-slate-900 dark:text-white border border-slate-200 dark:border-slate-800 shadow-2xl",
+    popup: "rounded-[2.5rem] bg-white dark:bg-slate-900 text-slate-900 dark:text-white border border-slate-200 dark:border-slate-800 shadow-2xl font-sans",
     confirmButton: "bg-blue-600 hover:bg-blue-500 text-white px-6 py-3 rounded-2xl font-black uppercase text-xs tracking-widest mx-2 transition-all active:scale-95",
-    cancelButton: "bg-slate-200 dark:bg-slate-800 text-slate-600 dark:text-slate-400 px-6 py-3 rounded-2xl font-black uppercase text-xs tracking-widest mx-2 transition-all active:scale-95",
+    cancelButton: "bg-slate-200 dark:bg-slate-800 text-slate-600 dark:text-slate-400 px-8 py-3 rounded-2xl font-black uppercase text-xs tracking-widest mx-2 transition-all active:scale-95",
   },
   buttonsStyling: false,
 });
@@ -50,43 +50,72 @@ const ProfileDetails = () => {
     ujJelszo: "",
   });
 
-  if (!user) return null;
-  const isAdmin = user.rang === "ADMIN";
-  const isKezelo = user.rang === "KEZELO";
-  const isNezelodo = user.rang === "NEZELODO";
-
-  const fetchMyRequests = async () => {
+  const fetchMyRequests = useCallback(async () => {
+    if (!user) return;
     try {
       const myReqs = await getUserPendingRequests(user.id);
       setActiveRequests(myReqs);
     } catch (err) {
-      console.warn("Nem sikerült lekérni a kérelmeket.");
+      console.warn(t("profile.details.alerts.fetchRequestsError"));
     }
-  };
+  }, [user, t]);
 
   useEffect(() => {
     fetchMyRequests();
-  }, [user.id]);
+  }, [fetchMyRequests]);
 
-  const isKezeloPending = activeRequests.some(r => r.tipus === 'RANG_MODOSITAS' && r.ujErtek === 'KEZELO');
-  const isAdminPending = activeRequests.some(r => r.tipus === 'RANG_MODOSITAS' && r.ujErtek === 'ADMIN');
-  const isNamePending = activeRequests.some(r => r.tipus === 'NEV_MODOSITAS');
+  if (!user) return null;
+
+  const isAdmin = user.rang === "ADMIN";
+  const isKezelo = user.rang === "KEZELO";
+  const isNezelodo = user.rang === "NEZELODO";
+
+  const isKezeloPending = activeRequests.some((r: any) => r.tipus === 'RANG_MODOSITAS' && r.ujErtek === 'KEZELO');
+  const isAdminPending = activeRequests.some((r: any) => r.tipus === 'RANG_MODOSITAS' && r.ujErtek === 'ADMIN');
+  const isNamePending = activeRequests.some((r: any) => r.tipus === 'NEV_MODOSITAS');
 
   const validateField = (name: string, value: string) => {
     let error = "";
+    
+    // Check if value matches user object to prevent error triggering on unchanged prefilled inputs
+    if (
+      (name === "nev" && value === user.nev) ||
+      (name === "felhasznalonev" && value === user.felhasznalonev) ||
+      (name === "email" && value === user.email) ||
+      (name === "telefonszam" && value === user.telefonszam)
+    ) {
+      setFieldErrors((prev) => ({ ...prev, [name]: "" }));
+      return;
+    }
+
     switch (name) {
       case "nev":
-        if (!value) error = t("details.validation.nameEmpty", "A név nem lehet üres");
+        if (!value) error = t("auth.register.validation.nameEmpty");
         else if (!/^[a-zA-ZÁÉÍÓÖŐÚÜŰáéíóöőúüű\s-]+$/.test(value))
-          error = t("details.validation.nameNumbers", "A név nem tartalmazhat számokat");
+          error = t("auth.register.validation.nameNumbers");
+        else if (value.trim().split(" ").length < 2)
+          error = t("auth.register.validation.nameTwoWords");
+        break;
+      case "felhasznalonev":
+        if (value.length < 4)
+          error = t("auth.register.validation.usernameShort");
         break;
       case "email":
         if (!/\S+@\S+\.\S+/.test(value))
-          error = t("details.validation.emailInvalid", "Érvénytelen email cím");
+          error = t("auth.register.validation.emailInvalid");
         break;
       case "telefonszam":
         if (!value || value.length < 5)
-          error = t("details.validation.phoneRequired", "A telefonszám kötelező");
+          error = t("auth.register.validation.phoneRequired");
+        break;
+      case "ujJelszo":
+        if (value === "") break; 
+        const passwordRegex = /((?=.*\d)|(?=.*\W+))(?![.\n])(?=.*[A-Z])(?=.*[a-z]).*$/;
+        if (value.length < 8) {
+          error = t("auth.register.validation.passwordShort");
+        } else if (!passwordRegex.test(value)) {
+          error = t("auth.register.validation.passwordWeak");
+        }
         break;
     }
     setFieldErrors((prev) => ({ ...prev, [name]: error }));
@@ -111,22 +140,43 @@ const ProfileDetails = () => {
 
   const handleUpdateSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    validateField("nev", profileForm.nev);
+    validateField("telefonszam", profileForm.telefonszam);
+    validateField("email", profileForm.email);
+    if (profileForm.ujJelszo) validateField("ujJelszo", profileForm.ujJelszo);
+
     if (!profileForm.telefonszam || profileForm.telefonszam.length < 5) {
-      setFormError(t("details.validation.phoneRequired", "A telefonszám kötelező"));
+      setFormError(t("auth.register.validation.phoneRequired"));
       return;
     }
+
     if (!isDirty) {
-      toast.fire({ icon: "info", title: t("details.alerts.noChanges", "Nem történt módosítás") });
+      toast.fire({ icon: "info", title: t("details.alerts.noChanges") });
       return;
     }
-    if (hasErrors) {
-      setFormError(t("details.alerts.fixBeforeSave", "Javítsd a hibákat mentés előtt"));
+
+    if (hasErrors || Object.values(fieldErrors).some(e => e !== "")) {
+      setFormError(t("details.alerts.fixBeforeSave"));
+      return;
+    }
+
+    if (profileForm.ujJelszo && !profileForm.regiJelszo) {
+      setFormError(t("details.alerts.oldPassRequired"));
       return;
     }
 
     setFormError(null);
     try {
-      if (isNameChanged) {
+      const updateData: any = {
+        felhasznalonev: profileForm.felhasznalonev,
+        email: profileForm.email,
+        telefonszam: profileForm.telefonszam.startsWith("+") ? profileForm.telefonszam : `+${profileForm.telefonszam}`,
+      };
+
+      if (user.rang === "ADMIN") {
+        updateData.nev = profileForm.nev;
+      } else if (profileForm.nev !== user.nev) {
         await submitChangeRequest({
           userId: user.id,
           tipus: "NEV_MODOSITAS",
@@ -134,95 +184,74 @@ const ProfileDetails = () => {
         });
       }
 
-      const updateData: any = {
-        felhasznalonev: profileForm.felhasznalonev,
-        email: profileForm.email,
-        telefonszam: profileForm.telefonszam.startsWith("+")
-          ? profileForm.telefonszam
-          : `+${profileForm.telefonszam}`,
-      };
-
       if (profileForm.ujJelszo) {
-        if (!profileForm.regiJelszo)
-          throw new Error(t("details.alerts.oldPassRequired", "A régi jelszó megadása kötelező"));
         updateData.regiJelszo = profileForm.regiJelszo;
         updateData.ujJelszo = profileForm.ujJelszo;
       }
-      if (isAdmin) updateData.nev = profileForm.nev;
 
       const updatedUser = await updateProfile(user.id, updateData);
       setUser(updatedUser);
       setProfileForm((prev) => ({ ...prev, regiJelszo: "", ujJelszo: "" }));
-      toast.fire({ icon: "success", title: t("details.alerts.dataUpdated", "Adatok sikeresen frissítve") });
-      
+      toast.fire({ icon: "success", title: t("details.alerts.dataUpdated") });
       fetchMyRequests();
     } catch (err: any) {
-      setFormError(err.message || t("details.alerts.errorOccurred", "Hiba történt a mentés során"));
+      setFormError(err.response?.data?.message || err.message || t("details.alerts.errorOccurred"));
     }
   };
 
   const handleRequestRang = async (rang: "KEZELO" | "ADMIN") => {
-    const rangNev = rang === "ADMIN" ? "Adminisztrátor" : "Kezelő";
+    const rangNev = rang === "ADMIN" ? t("header.admin") : t("header.handler");
     const result = await MySwal.fire({
-      title: `${rangNev} Jogosultság Kérése`,
-      text: `Biztosan szeretnél ${rangNev} hozzáférést kérni a rendszerhez?`,
+      title: t("profile.details.requestRankTitle", { rank: rangNev }),
+      text: t("profile.details.requestRankText", { rank: rangNev }),
       icon: "question",
       showCancelButton: true,
-      confirmButtonText: "Igen, kérem",
-      cancelButtonText: t("common.cancel", "Mégse"),
+      confirmButtonText: t("common.yes"),
+      cancelButtonText: t("common.cancel"),
     });
 
     if (result.isConfirmed) {
       try {
-        await submitChangeRequest({
-          userId: user.id,
-          tipus: "RANG_MODOSITAS",
-          ujErtek: rang,
-        });
-        toast.fire({ icon: "success", title: "Jogosultság kérelem elküldve!" });
+        await submitChangeRequest({ userId: user.id, tipus: "RANG_MODOSITAS", ujErtek: rang });
+        toast.fire({ icon: "success", title: t("profile.details.alerts.requestSent") });
         fetchMyRequests();
       } catch (err: any) {
-        MySwal.fire("Hiba", err.message, "error");
+        MySwal.fire(t("common.error"), err.message, "error");
       }
     }
   };
 
   const handleDeleteProfile = async () => {
-    if (isAdmin) {
-      try {
-        const allUsers = await getUsers();
-        const activeAdmins = allUsers.filter((u: any) => u.rang === "ADMIN" && !u.isBanned && !u.isDeleted);
-        
-        if (activeAdmins.length <= 1) {
-          return MySwal.fire({
-            title: "Törlés megtagadva",
-            text: "Te vagy az egyetlen aktív adminisztrátor! Mielőtt törlöd magad, nevezz ki egy másik admint a felhasználók kezelése menüpontban.",
-            icon: "error",
-            confirmButtonText: "Értettem",
-          });
-        }
-      } catch (err: any) {
-        return MySwal.fire("Hiba", "Nem sikerült ellenőrizni az adminisztrátorok számát.", "error");
+    if (user.rang === "ADMIN") {
+      const allUsers = await getUsers();
+      const activeAdmins = allUsers.filter((u: any) => u.rang === "ADMIN" && !u.isBanned && !u.isDeleted);
+      if (activeAdmins.length <= 1) {
+        return MySwal.fire({
+          title: t("profile.details.alerts.deleteDeniedTitle"),
+          text: t("profile.details.alerts.deleteDeniedText"),
+          icon: "error",
+          confirmButtonText: t("auth.login.alerts.gotIt"),
+        });
       }
     }
 
     const result = await MySwal.fire({
-      title: "Fiók végleges törlése",
-      text: "Biztosan törölni szeretnéd a fiókodat? Ez a művelet visszafordíthatatlan, és minden személyes adatod elvész!",
+      title: t("profile.details.alerts.deleteTitle"),
+      text: t("profile.details.alerts.deleteText"),
       icon: "warning",
       showCancelButton: true,
       confirmButtonColor: "#ef4444",
-      confirmButtonText: "Igen, véglegesen törlöm",
-      cancelButtonText: t("common.cancel", "Mégse"),
+      confirmButtonText: t("profile.details.alerts.deleteConfirm"),
+      cancelButtonText: t("common.cancel"),
     });
 
     if (result.isConfirmed) {
       try {
         await deleteUser(user.id);
-        await MySwal.fire("Törölve", "A fiókod sikeresen törlésre került.", "success");
+        await MySwal.fire(t("profile.details.alerts.deletedTitle"), t("profile.details.alerts.deletedText"), "success");
         logout();
       } catch (err: any) {
-        MySwal.fire("Hiba", err.message, "error");
+        MySwal.fire(t("common.error"), err.message, "error");
       }
     }
   };
@@ -232,206 +261,180 @@ const ProfileDetails = () => {
   const errorTextClass = "text-[9px] text-red-500 font-bold mt-1 ml-2 uppercase animate-pulse";
 
   return (
-    <div className="max-w-6xl mx-auto space-y-6 text-left transition-colors duration-300 py-6 px-4 sm:px-0">
-      <div className="flex items-center gap-4 mb-4 px-2">
-        <button
-          onClick={() => navigate("/profile")}
-          className="p-3 bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-800 hover:text-blue-500 transition-colors"
-        >
-          ←
-        </button>
-        <h2 className="text-2xl font-black uppercase italic tracking-tighter dark:text-white">
-          {t("profile.dashboard.details.title", "Profil Adatok")}
-        </h2>
-      </div>
-
-      <header className="bg-white dark:bg-slate-900 rounded-[2.5rem] shadow-2xl overflow-hidden border border-slate-100 dark:border-slate-800 transition-all relative">
-        <div className="h-24 bg-gradient-to-r from-blue-600 to-indigo-800" />
-        <div className="px-6 md:px-12 flex flex-col md:flex-row gap-4 md:gap-8 pb-6">
-          <div className="flex justify-center md:flex-col md:justify-end md:pb-2 -mt-12 z-10 shrink-0 w-24 h-24">
-            <ProfileAvatar user={user} onUploadSuccess={(updated) => setUser(updated)} />
-          </div>
-          <div className="flex-1 flex flex-col md:-mt-8">
-            <div className="md:h-12 flex flex-col justify-center md:justify-end">
-              <h1 className="text-xl md:text-2xl font-black uppercase italic tracking-tight text-center md:text-left text-slate-900 dark:text-white md:text-white">
-                {user.nev}
-              </h1>
-            </div>
-            <div className="flex flex-wrap justify-center md:justify-start items-center gap-3 mt-2">
-              <span className="text-slate-500 dark:text-slate-400 font-bold text-[10px] uppercase tracking-widest bg-slate-100 dark:bg-slate-800/60 px-2.5 py-1 rounded-lg border border-slate-200 dark:border-slate-700/50">
-                @{user.felhasznalonev}
-              </span>
-              <span className="text-blue-600 dark:text-blue-400 font-black text-[9px] uppercase tracking-wider bg-blue-100 dark:bg-blue-900/30 px-2.5 py-1 rounded-lg border border-blue-200 dark:border-blue-800/50">
-                {isAdmin ? `🛡️ ${t("header.admin", "Admin")}` : isKezelo ? `📦 ${t("header.handler", "Kezelő")}` : `👁️ ${t("header.viewer", "Nézelődő")}`}
-              </span>
-            </div>
-          </div>
-          <div className="flex items-end">
-            <button
-              onClick={() => logout()}
-              className="w-full md:w-auto bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-xl font-black text-[9px] uppercase tracking-widest transition-all active:scale-95 shadow-lg"
-            >
-              {t("header.logout", "Kijelentkezés")}
-            </button>
-          </div>
+    <div className="min-h-screen bg-main transition-colors duration-300">
+      <div className="max-w-6xl mx-auto space-y-8 py-6 text-left px-4">
+        <div className="flex items-center gap-4 mb-4 px-2">
+          <button onClick={() => navigate("/profile")} className="p-3 bg-panel rounded-2xl shadow-sm border border-border-main hover:text-blue-500 transition-colors">
+            ←
+          </button>
+          <h2 className="text-2xl font-black uppercase italic tracking-tighter text-main">
+            {t("profile.dashboard.details.title")}
+          </h2>
         </div>
-      </header>
 
-      <div className="bg-white dark:bg-slate-900 rounded-[2.5rem] shadow-xl border border-slate-100 dark:border-slate-800 overflow-hidden">
-        <div className="p-6 md:p-8">
-          <form onSubmit={handleUpdateSubmit} className="space-y-8">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div>
-                <label className={labelClass}>{t("details.fullName", "Teljes Név")}</label>
-                <input
-                  type="text"
-                  value={profileForm.nev}
-                  onChange={(e) => setProfileForm({ ...profileForm, nev: e.target.value })}
-                  onBlur={(e) => validateField("nev", e.target.value)}
-                  className={`${inputClass} ${fieldErrors.nev ? "border-red-500" : ""} ${isNameChanged ? "border-amber-400 ring-1 ring-amber-400/20" : ""}`}
-                />
-                {fieldErrors.nev && <p className={errorTextClass}>❌ {fieldErrors.nev}</p>}
-                {isNameChanged && (
-                  <p className="mt-2 ml-2 text-[9px] font-bold text-amber-600 dark:text-amber-500 uppercase italic">
-                    ⚠️ {t("details.adminApprovalNeeded", "Admin jóváhagyás szükséges")}
-                  </p>
-                )}
-                {isNamePending && !isNameChanged && (
-                  <p className="mt-2 ml-2 text-[9px] font-bold text-blue-600 dark:text-blue-400 uppercase italic animate-pulse">
-                    ⏳ Névváltoztatási kérelem függőben...
-                  </p>
-                )}
+        <header className="bg-panel rounded-[2.5rem] shadow-xl overflow-hidden border border-border-main relative transition-all duration-500">
+          <div className="h-32 bg-gradient-to-r from-blue-600 via-blue-700 to-indigo-800" />
+          <div className="px-6 md:px-12 flex flex-col md:flex-row gap-6 md:gap-8 pb-8">
+            <div className="flex justify-center md:flex-col md:justify-end md:pb-2 -mt-16 z-10 shrink-0">
+              <div className="w-32 h-32 md:w-40 md:h-40">
+                <ProfileAvatar user={user} onUploadSuccess={(updated) => setUser(updated)} />
               </div>
-
-              <div className="relative">
-                <label className={labelClass}>{t("details.phoneLabel", "Telefonszám")}</label>
-                <PhoneInput
-                  country={"hu"}
-                  value={profileForm.telefonszam}
-                  onChange={(phone) => {
-                    setProfileForm({ ...profileForm, telefonszam: phone });
-                    if (fieldErrors.telefonszam) validateField("telefonszam", phone);
-                  }}
-                  onBlur={() => validateField("telefonszam", profileForm.telefonszam)}
-                  localization={hu}
-                  masks={{ hu: ".. ... ...." }}
-                  countryCodeEditable={false}
-                  enableSearch={true}
-                  searchPlaceholder={t("common.search", "Keresés...")}
-                  containerClass="phone-container"
-                  inputClass={`phone-input-field ${fieldErrors.telefonszam ? "!border-red-500" : ""}`}
-                  buttonClass="phone-dropdown-btn"
-                  dropdownClass="phone-dropdown-list"
-                  dropdownStyle={{ height: "350px" }}
-                />
-                {fieldErrors.telefonszam && <p className={errorTextClass}>❌ {fieldErrors.telefonszam}</p>}
-              </div>
-
-              <div>
-                <label className={labelClass}>{t("details.username", "Felhasználónév")}</label>
-                <input
-                  type="text"
-                  value={profileForm.felhasznalonev}
-                  onChange={(e) => setProfileForm({ ...profileForm, felhasznalonev: e.target.value })}
-                  className={inputClass}
-                />
-              </div>
-
-              <div>
-                <label className={labelClass}>{t("details.email", "E-mail cím")}</label>
-                <input
-                  type="email"
-                  value={profileForm.email}
-                  onChange={(e) => setProfileForm({ ...profileForm, email: e.target.value })}
-                  onBlur={(e) => validateField("email", e.target.value)}
-                  className={`${inputClass} ${fieldErrors.email ? "border-red-500" : ""}`}
-                />
-                {fieldErrors.email && <p className={errorTextClass}>❌ {fieldErrors.email}</p>}
-              </div>
-
-              <div className="relative">
-                <label className={labelClass}>{t("details.oldPassword", "Régi Jelszó")}</label>
-                <input
-                  type={showOldPass ? "text" : "password"}
-                  value={profileForm.regiJelszo}
-                  onChange={(e) => setProfileForm({ ...profileForm, regiJelszo: e.target.value })}
-                  className={inputClass}
-                />
-                <button type="button" onClick={() => setShowOldPass(!showOldPass)} className="absolute right-3 top-8 text-lg">
-                  {showOldPass ? "👁️" : "🙈"}
-                </button>
-              </div>
-
-              <div className="relative">
-                <label className={labelClass}>{t("details.newPassword", "Új Jelszó")}</label>
-                <input
-                  type={showNewPass ? "text" : "password"}
-                  value={profileForm.ujJelszo}
-                  onChange={(e) => setProfileForm({ ...profileForm, ujJelszo: e.target.value })}
-                  className={inputClass}
-                />
-                <button type="button" onClick={() => setShowNewPass(!showNewPass)} className="absolute right-3 top-8 text-lg">
-                  {showNewPass ? "👁️" : "🙈"}
+            </div>
+            <div className="flex-1 flex flex-col md:mt-4">
+              <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
+                <div className="space-y-3 text-center md:text-left">
+                  <h1 className="text-3xl md:text-5xl font-black uppercase italic tracking-tighter text-main">
+                    {user?.nev || t("header.anonymous")}
+                  </h1>
+                  <div className="flex flex-wrap justify-center md:justify-start items-center gap-2">
+                    <span className="text-muted font-bold text-[10px] uppercase tracking-widest bg-input px-3 py-1 rounded-lg border border-border-main">
+                      @{user?.felhasznalonev}
+                    </span>
+                    <span className="text-blue-600 dark:text-blue-400 font-black text-[10px] uppercase tracking-wider bg-blue-50 dark:bg-blue-900/20 px-3 py-1 rounded-lg border border-blue-100 dark:border-blue-800/30">
+                      {user.rang === "ADMIN" ? `🛡️ ${t("header.admin")}` : user.rang === "KEZELO" ? `📦 ${t("header.handler")}` : `👁️ ${t("header.viewer")}`}
+                    </span>
+                  </div>
+                </div>
+                <button onClick={() => logout()} className="w-full md:w-auto bg-red-500 hover:bg-red-600 text-white px-8 py-3 rounded-2xl font-black text-[10px] uppercase tracking-widest transition-all active:scale-95 shadow-lg shadow-red-500/20 flex items-center justify-center gap-2">
+                  <span>🚪</span> {t("header.logout")}
                 </button>
               </div>
             </div>
+          </div>
+        </header>
 
-            {formError && (
-              <div className="text-red-600 text-[10px] font-black uppercase bg-red-50 dark:bg-red-900/10 p-3 rounded-xl border border-red-200 dark:border-red-900/30">
-                ❌ {formError}
-              </div>
-            )}
+        <div className="bg-panel rounded-[2.5rem] shadow-xl border border-border-main overflow-hidden">
+          <div className="p-6 md:p-8">
+            <form onSubmit={handleUpdateSubmit} className="space-y-8">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                  <label className={labelClass}>{t("details.fullName")}</label>
+                  <input
+                    type="text"
+                    value={profileForm.nev}
+                    onChange={(e) => { setProfileForm({ ...profileForm, nev: e.target.value }); validateField("nev", e.target.value); }}
+                    className={`${inputClass} ${fieldErrors.nev ? "border-red-500" : ""}`}
+                  />
+                  {fieldErrors.nev && <p className={errorTextClass}>❌ {fieldErrors.nev}</p>}
+                  {isNameChanged && (
+                    <p className="mt-2 ml-2 text-[9px] font-bold text-amber-600 dark:text-amber-500 uppercase italic">
+                      ⚠️ {t("details.adminApprovalNeeded")}
+                    </p>
+                  )}
+                  {isNamePending && !isNameChanged && (
+                    <p className="mt-2 ml-2 text-[9px] font-bold text-blue-600 dark:text-blue-400 uppercase italic animate-pulse">
+                      ⏳ {t("profile.details.namePending")}
+                    </p>
+                  )}
+                </div>
 
-            <div className="space-y-4 pt-4 border-t border-slate-100 dark:border-slate-800">
-              <button
-                type="submit"
-                disabled={hasErrors}
-                className={`w-full p-4 rounded-xl font-black uppercase text-xs shadow-lg transition-all active:scale-95 ${!isDirty || hasErrors ? "bg-slate-100 dark:bg-slate-800 text-slate-400 cursor-not-allowed shadow-none" : isNameChanged ? "bg-amber-500 text-white hover:bg-amber-600" : "bg-blue-600 text-white hover:bg-blue-500"}`}
-              >
-                {hasErrors ? t("details.buttons.fixErrors", "Hibák javítása szükséges") : !isDirty ? t("details.buttons.noChanges", "Nem történt módosítás") : isNameChanged ? (isNamePending ? "Kérelem Frissítése" : t("details.buttons.saveAndRequest", "Mentés és Kérelem beküldése")) : t("details.buttons.saveData", "Adatok Mentése")}
-              </button>
+                <div className="relative">
+                  <label className={labelClass}>{t("details.phoneLabel")}</label>
+                  <PhoneInput
+                    country={"hu"}
+                    value={profileForm.telefonszam}
+                    onChange={(phone) => { setProfileForm({ ...profileForm, telefonszam: phone }); validateField("telefonszam", phone); }}
+                    localization={hu}
+                    masks={{ hu: ".. ... ...." }}
+                    countryCodeEditable={false}
+                    enableSearch={true}
+                    searchPlaceholder={t("common.search")}
+                    containerClass="phone-container"
+                    inputClass={`phone-input-field ${fieldErrors.telefonszam ? "!border-red-500" : ""}`}
+                    buttonClass="phone-dropdown-btn"
+                    dropdownClass="phone-dropdown-list"
+                  />
+                  {fieldErrors.telefonszam && <p className={errorTextClass}>❌ {fieldErrors.telefonszam}</p>}
+                </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
-                {isNezelodo && (
-                  <>
-                    <button
-                      type="button"
-                      disabled={isKezeloPending}
-                      onClick={() => handleRequestRang("KEZELO")}
-                      className={`p-3 rounded-xl font-black uppercase text-[10px] transition-all flex justify-center items-center gap-2 border ${isKezeloPending ? 'bg-slate-50 dark:bg-slate-800/50 text-slate-400 border-slate-200 dark:border-slate-800 cursor-not-allowed' : 'bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 border-slate-200 dark:border-slate-700 active:scale-95'}`}
-                    >
-                      {isKezeloPending ? '⏳ Kezelő kérés függőben' : '<span>📦</span> Kezelő kérése'}
-                    </button>
-                    <button
-                      type="button"
-                      disabled={isAdminPending}
-                      onClick={() => handleRequestRang("ADMIN")}
-                      className={`p-3 rounded-xl font-black uppercase text-[10px] transition-all flex justify-center items-center gap-2 border ${isAdminPending ? 'bg-slate-50 dark:bg-slate-800/50 text-slate-400 border-slate-200 dark:border-slate-800 cursor-not-allowed' : 'bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 border-slate-200 dark:border-slate-700 active:scale-95'}`}
-                    >
-                      {isAdminPending ? '⏳ Admin kérés függőben' : '<span>🛡️</span> Admin kérése'}
-                    </button>
-                  </>
-                )}
-                {isKezelo && (
-                  <button
-                    type="button"
-                    disabled={isAdminPending}
-                    onClick={() => handleRequestRang("ADMIN")}
-                    className={`p-3 rounded-xl font-black uppercase text-[10px] transition-all flex justify-center items-center gap-2 border ${isAdminPending ? 'bg-slate-50 dark:bg-slate-800/50 text-slate-400 border-slate-200 dark:border-slate-800 cursor-not-allowed' : 'bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 border-slate-200 dark:border-slate-700 active:scale-95'}`}
-                  >
-                    {isAdminPending ? '⏳ Admin kérés függőben' : '<span>🛡️</span> Admin kérése'}
+                <div>
+                  <label className={labelClass}>{t("details.username")}</label>
+                  <input
+                    type="text"
+                    value={profileForm.felhasznalonev}
+                    onChange={(e) => { setProfileForm({ ...profileForm, felhasznalonev: e.target.value }); validateField("felhasznalonev", e.target.value); }}
+                    className={`${inputClass} ${fieldErrors.felhasznalonev ? "border-red-500" : ""}`}
+                  />
+                  {fieldErrors.felhasznalonev && <p className={errorTextClass}>❌ {fieldErrors.felhasznalonev}</p>}
+                </div>
+
+                <div>
+                  <label className={labelClass}>{t("details.email")}</label>
+                  <input
+                    type="email"
+                    value={profileForm.email}
+                    onChange={(e) => { setProfileForm({ ...profileForm, email: e.target.value }); validateField("email", e.target.value); }}
+                    className={`${inputClass} ${fieldErrors.email ? "border-red-500" : ""}`}
+                  />
+                  {fieldErrors.email && <p className={errorTextClass}>❌ {fieldErrors.email}</p>}
+                </div>
+
+                <div className="relative">
+                  <label className={labelClass}>{t("details.oldPassword")}</label>
+                  <input
+                    type={showOldPass ? "text" : "password"}
+                    value={profileForm.regiJelszo}
+                    onChange={(e) => setProfileForm({ ...profileForm, regiJelszo: e.target.value })}
+                    className={inputClass}
+                  />
+                  <button type="button" onClick={() => setShowOldPass(!showOldPass)} className="absolute right-3 top-8 text-lg">
+                    {showOldPass ? "👁️" : "🙈"}
                   </button>
-                )}
-                <button
-                  type="button"
-                  onClick={handleDeleteProfile}
-                  className="sm:col-start-auto bg-red-50 hover:bg-red-100 dark:bg-red-900/10 dark:hover:bg-red-900/20 text-red-600 dark:text-red-400 border border-red-100 dark:border-red-900/30 p-3 rounded-xl font-black uppercase text-[10px] transition-all active:scale-95 flex justify-center items-center gap-2"
-                >
-                  <span>🗑️</span> Fiók törlése
-                </button>
+                </div>
+
+                <div className="relative">
+                  <label className={labelClass}>{t("details.newPassword")}</label>
+                  <input
+                    type={showNewPass ? "text" : "password"}
+                    value={profileForm.ujJelszo}
+                    onChange={(e) => { setProfileForm({ ...profileForm, ujJelszo: e.target.value }); validateField("ujJelszo", e.target.value); }}
+                    className={`${inputClass} ${fieldErrors.ujJelszo ? "border-red-500" : ""}`}
+                  />
+                  <button type="button" onClick={() => setShowNewPass(!showNewPass)} className="absolute right-3 top-8 text-lg">
+                    {showNewPass ? "👁️" : "🙈"}
+                  </button>
+                  {fieldErrors.ujJelszo && <p className={errorTextClass}>❌ {fieldErrors.ujJelszo}</p>}
+                </div>
               </div>
-            </div>
-          </form>
+
+              {formError && (
+                <div className="text-red-600 text-[10px] font-black uppercase bg-red-50 dark:bg-red-900/10 p-3 rounded-xl border border-red-200 dark:border-red-900/30">
+                  ❌ {formError}
+                </div>
+              )}
+
+              <div className="space-y-4 pt-4 border-t border-border-main">
+                <button
+                  type="submit"
+                  disabled={hasErrors || !isDirty}
+                  className={`w-full p-4 rounded-xl font-black uppercase text-xs shadow-lg transition-all active:scale-95 ${!isDirty || hasErrors ? "bg-input text-muted cursor-not-allowed shadow-none" : "bg-blue-600 text-white hover:bg-blue-500"}`}
+                >
+                  {hasErrors ? t("details.buttons.fixErrors") : !isDirty ? t("details.buttons.noChanges") : t("details.buttons.saveData")}
+                </button>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+                  {isNezelodo && (
+                    <>
+                      <button type="button" disabled={isKezeloPending} onClick={() => handleRequestRang("KEZELO")} className={`p-3 rounded-xl font-black uppercase text-[10px] transition-all flex justify-center items-center gap-2 border ${isKezeloPending ? 'bg-input text-muted border-border-main cursor-not-allowed' : 'bg-panel hover:bg-input text-main border-border-main active:scale-95'}`}>
+                        {isKezeloPending ? t("profile.details.kezeloPending") : `<span>📦</span> ${t("profile.details.requestKezelo")}`}
+                      </button>
+                      <button type="button" disabled={isAdminPending} onClick={() => handleRequestRang("ADMIN")} className={`p-3 rounded-xl font-black uppercase text-[10px] transition-all flex justify-center items-center gap-2 border ${isAdminPending ? 'bg-input text-muted border-border-main cursor-not-allowed' : 'bg-panel hover:bg-input text-main border-border-main active:scale-95'}`}>
+                        {isAdminPending ? t("profile.details.adminPending") : `<span>🛡️</span> ${t("profile.details.requestAdmin")}`}
+                      </button>
+                    </>
+                  )}
+                  {isKezelo && (
+                    <button type="button" disabled={isAdminPending} onClick={() => handleRequestRang("ADMIN")} className={`p-3 rounded-xl font-black uppercase text-[10px] transition-all flex justify-center items-center gap-2 border ${isAdminPending ? 'bg-input text-muted border-border-main cursor-not-allowed' : 'bg-panel hover:bg-input text-main border-border-main active:scale-95'}`}>
+                      {isAdminPending ? t("profile.details.adminPending") : `<span>🛡️</span> ${t("profile.details.requestAdmin")}`}
+                    </button>
+                  )}
+                  <button type="button" onClick={handleDeleteProfile} className="sm:col-start-auto bg-red-50 hover:bg-red-100 dark:bg-red-900/10 dark:hover:bg-red-900/20 text-red-600 dark:text-red-400 border border-red-100 dark:border-red-900/30 p-3 rounded-xl font-black uppercase text-[10px] transition-all active:scale-95 flex justify-center items-center gap-2">
+                    <span>🗑️</span> {t("profile.details.deleteAccount")}
+                  </button>
+                </div>
+              </div>
+            </form>
+          </div>
         </div>
       </div>
 
@@ -439,25 +442,12 @@ const ProfileDetails = () => {
         .phone-container { width: 100% !important; font-family: inherit !important; }
         .phone-input-field { 
           width: 100% !important; height: 46px !important; border-radius: 0.75rem !important;
-          border: 1px solid rgb(226 232 240) !important; background: rgb(248 250 252) !important;
+          border: 1px solid var(--border-main) !important; background: var(--bg-input) !important;
           padding-left: 58px !important; font-size: 0.875rem !important; transition: all 0.2s !important;
+          color: var(--text-main) !important;
         }
-        .dark .phone-input-field { 
-          background: rgb(30 41 59) !important; border-color: rgb(51 65 85) !important; color: white !important;
-        }
-        .phone-dropdown-btn { 
-          background: transparent !important; border: none !important; 
-          border-radius: 0.75rem 0 0 0.75rem !important; width: 48px !important;
-        }
-        .phone-container .flag-dropdown, .phone-container .selected-flag { background: transparent !important; }
-        .phone-container .selected-flag:hover, .phone-container .selected-flag:focus, .phone-container .flag-dropdown.open .selected-flag { background: rgba(0, 0, 0, 0.05) !important; }
-        .dark .phone-container .selected-flag:hover, .dark .phone-container .selected-flag:focus, .dark .phone-container .flag-dropdown.open .selected-flag { background: rgba(255, 255, 255, 0.05) !important; }
-        .phone-dropdown-list { background: white !important; border-radius: 1rem !important; box-shadow: 0 10px 25px -5px rgba(0,0,0,0.1) !important; border: 1px solid #eee !important; z-index: 50 !important; }
-        .dark .phone-dropdown-list { background: rgb(15 23 42) !important; border-color: rgb(51 65 85) !important; color: white !important; }
-        .dark .search-box { background: rgb(30 41 59) !important; color: white !important; border: 1px solid rgb(51 65 85) !important; }
-        .dark .phone-dropdown-list .country:hover { background: rgb(30 41 59) !important; }
-        .phone-dropdown-list::-webkit-scrollbar { width: 6px; }
-        .phone-dropdown-list::-webkit-scrollbar-thumb { background: #444; border-radius: 10px; }
+        .phone-dropdown-btn { background: transparent !important; border: none !important; width: 48px !important; }
+        .phone-dropdown-list { background: var(--bg-panel) !important; border-radius: 1rem !important; border: 1px solid var(--border-main) !important; color: var(--text-main) !important; }
       `}</style>
     </div>
   );

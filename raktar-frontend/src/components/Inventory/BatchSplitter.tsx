@@ -28,7 +28,6 @@ const MySwal = Swal.mixin({
   buttonsStyling: false,
 });
 
-// Szigorú regex a polcokra: A-D szektor, 1-5 sor, 1-4 oszlop (pl. A1-1, D5-4)
 const isValidShelf = (shelf: string) => /^[A-D][1-5]-[1-4]$/i.test(shelf);
 
 const BatchSplitter: React.FC<BatchSplitterProps> = ({
@@ -71,8 +70,8 @@ const BatchSplitter: React.FC<BatchSplitterProps> = ({
           if (canFitQty <= 0) {
             MySwal.fire({
               icon: "warning",
-              title: "Hoppá, vak vagy? 😅",
-              text: `A(z) ${externalSelectedShelf} polc már teljesen tele van. Válassz másikat!`,
+              title: t("inventory.splitter.alerts.shelfFullTitle"),
+              text: t("inventory.splitter.alerts.shelfFullText", { shelf: externalSelectedShelf }),
             });
             setProcessedShelfToken(externalSelectedShelf);
             return; 
@@ -105,18 +104,15 @@ const BatchSplitter: React.FC<BatchSplitterProps> = ({
         setProcessedShelfToken("");
       }
     }
-  }, [externalSelectedShelf, mode, mapData, productWeight, remainingQuantity, processedShelfToken]);
+  }, [externalSelectedShelf, mode, mapData, productWeight, remainingQuantity, processedShelfToken, t]);
 
   useEffect(() => {
-    // 1. Kiszűrjük a 0-ás mennyiségeket (nem küldjük be a backendnek)
     const activeSplits = splits.filter(s => s.mennyiseg > 0);
-    // 2. Megvizsgáljuk, hogy minden polcnév formailag helyes-e
     const allValid = activeSplits.every(s => isValidShelf(s.parcella));
 
     if (mode !== "IDLE" && remainingQuantity === 0 && activeSplits.length > 0 && allValid) {
       onSplitsChange([...activeSplits].sort(sortSplits).map((s) => ({ parcella: s.parcella.toUpperCase(), mennyiseg: s.mennyiseg })));
     } else {
-      // Ha hibás a polcnév, vagy üres a lista, letiltjuk a mentést a szülőben!
       onSplitsChange(null);
     }
   }, [splits, mode, remainingQuantity, onSplitsChange]);
@@ -214,7 +210,6 @@ const BatchSplitter: React.FC<BatchSplitterProps> = ({
 
       <div className="space-y-3">
         {splits.map((split) => {
-          // Ha írt valamit a mezőbe, de nem passzol a regexhez, akkor pirosan kiemeljük
           const isInvalidShelf = split.parcella.length > 0 && !isValidShelf(split.parcella);
 
           return (
@@ -239,7 +234,7 @@ const BatchSplitter: React.FC<BatchSplitterProps> = ({
                 />
                 {isInvalidShelf && mode === "MANUAL" && (
                   <span className="text-[8px] text-rose-500 font-black uppercase tracking-widest mt-1.5 ml-2 block">
-                    ❌ Érvénytelen (Pl: A1-1)
+                    ❌ {t("inventory.splitter.invalidFormat")}
                   </span>
                 )}
               </div>

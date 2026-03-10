@@ -59,9 +59,9 @@ const ProfileAdmin = () => {
       setAllUsers(users);
       setPendingRequests(reqs);
     } catch (err) {
-      console.error("Hiba az admin adatok betöltésekor:", err);
+      console.error(t("admin.alerts.fetchError"), err);
     }
-  }, [currentUser]);
+  }, [currentUser, t]);
 
   useAutoRefresh(loadData);
 
@@ -163,7 +163,7 @@ const ProfileAdmin = () => {
     }
   };
 
-  const labelClass = "block mb-1.5 ml-2 text-[10px] font-black text-slate-400 uppercase tracking-widest";
+  const labelClass = "block mb-1.5 ml-2 text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest";
   const inputClass = (name: string) => `w-full p-3 rounded-xl bg-slate-50 dark:bg-slate-800 dark:text-white border ${fieldErrors[name] ? "border-red-500" : "border-slate-200 dark:border-slate-700"} text-sm focus:ring-2 focus:ring-blue-500 outline-none transition-all`;
 
   return (

@@ -71,9 +71,9 @@ function ProductAdd() {
       const data = await getProducts();
       setExistingProducts(data);
     } catch (err) {
-      console.error("Hiba a terméklista frissítésekor:", err);
+      console.error(t("product.add.alerts.fetchError"), err);
     }
-  }, []);
+  }, [t]);
 
   useEffect(() => {
     fetchSearchList();
@@ -131,12 +131,10 @@ function ProductAdd() {
       navigate("/");
     } catch (error: any) {
       if (isNewProduct && productId) {
-        console.warn("Készletmentési hiba, Cikktörzs Rollback indítása...", productId);
         try {
            await deleteProduct(productId, user.id);
-           console.log("Rollback sikeres.");
         } catch (rollbackError) {
-           console.error("Kritikus hiba: Rollback sikertelen!", rollbackError);
+           console.error("Critical: Rollback failed!", rollbackError);
         }
       }
 

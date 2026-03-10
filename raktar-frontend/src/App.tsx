@@ -10,12 +10,12 @@ import {
   Outlet,
 } from "react-router-dom";
 import { AuthProvider, useAuth } from "./context/AuthContext";
-import { useTranslation } from "react-i18next";
 
 import Navbar from "./components/Auxiliary/Navbar";
 import ScannerView from "./components/Auxiliary/ScannerView";
 import SearchResults from "./components/Auxiliary/SearchResults";
 import { ConnectionStatus } from "./components/Auxiliary/ConnectionStatus";
+import LanguageSelector from "./components/Auxiliary/LanguageSelector";
 
 import ProductList from "./components/Product/ProductList";
 import ProductDetails from "./components/Product/ProductDetails";
@@ -97,7 +97,6 @@ function App() {
   const [isDark, setIsDark] = useState(
     () => localStorage.getItem("theme") === "dark",
   );
-  const { i18n } = useTranslation();
 
   useEffect(() => {
     if (isDark) {
@@ -109,10 +108,6 @@ function App() {
     }
   }, [isDark]);
 
-  const toggleLanguage = () => {
-    i18n.changeLanguage(i18n.language.startsWith("hu") ? "en" : "hu");
-  };
-
   return (
     <AuthProvider>
       <BrowserRouter>
@@ -121,16 +116,11 @@ function App() {
           <Navbar isDark={isDark} setIsDark={setIsDark} />
           <ConnectionStatus />
 
-          <div className="fixed bottom-4 right-4 z-[150] flex flex-col gap-2">
-            <button
-              onClick={toggleLanguage}
-              className="p-3 rounded-full bg-white dark:bg-slate-800 shadow-2xl border border-slate-200 dark:border-slate-700 hover:scale-110 transition-transform font-black text-xs uppercase"
-            >
-              {i18n.language.startsWith("hu") ? "HU" : "EN"}
-            </button>
+          <div className="fixed bottom-6 right-6 z-[150] flex flex-col gap-4 items-end">
+            <LanguageSelector />
             <button
               onClick={() => setIsDark(!isDark)}
-              className="p-3 rounded-full bg-white dark:bg-slate-800 shadow-2xl border border-slate-200 dark:border-slate-700 hover:scale-110 transition-transform"
+              className="w-14 h-14 rounded-2xl bg-white dark:bg-slate-800 shadow-xl border border-slate-200 dark:border-slate-700 hover:scale-110 transition-transform text-2xl flex items-center justify-center"
             >
               {isDark ? "☀️" : "🌙"}
             </button>
@@ -154,21 +144,17 @@ function App() {
               />
 
               <Route element={<ProtectedRoute />}>
-                {/* ROOT átirányítás a lapozós oldalra */}
                 <Route path="/" element={<Navigate to="/products/1" replace />} />
-                {/* Lapozós útvonal */}
                 <Route path="/products/:page" element={<ProductList />} />
                 
                 <Route path="/product/:id" element={<ProductDetails />} />
                 <Route path="/grid" element={<ProductGridView />} />
                 
-                {/* PROFILE DASHBOARD & PAGES */}
                 <Route path="/profile" element={<ProfileIndex />} />
                 <Route path="/profile/details" element={<ProfileDetails />} />
                 <Route path="/profile/logs" element={<ProfileLogs />} />
                 <Route path="/profile/stats" element={<ProfileStats />} />
                 
-                {/* ADMIN EXCLUSIVE */}
                 <Route element={<ProtectedRoute allowedRoles={["ADMIN"]} />}>
                   <Route path="/profile/admin" element={<ProfileAdmin />} />
                   <Route path="/profile/system" element={<ProfileSystem />} />

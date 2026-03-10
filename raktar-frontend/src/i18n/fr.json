@@ -1,0 +1,692 @@
+{
+  "header": {
+    "admin": "Admin",
+    "handler": "Opérateur",
+    "viewer": "Observateur",
+    "anonymous": "Utilisateur anonyme",
+    "logout": "Déconnexion"
+  },
+  "common": {
+    "save": "Enregistrer",
+    "cancel": "Annuler",
+    "error": "Erreur !",
+    "success": "Succès !",
+    "search": "Rechercher...",
+    "noResults": "Aucun résultat",
+    "identifying": "Identification...",
+    "updating": "Mise à jour...",
+    "close": "Fermer",
+    "yes": "Oui",
+    "back": "Retour",
+    "pieces": "pces",
+    "open": "Ouvrir",
+    "filterBtn": "Filtrer",
+    "restore": "Restaurer",
+    "unknown": "Inconnu",
+    "reset": "Réinitialiser",
+    "loading": "Chargement",
+    "next": "Suivant"
+  },
+  "admin": {
+    "editTitle": "Modifier : {{name}}",
+    "fullName": "Nom complet",
+    "rank": "Rang",
+    "phone": "Numéro de téléphone (Obligatoire)",
+    "newPassword": "Nouveau mot de passe (Laisser vide si inchangé)",
+    "pendingRequests": "Demandes en attente",
+    "noRequests": "Aucune demande en attente.",
+    "systemUsers": "Utilisateurs système",
+    "validation": {
+      "nameRequired": "Le nom est obligatoire !",
+      "nameNoNumbers": "Les chiffres ne sont pas autorisés dans le nom !",
+      "phoneRequired": "Le numéro de téléphone est obligatoire !"
+    },
+    "alerts": {
+      "fixErrors": "Veuillez corriger les erreurs !",
+      "userUpdated": "Utilisateur mis à jour !",
+      "saveFailed": "Échec de l'enregistrement.",
+      "cantBanSelf": "Vous ne pouvez pas vous bannir vous-même !",
+      "accountUnbanned": "Compte réactivé",
+      "accountBanned": "Compte suspendu",
+      "actionFailed": "L'opération a échoué.",
+      "cantDeleteSelf": "Vous ne pouvez pas supprimer votre propre compte admin !",
+      "deleteTitle": "Suppression définitive ?",
+      "deleteText": "Êtes-vous sûr de vouloir supprimer l'utilisateur {{name}} ? C'est irréversible !",
+      "yesDelete": "Oui, supprimer !",
+      "userDeleted": "Utilisateur supprimé",
+      "deleteFailed": "La suppression a échoué.",
+      "accepted": "Accepté",
+      "rejected": "Rejeté",
+      "fetchError": "Erreur lors du chargement des données admin :"
+    }
+  },
+  "details": {
+    "fullName": "Nom complet",
+    "adminApprovalNeeded": "Approbation admin requise",
+    "phoneLabel": "Numéro de téléphone (International) *",
+    "username": "Nom d'utilisateur",
+    "email": "Adresse e-mail",
+    "oldPassword": "Ancien mot de passe",
+    "newPassword": "Nouveau mot de passe",
+    "buttons": {
+      "fixErrors": "Corriger les erreurs...",
+      "noChanges": "🤔 Aucun changement...",
+      "saveAndRequest": "💾 Enregistrer et demander",
+      "saveData": "💾 Enregistrer les données"
+    },
+    "validation": {
+      "nameEmpty": "Le nom ne peut pas être vide !",
+      "nameNumbers": "Le nom ne peut pas contenir de chiffres !",
+      "emailInvalid": "Format d'e-mail invalide !",
+      "phoneRequired": "Le numéro de téléphone est obligatoire !"
+    },
+    "alerts": {
+      "noChanges": "Tout est identique... 😴",
+      "fixBeforeSave": "Veuillez corriger les erreurs avant d'enregistrer !",
+      "oldPassRequired": "L'ancien mot de passe est obligatoire !",
+      "dataUpdated": "Données mises à jour ! ✨",
+      "errorOccurred": "Une erreur est survenue !"
+    }
+  },
+  "profile": {
+    "dashboard": {
+      "details": { "title": "Données personnelles", "desc": "Nom, contact et gestion du mot de passe" },
+      "stats": { "title": "Statistiques", "desc": "Analyse de votre activité et performance" },
+      "logs": { "title": "Journal d'activité", "desc": "Suivi des opérations système" },
+      "security": { "title": "Centre de sécurité", "desc": "Sessions et protection du compte" },
+      "stock": { "title": "Valeur du stock", "desc": "Rapports financiers et données d'inventaire" },
+      "admin": { "title": "Administration", "desc": "Gestion des utilisateurs et des demandes" },
+      "system": { "title": "État du système", "desc": "Diagnostics serveur et métriques" }
+    },
+    "tabs": {
+      "myProfile": "👤 Mon profil",
+      "activityLog": "📜 Journal d'activité",
+      "administration": "🛡️ Administration"
+    },
+    "alerts": {
+      "restoreTitle": "Restaurer ?",
+      "restoreText": "Êtes-vous sûr de vouloir restaurer l'état original ?",
+      "restoreBtn": "Restaurer",
+      "restored": "Annulé avec succès !",
+      "restoreFailed": "L'opération a échoué.",
+      "groupRestoreTitle": "Restauration groupée",
+      "groupRestoreText": "Voulez-vous restaurer les {{count}} éléments ?",
+      "partialError": "Une erreur partielle est survenue."
+    },
+    "security": {
+      "passwordStatus": "État du mot de passe",
+      "passwordActive": "Actif",
+      "accountStatus": "État du compte",
+      "active": "Actif",
+      "banned": "Banni",
+      "rankLevel": "Niveau de permission",
+      "revokeSessionsTitle": "Déconnecter toutes les sessions",
+      "revokeSessionsDesc": "Vous déconnecte immédiatement de tous les appareils. À utiliser en cas d'accès non autorisé.",
+      "revokeBtn": "Déconnexion globale",
+      "revokeTitle": "Déconnecter tout le monde ?",
+      "revokeText": "Tous les jetons actifs seront invalidés.",
+      "revokeConfirm": "Oui, déconnecter",
+      "successTitle": "Succès",
+      "successText": "Toutes les sessions fermées. Veuillez vous reconnecter.",
+      "loginHistory": "Historique de connexion",
+      "comingSoon": "Bientôt disponible...",
+      "revokeError": "Impossible de révoquer les sessions."
+    },
+    "stats": {
+      "totalActions": "Total des opérations",
+      "creates": "Créations",
+      "updates": "Modifications",
+      "deletes": "Suppressions",
+      "activityDistribution": "Répartition de l'activité",
+      "movesThisMonth": "Opérations ce mois-ci",
+      "newProducts": "Nouveaux produits enregistrés",
+      "fetchError": "Erreur lors du calcul des statistiques :"
+    },
+    "system": {
+      "database": "Base de données",
+      "connected": "Connectée",
+      "error": "Erreur",
+      "uptime": "Temps de fonctionnement",
+      "memory": "Usage mémoire",
+      "latency": "Latence API",
+      "recentEvents": "Événements système récents",
+      "maintenance": "Maintenance",
+      "maintenanceDesc": "Exécuter des outils de diagnostic pour vérifier l'intégrité de la base de données.",
+      "runDiagnostic": "Lancer le diagnostic",
+      "fetchError": "Erreur lors de la récupération de l'état système :"
+    },
+    "details": {
+      "requestRankTitle": "Demander la permission {{rank}}",
+      "requestRankText": "Voulez-vous vraiment demander l'accès {{rank}} ?",
+      "deleteTitle": "Suppression définitive du compte",
+      "deleteText": "Voulez-vous vraiment supprimer votre compte ? Cette action est irréversible !",
+      "deleteConfirm": "Oui, supprimer définitivement",
+      "deleteAccount": "Supprimer le compte",
+      "deletedTitle": "Supprimé",
+      "deletedText": "Votre compte a été supprimé avec succès.",
+      "namePending": "Changement de nom en attente...",
+      "requestKezelo": "Demander Opérateur",
+      "requestAdmin": "Demander Admin",
+      "kezeloPending": "⏳ Demande Opérateur en cours",
+      "adminPending": "⏳ Demande Admin en cours",
+      "nameChangedWarning": "Approbation admin requise",
+      "alerts": {
+        "fetchRequestsError": "Impossible de récupérer les demandes.",
+        "requestSent": "Demande envoyée !",
+        "deleteDeniedTitle": "Suppression refusée",
+        "deleteDeniedText": "Vous êtes le seul administrateur actif !",
+        "checkAdminError": "Impossible de vérifier le nombre d'administrateurs."
+      },
+      "buttons": {
+        "updateRequest": "Mettre à jour la demande"
+      }
+    },
+    "avatar": {
+      "cropTitle": "Recadrer l'image",
+      "sourceTitle": "Source de l'image",
+      "uploadFile": "Charger un fichier",
+      "pasteHint": "Ou faites CTRL+V",
+      "urlPlaceholder": "Coller l'URL directe d'une image...",
+      "urlError": "Erreur lors du chargement de l'image.",
+      "zoom": "Zoom",
+      "uploading": "Enregistrement...",
+      "saveBtn": "Enregistrer l'image",
+      "modifyOverlay": "Modifier"
+    }
+  },
+  "logs": {
+    "labels": {
+      "name": "Nom",
+      "quantity": "Quantité",
+      "plot": "Emplacement",
+      "manufacturer": "Fabricant",
+      "price": "Prix"
+    },
+    "filters": {
+      "user": "Utilisateur",
+      "allUsers": "Tous les utilisateurs",
+      "operation": "Opération",
+      "allOperations": "Toutes les opérations",
+      "allActions": "Toutes les actions",
+      "date": "Depuis le",
+      "create": "✨ Création",
+      "update": "📝 Modification",
+      "delete": "🗑️ Suppression",
+      "bulkDelete": "🗑️ Suppression groupée",
+      "restore": "♻️ Restauration",
+      "filterBtn": "Filtrer",
+      "exportBtn": "Export"
+    },
+    "operations": {
+      "create": "Création",
+      "update": "Modification",
+      "batch": "Mouvement de stock",
+      "delete": "Suppression",
+      "bulkDelete": "SUPPRESSION GROUPÉE",
+      "bulkItems": "Produits supprimés ({{count}} pces)",
+      "productCreate": "Nouveau produit ajouté",
+      "productDelete": "Produit supprimé",
+      "restored": "Restauré"
+    },
+    "diff": {
+      "productAdded": "Produit ajouté",
+      "productDeleted": "Produit supprimé",
+      "dataChanged": "Données modifiées",
+      "productRestored": "Produit rétabli",
+      "reverted": "Modification annulée :"
+    },
+    "types": {
+      "split": "Transfert partiel",
+      "move": "Transfert total",
+      "merge": "Fusion"
+    },
+    "fields": {
+      "sourceShelf": "Étagère source",
+      "targetShelf": "Étagère cible",
+      "total": "Total",
+      "system": "Processus système",
+      "na": "N/A"
+    },
+    "excel": {
+      "sheetName": "Journal d'activité",
+      "product": "PRODUIT",
+      "changes": "CHANGEMENTS",
+      "action": "OPÉRATION",
+      "user": "UTILISATEUR",
+      "date": "HORODATAGE",
+      "system": "Système",
+      "unknown": "Inconnu",
+      "ready": "Export Excel prêt !"
+    },
+    "misc": {
+      "bulkDeleteCount": "Suppression groupée ({{count}} pos.)",
+      "systemProcess": "Processus système",
+      "viewDetails": "Voir détails →",
+      "noLogs": "Aucun journal à afficher.",
+      "fetchError": "Erreur lors du chargement du journal :"
+    }
+  },
+  "product": {
+    "categories": {
+      "ELEKTRONIKA": "Électronique",
+      "ELELMISZER": "Alimentation",
+      "VEGYSZER": "Chimique",
+      "IRODASZER": "Fournitures de bureau",
+      "AUTO_MOTOR": "Auto-Moto",
+      "RUHAZAT": "Vêtements",
+      "BARKACS": "Bricolage",
+      "SPORT": "Sport",
+      "JATEK": "Jeux",
+      "HAZTARTAS": "Ménager",
+      "KOZMETIKA": "Cosmétique",
+      "KONYVEK": "Livres",
+      "BUTOR": "Meubles",
+      "EGESZSEGUGY": "Santé",
+      "EGYEB": "Autre"
+    },
+    "add": {
+      "title": "📦 Réception <span class=\"text-blue-600\">Stock</span>",
+      "searchExisting": "Chercher dans le catalogue",
+      "searchPlaceholder": "Rechercher par nom ou fabricant...",
+      "select": "Sélectionner →",
+      "or": "OU",
+      "createNew": "+ Créer nouveau produit",
+      "selectedMaster": "Produit sélectionné",
+      "masterData": "Données de base",
+      "name": "Nom du produit",
+      "namePlaceholder": "Ex: Vis en acier",
+      "manufacturer": "Fabricant",
+      "manufacturerPlaceholder": "Ex: IronWorks Ltd.",
+      "category": "Catégorie",
+      "weight": "Poids (kg / pce)",
+      "purchasePrice": "Prix d'achat (EUR)",
+      "salePrice": "Prix de vente (EUR)",
+      "minStock": "Stock minimum",
+      "batchIntake": "Réception du lot",
+      "expiry": "Date d'expiration (Optionnel)",
+      "location": "Emplacement (Cible)",
+      "quantity": "Quantité (pces)",
+      "saveToWarehouse": "Enregistrer au stock",
+      "alerts": {
+        "intakeSuccess": "Réception réussie ! 📦",
+        "productCreated": "Produit enregistré ! ✨",
+        "errorOccurred": "Une erreur est survenue",
+        "errorText": "Erreur réseau ou étagère pleine.",
+        "fetchError": "Erreur mise à jour liste produits :",
+        "missingShelf": "Veuillez assigner une étagère à chaque lot !",
+        "invalidAllocation": "La quantité allouée ne correspond pas au total !"
+      }
+    },
+    "details": {
+      "back": "Retour",
+      "backToHome": "Retour à l'accueil",
+      "notFoundTitle": "Produit non trouvé",
+      "fetching": "Récupération des données...",
+      "deletedWarning": "⚠️ Attention : Ce produit est supprimé !",
+      "itemNumber": "Référence (ID)",
+      "masterData": "Données de base",
+      "weightUnit": "Poids (Unité)",
+      "minStock": "Stock min.",
+      "purchasePrice": "Prix d'achat",
+      "salePrice": "Prix de vente",
+      "stockStatus": "État du stock",
+      "totalStock": "Stock total actuel",
+      "criticalStock": "🚨 Stock critique",
+      "outOfStockAlert": "RUPTURE DE STOCK !",
+      "physicalLocation": "Emplacements physiques (Lots)",
+      "expiry": "Date d'expiration",
+      "nonPerishable": "Non périssable",
+      "outOfStock": "Pas de stock.",
+      "modify": "Modifier",
+      "delete": "Supprimer",
+      "alerts": {
+        "deleteConfirmTitle": "Êtes-vous sûr ?",
+        "deleteConfirmText": "Tout le catalogue de \"{{name}}\" et ses lots physiques seront supprimés !",
+        "yesDelete": "Oui, supprimer !",
+        "deletedSuccess": "Produit supprimé ! 🗑️",
+        "deleteFailed": "La suppression a échoué."
+      }
+    },
+    "grid": {
+      "title": "Carte du stock",
+      "subtitle": "Gestion interactive de l'inventaire",
+      "sorting": "🪄 Tri",
+      "sector": "SECTEUR",
+      "emptyShelf": "Étagère vide",
+      "selectSector": "Choisir un secteur pour l'aperçu",
+      "alerts": {
+        "weightStop": "Limite de poids ! 🛑",
+        "shelfFull": "L'étagère {{shelf}} est pleine.",
+        "moveHowMuch": "Combien voulez-vous déplacer ?",
+        "weightWarning": "⚠️ LIMITE POIDS : Capacité max {{max}} pces !",
+        "moveBtn": "📦 Déplacer",
+        "movedSuccess": "Déplacé !",
+        "sortTitle": "Optimisation ?",
+        "sortText": "Trier le stock par catégories.",
+        "start": "Démarrer",
+        "sortedSuccess": "Optimisé !"
+      }
+    },
+    "list": {
+      "title": "Entrepôt",
+      "bulkDelete": "🗑️ Supprimer ({{count}})",
+      "filterErrors": "🚨 Erreurs seulement",
+      "filterAll": "⚠️ Filtrer",
+      "export": "📊 Export",
+      "selectModeOn": "✖ Fin sélection",
+      "selectModeOff": "☑️ Sélection multiple",
+      "newProduct": "+ Nouveau produit",
+      "searchPlaceholder": "Chercher par nom, fabricant ou ID...",
+      "headers": {
+        "qr": "QR",
+        "product": "Produit",
+        "category": "Catégorie",
+        "totalStock": "Stock total",
+        "actions": "Action"
+      },
+      "batches": "Lots",
+      "nonPerishable": "Non périssable",
+      "details": "Détails",
+      "allGoodTitle": "Toutes les étagères sont OK",
+      "allGoodSubtitle": "Aucun article ne nécessite d'intervention",
+      "print": "🖨️ Imprimer",
+      "excel": {
+        "sheetName": "Inventaire",
+        "name": "Nom du produit",
+        "manufacturer": "Fabricant",
+        "category": "Catégorie",
+        "quantity": "Quantité totale (pces)",
+        "earliestExpiry": "Expiration la plus proche"
+      },
+      "alerts": {
+        "bulkDeleteTitle": "Suppression groupée",
+        "bulkDeleteText": "Supprimer {{count}} éléments ?",
+        "bulkDeleted": "Éléments supprimés.",
+        "bulkDeleteFailed": "Échec de la suppression groupée.",
+        "deleteTitle": "Supprimer produit",
+        "deleteText": "Voulez-vous vraiment supprimer ?",
+        "deleted": "Produit supprimé.",
+        "deleteFailed": "La suppression a échoué.",
+        "excelReady": "Rapport Excel prêt ! 📊"
+      }
+    },
+    "modify": {
+      "tabs": { "physicalStock": "📦 Stock physique", "masterData": "⚙️ Catalogue" },
+      "deletedTitle": "Produit supprimé",
+      "restoreBtn": "Restaurer",
+      "stockManagement": "Gestion du stock",
+      "selectBatch": "Sélectionner étagère (Lot)",
+      "createNewBatch": "➕ CRÉER NOUVEAU LOT",
+      "newBatchData": "Données du nouveau lot",
+      "location": "Emplacement (Étagère)",
+      "expiry": "Date d'expiration",
+      "quantity": "Quantité (pces)",
+      "execute": "Exécuter",
+      "editData": "Modifier données",
+      "alerts": {
+        "restoreTitle": "Restaurer ?",
+        "restoreText": "Le produit sera de nouveau disponible.",
+        "restored": "Réactivé !",
+        "restoreFailed": "Échec.",
+        "chooseBatch": "Sélectionner un lot existant !",
+        "intakeSuccess": "+{{count}} pces reçues.",
+        "notEnoughStock": "Stock insuffisant. Max : {{max}} pces",
+        "batchDeleted": "Lot vide et supprimé.",
+        "lastBatchEmpty": "Le dernier lot est vide",
+        "deletePhysicalBatch": "Supprimer le lot physique ?",
+        "keepZero": "Garder à 0",
+        "stockUpdated": "Stock mis à jour.",
+        "dataUpdated": "Données mises à jour ! ✨",
+        "saveFailed": "Échec de l'enregistrement."
+      }
+    }
+  },
+  "inventory": {
+    "shelfMap": {
+      "title": "Carte interactive",
+      "sector": "Secteur",
+      "weight": "Poids actuel",
+      "category": "Catégorie",
+      "empty": "Vide",
+      "low": "Charge faible",
+      "mid": "Charge moyenne",
+      "high": "Charge élevée",
+      "recommended": "Position recommandée"
+    },
+    "splitter": {
+      "title": "Allocation multi-rayons",
+      "chooseMethod": "Comment placer le stock ?",
+      "autoBtn": "🤖 Suggestion auto",
+      "manualBtn": "📍 Sélection manuelle",
+      "autoTitle": "Allocation automatisée",
+      "manualTitle": "Allocation manuelle",
+      "allAllocated": "Tous les articles placés",
+      "remainingQty": "Reste à allouer : {{count}} pces",
+      "shelf": "Étagère",
+      "qty": "Quantité",
+      "addSplit": "Ajouter étagère",
+      "overAllocated": "⚠️ Erreur : {{amount}} pces en trop !",
+      "invalidFormat": "Invalide (Ex: A1-1)",
+      "alerts": {
+        "shelfFullTitle": "Oups, c'est plein ! 😅",
+        "shelfFullText": "L'étagère {{shelf}} est déjà pleine. Choisissez-en une autre !"
+      }
+    }
+  },
+  "stockValue": {
+    "title": "Calculateur de valeur",
+    "subtitle": "Analyse financière en direct",
+    "manualRefresh": "🔄 Actualiser manuellement",
+    "totalValue": "Valeur totale du stock",
+    "totalItems": "Nombre total d'articles",
+    "activeSectors": "Secteurs actifs",
+    "sectors": "secteurs",
+    "topProducts": "🏆 Classement par valeur",
+    "territorialDistribution": "📍 Distribution géographique",
+    "sectorLabel": "Secteur \"{{sector}}\"",
+    "share": "{{percent}}% de part",
+    "noLocation": "Pas d'emplacement",
+    "billionFt": "milliards EUR",
+    "millionFt": "millions EUR",
+    "calculating": "Calcul des données financières...",
+    "loadError": "Échec du chargement des données de stock.",
+    "categoryDistribution": "📦 Répartition par catégorie",
+    "sectorValues": "📍 Valeur des secteurs"
+  },
+  "auxiliary": {
+    "connection": {
+      "serverOffline": "Serveur hors ligne",
+      "reconnecting": "Reconnexion automatique..."
+    },
+    "navbar": {
+      "products": "🏠 Produits",
+      "overview": "📊 Aperçu",
+      "scanner": "📷 Scan",
+      "notifications": "🔔 Alertes",
+      "new": "neuf",
+      "profile": "👤 Profil",
+      "darkTheme": "Mode sombre",
+      "logout": "🚪 Sortie",
+      "login": "Connexion",
+      "register": "Inscription",
+      "searchPlaceholder": "Chercher...",
+      "jump": "Aller à →",
+      "viewAll": "Tout voir →",
+      "noNotifications": "Pas d'alertes"
+    },
+    "notifications": {
+      "title": "🔔 Centre d'alertes",
+      "unreadCount": "{{count}} alertes non lues",
+      "allRead": "Toutes les alertes lues",
+      "deleteReadBtn": "🗑️ Supprimer lues",
+      "markAllReadBtn": "✓ Tout marquer lu",
+      "emptyTitle": "Pas d'alertes",
+      "emptyText": "Il n'y a aucune alerte système pour le moment.",
+      "readStatus": "Lue",
+      "markAsRead": "Lu",
+      "alerts": {
+        "allMarkedRead": "Toutes les alertes marquées comme lues !",
+        "deleteConfirmTitle": "Supprimer lues ?",
+        "deleteConfirmText": "Toutes les alertes déjà acquittées seront supprimées !",
+        "yesDelete": "Oui, supprimer !",
+        "deletedSuccess": "Alertes lues supprimées !"
+      }
+    },
+    "scanner": {
+      "title": "📷 SCANNER QR",
+      "camError": "Caméra indisponible.",
+      "searching": "Recherche...",
+      "locations": "Emplacements",
+      "totalStock": "Stock total",
+      "detailsBtn": "Fiche produit",
+      "newScanBtn": "Nouveau scan",
+      "backToMenu": "← Retour au menu",
+      "noStock": "Pas en stock",
+      "unknownLocation": "Lieu inconnu",
+      "alerts": {
+        "invalidCodeTitle": "Code invalide",
+        "invalidCodeText": "Ceci n'est pas un code QR WarehouseWeb valide !",
+        "noMatchTitle": "Aucun résultat",
+        "noMatchText": "Le produit scanné n'existe pas dans le système."
+      }
+    },
+    "search": {
+      "title": "Résultats de recherche",
+      "expression": "Expression :",
+      "resultsCount": "{{count}} résultats",
+      "scanningStock": "Analyse du stock...",
+      "lowStock": "Stock bas",
+      "inStock": "En stock",
+      "location": "Emplacement",
+      "stock": "Stock",
+      "noResultsTitle": "Aucun résultat...",
+      "noResultsText": "L'article recherché est introuvable.",
+      "backToHub": "Retour à la base"
+    }
+  },
+  "auth": {
+    "register": {
+      "title": "Créer un compte",
+      "fullName": "Nom complet *",
+      "fullNamePlaceholder": "Ex: Jean Dupont",
+      "username": "Nom d'utilisateur *",
+      "usernamePlaceholder": "jdupont88",
+      "email": "Adresse e-mail *",
+      "emailPlaceholder": "exemple@email.fr",
+      "phone": "Numéro de téléphone (International) *",
+      "password": "Mot de passe *",
+      "passwordPlaceholder": "••••••••",
+      "submit": "Finaliser l'inscription",
+      "backToLogin": "Retour à la connexion",
+      "validation": {
+        "nameEmpty": "Le nom est obligatoire !",
+        "nameNumbers": "Le nom ne peut pas contenir de chiffres !",
+        "nameTwoWords": "Nom et prénom requis !",
+        "usernameShort": "Minimum 4 caractères !",
+        "emailInvalid": "Format d'e-mail invalide !",
+        "phoneRequired": "Le téléphone est obligatoire !",
+        "passwordShort": "Minimum 8 caractères requis !",
+        "passwordWeak": "Majuscule, minuscule et chiffre/signe requis !"
+      },
+      "alerts": {
+        "fillAll": "Veuillez remplir tous les champs correctement !",
+        "successTitle": "Inscription réussie ! ✨",
+        "successText": "Vous pouvez maintenant vous connecter.",
+        "errorTitle": "Erreur d'inscription"
+      }
+    },
+    "login": {
+      "title": "Connexion",
+      "fillDemo": "🔑 Remplir mot de passe",
+      "username": "Nom d'utilisateur",
+      "usernamePlaceholder": "Entrez votre nom...",
+      "password": "Mot de passe",
+      "passwordPlaceholder": "••••••••",
+      "forgotPassword": "Oublié ?",
+      "submit": "Entrer dans le système",
+      "registerNew": "Créer un nouveau compte",
+      "alerts": {
+        "accessDenied": "Accès refusé",
+        "sessionLost": "Session interrompue",
+        "bannedText": "Ce compte a été suspendu.",
+        "sessionExpiredText": "La session a expiré. Veuillez vous reconnecter.",
+        "gotIt": "Compris",
+        "welcomeBack": "Bon retour !",
+        "bannedTitle": "Banni !",
+        "bannedFooter": "Contactez l'administrateur",
+        "bannedServerMsg": "Le compte ne peut pas accéder au système.",
+        "wrongCredentials": "Nom d'utilisateur ou mot de passe incorrect !",
+        "oops": "Oups..."
+      }
+    },
+    "forgotPassword": {
+      "title": "Récupération du mot de passe",
+      "subtitle": "Entrez vos données de sécurité.",
+      "username": "Nom d'utilisateur",
+      "usernamePlaceholder": "Ex: jdupont88",
+      "email": "E-mail enregistré",
+      "emailPlaceholder": "exemple@email.fr",
+      "phone": "Téléphone enregistré",
+      "submit": "Demander nouveau mot de passe",
+      "checking": "Vérification...",
+      "backToLogin": "← Connexion",
+      "alerts": {
+        "fillValid": "Remplissez tous les champs !",
+        "successTitle": "Identification réussie !",
+        "successHtml1": "Mot de passe temporaire généré.",
+        "successHtml2": "Modification obligatoire après connexion !",
+        "goToLogin": "Vers la connexion",
+        "errorOccurred": "Erreur",
+        "verifyError": "Erreur lors de la vérification.",
+        "understand": "D'accord"
+      }
+    },
+    "forceChange": {
+      "title": "Changement de mot de passe requis",
+      "subtitle": "Définissez un nouveau mot de passe sécurisé !",
+      "tempPassword": "Mot de passe temporaire",
+      "tempPlaceholder": "Celui que vous venez de recevoir...",
+      "newPassword": "Nouveau mot de passe",
+      "newPlaceholder": "Min. 8 caractères",
+      "newPasswordAgain": "Confirmer nouveau mot de passe",
+      "newAgainPlaceholder": "Confirmer",
+      "submit": "Changer le mot de passe",
+      "updating": "Mise à jour...",
+      "logoutAndCancel": "← Annuler",
+      "alerts": {
+        "missingSession": "Session manquante !",
+        "shortPassword": "Minimum 8 caractères !",
+        "weakPassword": "Majuscule, minuscule et chiffre requis !",
+        "passwordMismatch": "Les deux mots de passe ne correspondent pas !",
+        "successTitle": "Mot de passe mis à jour ! ✨",
+        "successText": "Connectez-vous avec votre nouveau mot de passe.",
+        "goToLogin": "Vers la connexion",
+        "errorTitle": "Erreur",
+        "updateError": "Erreur lors de la mise à jour.",
+        "understand": "D'accord"
+      }
+    }
+  },
+  "hooks": {
+    "realTime": {
+      "alerts": {
+        "accountSuspended": "Votre compte a été suspendu.",
+        "connectionLost": "Connexion au serveur perdue."
+      }
+    }
+  },
+  "languages": {
+    "hu": "Hongrois",
+    "en": "Anglais",
+    "de": "Allemand",
+    "it": "Italien",
+    "fr": "Français",
+    "es": "Espagnol",
+    "pt": "Portugais",
+    "pl": "Polonais",
+    "ru": "Russe",
+    "ko": "Coréen",
+    "zh": "Chinois",
+    "ja": "Japonais"
+  }
+}

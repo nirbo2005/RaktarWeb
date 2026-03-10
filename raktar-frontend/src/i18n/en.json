@@ -12,62 +12,70 @@
     "error": "Error!",
     "success": "Success!",
     "search": "Search...",
-    "noResults": "No results found",
+    "noResults": "No results",
     "identifying": "Identifying...",
     "updating": "Updating...",
     "close": "Close",
     "yes": "Yes",
+    "no": "No",
     "back": "Back",
     "pieces": "pcs",
     "open": "Open",
     "filterBtn": "Filter",
     "restore": "Restore",
-    "unknown": "Unknown"
+    "unknown": "Unknown",
+    "reset": "Reset",
+    "loading": "Loading",
+    "next": "Next",
+    "prev": "Previous",
+    "perPage": "Show:",
+    "languageSelector": "Language Selector"
   },
   "admin": {
     "editTitle": "Edit: {{name}}",
     "fullName": "Full Name",
     "rank": "Rank",
     "phone": "Phone Number (Required)",
-    "newPassword": "New Password (Leave blank if unchanged)",
+    "newPassword": "New Password (Leave empty if no change)",
     "pendingRequests": "Pending Requests",
     "noRequests": "No pending requests.",
     "systemUsers": "System Users",
     "validation": {
       "nameRequired": "Name is required!",
-      "nameNoNumbers": "Name cannot contain numbers!",
+      "nameNoNumbers": "Numbers are not allowed in the name!",
       "phoneRequired": "Phone number is required!"
     },
     "alerts": {
-      "fixErrors": "Please fix the errors!",
+      "fixErrors": "Fix the errors!",
       "userUpdated": "User updated!",
-      "saveFailed": "Failed to save.",
+      "saveFailed": "Save failed.",
       "cantBanSelf": "You cannot ban yourself!",
       "accountUnbanned": "Account unbanned",
       "accountBanned": "Account suspended",
-      "actionFailed": "Action failed.",
+      "actionFailed": "Operation failed.",
       "cantDeleteSelf": "You cannot delete your own admin account!",
-      "deleteTitle": "Permanent delete?",
-      "deleteText": "Are you sure you want to delete {{name}}? This cannot be undone!",
+      "deleteTitle": "Permanent Deletion?",
+      "deleteText": "Are you sure you want to delete user {{name}}? This cannot be undone!",
       "yesDelete": "Yes, delete!",
       "userDeleted": "User deleted",
       "deleteFailed": "Deletion failed.",
       "accepted": "Accepted",
-      "rejected": "Rejected"
+      "rejected": "Rejected",
+      "fetchError": "Error loading admin data:"
     }
   },
   "details": {
     "fullName": "Full Name",
-    "adminApprovalNeeded": "Admin approval required",
+    "adminApprovalNeeded": "Admin approval needed",
     "phoneLabel": "Phone Number (International) *",
     "username": "Username",
     "email": "Email Address",
     "oldPassword": "Old Password",
     "newPassword": "New Password",
     "buttons": {
-      "fixErrors": "Fix errors...",
+      "fixErrors": "Fix the errors...",
       "noChanges": "🤔 Nothing changed...",
-      "saveAndRequest": "💾 Save & Request Name Change",
+      "saveAndRequest": "💾 Save and Request Name",
       "saveData": "💾 Save Data"
     },
     "validation": {
@@ -77,7 +85,7 @@
       "phoneRequired": "Phone number is required!"
     },
     "alerts": {
-      "noChanges": "Everything is the same... 😴",
+      "noChanges": "Everything is still the same... 😴",
       "fixBeforeSave": "Please fix errors before saving!",
       "oldPassRequired": "Old password is required!",
       "dataUpdated": "Data updated! ✨",
@@ -88,15 +96,15 @@
     "dashboard": {
       "details": {
         "title": "Personal Details",
-        "desc": "Name, contact and password management"
+        "desc": "Name, contact, and password management"
       },
       "stats": {
         "title": "Statistics",
-        "desc": "Personal activity and performance analysis"
+        "desc": "Analysis of own activity and performance"
       },
       "logs": {
         "title": "Activity Log",
-        "desc": "Track system operations"
+        "desc": "Tracking system operations"
       },
       "security": {
         "title": "Security Center",
@@ -108,7 +116,7 @@
       },
       "admin": {
         "title": "Administration",
-        "desc": "Manage users and requests"
+        "desc": "Managing users and requests"
       },
       "system": {
         "title": "System Status",
@@ -124,11 +132,13 @@
       "restoreTitle": "Restore?",
       "restoreText": "Are you sure you want to restore the original state?",
       "restoreBtn": "Restore",
-      "restored": "Restored!",
-      "restoreFailed": "Action failed.",
-      "groupRestoreTitle": "Bulk Restore",
-      "groupRestoreText": "Are you sure you want to restore all {{count}} items?",
-      "partialError": "Partial error occurred."
+      "restored": "Successfully restored!",
+      "restoreFailed": "Operation failed.",
+      "groupRestoreTitle": "Group Restore",
+      "groupRestoreText": "Do you want to restore all {{count}} deleted items?",
+      "groupRestoreConfirmAll": "Yes, all of them",
+      "groupRestoreChoose": "Not all, I will choose",
+      "partialError": "A partial error occurred."
     },
     "security": {
       "passwordStatus": "Password Status",
@@ -136,27 +146,28 @@
       "accountStatus": "Account Status",
       "active": "Active",
       "banned": "Banned",
-      "rankLevel": "Privilege Level",
-      "revokeSessionsTitle": "Revoke All Sessions",
-      "revokeSessionsDesc": "This will immediately sign you out from all devices, including the current one. Use this if you suspect unauthorized access.",
+      "rankLevel": "Permission Level",
+      "revokeSessionsTitle": "Log out of all sessions",
+      "revokeSessionsDesc": "This feature will immediately log you out from all devices, including the current one. Use if you suspect unauthorized access.",
       "revokeBtn": "Logout from everywhere",
-      "revokeTitle": "Are you sure?",
+      "revokeTitle": "Are you sure you want to log everyone out?",
       "revokeText": "All active tokens will be invalidated.",
-      "revokeConfirm": "Yes, revoke all",
-      "successTitle": "Success",
+      "revokeConfirm": "Yes, logout",
+      "successTitle": "Operation Successful",
       "successText": "All sessions closed. Please log in again.",
       "loginHistory": "Login History",
       "comingSoon": "Coming soon...",
       "revokeError": "Failed to revoke sessions."
     },
     "stats": {
-      "totalActions": "Total Actions",
+      "totalActions": "Total Operations",
       "creates": "Creations",
-      "updates": "Updates",
+      "updates": "Modifications",
       "deletes": "Deletions",
       "activityDistribution": "Activity Distribution",
-      "movesThisMonth": "Actions this month",
-      "newProducts": "New products registered"
+      "movesThisMonth": "Operations this month",
+      "newProducts": "New product recorded",
+      "fetchError": "Error calculating statistics:"
     },
     "system": {
       "database": "Database",
@@ -165,10 +176,52 @@
       "uptime": "Uptime",
       "memory": "Memory Usage",
       "latency": "API Latency",
-      "recentEvents": "Recent System Events",
+      "recentEvents": "Recent System Operations",
       "maintenance": "Maintenance",
-      "maintenanceDesc": "Run diagnostic tools to check database integrity and optimal server performance.",
-      "runDiagnostic": "Run Diagnostic"
+      "maintenanceDesc": "Run diagnostic tools to check database integrity and optimal server operation.",
+      "runDiagnostic": "Start Diagnostics",
+      "fetchError": "Error fetching system status:"
+    },
+    "details": {
+      "requestRankTitle": "Request {{rank}} Permission",
+      "requestRankText": "Are you sure you want to request {{rank}} access to the system?",
+      "deleteTitle": "Permanent Account Deletion",
+      "deleteText": "Are you sure you want to delete your account? This action is irreversible!",
+      "deleteConfirm": "Yes, delete permanently",
+      "deleteAccount": "Delete Account",
+      "deletedTitle": "Deleted",
+      "deletedText": "Your account has been successfully deleted.",
+      "namePending": "Name change request pending...",
+      "requestKezelo": "Request Handler",
+      "requestAdmin": "Request Admin",
+      "kezeloPending": "⏳ Handler request pending",
+      "adminPending": "⏳ Admin request pending",
+      "nameChangedWarning": "Admin approval needed",
+      "alerts": {
+        "deleteTitle": "Permanent Account Deletion",
+        "deleteText": "Are you sure you want to delete your account? This action is irreversible!",
+        "deleteConfirm": "Yes, delete permanently",
+        "fetchRequestsError": "Failed to fetch requests.",
+        "requestSent": "Permission request sent!",
+        "deleteDeniedTitle": "Deletion Denied",
+        "deleteDeniedText": "You are the only active administrator!",
+        "checkAdminError": "Failed to check the number of administrators."
+      },
+      "buttons": {
+        "updateRequest": "Update Request"
+      }
+    },
+    "avatar": {
+      "cropTitle": "Crop Image",
+      "sourceTitle": "Image Source",
+      "uploadFile": "Upload File",
+      "pasteHint": "Or press CTRL+V",
+      "urlPlaceholder": "Paste a direct image URL...",
+      "urlError": "Error loading image.",
+      "zoom": "Zoom",
+      "uploading": "Saving in progress...",
+      "saveBtn": "Save Image",
+      "modifyOverlay": "Modify"
     }
   },
   "logs": {
@@ -185,21 +238,21 @@
       "operation": "Operation",
       "allOperations": "All operations",
       "allActions": "All actions",
-      "date": "From date",
-      "create": "✨ Create",
-      "update": "📝 Update",
-      "delete": "🗑️ Delete",
-      "bulkDelete": "🗑️ Bulk Delete",
+      "date": "From Date",
+      "create": "✨ Creation",
+      "update": "📝 Modification",
+      "delete": "🗑️ Deletion",
+      "bulkDelete": "🗑️ Bulk Deletion",
       "restore": "♻️ Restore",
       "filterBtn": "Filter",
       "exportBtn": "Export"
     },
     "operations": {
-      "create": "Create",
-      "update": "Update",
-      "batch": "Stock movement",
-      "delete": "Delete",
-      "bulkDelete": "BULK DELETE",
+      "create": "Creation",
+      "update": "Modification",
+      "batch": "Stock Movement",
+      "delete": "Deletion",
+      "bulkDelete": "Bulk Deletion",
       "bulkItems": "Products deleted ({{count}} pcs)",
       "productCreate": "New product added",
       "productDelete": "Product deleted",
@@ -208,37 +261,39 @@
     "diff": {
       "productAdded": "Product added",
       "productDeleted": "Product deleted",
-      "dataChanged": "Data changed",
+      "dataChanged": "Data change occurred",
       "productRestored": "Product restored",
       "reverted": "Modification reverted:"
     },
     "types": {
-      "split": "Partial relocation",
-      "move": "Full relocation",
+      "split": "Partial move",
+      "move": "Full move",
       "merge": "Merge"
     },
     "fields": {
       "sourceShelf": "Source shelf",
       "targetShelf": "Target shelf",
       "total": "Total",
-      "system": "System process"
+      "system": "System process",
+      "na": "N/A"
     },
     "excel": {
       "sheetName": "Activity Log",
       "product": "PRODUCT",
       "changes": "CHANGES",
-      "action": "ACTION",
+      "action": "OPERATION",
       "user": "USER",
-      "date": "DATE",
+      "date": "TIMESTAMP",
       "system": "System",
       "unknown": "Unknown",
       "ready": "Excel export ready!"
     },
     "misc": {
-      "bulkDeleteCount": "Bulk Delete ({{count}} items)",
+      "bulkDeleteCount": "Bulk Deletion ({{count}} items)",
       "systemProcess": "System Process",
-      "viewDetails": "View details →",
-      "noLogs": "No log entries to display."
+      "viewDetails": "View Details →",
+      "noLogs": "No log entries to display.",
+      "fetchError": "Error loading log:"
     }
   },
   "product": {
@@ -246,12 +301,12 @@
       "ELEKTRONIKA": "Electronics",
       "ELELMISZER": "Food",
       "VEGYSZER": "Chemicals",
-      "IRODASZER": "Office Supplies",
-      "AUTO_MOTOR": "Auto & Motor",
+      "IRODASZER": "Stationery",
+      "AUTO_MOTOR": "Auto-Motor",
       "RUHAZAT": "Clothing",
       "BARKACS": "DIY",
-      "SPORT": "Sports",
-      "JATEK": "Toys",
+      "SPORT": "Sport",
+      "JATEK": "Toy",
       "HAZTARTAS": "Household",
       "KOZMETIKA": "Cosmetics",
       "KONYVEK": "Books",
@@ -261,21 +316,21 @@
     },
     "add": {
       "title": "📦 Warehouse <span class=\"text-blue-600\">Intake</span>",
-      "searchExisting": "Search existing master data",
+      "searchExisting": "Search in existing master data",
       "searchPlaceholder": "Search by name or manufacturer...",
       "select": "Select →",
       "or": "OR",
       "createNew": "+ Create New Master Data",
       "selectedMaster": "Selected Master Data",
       "masterData": "Master Data",
-      "name": "Product Name",
-      "namePlaceholder": "e.g. Steel Bolt",
+      "name": "Product name",
+      "namePlaceholder": "E.g. Steel screw",
       "manufacturer": "Manufacturer",
-      "manufacturerPlaceholder": "e.g. IronWorks Ltd.",
+      "manufacturerPlaceholder": "E.g. IronWorks Ltd.",
       "category": "Category",
       "weight": "Weight (kg / pc)",
-      "purchasePrice": "Purchase Price (HUF)",
-      "salePrice": "Sale Price (HUF)",
+      "purchasePrice": "Purchase Price (USD)",
+      "salePrice": "Sale Price (USD)",
       "minStock": "Minimum Stock",
       "batchIntake": "Batch Intake",
       "expiry": "Expiry Date (Optional)",
@@ -284,9 +339,10 @@
       "saveToWarehouse": "Save to Warehouse",
       "alerts": {
         "intakeSuccess": "Intake successful! 📦",
-        "productCreated": "Product registered! ✨",
+        "productCreated": "Product recorded! ✨",
         "errorOccurred": "An error occurred",
         "errorText": "Network error or shelf full.",
+        "fetchError": "Error updating product list:",
         "missingShelf": "Please assign a shelf to all items!",
         "invalidAllocation": "Allocated quantity does not match total quantity!"
       }
@@ -296,7 +352,7 @@
       "backToHome": "Back to Home",
       "notFoundTitle": "Product not found",
       "fetching": "Fetching data...",
-      "deletedWarning": "⚠️ Warning: This product is currently deleted!",
+      "deletedWarning": "⚠️ Warning: This product is in deleted state!",
       "itemNumber": "Item Number (ID)",
       "masterData": "Master Data",
       "weightUnit": "Weight (Unit)",
@@ -306,8 +362,9 @@
       "stockStatus": "Stock Status",
       "totalStock": "Current Total Stock",
       "criticalStock": "🚨 Critical stock",
+      "outOfStockAlert": "STOCK SHORTAGE!",
       "physicalLocation": "Physical Location (Batches)",
-      "expiry": "Expiry Date",
+      "expiry": "Expiry Time",
       "nonPerishable": "Non-perishable",
       "outOfStock": "Out of stock.",
       "modify": "Modify",
@@ -315,27 +372,27 @@
       "alerts": {
         "deleteConfirmTitle": "Are you sure?",
         "deleteConfirmText": "The entire master data and all physical batches of \"{{name}}\" will be deleted from the system!",
-        "yesDelete": "Yes, delete it!",
+        "yesDelete": "Yes, delete!",
         "deletedSuccess": "Product deleted! 🗑️",
-        "deleteFailed": "Deletion failed."
+        "deleteFailed": "Failed deletion."
       }
     },
     "grid": {
       "title": "Warehouse Map",
       "subtitle": "Interactive inventory management",
-      "sorting": "🪄 Sort",
+      "sorting": "🪄 Sorting",
       "sector": "SECTOR",
       "emptyShelf": "Empty shelf",
-      "selectSector": "Select a sector to view",
+      "selectSector": "Choose a sector for overview",
       "alerts": {
         "weightStop": "Weight Stop! 🛑",
         "shelfFull": "Shelf {{shelf}} is full.",
         "moveHowMuch": "How much do you want to move?",
         "weightWarning": "⚠️ WEIGHT STOP: Only maximum {{max}} pcs fit!",
-        "moveBtn": "📦 Move",
-        "movedSuccess": "Moved successfully!",
-        "sortTitle": "Optimize?",
-        "sortText": "Sort warehouse by categories.",
+        "moveBtn": "📦 Relocation",
+        "movedSuccess": "Moved!",
+        "sortTitle": "Optimization?",
+        "sortText": "Organize warehouse by categories.",
         "start": "Start",
         "sortedSuccess": "Optimized!"
       }
@@ -343,24 +400,25 @@
     "list": {
       "title": "Warehouse",
       "bulkDelete": "🗑️ Delete ({{count}})",
-      "filterErrors": "🚨 Errors only",
+      "filterErrors": "🚨 Errors Only",
       "filterAll": "⚠️ Filter",
       "export": "📊 Export",
-      "selectModeOn": "✖ Exit Selection",
+      "selectModeOn": "✖ End Selection",
       "selectModeOff": "☑️ Select Multiple",
       "newProduct": "+ New Product",
+      "searchPlaceholder": "Search by name, manufacturer or ID...",
       "headers": {
         "qr": "QR",
         "product": "Product",
         "category": "Category",
         "totalStock": "Total Stock",
-        "actions": "Action"
+        "actions": "Operation"
       },
       "batches": "Batches",
       "nonPerishable": "Non-perishable",
       "details": "Details",
-      "allGoodTitle": "All shelves in order",
-      "allGoodSubtitle": "No items require attention",
+      "allGoodTitle": "All shelves are fine",
+      "allGoodSubtitle": "No items requiring intervention",
       "print": "🖨️ Print",
       "excel": {
         "sheetName": "Inventory",
@@ -370,15 +428,18 @@
         "quantity": "Total Quantity (pcs)",
         "earliestExpiry": "Earliest Expiry"
       },
+      "emptyTitle": "No results",
+      "emptySubtitle": "No product matches the search or filter criteria.",
+      "outOfStock": "Stock shortage",
       "alerts": {
-        "bulkDeleteTitle": "Bulk Delete",
+        "bulkDeleteTitle": "Bulk Deletion",
         "bulkDeleteText": "Delete {{count}} items?",
         "bulkDeleted": "Items deleted.",
-        "bulkDeleteFailed": "Bulk deletion failed.",
+        "bulkDeleteFailed": "Failed bulk deletion.",
         "deleteTitle": "Delete Product",
         "deleteText": "Are you sure you want to delete?",
         "deleted": "Product deleted.",
-        "deleteFailed": "Deletion failed.",
+        "deleteFailed": "Failed deletion.",
         "excelReady": "Excel report ready! 📊"
       }
     },
@@ -387,14 +448,14 @@
         "physicalStock": "📦 Physical Stock",
         "masterData": "⚙️ Master Data"
       },
-      "deletedTitle": "Product Deleted",
+      "deletedTitle": "Product deleted",
       "restoreBtn": "Restore",
       "stockManagement": "Stock Management",
-      "selectBatch": "Select Target Physical Shelf (Batch)",
-      "createNewBatch": "➕ CREATE NEW BATCH (On new shelf)",
+      "selectBatch": "Select Target Physical Shelf",
+      "createNewBatch": "➕ CREATE NEW BATCH",
       "newBatchData": "New Batch Data",
       "location": "Location (Shelf)",
-      "expiry": "Expiry Date",
+      "expiry": "Expiry Time",
       "quantity": "Quantity (pcs)",
       "execute": "Execute",
       "editData": "Edit Data",
@@ -403,239 +464,265 @@
         "restoreText": "The product will be available again.",
         "restored": "Reactivated!",
         "restoreFailed": "Failed.",
-        "chooseBatch": "Please choose an existing batch!",
-        "intakeSuccess": "+{{count}} pcs added.",
+        "chooseBatch": "Choose an existing batch!",
+        "intakeSuccess": "+{{count}} pcs received.",
         "notEnoughStock": "Not enough stock. Max: {{max}} pcs",
-        "batchDeleted": "Batch emptied and deleted.",
-        "lastBatchEmpty": "Last batch emptied",
-        "deletePhysicalBatch": "Delete the physical batch?",
-        "keepZero": "Keep at 0",
+        "batchDeleted": "Batch empty and deleted.",
+        "lastBatchEmpty": "Last batch empty",
+        "deletePhysicalBatch": "Should we delete the physical batch?",
+        "keepZero": "Keep with 0",
         "stockUpdated": "Stock updated.",
         "dataUpdated": "Data updated! ✨",
         "saveFailed": "Failed to save."
       }
+    }
+  },
+  "inventory": {
+    "shelfMap": {
+      "title": "Interactive Warehouse Map",
+      "sector": "Sector",
+      "weight": "Current weight",
+      "category": "Category",
+      "empty": "Empty",
+      "low": "Low load",
+      "mid": "Medium load",
+      "high": "High load",
+      "recommended": "Suggested spot"
     },
-    "inventory": {
-      "shelfMap": {
-        "title": "Interactive Warehouse Map",
-        "sector": "Sector",
-        "weight": "Current weight",
-        "category": "Category",
-        "empty": "Empty",
-        "low": "Low load",
-        "mid": "Medium load",
-        "high": "High load",
-        "recommended": "Recommended space"
-      },
-      "splitter": {
-        "title": "Multi-Shelf Allocation",
-        "allAllocated": "Fully allocated",
-        "remaining": "Remaining",
-        "shelf": "Shelf",
-        "qty": "Quantity",
-        "addSplit": "Split to more shelves",
-        "overAllocated": "⚠️ Error: Over-allocated by {{amount}} pcs!"
+    "splitter": {
+      "title": "Multi-shelf Distribution",
+      "chooseMethod": "How would you like to place the stock?",
+      "autoBtn": "🤖 Auto Suggest",
+      "manualBtn": "📍 Manual Select",
+      "autoTitle": "Automated Allocation",
+      "manualTitle": "Manual Shelf Allocation",
+      "allAllocated": "All items placed",
+      "remainingQty": "Remaining: {{count}} pcs",
+      "shelf": "Shelf",
+      "qty": "Quantity",
+      "addSplit": "Add further shelves",
+      "overAllocated": "⚠️ Error: You allocated {{amount}} pcs more!",
+      "invalidFormat": "Invalid (E.g: A1-1)",
+      "alerts": {
+        "shelfFullTitle": "Oops, are you blind? 😅",
+        "shelfFullText": "Shelf {{shelf}} is already completely full. Choose another!"
       }
     }
   },
   "stockValue": {
-    "title": "Inventory <span class=\"text-emerald-500\">Value</span> Calculator",
+    "title": "Inventory Value Calculator",
     "subtitle": "Live financial analysis",
     "manualRefresh": "🔄 Manual refresh",
     "totalValue": "Total Warehouse Value",
-    "totalItems": "Total Item Count",
+    "totalItems": "Total Piece Count",
     "activeSectors": "Active Sectors",
-    "sectors": "sectors",
-    "topProducts": "🏆 Ranking by Value",
+    "sectors": "sector",
+    "topProducts": "🏆 Value Ranking",
     "territorialDistribution": "📍 Territorial Distribution",
     "sectorLabel": "Sector \"{{sector}}\"",
     "share": "{{percent}}% share",
     "noLocation": "No location",
-    "billionFt": "billion HUF",
-    "millionFt": "million HUF",
+    "billionFt": "billion USD",
+    "millionFt": "million USD",
     "calculating": "Calculating financial data...",
-    "loadError": "Failed to load inventory data."
+    "loadError": "Failed to load stock data.",
+    "categoryDistribution": "📦 Category distribution",
+    "sectorValues": "📍 Sector values"
   },
   "auxiliary": {
     "connection": {
       "serverOffline": "Server Offline",
-      "reconnecting": "Auto-reconnecting..."
+      "reconnecting": "Automatic reconnection..."
     },
     "navbar": {
       "products": "🏠 Products",
       "overview": "📊 Overview",
-      "scanner": "📷 Scanner",
+      "scanner": "📷 Scan",
       "notifications": "🔔 Notifications",
       "new": "new",
       "profile": "👤 Profile",
-      "darkTheme": "Dark Mode",
+      "darkTheme": "Dark mode",
       "logout": "🚪 Logout",
       "login": "Login",
-      "register": "Register",
+      "register": "Registration",
       "searchPlaceholder": "Search...",
       "jump": "Jump →",
-      "viewAll": "View All →",
+      "viewAll": "View all →",
       "noNotifications": "No notifications"
     },
     "notifications": {
-      "title": "🔔 Notification <span class=\"text-blue-600\">Center</span>",
+      "title": "🔔 Notification Center",
       "unreadCount": "{{count}} unread notifications",
       "allRead": "All notifications read",
       "deleteReadBtn": "🗑️ Delete Read",
       "markAllReadBtn": "✓ Mark All Read",
-      "acknowledge": "Acknowledge",
       "emptyTitle": "No notifications",
-      "emptyText": "There are currently no alerts in the system.",
+      "emptyText": "Currently there are no alerts in the system.",
+      "readStatus": "Read",
+      "markAsRead": "Read",
       "alerts": {
         "allMarkedRead": "All notifications marked as read!",
         "deleteConfirmTitle": "Delete read notifications?",
-        "deleteConfirmText": "All acknowledged (read) notifications will be permanently deleted!",
+        "deleteConfirmText": "All your acknowledged notifications will be permanently deleted!",
         "yesDelete": "Yes, delete them!",
         "deletedSuccess": "Read notifications deleted!"
       }
     },
     "scanner": {
       "title": "📷 QR SCANNER",
-      "camError": "Camera is unavailable or disabled.",
+      "camError": "Camera is not available or disabled.",
       "searching": "Searching...",
       "locations": "Locations",
       "totalStock": "Total Stock",
-      "detailsBtn": "Product Details",
-      "newScanBtn": "New Scan",
-      "backToMenu": "← Back to Menu",
+      "detailsBtn": "Product sheet",
+      "newScanBtn": "New scan",
+      "backToMenu": "← Back to menu",
       "noStock": "Out of stock",
       "unknownLocation": "Unknown location",
       "alerts": {
-        "invalidCodeTitle": "Invalid Code",
+        "invalidCodeTitle": "Invalid code",
         "invalidCodeText": "This is not a valid RaktárWeb QR code!",
-        "noMatchTitle": "No Match",
-        "noMatchText": "The scanned product was not found in the system."
+        "noMatchTitle": "No results",
+        "noMatchText": "The searched product is not found in the system."
       }
     },
     "search": {
-      "title": "Search <span class=\"text-blue-600\">Results</span>",
+      "title": "Search Results",
       "expression": "Expression:",
       "resultsCount": "{{count}} results",
       "scanningStock": "Scanning inventory...",
-      "lowStock": "Low Stock",
-      "inStock": "In Stock",
+      "lowStock": "Low stock",
+      "inStock": "In stock",
       "location": "Location",
       "stock": "Stock",
       "noResultsTitle": "No results...",
-      "noResultsText": "The requested item was not found in the system.",
-      "backToHub": "Back to Hub",
-      "noStock": "Out of stock"
-    }
-  },
-  "hooks": {
-    "realTime": {
-      "alerts": {
-        "accountSuspended": "Your account has been suspended.",
-        "connectionLost": "Connection to the server has been lost."
-      }
+      "noResultsText": "The searched item was not found in the system.",
+      "backToHub": "Back to base"
     }
   },
   "auth": {
     "register": {
       "title": "Create Account",
       "fullName": "Full Name *",
-      "fullNamePlaceholder": "e.g. John Doe",
+      "fullNamePlaceholder": "E.g. John Doe",
       "username": "Username *",
-      "usernamePlaceholder": "johndoe88",
+      "usernamePlaceholder": "jdoe88",
       "email": "Email Address *",
       "emailPlaceholder": "example@email.com",
       "phone": "Phone Number (International) *",
       "password": "Password *",
       "passwordPlaceholder": "••••••••",
       "submit": "Finalize Registration",
-      "backToLogin": "Back to login",
+      "backToLogin": "Back to Login",
       "validation": {
         "nameEmpty": "Name is required!",
         "nameNumbers": "Name cannot contain numbers!",
-        "nameTwoWords": "First and last name are required!",
+        "nameTwoWords": "Surname and first name are both needed!",
         "usernameShort": "Minimum 4 characters!",
         "emailInvalid": "Invalid email format!",
         "phoneRequired": "Phone number is required!",
         "passwordShort": "Minimum 8 characters required!",
-        "passwordWeak": "Must contain uppercase, lowercase, and a number/symbol!"
+        "passwordWeak": "At least one uppercase, lowercase and number/symbol needed!"
       },
       "alerts": {
-        "fillAll": "Please fill out all fields correctly!",
+        "fillAll": "Please fill all fields correctly!",
         "successTitle": "Registration successful! ✨",
         "successText": "You can now log in to your account.",
-        "errorTitle": "Registration Error"
+        "errorTitle": "Registration error"
       }
     },
     "login": {
       "title": "Login",
       "fillDemo": "🔑 Fill Password",
       "username": "Username",
-      "usernamePlaceholder": "Enter your username...",
+      "usernamePlaceholder": "Enter your name...",
       "password": "Password",
       "passwordPlaceholder": "••••••••",
-      "forgotPassword": "Forgot?",
-      "submit": "Enter System",
+      "forgotPassword": "Forgot it?",
+      "submit": "Enter system",
       "registerNew": "Register new account",
       "alerts": {
-        "accessDenied": "Access Denied",
-        "sessionLost": "Session Disconnected",
-        "bannedText": "This account has been suspended for security reasons or policy violations.",
-        "sessionExpiredText": "Session expired or disconnected. Please log in again.",
+        "accessDenied": "Access denied",
+        "sessionLost": "Session lost",
+        "bannedText": "This account has been suspended.",
+        "sessionExpiredText": "The session has expired. Please log in again.",
         "gotIt": "Got it",
         "welcomeBack": "Welcome back!",
         "bannedTitle": "You are banned!",
-        "bannedFooter": "<span style=\"color: #94a3b8; font-size: 10px; font-weight: 900; text-transform: uppercase;\">Contact administrator</span>",
-        "bannedServerMsg": "Sorry, this user account is not allowed to enter the system.",
-        "wrongCredentials": "Incorrect username or password!",
+        "bannedFooter": "Contact the administrator",
+        "bannedServerMsg": "Account cannot enter the system.",
+        "wrongCredentials": "Invalid username or password!",
         "oops": "Oops..."
       }
     },
     "forgotPassword": {
-      "title": "Password <span class=\"text-blue-600\">Reset</span>",
-      "subtitle": "Please provide your account security details to change your password.",
+      "title": "Password Reset",
+      "subtitle": "Provide the security data belonging to your account.",
       "username": "Username",
-      "usernamePlaceholder": "e.g. johndoe88",
+      "usernamePlaceholder": "E.g. jdoe88",
       "email": "Registered Email",
       "emailPlaceholder": "example@email.com",
-      "phone": "Registered Phone Number",
-      "submit": "Request New Password",
+      "phone": "Registered Phone",
+      "submit": "Request new password",
       "checking": "Checking...",
-      "backToLogin": "← Back to login",
+      "backToLogin": "← Back to Login",
       "alerts": {
-        "fillValid": "Please fill in all fields with valid data!",
-        "successTitle": "Verification successful!",
-        "successHtml1": "<p class=\"text-slate-500 dark:text-slate-400 text-sm mb-4\">The system has generated your temporary password. Please copy it, as you will only see it now!</p>",
-        "successHtml2": "<p class=\"text-[10px] uppercase font-bold text-red-500 mt-4 tracking-widest\">You must change it after logging in!</p>",
-        "goToLogin": "Go to login",
+        "fillValid": "Fill all fields!",
+        "successTitle": "Successful identification!",
+        "successHtml1": "Your temporary password has been generated.",
+        "successHtml2": "You will be required to change it after login!",
+        "goToLogin": "Go to Login",
         "errorOccurred": "An error occurred",
-        "verifyError": "Error verifying data.",
+        "verifyError": "Error checking data.",
         "understand": "I understand"
       }
     },
     "forceChange": {
-      "title": "Mandatory <span class=\"text-red-500\">Password Change</span>",
-      "subtitle": "You logged in with a temporary password. Provide a new, secure password to continue!",
-      "tempPassword": "Temporary (Current) Password",
+      "title": "Mandatory Password Change",
+      "subtitle": "Provide a new, secure password!",
+      "tempPassword": "Temporary password",
       "tempPlaceholder": "The one you just received...",
-      "newPassword": "New Password",
-      "newPlaceholder": "Min. 8 chars, upper, lower & number",
-      "newPasswordAgain": "New Password Again",
-      "newAgainPlaceholder": "Confirm new password",
+      "newPassword": "New password",
+      "newPlaceholder": "Min. 8 characters",
+      "newPasswordAgain": "New password again",
+      "newAgainPlaceholder": "Confirm it",
       "submit": "Change Password",
       "updating": "Updating...",
-      "logoutAndCancel": "← Logout and Cancel",
+      "logoutAndCancel": "← Abort",
       "alerts": {
-        "missingSession": "Missing user session!",
-        "shortPassword": "The new password must be at least 8 characters long!",
-        "weakPassword": "The password must contain lowercase, uppercase, and a number/symbol!",
-        "passwordMismatch": "The two new passwords do not match!",
+        "missingSession": "Missing session!",
+        "shortPassword": "Minimum 8 characters!",
+        "weakPassword": "Lowercase, uppercase and number/symbol needed!",
+        "passwordMismatch": "The two passwords do not match!",
         "successTitle": "Password successfully updated! ✨",
-        "successText": "For security, please log in now with your new password.",
-        "goToLogin": "Understood, go to login",
+        "successText": "Log in with your new password.",
+        "goToLogin": "Go to Login",
         "errorTitle": "An error occurred",
         "updateError": "Error updating password.",
         "understand": "I understand"
       }
     }
+  },
+  "hooks": {
+    "realTime": {
+      "alerts": {
+        "accountSuspended": "Your account has been suspended.",
+        "connectionLost": "Connection with server lost."
+      }
+    }
+  },
+  "languages": {
+    "hu": "Hungarian",
+    "en": "English",
+    "de": "German",
+    "it": "Italian",
+    "fr": "French",
+    "es": "Spanish",
+    "pt": "Portuguese",
+    "pl": "Polish",
+    "ru": "Russian",
+    "ko": "Korean",
+    "zh": "Chinese",
+    "ja": "Japanese"
   }
 }

@@ -1,0 +1,692 @@
+{
+  "header": {
+    "admin": "관리자",
+    "handler": "운영자",
+    "viewer": "열람자",
+    "anonymous": "익명 사용자",
+    "logout": "로그아웃"
+  },
+  "common": {
+    "save": "저장",
+    "cancel": "취소",
+    "error": "오류!",
+    "success": "성공!",
+    "search": "검색...",
+    "noResults": "결과 없음",
+    "identifying": "식별 중...",
+    "updating": "업데이트 중...",
+    "close": "닫기",
+    "yes": "예",
+    "back": "뒤로",
+    "pieces": "개",
+    "open": "열기",
+    "filterBtn": "필터",
+    "restore": "복구",
+    "unknown": "알 수 없음",
+    "reset": "초기화",
+    "loading": "로딩 중",
+    "next": "다음"
+  },
+  "admin": {
+    "editTitle": "수정: {{name}}",
+    "fullName": "성명",
+    "rank": "권한",
+    "phone": "전화번호 (필수)",
+    "newPassword": "새 비밀번호 (변경 시에만 입력)",
+    "pendingRequests": "대기 중인 요청",
+    "noRequests": "대기 중인 요청이 없습니다.",
+    "systemUsers": "시스템 사용자",
+    "validation": {
+      "nameRequired": "이름은 필수 항목입니다!",
+      "nameNoNumbers": "이름에 숫자를 포함할 수 없습니다!",
+      "phoneRequired": "전화번호는 필수 항목입니다!"
+    },
+    "alerts": {
+      "fixErrors": "오류를 수정해 주세요!",
+      "userUpdated": "사용자 정보가 업데이트되었습니다!",
+      "saveFailed": "저장에 실패했습니다.",
+      "cantBanSelf": "본인을 차단할 수 없습니다!",
+      "accountUnbanned": "계정 차단 해제됨",
+      "accountBanned": "계정 정지됨",
+      "actionFailed": "작업에 실패했습니다.",
+      "cantDeleteSelf": "본인의 관리자 계정은 삭제할 수 없습니다!",
+      "deleteTitle": "영구 삭제하시겠습니까?",
+      "deleteText": "{{name}} 사용자를 삭제하시겠습니까? 이 작업은 되돌릴 수 없습니다!",
+      "yesDelete": "예, 삭제합니다!",
+      "userDeleted": "사용자 삭제됨",
+      "deleteFailed": "삭제에 실패했습니다.",
+      "accepted": "승인됨",
+      "rejected": "거절됨",
+      "fetchError": "관리자 데이터 로드 중 오류 발생:"
+    }
+  },
+  "details": {
+    "fullName": "성명",
+    "adminApprovalNeeded": "관리자 승인 필요",
+    "phoneLabel": "전화번호 (국제 형식) *",
+    "username": "사용자 아이디",
+    "email": "이메일 주소",
+    "oldPassword": "기존 비밀번호",
+    "newPassword": "새 비밀번호",
+    "buttons": {
+      "fixErrors": "오류 수정 필요...",
+      "noChanges": "🤔 변경 사항 없음...",
+      "saveAndRequest": "💾 저장 및 이름 변경 요청",
+      "saveData": "💾 데이터 저장"
+    },
+    "validation": {
+      "nameEmpty": "이름은 비워둘 수 없습니다!",
+      "nameNumbers": "이름에 숫자를 포함할 수 없습니다!",
+      "emailInvalid": "유효하지 않은 이메일 형식입니다!",
+      "phoneRequired": "전화번호 입력은 필수입니다!"
+    },
+    "alerts": {
+      "noChanges": "변경 사항이 없습니다... 😴",
+      "fixBeforeSave": "저장 전 오류를 수정해 주세요!",
+      "oldPassRequired": "기존 비밀번호 입력이 필요합니다!",
+      "dataUpdated": "데이터가 업데이트되었습니다! ✨",
+      "errorOccurred": "오류가 발생했습니다!"
+    }
+  },
+  "profile": {
+    "dashboard": {
+      "details": { "title": "개인 정보", "desc": "이름, 연락처 및 비밀번호 관리" },
+      "stats": { "title": "통계", "desc": "내 활동 및 실적 분석" },
+      "logs": { "title": "활동 로그", "desc": "시스템 작업 내역 추적" },
+      "security": { "title": "보안 센터", "desc": "세션 및 계정 보호" },
+      "stock": { "title": "재고 자산 가치", "desc": "재무 보고서 및 재고 데이터" },
+      "admin": { "title": "관리", "desc": "사용자 및 요청 관리" },
+      "system": { "title": "시스템 상태", "desc": "서버 진단 및 메트릭" }
+    },
+    "tabs": {
+      "myProfile": "👤 내 프로필",
+      "activityLog": "📜 활동 로그",
+      "administration": "🛡️ 관리"
+    },
+    "alerts": {
+      "restoreTitle": "복구하시겠습니까?",
+      "restoreText": "원래 상태로 되돌리시겠습니까?",
+      "restoreBtn": "복구",
+      "restored": "성공적으로 취소되었습니다!",
+      "restoreFailed": "작업에 실패했습니다.",
+      "groupRestoreTitle": "일괄 복구",
+      "groupRestoreText": "선택한 {{count}}개 항목을 모두 복구하시겠습니까?",
+      "partialError": "일부 오류가 발생했습니다."
+    },
+    "security": {
+      "passwordStatus": "비밀번호 상태",
+      "passwordActive": "활성",
+      "accountStatus": "계정 상태",
+      "active": "활성",
+      "banned": "정지됨",
+      "rankLevel": "권한 레벨",
+      "revokeSessionsTitle": "모든 세션 로그아웃",
+      "revokeSessionsDesc": "현재 기기를 포함한 모든 기기에서 즉시 로그아웃합니다. 무단 접근이 의심될 때 사용하세요.",
+      "revokeBtn": "모든 기기에서 로그아웃",
+      "revokeTitle": "모두 로그아웃하시겠습니까?",
+      "revokeText": "모든 활성 토큰이 무효화됩니다.",
+      "revokeConfirm": "예, 로그아웃합니다",
+      "successTitle": "성공",
+      "successText": "모든 세션이 종료되었습니다. 다시 로그인해 주세요.",
+      "loginHistory": "로그인 기록",
+      "comingSoon": "준비 중...",
+      "revokeError": "세션 취소에 실패했습니다."
+    },
+    "stats": {
+      "totalActions": "총 작업 수",
+      "creates": "생성",
+      "updates": "수정",
+      "deletes": "삭제",
+      "activityDistribution": "활동 분포",
+      "movesThisMonth": "이달의 작업",
+      "newProducts": "등록된 신규 품목",
+      "fetchError": "통계 계산 중 오류 발생:"
+    },
+    "system": {
+      "database": "데이터베이스",
+      "connected": "연결됨",
+      "error": "오류",
+      "uptime": "가동 시간",
+      "memory": "메모리 사용량",
+      "latency": "API 지연 시간",
+      "recentEvents": "최근 시스템 이벤트",
+      "maintenance": "유지보수",
+      "maintenanceDesc": "데이터베이스 무결성 확인 및 서버 최적화를 위해 진단 도구를 실행하세요.",
+      "runDiagnostic": "진단 시작",
+      "fetchError": "시스템 상태 로드 중 오류 발생:"
+    },
+    "details": {
+      "requestRankTitle": "{{rank}} 권한 요청",
+      "requestRankText": "시스템에 {{rank}} 권한을 요청하시겠습니까?",
+      "deleteTitle": "계정 영구 삭제",
+      "deleteText": "계정을 삭제하시겠습니까? 이 작업은 되돌릴 수 없습니다!",
+      "deleteConfirm": "예, 영구 삭제합니다",
+      "deleteAccount": "계정 삭제",
+      "deletedTitle": "삭제됨",
+      "deletedText": "계정이 성공적으로 삭제되었습니다.",
+      "namePending": "이름 변경 요청 대기 중...",
+      "requestKezelo": "운영자 권한 요청",
+      "requestAdmin": "관리자 권한 요청",
+      "kezeloPending": "⏳ 운영자 요청 대기 중",
+      "adminPending": "⏳ 관리자 요청 대기 중",
+      "nameChangedWarning": "관리자 승인 필요",
+      "alerts": {
+        "fetchRequestsError": "요청 목록을 불러오지 못했습니다.",
+        "requestSent": "권한 요청이 전송되었습니다!",
+        "deleteDeniedTitle": "삭제 거부됨",
+        "deleteDeniedText": "현재 유일한 활성 관리자입니다!",
+        "checkAdminError": "관리자 수 확인에 실패했습니다."
+      },
+      "buttons": {
+        "updateRequest": "요청 업데이트"
+      }
+    },
+    "avatar": {
+      "cropTitle": "이미지 자르기",
+      "sourceTitle": "이미지 출처",
+      "uploadFile": "파일 업로드",
+      "pasteHint": "또는 CTRL+V를 누르세요",
+      "urlPlaceholder": "이미지 직접 링크 주소 붙여넣기...",
+      "urlError": "이미지 로드 중 오류가 발생했습니다.",
+      "zoom": "확대/축소",
+      "uploading": "저장 중...",
+      "saveBtn": "이미지 저장",
+      "modifyOverlay": "변경"
+    }
+  },
+  "logs": {
+    "labels": {
+      "name": "명칭",
+      "quantity": "수량",
+      "plot": "구획/위치",
+      "manufacturer": "제조사",
+      "price": "가격"
+    },
+    "filters": {
+      "user": "사용자",
+      "allUsers": "모든 사용자",
+      "operation": "작업",
+      "allOperations": "모든 작업",
+      "allActions": "모든 동작",
+      "date": "시작 날짜",
+      "create": "✨ 생성",
+      "update": "📝 수정",
+      "delete": "🗑️ 삭제",
+      "bulkDelete": "🗑️ 일괄 삭제",
+      "restore": "♻️ 복구",
+      "filterBtn": "필터",
+      "exportBtn": "내보내기"
+    },
+    "operations": {
+      "create": "생성",
+      "update": "수정",
+      "batch": "재고 이동",
+      "delete": "삭제",
+      "bulkDelete": "일괄 삭제",
+      "bulkItems": "품목 삭제됨 ({{count}}개)",
+      "productCreate": "신규 품목 추가됨",
+      "productDelete": "품목 삭제됨",
+      "restored": "복구됨"
+    },
+    "diff": {
+      "productAdded": "품목 추가됨",
+      "productDeleted": "품목 삭제됨",
+      "dataChanged": "데이터 변경됨",
+      "productRestored": "품목 복구됨",
+      "reverted": "작업 취소됨:"
+    },
+    "types": {
+      "split": "부분 이동",
+      "move": "전체 이동",
+      "merge": "병합"
+    },
+    "fields": {
+      "sourceShelf": "출발 선반",
+      "targetShelf": "도착 선반",
+      "total": "합계",
+      "system": "시스템 프로세스",
+      "na": "해당 없음"
+    },
+    "excel": {
+      "sheetName": "활동 로그",
+      "product": "품목",
+      "changes": "변경 사항",
+      "action": "작업",
+      "user": "사용자",
+      "date": "일시",
+      "system": "시스템",
+      "unknown": "알 수 없음",
+      "ready": "Excel 내보내기 완료!"
+    },
+    "misc": {
+      "bulkDeleteCount": "일괄 삭제 ({{count}}개 항목)",
+      "systemProcess": "시스템 프로세스",
+      "viewDetails": "상세 보기 →",
+      "noLogs": "표시할 로그 내역이 없습니다.",
+      "fetchError": "로그 로드 중 오류 발생:"
+    }
+  },
+  "product": {
+    "categories": {
+      "ELEKTRONIKA": "전자제품",
+      "ELELMISZER": "식품",
+      "VEGYSZER": "화학제품",
+      "IRODASZER": "사무용품",
+      "AUTO_MOTOR": "자동차/모터",
+      "RUHAZAT": "의류",
+      "BARKACS": "공구/DIY",
+      "SPORT": "스포츠",
+      "JATEK": "장난감",
+      "HAZTARTAS": "가전/생활",
+      "KOZMETIKA": "화품",
+      "KONYVEK": "도서",
+      "BUTOR": "가구",
+      "EGESZSEGUGY": "의료/건강",
+      "EGYEB": "기타"
+    },
+    "add": {
+      "title": "📦 창고 <span class=\"text-blue-600\">입고 관리</span>",
+      "searchExisting": "기존 마스터 데이터에서 검색",
+      "searchPlaceholder": "이름 또는 제조사로 검색...",
+      "select": "선택 →",
+      "or": "또는",
+      "createNew": "+ 신규 마스터 데이터 생성",
+      "selectedMaster": "선택된 마스터 데이터",
+      "masterData": "마스터 데이터",
+      "name": "품목명",
+      "namePlaceholder": "예: 강철 나사",
+      "manufacturer": "제조사",
+      "manufacturerPlaceholder": "예: (주)아이언웍스",
+      "category": "카테고리",
+      "weight": "중량 (kg / 개)",
+      "purchasePrice": "매입가 (원)",
+      "salePrice": "매출가 (원)",
+      "minStock": "최소 재고량",
+      "batchIntake": "배치(Batch) 입고",
+      "expiry": "유통기한 (선택 사항)",
+      "location": "위치 (입고 선반)",
+      "quantity": "수량 (개)",
+      "saveToWarehouse": "창고에 저장",
+      "alerts": {
+        "intakeSuccess": "입고 완료! 📦",
+        "productCreated": "품목 등록 완료! ✨",
+        "errorOccurred": "오류 발생",
+        "errorText": "네트워크 오류 또는 선반 용량 초과.",
+        "fetchError": "품목 리스트 업데이트 중 오류:",
+        "missingShelf": "모든 항목에 선반 위치를 지정해 주세요!",
+        "invalidAllocation": "할당된 수량이 총 수량과 일치하지 않습니다!"
+      }
+    },
+    "details": {
+      "back": "뒤로",
+      "backToHome": "메인으로",
+      "notFoundTitle": "품목을 찾을 수 없습니다",
+      "fetching": "데이터 불러오는 중...",
+      "deletedWarning": "⚠️ 주의: 이 품목은 삭제된 상태입니다!",
+      "itemNumber": "품번 (ID)",
+      "masterData": "마스터 데이터",
+      "weightUnit": "중량 (단위)",
+      "minStock": "최소 재고",
+      "purchasePrice": "매입가",
+      "salePrice": "매출가",
+      "stockStatus": "재고 상태",
+      "totalStock": "현재 총 재고량",
+      "criticalStock": "🚨 재고 위험",
+      "outOfStockAlert": "품절!",
+      "physicalLocation": "물리적 위치 (배치)",
+      "expiry": "유통기한/만료일",
+      "nonPerishable": "해당 없음",
+      "outOfStock": "재고 없음.",
+      "modify": "수정",
+      "delete": "삭제",
+      "alerts": {
+        "deleteConfirmTitle": "정말 삭제하시겠습니까?",
+        "deleteConfirmText": "\"{{name}}\"의 모든 마스터 데이터와 물리적 재고가 시스템에서 삭제됩니다!",
+        "yesDelete": "예, 삭제합니다!",
+        "deletedSuccess": "품목 삭제 완료! 🗑️",
+        "deleteFailed": "삭제 실패."
+      }
+    },
+    "grid": {
+      "title": "창고 맵",
+      "subtitle": "대화형 재고 관리",
+      "sorting": "🪄 정렬",
+      "sector": "섹터",
+      "emptyShelf": "빈 선반",
+      "selectSector": "조회할 섹터를 선택해 주세요",
+      "alerts": {
+        "weightStop": "중량 초과! 🛑",
+        "shelfFull": "{{shelf}} 선반이 가득 찼습니다.",
+        "moveHowMuch": "이동할 수량을 입력하세요",
+        "weightWarning": "⚠️ 용량 제한: 최대 {{max}}개까지만 가능합니다!",
+        "moveBtn": "📦 이동",
+        "movedSuccess": "이동 완료!",
+        "sortTitle": "최적화하시겠습니까?",
+        "sortText": "카테고리별로 창고를 정렬합니다.",
+        "start": "시작",
+        "sortedSuccess": "최적화 완료!"
+      }
+    },
+    "list": {
+      "title": "재고 목록",
+      "bulkDelete": "🗑️ 삭제 ({{count}})",
+      "filterErrors": "🚨 오류 품목",
+      "filterAll": "⚠️ 필터",
+      "export": "📊 내보내기",
+      "selectModeOn": "✖ 선택 종료",
+      "selectModeOff": "☑️ 다중 선택",
+      "newProduct": "+ 신규 품목",
+      "searchPlaceholder": "이름, 제조사 또는 ID로 검색...",
+      "headers": {
+        "qr": "QR",
+        "product": "품목",
+        "category": "카테고리",
+        "totalStock": "총 재고",
+        "actions": "작업"
+      },
+      "batches": "배치 목록",
+      "nonPerishable": "비신선식품/공산품",
+      "details": "상세 정보",
+      "allGoodTitle": "모든 선반 정상",
+      "allGoodSubtitle": "조치가 필요한 항목이 없습니다",
+      "print": "🖨️ 인쇄",
+      "excel": {
+        "sheetName": "재고 현황",
+        "name": "품목명",
+        "manufacturer": "제조사",
+        "category": "카테고리",
+        "quantity": "총 수량 (개)",
+        "earliestExpiry": "가장 빠른 유통기한"
+      },
+      "alerts": {
+        "bulkDeleteTitle": "일괄 삭제",
+        "bulkDeleteText": "{{count}}개 항목을 삭제하시겠습니까?",
+        "bulkDeleted": "항목들이 삭제되었습니다.",
+        "bulkDeleteFailed": "일괄 삭제에 실패했습니다.",
+        "deleteTitle": "품목 삭제",
+        "deleteText": "정말 삭제하시겠습니까?",
+        "deleted": "품목이 삭제되었습니다.",
+        "deleteFailed": "삭제 실패.",
+        "excelReady": "Excel 보고서 생성 완료! 📊"
+      }
+    },
+    "modify": {
+      "tabs": { "physicalStock": "📦 실물 재고", "masterData": "⚙️ 마스터 데이터" },
+      "deletedTitle": "삭제된 품목",
+      "restoreBtn": "복구하기",
+      "stockManagement": "재고 관리",
+      "selectBatch": "이동/수정할 배치 선택",
+      "createNewBatch": "➕ 신규 배치 생성",
+      "newBatchData": "신규 배치 정보",
+      "location": "위치 (선반)",
+      "expiry": "만료일",
+      "quantity": "수량 (개)",
+      "execute": "실행",
+      "editData": "데이터 수정",
+      "alerts": {
+        "restoreTitle": "복구하시겠습니까?",
+        "restoreText": "품목이 다시 활성화됩니다.",
+        "restored": "재활성화 완료!",
+        "restoreFailed": "실패했습니다.",
+        "chooseBatch": "기존 배치를 선택해 주세요!",
+        "intakeSuccess": "+{{count}}개 입고됨.",
+        "notEnoughStock": "재고가 부족합니다. 최대: {{max}}개",
+        "batchDeleted": "배치가 비어 삭제되었습니다.",
+        "lastBatchEmpty": "마지막 배치가 비어 있습니다",
+        "deletePhysicalBatch": "실물 배치를 삭제하시겠습니까?",
+        "keepZero": "0으로 유지",
+        "stockUpdated": "재고가 업데이트되었습니다.",
+        "dataUpdated": "데이터 업데이트 완료! ✨",
+        "saveFailed": "저장 실패."
+      }
+    }
+  },
+  "inventory": {
+    "shelfMap": {
+      "title": "대화형 창고 맵",
+      "sector": "섹터",
+      "weight": "현재 중량",
+      "category": "카테고리",
+      "empty": "비어 있음",
+      "low": "낮은 부하",
+      "mid": "중간 부하",
+      "high": "높은 부하",
+      "recommended": "권장 위치"
+    },
+    "splitter": {
+      "title": "다중 선반 할당",
+      "chooseMethod": "재고를 어떻게 배치하시겠습니까?",
+      "autoBtn": "🤖 자동 제안",
+      "manualBtn": "📍 수동 선택",
+      "autoTitle": "자동 할당",
+      "manualTitle": "수동 선반 할당",
+      "allAllocated": "모든 항목 할당됨",
+      "remainingQty": "할당 대기 수량: {{count}}개",
+      "shelf": "선반",
+      "qty": "수량",
+      "addSplit": "선반 추가 분할",
+      "overAllocated": "⚠️ 오류: {{amount}}개 초과 할당되었습니다!",
+      "invalidFormat": "형식 오류 (예: A1-1)",
+      "alerts": {
+        "shelfFullTitle": "어머, 안 보이시나요? 😅",
+        "shelfFullText": "{{shelf}} 선반은 이미 가득 찼습니다. 다른 곳을 골라주세요!"
+      }
+    }
+  },
+  "stockValue": {
+    "title": "재고 가치 계산기",
+    "subtitle": "실시간 재무 분석",
+    "manualRefresh": "🔄 수동 업데이트",
+    "totalValue": "총 재고 가치",
+    "totalItems": "총 품목 수량",
+    "activeSectors": "활성 섹터",
+    "sectors": "개 섹터",
+    "topProducts": "🏆 가치 순위",
+    "territorialDistribution": "📍 구역별 분포",
+    "sectorLabel": "\"{{sector}}\" 섹터",
+    "share": "점유율 {{percent}}%",
+    "noLocation": "위치 정보 없음",
+    "billionFt": "십억 원",
+    "millionFt": "백만 원",
+    "calculating": "재무 데이터를 계산 중입니다...",
+    "loadError": "재고 데이터를 불러오지 못했습니다.",
+    "categoryDistribution": "📦 카테고리별 분포",
+    "sectorValues": "📍 섹터별 가치"
+  },
+  "auxiliary": {
+    "connection": {
+      "serverOffline": "서버 오프라인",
+      "reconnecting": "자동 재연결 중..."
+    },
+    "navbar": {
+      "products": "🏠 품목 관리",
+      "overview": "📊 현황",
+      "scanner": "📷 스캔",
+      "notifications": "🔔 알림",
+      "new": "신규",
+      "profile": "👤 프로필",
+      "darkTheme": "다크 모드",
+      "logout": "🚪 로그아웃",
+      "login": "로그인",
+      "register": "회원가입",
+      "searchPlaceholder": "검색...",
+      "jump": "이동 →",
+      "viewAll": "모두 보기 →",
+      "noNotifications": "알림 없음"
+    },
+    "notifications": {
+      "title": "🔔 알림 센터",
+      "unreadCount": "읽지 않은 알림 {{count}}개",
+      "allRead": "모든 알림을 읽었습니다",
+      "deleteReadBtn": "🗑️ 읽은 알림 삭제",
+      "markAllReadBtn": "✓ 모두 읽음 처리",
+      "emptyTitle": "알림 없음",
+      "emptyText": "현재 시스템에 등록된 알림이 없습니다.",
+      "readStatus": "읽음",
+      "markAsRead": "읽음 처리",
+      "alerts": {
+        "allMarkedRead": "모든 알림이 읽음 처리되었습니다!",
+        "deleteConfirmTitle": "읽은 알림을 삭제하시겠습니까?",
+        "deleteConfirmText": "이미 확인된 모든 알림이 영구적으로 삭제됩니다!",
+        "yesDelete": "예, 삭제합니다!",
+        "deletedSuccess": "읽은 알림 삭제 완료!"
+      }
+    },
+    "scanner": {
+      "title": "📷 QR 스캐너",
+      "camError": "카메라를 사용할 수 없거나 거부되었습니다.",
+      "searching": "검색 중...",
+      "locations": "보관 위치",
+      "totalStock": "총 재고",
+      "detailsBtn": "품목 상세",
+      "newScanBtn": "새로 스캔",
+      "backToMenu": "← 메뉴로",
+      "noStock": "재고 없음",
+      "unknownLocation": "알 수 없는 위치",
+      "alerts": {
+        "invalidCodeTitle": "유효하지 않은 코드",
+        "invalidCodeText": "올바른 WarehouseWeb QR 코드가 아닙니다!",
+        "noMatchTitle": "결과 없음",
+        "noMatchText": "검색한 품목을 시스템에서 찾을 수 없습니다."
+      }
+    },
+    "search": {
+      "title": "검색 결과",
+      "expression": "검색어:",
+      "resultsCount": "결과 {{count}}건",
+      "scanningStock": "재고 파악 중...",
+      "lowStock": "재고 부족",
+      "inStock": "보유 중",
+      "location": "위치",
+      "stock": "재고량",
+      "noResultsTitle": "결과 없음...",
+      "noResultsText": "검색한 항목을 시스템에서 찾을 수 없습니다.",
+      "backToHub": "허브로 돌아가기"
+    }
+  },
+  "auth": {
+    "register": {
+      "title": "계정 생성",
+      "fullName": "성명 *",
+      "fullNamePlaceholder": "예: 홍길동",
+      "username": "사용자 아이디 *",
+      "usernamePlaceholder": "gdhong88",
+      "email": "이메일 주소 *",
+      "emailPlaceholder": "example@email.com",
+      "phone": "전화번호 (국제 형식) *",
+      "password": "비밀번호 *",
+      "passwordPlaceholder": "••••••••",
+      "submit": "회원가입 완료",
+      "backToLogin": "로그인 페이지로",
+      "validation": {
+        "nameEmpty": "이름은 필수 항목입니다!",
+        "nameNumbers": "이름에 숫자를 포함할 수 없습니다!",
+        "nameTwoWords": "성과 이름을 모두 입력해 주세요!",
+        "usernameShort": "최소 4자 이상이어야 합니다!",
+        "emailInvalid": "유효하지 않은 이메일 형식입니다!",
+        "phoneRequired": "전화번호 입력은 필수입니다!",
+        "passwordShort": "최소 8자 이상이어야 합니다!",
+        "passwordWeak": "대문자, 소문자, 숫자/특수문자를 조합해 주세요!"
+      },
+      "alerts": {
+        "fillAll": "모든 필드를 올바르게 입력해 주세요!",
+        "successTitle": "회원가입 성공! ✨",
+        "successText": "이제 로그인이 가능합니다.",
+        "errorTitle": "회원가입 오류"
+      }
+    },
+    "login": {
+      "title": "로그인",
+      "fillDemo": "🔑 비밀번호 자동입력",
+      "username": "사용자 아이디",
+      "usernamePlaceholder": "아이디를 입력하세요...",
+      "password": "비밀번호",
+      "passwordPlaceholder": "••••••••",
+      "forgotPassword": "비밀번호를 잊으셨나요?",
+      "submit": "시스템 접속",
+      "registerNew": "새 계정 만들기",
+      "alerts": {
+        "accessDenied": "접근 거부됨",
+        "sessionLost": "세션 끊김",
+        "bannedText": "이 계정은 정지되었습니다.",
+        "sessionExpiredText": "세션이 만료되었습니다. 다시 로그인해 주세요.",
+        "gotIt": "확인",
+        "welcomeBack": "다시 오신 것을 환영합니다!",
+        "bannedTitle": "접속 차단됨!",
+        "bannedFooter": "관리자에게 문의하세요",
+        "bannedServerMsg": "시스템에 접속할 수 없는 계정입니다.",
+        "wrongCredentials": "아이디 또는 비밀번호가 올바르지 않습니다!",
+        "oops": "이런..."
+      }
+    },
+    "forgotPassword": {
+      "title": "비밀번호 찾기",
+      "subtitle": "계정에 등록된 보안 정보를 입력하세요.",
+      "username": "사용자 아이디",
+      "usernamePlaceholder": "예: gdhong88",
+      "email": "등록된 이메일",
+      "emailPlaceholder": "example@email.com",
+      "phone": "등록된 전화번호",
+      "submit": "임시 비밀번호 요청",
+      "checking": "확인 중...",
+      "backToLogin": "← 로그인으로 돌아가기",
+      "alerts": {
+        "fillValid": "모든 필드를 입력하세요!",
+        "successTitle": "인증 성공!",
+        "successHtml1": "임시 비밀번호가 생성되었습니다.",
+        "successHtml2": "로그인 후 반드시 비밀번호를 변경해야 합니다!",
+        "goToLogin": "로그인하러 가기",
+        "errorOccurred": "오류 발생",
+        "verifyError": "정보 확인 중 오류가 발생했습니다.",
+        "understand": "확인"
+      }
+    },
+    "forceChange": {
+      "title": "비밀번호 변경 안내",
+      "subtitle": "새로운 보안 비밀번호를 설정하세요!",
+      "tempPassword": "임시 비밀번호",
+      "tempPlaceholder": "방금 발급받은 비밀번호...",
+      "newPassword": "새 비밀번호",
+      "newPlaceholder": "최소 8자",
+      "newPasswordAgain": "새 비밀번호 확인",
+      "newAgainPlaceholder": "비밀번호 재입력",
+      "submit": "비밀번호 변경",
+      "updating": "변경 중...",
+      "logoutAndCancel": "← 취소",
+      "alerts": {
+        "missingSession": "세션 정보가 없습니다!",
+        "shortPassword": "최소 8자 이상이어야 합니다!",
+        "weakPassword": "소문자, 대문자, 숫자/특수문자가 필요합니다!",
+        "passwordMismatch": "비밀번호가 일치하지 않습니다!",
+        "successTitle": "비밀번호 변경 완료! ✨",
+        "successText": "새 비밀번호로 다시 로그인하세요.",
+        "goToLogin": "로그인 페이지로",
+        "errorTitle": "오류 발생",
+        "updateError": "비밀번호 변경 중 오류가 발생했습니다.",
+        "understand": "확인"
+      }
+    }
+  },
+  "hooks": {
+    "realTime": {
+      "alerts": {
+        "accountSuspended": "계정이 정지되었습니다.",
+        "connectionLost": "서버와의 연결이 끊겼습니다."
+      }
+    }
+  },
+  "languages": {
+    "hu": "헝가리어",
+    "en": "영어",
+    "de": "독일어",
+    "it": "이탈리아어",
+    "fr": "프랑스어",
+    "es": "스페인어",
+    "pt": "포르투갈어",
+    "pl": "폴란드어",
+    "ru": "러시아어",
+    "ko": "한국어",
+    "zh": "중국어",
+    "ja": "일본어"
+  }
+}
