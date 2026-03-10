@@ -1,8 +1,8 @@
 // raktar-frontend/src/components/Profile/ProfileDetails.tsx
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
-import { updateProfile, submitChangeRequest, getUsers, deleteUser } from "../../services/api";
+import { updateProfile, submitChangeRequest, getUsers, deleteUser, getUserPendingRequests } from "../../services/api";
 import ProfileAvatar from "./ProfileAvatar";
 import Swal from "sweetalert2";
 import { useTranslation } from "react-i18next";
@@ -38,6 +38,8 @@ const ProfileDetails = () => {
   const [fieldErrors, setFieldErrors] = useState<{ [key: string]: string }>({});
   const [showOldPass, setShowOldPass] = useState(false);
   const [showNewPass, setShowNewPass] = useState(false);
+  
+  const [activeRequests, setActiveRequests] = useState<any[]>([]);
 
   const [profileForm, setProfileForm] = useState({
     felhasznalonev: user?.felhasznalonev || "",
@@ -52,6 +54,23 @@ const ProfileDetails = () => {
   const isAdmin = user.rang === "ADMIN";
   const isKezelo = user.rang === "KEZELO";
   const isNezelodo = user.rang === "NEZELODO";
+
+  const fetchMyRequests = async () => {
+    try {
+      const myReqs = await getUserPendingRequests(user.id);
+      setActiveRequests(myReqs);
+    } catch (err) {
+      console.warn("Nem sikerült lekérni a kérelmeket.");
+    }
+  };
+
+  useEffect(() => {
+    fetchMyRequests();
+  }, [user.id]);
+
+  const isKezeloPending = activeRequests.some(r => r.tipus === 'RANG_MODOSITAS' && r.ujErtek === 'KEZELO');
+  const isAdminPending = activeRequests.some(r => r.tipus === 'RANG_MODOSITAS' && r.ujErtek === 'ADMIN');
+  const isNamePending = activeRequests.some(r => r.tipus === 'NEV_MODOSITAS');
 
   const validateField = (name: string, value: string) => {
     let error = "";
@@ -135,6 +154,8 @@ const ProfileDetails = () => {
       setUser(updatedUser);
       setProfileForm((prev) => ({ ...prev, regiJelszo: "", ujJelszo: "" }));
       toast.fire({ icon: "success", title: t("details.alerts.dataUpdated", "Adatok sikeresen frissítve") });
+      
+      fetchMyRequests();
     } catch (err: any) {
       setFormError(err.message || t("details.alerts.errorOccurred", "Hiba történt a mentés során"));
     }
@@ -159,6 +180,7 @@ const ProfileDetails = () => {
           ujErtek: rang,
         });
         toast.fire({ icon: "success", title: "Jogosultság kérelem elküldve!" });
+        fetchMyRequests();
       } catch (err: any) {
         MySwal.fire("Hiba", err.message, "error");
       }
@@ -274,6 +296,11 @@ const ProfileDetails = () => {
                     ⚠️ {t("details.adminApprovalNeeded", "Admin jóváhagyás szükséges")}
                   </p>
                 )}
+                {isNamePending && !isNameChanged && (
+                  <p className="mt-2 ml-2 text-[9px] font-bold text-blue-600 dark:text-blue-400 uppercase italic animate-pulse">
+                    ⏳ Névváltoztatási kérelem függőben...
+                  </p>
+                )}
               </div>
 
               <div className="relative">
@@ -361,7 +388,7 @@ const ProfileDetails = () => {
                 disabled={hasErrors}
                 className={`w-full p-4 rounded-xl font-black uppercase text-xs shadow-lg transition-all active:scale-95 ${!isDirty || hasErrors ? "bg-slate-100 dark:bg-slate-800 text-slate-400 cursor-not-allowed shadow-none" : isNameChanged ? "bg-amber-500 text-white hover:bg-amber-600" : "bg-blue-600 text-white hover:bg-blue-500"}`}
               >
-                {hasErrors ? t("details.buttons.fixErrors", "Hibák javítása szükséges") : !isDirty ? t("details.buttons.noChanges", "Nem történt módosítás") : isNameChanged ? t("details.buttons.saveAndRequest", "Mentés és Kérelem beküldése") : t("details.buttons.saveData", "Adatok Mentése")}
+                {hasErrors ? t("details.buttons.fixErrors", "Hibák javítása szükséges") : !isDirty ? t("details.buttons.noChanges", "Nem történt módosítás") : isNameChanged ? (isNamePending ? "Kérelem Frissítése" : t("details.buttons.saveAndRequest", "Mentés és Kérelem beküldése")) : t("details.buttons.saveData", "Adatok Mentése")}
               </button>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
@@ -369,27 +396,30 @@ const ProfileDetails = () => {
                   <>
                     <button
                       type="button"
+                      disabled={isKezeloPending}
                       onClick={() => handleRequestRang("KEZELO")}
-                      className="bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 p-3 rounded-xl font-black uppercase text-[10px] transition-all active:scale-95 flex justify-center items-center gap-2 border border-slate-200 dark:border-slate-700"
+                      className={`p-3 rounded-xl font-black uppercase text-[10px] transition-all flex justify-center items-center gap-2 border ${isKezeloPending ? 'bg-slate-50 dark:bg-slate-800/50 text-slate-400 border-slate-200 dark:border-slate-800 cursor-not-allowed' : 'bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 border-slate-200 dark:border-slate-700 active:scale-95'}`}
                     >
-                      <span>📦</span> Kezelő kérése
+                      {isKezeloPending ? '⏳ Kezelő kérés függőben' : '<span>📦</span> Kezelő kérése'}
                     </button>
                     <button
                       type="button"
+                      disabled={isAdminPending}
                       onClick={() => handleRequestRang("ADMIN")}
-                      className="bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 p-3 rounded-xl font-black uppercase text-[10px] transition-all active:scale-95 flex justify-center items-center gap-2 border border-slate-200 dark:border-slate-700"
+                      className={`p-3 rounded-xl font-black uppercase text-[10px] transition-all flex justify-center items-center gap-2 border ${isAdminPending ? 'bg-slate-50 dark:bg-slate-800/50 text-slate-400 border-slate-200 dark:border-slate-800 cursor-not-allowed' : 'bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 border-slate-200 dark:border-slate-700 active:scale-95'}`}
                     >
-                      <span>🛡️</span> Admin kérése
+                      {isAdminPending ? '⏳ Admin kérés függőben' : '<span>🛡️</span> Admin kérése'}
                     </button>
                   </>
                 )}
                 {isKezelo && (
                   <button
                     type="button"
+                    disabled={isAdminPending}
                     onClick={() => handleRequestRang("ADMIN")}
-                    className="bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 p-3 rounded-xl font-black uppercase text-[10px] transition-all active:scale-95 flex justify-center items-center gap-2 border border-slate-200 dark:border-slate-700"
+                    className={`p-3 rounded-xl font-black uppercase text-[10px] transition-all flex justify-center items-center gap-2 border ${isAdminPending ? 'bg-slate-50 dark:bg-slate-800/50 text-slate-400 border-slate-200 dark:border-slate-800 cursor-not-allowed' : 'bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 border-slate-200 dark:border-slate-700 active:scale-95'}`}
                   >
-                    <span>🛡️</span> Admin kérése
+                    {isAdminPending ? '⏳ Admin kérés függőben' : '<span>🛡️</span> Admin kérése'}
                   </button>
                 )}
                 <button

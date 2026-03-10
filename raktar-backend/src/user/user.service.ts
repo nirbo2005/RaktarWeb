@@ -156,13 +156,33 @@ export class UserService {
   }
 
   async createChangeRequest(userId: number, tipus: string, ujErtek: string) {
+    const user = await this.prisma.user.findUnique({ where: { id: userId } });
+    const reqText = tipus === 'RANG_MODOSITAS' ? 'Jogosultság módosítás' : 'Név módosítás';
+
+    // 1. Töröljük a korábbi értesítéseket, amik a lecserélt kéréshez tartoztak
+    await this.prisma.notification.deleteMany({
+      where: {
+        uzenet: {
+          startsWith: `Új ${reqText} kérelem érkezett: ${user?.nev} (@${user?.felhasznalonev})`
+        }
+      }
+    });
+
+    // 2. Töröljük a korábbi, még feldolgozatlan (PENDING) azonos típusú kéréseket ettől a felhasználótól
+    await this.prisma.changeRequest.deleteMany({
+      where: {
+        userId: userId,
+        tipus: tipus,
+        statusz: 'PENDING',
+      },
+    });
+
+    // 3. Létrehozzuk az új kérést
     const request = await this.prisma.changeRequest.create({
       data: { userId, tipus, ujErtek },
     });
     
-    const user = await this.prisma.user.findUnique({ where: { id: userId } });
-    
-    const reqText = tipus === 'RANG_MODOSITAS' ? 'Jogosultság módosítás' : 'Név módosítás';
+    // 4. Kiküldjük az új értesítést
     await this.notificationService.createAdminNotification(
       `Új ${reqText} kérelem érkezett: ${user?.nev} (@${user?.felhasznalonev}) -> ${ujErtek}`,
       'INFO'
@@ -175,6 +195,13 @@ export class UserService {
   async getPendingRequests() {
     return this.prisma.changeRequest.findMany({
       where: { statusz: 'PENDING' },
+      include: { user: { select: { nev: true, felhasznalonev: true } } },
+    });
+  }
+
+  async getUserPendingRequests(userId: number) {
+    return this.prisma.changeRequest.findMany({
+      where: { userId: userId, statusz: 'PENDING' },
       include: { user: { select: { nev: true, felhasznalonev: true } } },
     });
   }
@@ -284,8 +311,8 @@ export class UserService {
 
     if (user) {
        await this.notificationService.createAdminNotification(
-          `Profil törölve: ${user.nev} (@${user.felhasznalonev}) fiókja megsemmisült.`,
-          'ERROR'
+         `Profil törölve: ${user.nev} (@${user.felhasznalonev}) fiókja megsemmisült.`,
+         'ERROR'
        );
     }
 

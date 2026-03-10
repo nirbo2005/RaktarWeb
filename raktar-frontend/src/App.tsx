@@ -154,7 +154,11 @@ function App() {
               />
 
               <Route element={<ProtectedRoute />}>
-                <Route path="/" element={<ProductList />} />
+                {/* ROOT átirányítás a lapozós oldalra */}
+                <Route path="/" element={<Navigate to="/products/1" replace />} />
+                {/* Lapozós útvonal */}
+                <Route path="/products/:page" element={<ProductList />} />
+                
                 <Route path="/product/:id" element={<ProductDetails />} />
                 <Route path="/grid" element={<ProductGridView />} />
                 

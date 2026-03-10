@@ -194,6 +194,14 @@ export async function getPendingRequests() {
   return handleResponse(res);
 }
 
+// EZ A FÜGGVÉNY HIÁNYZOTT
+export async function getUserPendingRequests(userId: number) {
+  const res = await fetch(`${BASE_URL}/users/${userId}/pending-requests`, {
+    headers: getHeaders(),
+  });
+  return handleResponse(res);
+}
+
 export async function handleAdminRequest(requestId: number, statusz: string) {
   const res = await fetch(`${BASE_URL}/users/handle-request`, {
     method: "POST",

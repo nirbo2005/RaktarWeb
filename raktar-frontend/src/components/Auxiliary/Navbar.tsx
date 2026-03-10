@@ -115,11 +115,49 @@ function Navbar({ isDark, setIsDark }: NavbarProps) {
     }
   };
 
-  const handleNotificationClick = async (id: number) => {
-    try {
-      await markNotificationAsRead(id);
-      fetchData();
-    } catch (err) {}
+  const handleNotificationClick = async (notif: AppNotification) => {
+    if (!notif.isRead) {
+      try {
+        await markNotificationAsRead(notif.id);
+        fetchData();
+      } catch (err) {}
+    }
+    
+    setIsNotifOpen(false); // Navbar leugró bezárása kattintás után
+
+    if (notif.productId) {
+      navigate(`/product/${notif.productId}`);
+      return;
+    }
+
+    const type = notif.tipus as string;
+    const message = notif.uzenet?.toLowerCase() || "";
+
+    if (type === "CHANGE_REQUEST" || type === "ADMIN_ACTION" || message.includes("kérelem")) {
+      if (user?.rang === "ADMIN") {
+        navigate("/profile/admin");
+      } else {
+        navigate("/profile");
+      }
+      return;
+    }
+
+    switch (type) {
+      case "STOCK_ALERT":
+      case "EXPIRY_ALERT":
+        navigate("/grid");
+        break;
+      case "SYSTEM":
+        if (user?.rang === "ADMIN") {
+          navigate("/profile/system");
+        }
+        break;
+      case "USER_UPDATE":
+        navigate("/profile");
+        break;
+      default:
+        break;
+    }
   };
 
   const getRoleBadge = (role?: string) => {
@@ -274,10 +312,8 @@ function Navbar({ isDark, setIsDark }: NavbarProps) {
                         recentNotifications.map((n) => (
                           <div
                             key={n.id}
-                            onClick={() =>
-                              !n.isRead && handleNotificationClick(n.id)
-                            }
-                            className={`p-4 border-b border-slate-100 dark:border-slate-800 last:border-0 transition-colors ${!n.isRead ? "bg-blue-50/50 dark:bg-blue-900/20 cursor-pointer" : "opacity-60"}`}
+                            onClick={() => handleNotificationClick(n)}
+                            className={`p-4 border-b border-slate-100 dark:border-slate-800 last:border-0 transition-colors ${!n.isRead ? "bg-blue-50/50 dark:bg-blue-900/20 cursor-pointer" : "cursor-pointer hover:bg-slate-50 dark:hover:bg-slate-800/50 opacity-60"}`}
                           >
                             <div className="flex gap-3">
                               <span className="text-lg">

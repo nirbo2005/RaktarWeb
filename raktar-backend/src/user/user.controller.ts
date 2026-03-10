@@ -54,6 +54,12 @@ export class UserController {
     return this.userService.getPendingRequests();
   }
 
+  @Get(':id/pending-requests')
+  @UseGuards(JwtAuthGuard)
+  getUserPendingRequests(@Param('id', ParseIntPipe) id: number) {
+    return this.userService.getUserPendingRequests(id);
+  }
+
   @Get(':id')
   @UseGuards(JwtAuthGuard)
   findOne(@Param('id', ParseIntPipe) id: number) {
