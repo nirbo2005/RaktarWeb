@@ -77,7 +77,6 @@ const ProfileDetails = () => {
   const validateField = (name: string, value: string) => {
     let error = "";
     
-    // Check if value matches user object to prevent error triggering on unchanged prefilled inputs
     if (
       (name === "nev" && value === user.nev) ||
       (name === "felhasznalonev" && value === user.felhasznalonev) ||
@@ -257,22 +256,22 @@ const ProfileDetails = () => {
   };
 
   const labelClass = "block mb-1.5 ml-2 text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest";
-  const inputClass = "w-full p-3 rounded-xl bg-slate-50 dark:bg-slate-800 dark:text-white border border-slate-200 dark:border-slate-700 outline-none focus:ring-2 focus:ring-blue-500 text-sm transition-all";
+  const inputClass = "w-full p-3 rounded-xl bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-white border border-slate-200 dark:border-slate-700 outline-none focus:ring-2 focus:ring-blue-500 text-sm transition-all";
   const errorTextClass = "text-[9px] text-red-500 font-bold mt-1 ml-2 uppercase animate-pulse";
 
   return (
-    <div className="min-h-screen bg-main transition-colors duration-300">
+    <div className="min-h-screen bg-slate-50 dark:bg-slate-950 transition-colors duration-300">
       <div className="max-w-6xl mx-auto space-y-8 py-6 text-left px-4">
         <div className="flex items-center gap-4 mb-4 px-2">
-          <button onClick={() => navigate("/profile")} className="p-3 bg-panel rounded-2xl shadow-sm border border-border-main hover:text-blue-500 transition-colors">
+          <button onClick={() => navigate("/profile")} className="p-3 bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-800 hover:text-blue-500 transition-colors">
             ←
           </button>
-          <h2 className="text-2xl font-black uppercase italic tracking-tighter text-main">
+          <h2 className="text-2xl font-black uppercase italic tracking-tighter dark:text-white">
             {t("profile.dashboard.details.title")}
           </h2>
         </div>
 
-        <header className="bg-panel rounded-[2.5rem] shadow-xl overflow-hidden border border-border-main relative transition-all duration-500">
+        <header className="bg-white dark:bg-slate-900 rounded-[2.5rem] shadow-xl overflow-hidden border border-slate-200 dark:border-slate-800 relative">
           <div className="h-32 bg-gradient-to-r from-blue-600 via-blue-700 to-indigo-800" />
           <div className="px-6 md:px-12 flex flex-col md:flex-row gap-6 md:gap-8 pb-8">
             <div className="flex justify-center md:flex-col md:justify-end md:pb-2 -mt-16 z-10 shrink-0">
@@ -283,11 +282,11 @@ const ProfileDetails = () => {
             <div className="flex-1 flex flex-col md:mt-4">
               <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
                 <div className="space-y-3 text-center md:text-left">
-                  <h1 className="text-3xl md:text-5xl font-black uppercase italic tracking-tighter text-main">
+                  <h1 className="text-3xl md:text-5xl font-black uppercase italic tracking-tighter dark:text-white">
                     {user?.nev || t("header.anonymous")}
                   </h1>
                   <div className="flex flex-wrap justify-center md:justify-start items-center gap-2">
-                    <span className="text-muted font-bold text-[10px] uppercase tracking-widest bg-input px-3 py-1 rounded-lg border border-border-main">
+                    <span className="text-slate-500 dark:text-slate-400 font-bold text-[10px] uppercase tracking-widest bg-slate-100 dark:bg-slate-800 px-3 py-1 rounded-lg border border-slate-200 dark:border-slate-700">
                       @{user?.felhasznalonev}
                     </span>
                     <span className="text-blue-600 dark:text-blue-400 font-black text-[10px] uppercase tracking-wider bg-blue-50 dark:bg-blue-900/20 px-3 py-1 rounded-lg border border-blue-100 dark:border-blue-800/30">
@@ -303,7 +302,7 @@ const ProfileDetails = () => {
           </div>
         </header>
 
-        <div className="bg-panel rounded-[2.5rem] shadow-xl border border-border-main overflow-hidden">
+        <div className="bg-white dark:bg-slate-900 rounded-[2.5rem] shadow-xl border border-slate-200 dark:border-slate-800 overflow-hidden">
           <div className="p-6 md:p-8">
             <form onSubmit={handleUpdateSubmit} className="space-y-8">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -316,16 +315,6 @@ const ProfileDetails = () => {
                     className={`${inputClass} ${fieldErrors.nev ? "border-red-500" : ""}`}
                   />
                   {fieldErrors.nev && <p className={errorTextClass}>❌ {fieldErrors.nev}</p>}
-                  {isNameChanged && (
-                    <p className="mt-2 ml-2 text-[9px] font-bold text-amber-600 dark:text-amber-500 uppercase italic">
-                      ⚠️ {t("details.adminApprovalNeeded")}
-                    </p>
-                  )}
-                  {isNamePending && !isNameChanged && (
-                    <p className="mt-2 ml-2 text-[9px] font-bold text-blue-600 dark:text-blue-400 uppercase italic animate-pulse">
-                      ⏳ {t("profile.details.namePending")}
-                    </p>
-                  )}
                 </div>
 
                 <div className="relative">
@@ -371,28 +360,32 @@ const ProfileDetails = () => {
 
                 <div className="relative">
                   <label className={labelClass}>{t("details.oldPassword")}</label>
-                  <input
-                    type={showOldPass ? "text" : "password"}
-                    value={profileForm.regiJelszo}
-                    onChange={(e) => setProfileForm({ ...profileForm, regiJelszo: e.target.value })}
-                    className={inputClass}
-                  />
-                  <button type="button" onClick={() => setShowOldPass(!showOldPass)} className="absolute right-3 top-8 text-lg">
-                    {showOldPass ? "👁️" : "🙈"}
-                  </button>
+                  <div className="relative">
+                    <input
+                      type={showOldPass ? "text" : "password"}
+                      value={profileForm.regiJelszo}
+                      onChange={(e) => setProfileForm({ ...profileForm, regiJelszo: e.target.value })}
+                      className={inputClass}
+                    />
+                    <button type="button" onClick={() => setShowOldPass(!showOldPass)} className="absolute right-3 top-1/2 -translate-y-1/2 text-lg">
+                      {showOldPass ? "👁️" : "🙈"}
+                    </button>
+                  </div>
                 </div>
 
                 <div className="relative">
                   <label className={labelClass}>{t("details.newPassword")}</label>
-                  <input
-                    type={showNewPass ? "text" : "password"}
-                    value={profileForm.ujJelszo}
-                    onChange={(e) => { setProfileForm({ ...profileForm, ujJelszo: e.target.value }); validateField("ujJelszo", e.target.value); }}
-                    className={`${inputClass} ${fieldErrors.ujJelszo ? "border-red-500" : ""}`}
-                  />
-                  <button type="button" onClick={() => setShowNewPass(!showNewPass)} className="absolute right-3 top-8 text-lg">
-                    {showNewPass ? "👁️" : "🙈"}
-                  </button>
+                  <div className="relative">
+                    <input
+                      type={showNewPass ? "text" : "password"}
+                      value={profileForm.ujJelszo}
+                      onChange={(e) => { setProfileForm({ ...profileForm, ujJelszo: e.target.value }); validateField("ujJelszo", e.target.value); }}
+                      className={`${inputClass} ${fieldErrors.ujJelszo ? "border-red-500" : ""}`}
+                    />
+                    <button type="button" onClick={() => setShowNewPass(!showNewPass)} className="absolute right-3 top-1/2 -translate-y-1/2 text-lg">
+                      {showNewPass ? "👁️" : "🙈"}
+                    </button>
+                  </div>
                   {fieldErrors.ujJelszo && <p className={errorTextClass}>❌ {fieldErrors.ujJelszo}</p>}
                 </div>
               </div>
@@ -403,11 +396,11 @@ const ProfileDetails = () => {
                 </div>
               )}
 
-              <div className="space-y-4 pt-4 border-t border-border-main">
+              <div className="space-y-4 pt-4 border-t border-slate-200 dark:border-slate-800">
                 <button
                   type="submit"
                   disabled={hasErrors || !isDirty}
-                  className={`w-full p-4 rounded-xl font-black uppercase text-xs shadow-lg transition-all active:scale-95 ${!isDirty || hasErrors ? "bg-input text-muted cursor-not-allowed shadow-none" : "bg-blue-600 text-white hover:bg-blue-500"}`}
+                  className={`w-full p-4 rounded-xl font-black uppercase text-xs shadow-lg transition-all active:scale-95 ${!isDirty || hasErrors ? "bg-slate-200 dark:bg-slate-800 text-slate-500 cursor-not-allowed shadow-none" : "bg-blue-600 text-white hover:bg-blue-500"}`}
                 >
                   {hasErrors ? t("details.buttons.fixErrors") : !isDirty ? t("details.buttons.noChanges") : t("details.buttons.saveData")}
                 </button>
@@ -415,20 +408,20 @@ const ProfileDetails = () => {
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
                   {isNezelodo && (
                     <>
-                      <button type="button" disabled={isKezeloPending} onClick={() => handleRequestRang("KEZELO")} className={`p-3 rounded-xl font-black uppercase text-[10px] transition-all flex justify-center items-center gap-2 border ${isKezeloPending ? 'bg-input text-muted border-border-main cursor-not-allowed' : 'bg-panel hover:bg-input text-main border-border-main active:scale-95'}`}>
+                      <button type="button" disabled={isKezeloPending} onClick={() => handleRequestRang("KEZELO")} className={`p-3 rounded-xl font-black uppercase text-[10px] transition-all flex justify-center items-center gap-2 border border-slate-200 dark:border-slate-700 ${isKezeloPending ? 'bg-slate-100 dark:bg-slate-800 text-slate-500 cursor-not-allowed' : 'bg-white dark:bg-slate-900 hover:bg-slate-50 dark:hover:bg-slate-800 text-slate-900 dark:text-white active:scale-95'}`}>
                         {isKezeloPending ? t("profile.details.kezeloPending") : `<span>📦</span> ${t("profile.details.requestKezelo")}`}
                       </button>
-                      <button type="button" disabled={isAdminPending} onClick={() => handleRequestRang("ADMIN")} className={`p-3 rounded-xl font-black uppercase text-[10px] transition-all flex justify-center items-center gap-2 border ${isAdminPending ? 'bg-input text-muted border-border-main cursor-not-allowed' : 'bg-panel hover:bg-input text-main border-border-main active:scale-95'}`}>
+                      <button type="button" disabled={isAdminPending} onClick={() => handleRequestRang("ADMIN")} className={`p-3 rounded-xl font-black uppercase text-[10px] transition-all flex justify-center items-center gap-2 border border-slate-200 dark:border-slate-700 ${isAdminPending ? 'bg-slate-100 dark:bg-slate-800 text-slate-500 cursor-not-allowed' : 'bg-white dark:bg-slate-900 hover:bg-slate-50 dark:hover:bg-slate-800 text-slate-900 dark:text-white active:scale-95'}`}>
                         {isAdminPending ? t("profile.details.adminPending") : `<span>🛡️</span> ${t("profile.details.requestAdmin")}`}
                       </button>
                     </>
                   )}
                   {isKezelo && (
-                    <button type="button" disabled={isAdminPending} onClick={() => handleRequestRang("ADMIN")} className={`p-3 rounded-xl font-black uppercase text-[10px] transition-all flex justify-center items-center gap-2 border ${isAdminPending ? 'bg-input text-muted border-border-main cursor-not-allowed' : 'bg-panel hover:bg-input text-main border-border-main active:scale-95'}`}>
+                    <button type="button" disabled={isAdminPending} onClick={() => handleRequestRang("ADMIN")} className={`p-3 rounded-xl font-black uppercase text-[10px] transition-all flex justify-center items-center gap-2 border border-slate-200 dark:border-slate-700 ${isAdminPending ? 'bg-slate-100 dark:bg-slate-800 text-slate-500 cursor-not-allowed' : 'bg-white dark:bg-slate-900 hover:bg-slate-50 dark:hover:bg-slate-800 text-slate-900 dark:text-white active:scale-95'}`}>
                       {isAdminPending ? t("profile.details.adminPending") : `<span>🛡️</span> ${t("profile.details.requestAdmin")}`}
                     </button>
                   )}
-                  <button type="button" onClick={handleDeleteProfile} className="sm:col-start-auto bg-red-50 hover:bg-red-100 dark:bg-red-900/10 dark:hover:bg-red-900/20 text-red-600 dark:text-red-400 border border-red-100 dark:border-red-900/30 p-3 rounded-xl font-black uppercase text-[10px] transition-all active:scale-95 flex justify-center items-center gap-2">
+                  <button type="button" onClick={handleDeleteProfile} className="bg-red-50 hover:bg-red-100 dark:bg-red-900/10 dark:hover:bg-red-900/20 text-red-600 dark:text-red-400 border border-red-100 dark:border-red-900/30 p-3 rounded-xl font-black uppercase text-[10px] transition-all active:scale-95 flex justify-center items-center gap-2">
                     <span>🗑️</span> {t("profile.details.deleteAccount")}
                   </button>
                 </div>
@@ -441,13 +434,41 @@ const ProfileDetails = () => {
       <style>{`
         .phone-container { width: 100% !important; font-family: inherit !important; }
         .phone-input-field { 
-          width: 100% !important; height: 46px !important; border-radius: 0.75rem !important;
-          border: 1px solid var(--border-main) !important; background: var(--bg-input) !important;
-          padding-left: 58px !important; font-size: 0.875rem !important; transition: all 0.2s !important;
-          color: var(--text-main) !important;
+          width: 100% !important; 
+          height: 46px !important; 
+          border-radius: 0.75rem !important;
+          border: 1px solid #e2e8f0 !important; 
+          background: #f8fafc !important;
+          padding-left: 58px !important; 
+          font-size: 0.875rem !important; 
+          transition: all 0.2s !important;
+          color: #0f172a !important;
+        }
+        .dark .phone-input-field {
+          border-color: #334155 !important;
+          background-color: #1e293b !important;
+          color: #f8fafc !important;
+        }
+        .phone-input-field:focus {
+          border-color: #3b82f6 !important;
+          box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.5) !important;
         }
         .phone-dropdown-btn { background: transparent !important; border: none !important; width: 48px !important; }
-        .phone-dropdown-list { background: var(--bg-panel) !important; border-radius: 1rem !important; border: 1px solid var(--border-main) !important; color: var(--text-main) !important; }
+        .phone-dropdown-list { 
+          background: #ffffff !important; 
+          border-radius: 1rem !important; 
+          border: 1px solid #e2e8f0 !important; 
+          color: #0f172a !important; 
+        }
+        .dark .phone-dropdown-list {
+          background-color: #0f172a !important;
+          border-color: #334155 !important;
+          color: #f8fafc !important;
+        }
+        .phone-dropdown-list .country:hover { background: #f1f5f9 !important; }
+        .dark .phone-dropdown-list .country:hover { background-color: #1e293b !important; }
+        .phone-dropdown-list .country.highlight { background: #f1f5f9 !important; }
+        .dark .phone-dropdown-list .country.highlight { background-color: #1e293b !important; }
       `}</style>
     </div>
   );

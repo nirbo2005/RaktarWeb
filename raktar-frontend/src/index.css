@@ -226,3 +226,16 @@ button {
 .cropper-buttons .save-btn {
   @apply bg-blue-600 text-white hover:bg-blue-500 disabled:opacity-50;
 }
+
+.shelf-item-selected {
+  border-color: #2563eb !important; 
+  background-color: rgba(37, 99, 235, 0.15) !important;
+  box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.25) !important;
+  transform: scale(1.05);
+  z-index: 20;
+}
+
+.dark .shelf-item-selected {
+  background-color: rgba(59, 130, 246, 0.25) !important;
+  border-color: #3b82f6 !important;
+}

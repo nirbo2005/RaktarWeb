@@ -1,5 +1,5 @@
 // raktar-frontend/src/components/Inventory/BatchSplitter.tsx
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo, useRef } from "react";
 import { suggestPlacement } from "../../services/api";
 import { useTranslation } from "react-i18next";
 import Swal from "sweetalert2";
@@ -15,8 +15,8 @@ interface BatchSplitterProps {
   totalQuantity: number;
   productWeight?: number;
   onSplitsChange: (splits: { parcella: string; mennyiseg: number }[] | null) => void;
-  onManualSelectRequested: () => void;
-  externalSelectedShelf?: string;
+  onManualSelectRequested: (currentShelves: string[]) => void;
+  externalSelectedShelf?: string; // Formátum: "PARCELLA_TIMESTAMP" a garantált frissítéshez
   mapData?: any; 
 }
 
@@ -45,23 +45,47 @@ const BatchSplitter: React.FC<BatchSplitterProps> = ({
   const [loading, setLoading] = useState(false);
   
   const [processedShelfToken, setProcessedShelfToken] = useState<string>("");
+  const prevSentShelvesRef = useRef<string>("");
 
   const allocatedQuantity = splits.reduce((sum, s) => sum + s.mennyiseg, 0);
   const remainingQuantity = totalQuantity - allocatedQuantity;
 
-  const sortSplits = (a: SplitRow, b: SplitRow) => {
-    if (!a.parcella) return 1;
-    if (!b.parcella) return -1;
-    return a.parcella.localeCompare(b.parcella);
+  const currentSelectedShelves = useMemo(() => 
+    splits.map(s => s.parcella).filter(p => p !== ""), 
+    [splits]
+  );
+
+  const sortRows = (rows: SplitRow[]) => {
+    return [...rows].sort((a, b) => {
+      if (!a.parcella) return 1;
+      if (!b.parcella) return -1;
+      return a.parcella.localeCompare(b.parcella);
+    });
   };
 
   useEffect(() => {
-    if (mode === "MANUAL") {
-      if (externalSelectedShelf && externalSelectedShelf !== processedShelfToken) {
-        let maxAllowedQty = remainingQuantity;
+    if (mode === "MANUAL" && externalSelectedShelf && externalSelectedShelf !== processedShelfToken) {
+      const shelfCode = externalSelectedShelf.split('_')[0];
+      if (!shelfCode) return;
+
+      setSplits((prev) => {
+        const existingIdx = prev.findIndex(s => s.parcella === shelfCode);
         
-        if (mapData && mapData.shelves) {
-          const shelfData = mapData.shelves[externalSelectedShelf];
+        if (existingIdx !== -1) {
+          const filtered = prev.filter(s => s.parcella !== shelfCode);
+          return filtered.length === 0 
+            ? [{ id: Math.random().toString(), parcella: "", mennyiseg: 0 }] 
+            : sortRows(filtered);
+        }
+
+        if (remainingQuantity <= 0) {
+          MySwal.fire({ icon: "info", title: t("inventory.splitter.allAllocated") });
+          return prev;
+        }
+
+        let maxAllowedQty = remainingQuantity;
+        if (mapData?.shelves) {
+          const shelfData = mapData.shelves[shelfCode];
           const currentWeight = shelfData?.weight || 0;
           const maxWeight = mapData.maxWeight || 2000;
           const availableKg = maxWeight - currentWeight;
@@ -71,47 +95,51 @@ const BatchSplitter: React.FC<BatchSplitterProps> = ({
             MySwal.fire({
               icon: "warning",
               title: t("inventory.splitter.alerts.shelfFullTitle"),
-              text: t("inventory.splitter.alerts.shelfFullText", { shelf: externalSelectedShelf }),
+              text: t("inventory.splitter.alerts.shelfFullText", { shelf: shelfCode }),
             });
-            setProcessedShelfToken(externalSelectedShelf);
-            return; 
+            return prev; 
           }
-
           maxAllowedQty = Math.min(remainingQuantity, canFitQty);
         }
 
-        setSplits((prev) => {
-          const isAlreadyAdded = prev.some(s => s.parcella === externalSelectedShelf);
-          if (isAlreadyAdded) return prev;
+        const emptyRowIdx = prev.findIndex(s => !s.parcella);
+        if (emptyRowIdx !== -1) {
+          const updated = [...prev];
+          updated[emptyRowIdx] = { 
+            ...updated[emptyRowIdx], 
+            parcella: shelfCode, 
+            mennyiseg: maxAllowedQty 
+          };
+          return updated;
+        }
 
-          const last = prev[prev.length - 1];
-          let newSplits;
-          if (last && !last.parcella) {
-            newSplits = prev.map((s, idx) =>
-              idx === prev.length - 1 ? { ...s, parcella: externalSelectedShelf, mennyiseg: maxAllowedQty } : s
-            );
-          } else {
-            newSplits = [
-              ...prev,
-              { id: Math.random().toString(), parcella: externalSelectedShelf, mennyiseg: maxAllowedQty },
-            ];
-          }
-          return [...newSplits].sort(sortSplits);
-        });
+        return [
+          ...prev,
+          { id: Math.random().toString(), parcella: shelfCode, mennyiseg: maxAllowedQty },
+        ];
+      });
 
-        setProcessedShelfToken(externalSelectedShelf);
-      } else if (!externalSelectedShelf) {
-        setProcessedShelfToken("");
-      }
+      setProcessedShelfToken(externalSelectedShelf);
     }
-  }, [externalSelectedShelf, mode, mapData, productWeight, remainingQuantity, processedShelfToken, t]);
+  }, [externalSelectedShelf, mode, mapData, productWeight, remainingQuantity, t, processedShelfToken]);
+
+  // Végtelen ciklus elleni védelem: csak akkor hívjuk a szülőt, ha változott a lista tartalma
+  useEffect(() => {
+    const currentSerialized = currentSelectedShelves.sort().join(",");
+    if (currentSerialized !== prevSentShelvesRef.current) {
+      prevSentShelvesRef.current = currentSerialized;
+      onManualSelectRequested(currentSelectedShelves);
+    }
+  }, [currentSelectedShelves, onManualSelectRequested]);
 
   useEffect(() => {
-    const activeSplits = splits.filter(s => s.mennyiseg > 0);
-    const allValid = activeSplits.every(s => isValidShelf(s.parcella));
+    const activeSplits = splits.filter(s => s.mennyiseg > 0 && isValidShelf(s.parcella));
 
-    if (mode !== "IDLE" && remainingQuantity === 0 && activeSplits.length > 0 && allValid) {
-      onSplitsChange([...activeSplits].sort(sortSplits).map((s) => ({ parcella: s.parcella.toUpperCase(), mennyiseg: s.mennyiseg })));
+    if (mode !== "IDLE" && remainingQuantity === 0 && activeSplits.length > 0) {
+      onSplitsChange(activeSplits.map((s) => ({ 
+        parcella: s.parcella.toUpperCase(), 
+        mennyiseg: s.mennyiseg 
+      })));
     } else {
       onSplitsChange(null);
     }
@@ -123,13 +151,11 @@ const BatchSplitter: React.FC<BatchSplitterProps> = ({
       const suggestions = await suggestPlacement(productId, totalQuantity, productWeight);
       if (!suggestions || suggestions.length === 0) throw new Error();
 
-      setSplits(
-        suggestions.map((s: any) => ({
-          id: Math.random().toString(),
-          parcella: s.parcella,
-          mennyiseg: s.mennyiseg,
-        })).sort(sortSplits)
-      );
+      setSplits(sortRows(suggestions.map((s: any) => ({
+        id: Math.random().toString(),
+        parcella: s.parcella,
+        mennyiseg: s.mennyiseg,
+      }))));
       setMode("AUTO");
     } catch (err) {
       handleManualStart();
@@ -140,24 +166,23 @@ const BatchSplitter: React.FC<BatchSplitterProps> = ({
 
   const handleManualStart = () => {
     setProcessedShelfToken("");
+    prevSentShelvesRef.current = "";
     setSplits([{ id: Math.random().toString(), parcella: "", mennyiseg: 0 }]);
     setMode("MANUAL");
-    onManualSelectRequested();
+    onManualSelectRequested([]);
   };
 
-  const updateSplit = (id: string, field: keyof SplitRow, value: any) => {
-    setSplits(prev => {
-      const updated = prev.map((s) => (s.id === id ? { ...s, [field]: value } : s));
-      if (field === "parcella") return [...updated].sort(sortSplits);
-      return updated;
-    });
+  const updateSplitField = (id: string, field: keyof SplitRow, value: any) => {
+    setSplits(prev => prev.map((s) => (s.id === id ? { ...s, [field]: value } : s)));
+  };
+
+  const handleInputBlur = () => {
+    setSplits(prev => sortRows(prev));
   };
 
   const removeSplit = (id: string) => {
     setSplits(prev => {
-        if (prev.length <= 1) {
-            return [{ id: Math.random().toString(), parcella: "", mennyiseg: 0 }];
-        }
+        if (prev.length <= 1) return [{ id: Math.random().toString(), parcella: "", mennyiseg: 0 }];
         return prev.filter((s) => s.id !== id);
     });
   };
@@ -201,6 +226,8 @@ const BatchSplitter: React.FC<BatchSplitterProps> = ({
             setMode("IDLE");
             setSplits([]);
             setProcessedShelfToken("");
+            prevSentShelvesRef.current = "";
+            onManualSelectRequested([]);
           }}
           className="text-[9px] font-black text-rose-500 hover:text-rose-700 uppercase underline"
         >
@@ -218,39 +245,36 @@ const BatchSplitter: React.FC<BatchSplitterProps> = ({
               className="flex gap-3 items-start bg-white dark:bg-slate-900 p-4 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-800"
             >
               <div className="flex-1">
-                <label className="text-[9px] font-black uppercase text-slate-400 ml-2 block mb-1">
-                  {t("inventory.splitter.shelf")}
-                </label>
                 <input
                   type="text"
                   value={split.parcella}
                   readOnly={mode === "AUTO"}
-                  onChange={(e) => updateSplit(split.id, "parcella", e.target.value.toUpperCase())}
-                  className={`w-full p-2.5 rounded-xl text-xs font-bold outline-none border transition-colors ${
+                  onBlur={handleInputBlur}
+                  onChange={(e) => updateSplitField(split.id, "parcella", e.target.value.toUpperCase())}
+                  className={`w-full p-2.5 rounded-xl text-xs font-bold outline-none border transition-all ${
                     isInvalidShelf
                       ? "border-rose-500 bg-rose-50 text-rose-700 focus:border-rose-600 dark:bg-rose-900/20 dark:text-rose-300 dark:border-rose-500/50"
                       : "bg-slate-50 dark:bg-slate-800 border-slate-200 dark:border-slate-700 focus:border-blue-500 dark:text-white"
                   }`}
+                  placeholder={t("inventory.splitter.shelf")}
                 />
-                {isInvalidShelf && mode === "MANUAL" && (
+                {isInvalidShelf && (
                   <span className="text-[8px] text-rose-500 font-black uppercase tracking-widest mt-1.5 ml-2 block">
                     ❌ {t("inventory.splitter.invalidFormat")}
                   </span>
                 )}
               </div>
               <div className="w-24">
-                <label className="text-[9px] font-black uppercase text-slate-400 ml-2 block mb-1">
-                  {t("inventory.splitter.qty")}
-                </label>
                 <input
                   type="number"
-                  value={split.mennyiseg}
-                  onChange={(e) => updateSplit(split.id, "mennyiseg", parseInt(e.target.value) || 0)}
+                  value={split.mennyiseg || ""}
+                  onBlur={handleInputBlur}
+                  onChange={(e) => updateSplitField(split.id, "mennyiseg", parseInt(e.target.value) || 0)}
                   className="w-full bg-slate-50 dark:bg-slate-800 p-2.5 rounded-xl text-xs font-bold outline-none border border-slate-200 dark:border-slate-700 focus:border-blue-500 dark:text-white"
                 />
               </div>
               {mode === "MANUAL" && (
-                <div className="pt-[18px]">
+                <div className="pt-1">
                   <button
                     type="button"
                     onClick={() => removeSplit(split.id)}
@@ -265,29 +289,13 @@ const BatchSplitter: React.FC<BatchSplitterProps> = ({
         })}
       </div>
 
-      {mode === "MANUAL" && remainingQuantity > 0 && (
-        <button
-          type="button"
-          onClick={() =>
-            setSplits(prev => [...prev, { id: Math.random().toString(), parcella: "", mennyiseg: remainingQuantity }].sort(sortSplits))
-          }
-          className="w-full py-4 border-2 border-dashed border-slate-300 dark:border-slate-700 rounded-2xl text-slate-400 hover:text-blue-500 hover:border-blue-500 transition-all text-[10px] font-black uppercase tracking-widest"
-        >
-          + {t("inventory.splitter.addSplit")}
-        </button>
-      )}
-
-      <div className="pt-2">
+      <div className="pt-2 text-center text-[10px] font-black uppercase tracking-widest">
         {remainingQuantity === 0 ? (
-          <p className="text-[10px] font-black text-emerald-500 text-center uppercase tracking-widest">
+          <p className="text-emerald-500 animate-pulse">
             ✨ {t("inventory.splitter.allAllocated")}
           </p>
         ) : (
-          <p
-            className={`text-[10px] font-black text-center uppercase tracking-widest ${
-              remainingQuantity < 0 ? "text-rose-500" : "text-amber-500"
-            }`}
-          >
+          <p className={remainingQuantity < 0 ? "text-rose-500" : "text-amber-500"}>
             {remainingQuantity < 0
               ? t("inventory.splitter.overAllocated", { amount: Math.abs(remainingQuantity) })
               : t("inventory.splitter.remainingQty", { count: remainingQuantity })}

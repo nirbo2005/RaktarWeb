@@ -1,4 +1,3 @@
-// raktar-backend/src/batch/batch.service.ts
 import {
   Injectable,
   NotFoundException,
@@ -23,9 +22,6 @@ export class BatchService {
     private events: EventsGateway,
   ) {}
 
-  /**
-   * Lekéri a raktár vizuális térképéhez szükséges adatokat
-   */
   async getWarehouseMap() {
     const batches = await this.prisma.batch.findMany({
       include: { product: true },
@@ -52,9 +48,6 @@ export class BatchService {
     };
   }
 
-  /**
-   * Intelligens elhelyezési javaslat. 
-   */
   async suggestPlacement(productId: number, quantity: number, weight?: number) {
     let unitWeight = weight;
 
@@ -109,19 +102,16 @@ export class BatchService {
     return suggestions;
   }
 
-  /**
-   * Bulk létrehozás: Engedi a manuális bontást akkor is, ha nem indokolja súlylimit.
-   */
   async createBulk(splits: CreateBatchDto[], userId: number) {
-    return await this.prisma.$transaction(async (tx) => {
-      const results: Batch[] = [];
-      const affectedProductIds = new Set<number>();
+    const { results, affectedProductIds } = await this.prisma.$transaction(async (tx) => {
+      const resList: Batch[] = [];
+      const pIds = new Set<number>();
 
       for (const dto of splits) {
         const product = await tx.product.findUnique({ where: { id: Number(dto.productId) } });
         if (!product) throw new NotFoundException('Termék nem található');
 
-        affectedProductIds.add(product.id);
+        pIds.add(product.id);
 
         const currentBatches = await tx.batch.findMany({ 
           where: { parcella: dto.parcella }, 
@@ -155,18 +145,20 @@ export class BatchService {
             }
           });
         }
-        results.push(res);
+        resList.push(res);
         await this.audit.createLog(userId, 'BATCH_CREATE', product.id, null, res, tx);
       }
 
-      this.events.emitUpdate('products_updated', { global: true });
-      
-      for (const pid of affectedProductIds) {
-        await this.notification.checkSingleProduct(pid);
-      }
-      
-      return results;
+      return { results: resList, affectedProductIds: Array.from(pIds) };
     });
+
+    this.events.emitUpdate('products_updated', { global: true });
+    
+    for (const pid of affectedProductIds) {
+      await this.notification.checkSingleProduct(pid);
+    }
+    
+    return results;
   }
 
   async create(createBatchDto: CreateBatchDto, userId: number) {
@@ -267,12 +259,10 @@ export class BatchService {
     });
     if (!existing) throw new NotFoundException('Sarzs nem található!');
 
-    return await this.prisma.$transaction(async (tx) => {
-      // 1. Eset: Áthelyezés másik polcra
+    const result = await this.prisma.$transaction(async (tx) => {
       if (updateBatchDto.parcella && updateBatchDto.parcella !== existing.parcella) {
         const moveQty = updateBatchDto.mennyiseg ?? existing.mennyiseg;
         
-        // Célpolc validálása
         const targetBatches = await tx.batch.findMany({ where: { parcella: updateBatchDto.parcella }, include: { product: true } });
         const targetWeight = targetBatches.reduce((sum, b) => sum + (b.mennyiseg * b.product.suly), 0);
 
@@ -287,7 +277,6 @@ export class BatchService {
         let updatedTarget;
         let auditType = moveQty < existing.mennyiseg ? 'MOVE_SPLIT' : 'MOVE_FULL';
 
-        // Létrehozzuk/frissítjük a cél sarzsot
         if (targetSameBatch) {
           updatedTarget = await tx.batch.update({ where: { id: targetSameBatch.id }, data: { mennyiseg: targetSameBatch.mennyiseg + moveQty } });
           auditType = moveQty < existing.mennyiseg ? 'MOVE_SPLIT_MERGE' : 'MOVE_MERGE';
@@ -297,7 +286,6 @@ export class BatchService {
           });
         }
 
-        // Frissítjük/Töröljük a forrás sarzsot
         let updatedSource: Batch | null = null;
         const newSourceQty = existing.mennyiseg - moveQty;
         
@@ -310,25 +298,15 @@ export class BatchService {
         await this.audit.createLog(userId, 'BATCH_UPDATE', existing.productId, { ...existing, _logType: 'SOURCE' }, 
           { source: updatedSource, target: updatedTarget, _moveType: auditType, _movedQty: moveQty }, tx);
         
-        this.events.emitUpdate('products_updated', { global: true });
-        await this.notification.checkSingleProduct(existing.productId);
-        
         return updatedTarget;
       }
 
-      // 2. Eset: Normál mennyiség/dátum módosítás ugyanazon a polcon
-      // JAVÍTÁS: Ha a végleges mennyiség <= 0, akkor TÖRLÜK a sarzsot Update helyett!
       if (updateBatchDto.mennyiseg !== undefined && updateBatchDto.mennyiseg <= 0) {
           await tx.batch.delete({ where: { id: batchId } });
           await this.audit.createLog(userId, 'BATCH_DELETE', existing.productId, existing, null, tx);
-          
-          this.events.emitUpdate('products_updated', { global: true });
-          await this.notification.checkSingleProduct(existing.productId);
-          
           return { message: 'Sarzs törölve, mivel a mennyiség 0-ra csökkent.' };
       }
 
-      // 3. Eset: Csak sima frissítés (ha a mennyiség még > 0)
       const updated = await tx.batch.update({
         where: { id: batchId },
         data: {
@@ -338,11 +316,13 @@ export class BatchService {
       });
 
       await this.audit.createLog(userId, 'BATCH_UPDATE', existing.productId, existing, updated, tx);
-      this.events.emitUpdate('products_updated', { global: true });
-      await this.notification.checkSingleProduct(existing.productId);
-      
       return updated;
     });
+
+    this.events.emitUpdate('products_updated', { global: true });
+    await this.notification.checkSingleProduct(existing.productId);
+
+    return result;
   }
 
   async remove(id: number, userId: number) {

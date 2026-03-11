@@ -40,6 +40,21 @@ function Notifications() {
     if (user) fetchNotifications();
   }, [user, refreshKey]);
 
+  // Helper a JSON i18n üzenetek feldolgozásához - JAVÍTOTT ÚTVONAL
+  const parseNotificationMessage = (uzenet: string): string => {
+    try {
+      if (uzenet.startsWith("{")) {
+        const payload = JSON.parse(uzenet);
+        if (payload.key) {
+          return t(`auxiliary.notifications.${payload.key}`, payload.data) as string;
+        }
+      }
+      return uzenet;
+    } catch (e) {
+      return uzenet;
+    }
+  };
+
   const handleNavigate = async (notif: AppNotification) => {
     if (!notif.isRead) {
       await markNotificationAsRead(notif.id);
@@ -54,7 +69,7 @@ function Notifications() {
     const type = notif.tipus as string;
     const message = notif.uzenet?.toLowerCase() || "";
 
-    if (type === "CHANGE_REQUEST" || type === "ADMIN_ACTION" || message.includes("kérelem")) {
+    if (type === "CHANGE_REQUEST" || type === "ADMIN_ACTION" || message.includes("kérelem") || message.includes("modrequest")) {
       if (user?.rang === "ADMIN") {
         navigate("/profile/admin");
       } else {
@@ -245,7 +260,7 @@ function Notifications() {
                       <div className="text-3xl mt-1">{style.icon}</div>
                       <div>
                         <p className={`text-sm md:text-base leading-tight ${notif.isRead ? "font-medium text-slate-600 dark:text-slate-400" : `font-black ${style.text}`}`}>
-                          {notif.uzenet}
+                          {parseNotificationMessage(notif.uzenet)}
                         </p>
                         <span className="text-[10px] font-bold uppercase tracking-widest text-slate-400 mt-2 block">
                           {new Date(notif.letrehozva).toLocaleString("hu-HU")}

@@ -31,7 +31,10 @@ export class UserService {
     return cleaned ? `+${cleaned}` : null;
   }
 
-  // Segédfüggvény a fizikai képfájl biztonságos törléséhez
+  private createPayload(key: string, data?: any): string {
+    return JSON.stringify({ key, data: data || {} });
+  }
+
   private deleteAvatarFile(avatarUrl: string | null) {
     if (!avatarUrl) return;
     try {
@@ -61,7 +64,7 @@ export class UserService {
       });
 
       await this.notificationService.createAdminNotification(
-        `Új felhasználó regisztrált: ${user.nev} (@${user.felhasznalonev})`,
+        this.createPayload('userRegistered', { nev: user.nev, username: user.felhasznalonev }),
         'INFO'
       );
 
@@ -144,7 +147,6 @@ export class UserService {
       data: { avatarUrl: newAvatarUrl },
     });
 
-    // Ha volt régi képe, töröljük a lemezről
     this.deleteAvatarFile(oldAvatar);
 
     this.events.emitToUser(id, 'user_updated', updated);
@@ -168,15 +170,7 @@ export class UserService {
 
   async createChangeRequest(userId: number, tipus: string, ujErtek: string) {
     const user = await this.prisma.user.findUnique({ where: { id: userId } });
-    const reqText = tipus === 'RANG_MODOSITAS' ? 'Jogosultság módosítás' : 'Név módosítás';
-
-    await this.prisma.notification.deleteMany({
-      where: {
-        uzenet: {
-          startsWith: `Új ${reqText} kérelem érkezett: ${user?.nev} (@${user?.felhasznalonev})`
-        }
-      }
-    });
+    const reqTypeRaw = tipus === 'RANG_MODOSITAS' ? 'jogosultság' : 'név';
 
     await this.prisma.changeRequest.deleteMany({
       where: {
@@ -191,7 +185,12 @@ export class UserService {
     });
     
     await this.notificationService.createAdminNotification(
-      `Új ${reqText} kérelem érkezett: ${user?.nev} (@${user?.felhasznalonev}) -> ${ujErtek}`,
+      this.createPayload('modRequest', {
+        type: reqTypeRaw,
+        nev: user?.nev,
+        username: user?.felhasznalonev,
+        ujErtek
+      }),
       'INFO'
     );
 
@@ -222,7 +221,7 @@ export class UserService {
 
     let updatedUser: any = null;
     let notifType = statusz === 'APPROVED' ? 'INFO' : 'WARNING';
-    let reqText = request.tipus === 'RANG_MODOSITAS' ? 'jogosultság' : 'név';
+    let reqTypeRaw = request.tipus === 'RANG_MODOSITAS' ? 'jogosultság' : 'név';
 
     if (statusz === 'APPROVED') {
       if (request.tipus === 'NEV_MODOSITAS') {
@@ -242,7 +241,10 @@ export class UserService {
 
       await this.notificationService.createTargetedNotification(
         request.userId,
-        `A(z) ${reqText} módosítási kérelmedet ELFOGADTÁK. Új érték: ${request.ujErtek}`,
+        this.createPayload('reqApproved', {
+          type: reqTypeRaw,
+          ujErtek: request.ujErtek
+        }),
         notifType
       );
 
@@ -259,7 +261,7 @@ export class UserService {
     } else {
       await this.notificationService.createTargetedNotification(
         request.userId,
-        `A(z) ${reqText} módosítási kérelmedet ELUTASÍTOTTÁK.`,
+        this.createPayload('reqRejected', { type: reqTypeRaw }),
         notifType
       );
     }
@@ -288,13 +290,19 @@ export class UserService {
     });
 
     if (updated.isBanned) {
-      await this.notificationService.createAdminNotification(`Felhasználó kitiltva: ${updated.nev} (@${updated.felhasznalonev})`, 'WARNING');
+      await this.notificationService.createAdminNotification(
+        this.createPayload('userBanned', { nev: updated.nev, username: updated.felhasznalonev }),
+        'WARNING'
+      );
       this.events.emitToUser(id, 'force_logout', {
         userId: id,
         reason: 'banned',
       });
     } else {
-      await this.notificationService.createAdminNotification(`Felhasználó kitiltása feloldva: ${updated.nev} (@${updated.felhasznalonev})`, 'INFO');
+      await this.notificationService.createAdminNotification(
+        this.createPayload('userUnbanned', { nev: updated.nev, username: updated.felhasznalonev }),
+        'INFO'
+      );
       this.events.emitToUser(id, 'user_updated', updated);
     }
 
@@ -314,18 +322,17 @@ export class UserService {
         felhasznalonev: `torolt_${id}_${Math.floor(Math.random() * 1000)}`,
         email: `deleted_${id}@raktar.local`,
         telefonszam: '---',
-        avatarUrl: null, // Töröljük a képre mutató hivatkozást
+        avatarUrl: null,
         isBanned: true,
         currentTokenVersion: { increment: 1 },
       },
     });
 
-    // Ha volt képe, azt a szerverről is töröljük
     this.deleteAvatarFile(oldAvatar);
 
     if (user) {
        await this.notificationService.createAdminNotification(
-         `Profil törölve: ${user.nev} (@${user.felhasznalonev}) fiókja megsemmisült.`,
+         this.createPayload('userDeleted', { nev: user.nev, username: user.felhasznalonev }),
          'ERROR'
        );
     }

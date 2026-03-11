@@ -29,7 +29,8 @@
     "next": "Következő",
     "prev": "Előző",
     "perPage": "Megjelenítés:",
-    "languageSelector": "Nyelvválasztó"
+    "languageSelector": "Nyelvválasztó",
+    "selected": "Kiválasztva"
   },
   "admin": {
     "editTitle": "Szerkesztés: {{name}}",
@@ -560,6 +561,20 @@
       "emptyText": "Jelenleg nincs semmilyen riasztás a rendszerben.",
       "readStatus": "Olvasva",
       "markAsRead": "Olvasott",
+      "userRegistered": "Új felhasználó regisztrált: {{nev}} (@{{username}})",
+      "forgotPassword": "Biztonsági esemény: @{{username}} új ideiglenes jelszót igényelt az elfelejtett jelszó funkcióval!",
+      "passwordChanged": "A jelszavadat biztonsági okokból sikeresen frissítettük.",
+      "modRequest": "Új {{type}} módosítás kérelem érkezett: {{nev}} (@{{username}}) -> {{ujErtek}}",
+      "reqApproved": "A(z) {{type}} módosítási kérelmedet ELFOGADTÁK. Új érték: {{ujErtek}}",
+      "reqRejected": "A(z) {{type}} módosítási kérelmedet ELUTASÍTOTTÁK.",
+      "userBanned": "A következő felhasználó ki lett tiltva: {{nev}} (@{{username}})",
+      "userUnbanned": "Az alábbi felhasználó kitiltása fel lett oldva: {{nev}} (@{{username}})",
+      "userDeleted": "Profil törölve: {{nev}} (@{{username}}) fiókja megsemmisült.",
+      "outOfStock": "KÉSZLETHIÁNY: {{nev}} teljesen elfogyott!",
+      "lowStock": "ALACSONY KÉSZLET: {{nev}} a minimuma alá esett: {{mennyiseg}} / {{min}} db",
+      "expiringSoon": "LEJÁRAT FIGYELMEZTETÉS: A(z) {{nev}} ({{parcella}}) lejár ekkor: {{datum}}!",
+      "expiredAlready": "LEJÁRT TERMÉK: A(z) {{nev}} ({{parcella}}) már lejárt ekkor: {{datum}}!",
+      "expiresToday": "LEJÁRT TERMÉK: A(z) {{nev}} ({{parcella}}) a mai napon lejár!",
       "alerts": {
         "allMarkedRead": "Minden értesítés olvasottnak jelölve!",
         "deleteConfirmTitle": "Olvasottak törlése?",

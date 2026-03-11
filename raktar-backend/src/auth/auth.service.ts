@@ -20,8 +20,12 @@ export class AuthService {
     private jwtService: JwtService,
     private prisma: PrismaService,
     private events: EventsGateway,
-    private notificationService: NotificationService, // Injektálva az értesítésekhez
+    private notificationService: NotificationService,
   ) {}
+
+  private createPayload(key: string, data?: any): string {
+    return JSON.stringify({ key, data: data || {} });
+  }
 
   async login(loginDto: LoginDto) {
     const user = await this.prisma.user.findUnique({
@@ -66,7 +70,7 @@ export class AuthService {
         telefonszam: updatedUser.telefonszam,
         rang: updatedUser.rang,
         mustChangePassword: updatedUser.mustChangePassword,
-        avatarUrl: updatedUser.avatarUrl, // Ezt a sort adtam hozzá
+        avatarUrl: updatedUser.avatarUrl,
       },
     };
   }
@@ -96,9 +100,8 @@ export class AuthService {
       },
     });
 
-    // Értesítjük az adminokat a biztonsági eseményről (valaki új jelszót kért)
     await this.notificationService.createAdminNotification(
-      `Biztonsági esemény: @${user.felhasznalonev} új ideiglenes jelszót igényelt az elfelejtett jelszó funkcióval!`,
+      this.createPayload('forgotPassword', { username: user.felhasznalonev }),
       'WARNING'
     );
 
@@ -132,10 +135,9 @@ export class AuthService {
       },
     });
 
-    // Célzott értesítés a felhasználónak, ami a következő belépéskor fogja várni
     await this.notificationService.createTargetedNotification(
       user.id,
-      'A jelszavadat biztonsági okokból sikeresen frissítettük.',
+      this.createPayload('passwordChanged'),
       'INFO'
     );
 

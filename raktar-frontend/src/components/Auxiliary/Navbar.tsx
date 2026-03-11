@@ -1,4 +1,4 @@
-//raktar-frontend/src/components/Auxiliary/Navbar.tsx
+// raktar-frontend/src/components/Auxiliary/Navbar.tsx
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 import { useState, useEffect, useRef, useCallback } from "react";
@@ -133,7 +133,7 @@ function Navbar({ isDark, setIsDark }: NavbarProps) {
     const type = notif.tipus as string;
     const message = notif.uzenet?.toLowerCase() || "";
 
-    if (type === "CHANGE_REQUEST" || type === "ADMIN_ACTION" || message.includes("kérelem")) {
+    if (type === "CHANGE_REQUEST" || type === "ADMIN_ACTION" || message.includes("kérelem") || message.includes("modrequest")) {
       if (user?.rang === "ADMIN") {
         navigate("/profile/admin");
       } else {
@@ -181,6 +181,21 @@ function Navbar({ isDark, setIsDark }: NavbarProps) {
     e.preventDefault();
     e.stopPropagation();
     setIsDark(!isDark);
+  };
+
+  // Helper a JSON i18n üzenetek feldolgozásához
+  const parseNotificationMessage = (uzenet: string): string => {
+    try {
+      if (uzenet.startsWith("{")) {
+        const payload = JSON.parse(uzenet);
+        if (payload.key) {
+          return t(`auxiliary.notifications.${payload.key}`, payload.data) as string;
+        }
+      }
+      return uzenet;
+    } catch (e) {
+      return uzenet;
+    }
   };
 
   const unreadCount = (notifications || []).filter(
@@ -327,7 +342,7 @@ function Navbar({ isDark, setIsDark }: NavbarProps) {
                                 <p
                                   className={`text-xs leading-tight ${!n.isRead ? "font-bold text-slate-900 dark:text-white" : "text-slate-500"}`}
                                 >
-                                  {n.uzenet}
+                                  {parseNotificationMessage(n.uzenet)}
                                 </p>
                                 <span className="text-[9px] text-slate-400 font-bold uppercase tracking-widest mt-1 block">
                                   {new Date(n.letrehozva).toLocaleString(

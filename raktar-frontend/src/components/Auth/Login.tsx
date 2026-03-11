@@ -8,10 +8,8 @@ import { useTranslation } from "react-i18next";
 
 const MySwal = Swal.mixin({
   customClass: {
-    popup:
-      "rounded-[2.5rem] bg-white dark:bg-slate-900 text-slate-900 dark:text-white border border-slate-200 dark:border-slate-800 shadow-2xl font-sans",
-    confirmButton:
-      "bg-blue-600 hover:bg-blue-500 text-white px-8 py-3 rounded-2xl font-black uppercase text-xs tracking-widest transition-all active:scale-95 mx-2",
+    popup: "rounded-[2.5rem] bg-white dark:bg-slate-900 text-slate-900 dark:text-white border border-slate-200 dark:border-slate-800 shadow-2xl font-sans",
+    confirmButton: "bg-blue-600 hover:bg-blue-500 text-white px-8 py-3 rounded-2xl font-black uppercase text-xs tracking-widest transition-all active:scale-95 mx-2",
   },
   buttonsStyling: false,
 });
@@ -115,35 +113,35 @@ function Login() {
   };
 
   return (
-    <div className="min-h-[80vh] flex items-center justify-center bg-slate-50 dark:bg-slate-950 p-4 transition-colors duration-300">
-      <div className="bg-white dark:bg-slate-900 p-8 rounded-[2rem] shadow-2xl w-full max-md border border-slate-200 dark:border-slate-800 transition-all text-left relative overflow-hidden">
+    <div className="min-h-screen flex items-center justify-center bg-slate-50 dark:bg-slate-950 p-6 transition-colors duration-300">
+      <div className="bg-white dark:bg-slate-900 p-10 md:p-16 rounded-[3rem] shadow-2xl w-full md:w-9/12 lg:w-7/12 xl:w-6/12 min-w-[320px] max-w-[850px] border border-slate-200 dark:border-slate-800 transition-all text-left relative overflow-hidden animate-in fade-in zoom-in duration-500">
         <button
           onClick={fillDemoData}
           type="button"
-          className="absolute top-4 right-4 bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 px-3 py-1 rounded-full text-[9px] font-black uppercase tracking-widest hover:scale-105 active:scale-95 transition-all border border-blue-100 dark:border-blue-800 shadow-sm"
+          className="absolute top-8 right-10 bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest hover:scale-105 active:scale-95 transition-all border border-blue-100 dark:border-blue-800 shadow-sm z-10"
         >
           {t("auth.login.fillDemo")}
         </button>
 
-        <h1 className="text-3xl font-black text-slate-900 dark:text-white mb-6 text-center italic uppercase tracking-tighter">
+        <h1 className="text-4xl font-black text-slate-900 dark:text-white mb-10 text-center italic uppercase tracking-tighter">
           {t("auth.login.title")}
         </h1>
 
         {error && (
-          <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-900/50 rounded-xl py-3 mb-4 text-center px-4">
-            <p className="text-red-600 dark:text-red-400 text-sm font-bold animate-pulse">
+          <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-900/50 rounded-2xl py-5 mb-8 text-center px-6">
+            <p className="text-red-600 dark:text-red-400 text-base font-bold animate-pulse">
               {error}
             </p>
           </div>
         )}
 
-        <form onSubmit={handleSubmit} className="space-y-5">
+        <form onSubmit={handleSubmit} className="space-y-8">
           <div>
-            <label className="block mb-1.5 ml-2 text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest">
+            <label className="block mb-2.5 ml-4 text-[11px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest">
               {t("auth.login.username")}
             </label>
             <input
-              className="w-full px-5 py-3 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-2xl text-slate-900 dark:text-white focus:ring-2 focus:ring-blue-500 outline-none transition-all"
+              className="w-full px-8 py-5 bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 rounded-3xl text-slate-900 dark:text-white text-lg focus:ring-4 focus:ring-blue-500/20 focus:border-blue-500 focus:outline-none transition-all"
               placeholder={t("auth.login.usernamePlaceholder")}
               value={form.felhasznalonev}
               onChange={(e) =>
@@ -154,20 +152,20 @@ function Login() {
           </div>
 
           <div>
-            <div className="flex justify-between items-center mb-1.5 ml-2 mr-2">
-              <label className="text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest">
+            <div className="flex justify-between items-center mb-2.5 ml-4 mr-4">
+              <label className="text-[11px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest">
                 {t("auth.login.password")}
               </label>
               <Link
                 to="/forgot-password"
-                className="text-[10px] font-black text-blue-600 dark:text-blue-400 hover:text-blue-500 transition-colors uppercase tracking-widest"
+                className="text-[11px] font-black text-blue-600 dark:text-blue-400 hover:text-blue-500 transition-colors uppercase tracking-widest"
               >
                 {t("auth.login.forgotPassword")}
               </Link>
             </div>
             <input
               type="password"
-              className="w-full px-5 py-3 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-2xl text-slate-900 dark:text-white focus:ring-2 focus:ring-blue-500 outline-none transition-all"
+              className="w-full px-8 py-5 bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 rounded-3xl text-slate-900 dark:text-white text-lg focus:ring-4 focus:ring-blue-500/20 focus:border-blue-500 focus:outline-none transition-all"
               placeholder={t("auth.login.passwordPlaceholder")}
               value={form.jelszo}
               onChange={(e) => setForm({ ...form, jelszo: e.target.value })}
@@ -177,16 +175,16 @@ function Login() {
 
           <button
             type="submit"
-            className="w-full bg-blue-600 hover:bg-blue-500 text-white font-black py-4 rounded-2xl shadow-lg active:scale-95 uppercase tracking-widest text-xs mt-2 transition-all"
+            className="w-full bg-blue-600 hover:bg-blue-500 text-white font-black py-6 rounded-3xl shadow-2xl shadow-blue-500/30 active:scale-[0.98] uppercase tracking-[0.2em] text-sm mt-6 transition-all"
           >
             {t("auth.login.submit")}
           </button>
         </form>
 
-        <div className="mt-8 pt-6 border-t border-slate-100 dark:border-slate-800 text-center">
+        <div className="mt-12 pt-10 border-t border-slate-100 dark:border-slate-800/50 text-center">
           <Link
             to="/register"
-            className="text-blue-600 dark:text-blue-400 font-black uppercase text-xs tracking-widest hover:text-blue-500 transition-colors"
+            className="text-blue-600 dark:text-blue-400 font-black uppercase text-sm tracking-[0.25em] hover:text-blue-500 transition-colors"
           >
             {t("auth.login.registerNew")}
           </Link>

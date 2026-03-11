@@ -1,4 +1,3 @@
-// raktar-backend/src/notification/notification.service.ts
 import { Injectable, Logger } from '@nestjs/common';
 import { Cron, CronExpression } from '@nestjs/schedule';
 import { PrismaService } from '../prisma.service';
@@ -52,15 +51,18 @@ export class NotificationService {
   }
 
   // =========================================================================
-  // ÉRTESÍTÉSKÜLDŐ FUNKCIÓK
+  // ÉRTESÍTÉSKÜLDŐ FUNKCIÓK (i18n Támogatással)
   // =========================================================================
 
-  // 1. Célzott értesítés egyetlen felhasználónak (pl. jóváhagyott kérelem)
-  async createTargetedNotification(userId: number, uzenet: string, tipus: string = 'INFO') {
+  private createPayload(key: string, data?: any): string {
+    return JSON.stringify({ key, data: data || {} });
+  }
+
+  async createTargetedNotification(userId: number, payloadString: string, tipus: string = 'INFO') {
     await this.prisma.notification.create({
       data: {
         userId: Number(userId),
-        uzenet,
+        uzenet: payloadString,
         tipus,
         isRead: false,
         isDeleted: false
@@ -69,8 +71,7 @@ export class NotificationService {
     this.events.emitUpdate('notifications_updated', { userId: Number(userId) });
   }
 
-  // 2. Csak ADMIN-oknak szóló értesítések (pl. új kérelem, új regisztráció)
-  async createAdminNotification(uzenet: string, tipus: string = 'INFO') {
+  async createAdminNotification(payloadString: string, tipus: string = 'INFO') {
     const admins = await this.prisma.user.findMany({
       where: { rang: 'ADMIN', isBanned: false },
       select: { id: true },
@@ -81,7 +82,7 @@ export class NotificationService {
     await this.prisma.notification.createMany({
       data: admins.map((a) => ({
         userId: a.id,
-        uzenet,
+        uzenet: payloadString,
         tipus,
         isRead: false,
         isDeleted: false
@@ -93,26 +94,22 @@ export class NotificationService {
     });
   }
 
-  // 3. Globális, termékekhez kötött riasztások okos spamszűrővel
-  async createGlobalNotification(uzenet: string, tipus: string = 'INFO', productId?: number) {
+  async createGlobalNotification(payloadString: string, tipus: string = 'INFO', productId?: number) {
     const sevenDaysAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
     let isDuplicate = false;
 
-    if (productId) {
-      const prefix = uzenet.split(':')[0]; // pl. "ALACSONY KÉSZLET"
+    try {
+      const newPayload = JSON.parse(payloadString);
       const existing = await this.prisma.notification.findFirst({
         where: {
-          productId: productId,
-          uzenet: { startsWith: prefix },
+          productId: productId || undefined,
           letrehozva: { gte: sevenDaysAgo },
+          uzenet: { contains: `"${newPayload.key}"` }
         },
       });
       if (existing) isDuplicate = true;
-    } else {
-      const existing = await this.prisma.notification.findFirst({
-        where: { uzenet, letrehozva: { gte: sevenDaysAgo } },
-      });
-      if (existing) isDuplicate = true;
+    } catch (e) {
+      // Fallback
     }
 
     if (isDuplicate) return;
@@ -127,7 +124,7 @@ export class NotificationService {
     await this.prisma.notification.createMany({
       data: targetUsers.map((u) => ({
         userId: u.id,
-        uzenet,
+        uzenet: payloadString,
         tipus,
         productId: productId || null,
         isRead: false,
@@ -160,38 +157,45 @@ export class NotificationService {
     today.setHours(0, 0, 0, 0);
 
     const totalStock = product.batches.reduce((sum, b) => sum + b.mennyiseg, 0);
-    if (totalStock <= product.minimumKeszlet) {
+
+    if (totalStock === 0) {
       await this.createGlobalNotification(
-        `ALACSONY KÉSZLET: ${product.nev} összesen már csak ${totalStock} db!`,
+        this.createPayload('outOfStock', { nev: product.nev }),
+        'ERROR',
+        product.id
+      );
+    } else if (totalStock <= product.minimumKeszlet) {
+      await this.createGlobalNotification(
+        this.createPayload('lowStock', { nev: product.nev, mennyiseg: totalStock, min: product.minimumKeszlet }),
         'WARNING',
         product.id
       );
     }
 
     for (const batch of product.batches) {
-      if (!batch.lejarat) continue;
+      if (!batch.lejarat || batch.mennyiseg === 0) continue;
 
       const expiryDate = new Date(batch.lejarat);
       expiryDate.setHours(0, 0, 0, 0);
 
       const diffDays = Math.ceil((expiryDate.getTime() - today.getTime()) / (1000 * 3600 * 24));
-      const formattedExpiry = this.formatDate(expiryDate);
+      const formattedDate = this.formatDate(expiryDate);
 
       if (diffDays === 7 || diffDays === 2) {
         await this.createGlobalNotification(
-          `LEJÁRAT FIGYELMEZTETÉS: A(z) ${product.nev} (${batch.parcella}) lejár ekkor: ${formattedExpiry}!`,
+          this.createPayload('expiringSoon', { nev: product.nev, parcella: batch.parcella, datum: formattedDate }),
           diffDays === 2 ? 'ERROR' : 'WARNING',
           product.id
         );
       } else if (diffDays < 0) {
         await this.createGlobalNotification(
-          `LEJÁRT TERMÉK: A(z) ${product.nev} (${batch.parcella}) már lejárt ekkor: ${formattedExpiry}!`,
+          this.createPayload('expiredAlready', { nev: product.nev, parcella: batch.parcella, datum: formattedDate }),
           'ERROR',
           product.id
         );
       } else if (diffDays === 0) {
         await this.createGlobalNotification(
-          `LEJÁRT TERMÉK: A(z) ${product.nev} (${batch.parcella}) a mai napon lejárt!`,
+          this.createPayload('expiresToday', { nev: product.nev, parcella: batch.parcella }),
           'ERROR',
           product.id
         );
