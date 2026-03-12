@@ -132,7 +132,6 @@ function ProductModify() {
     setSelectedShelfFromMap(`${parcella}_${Date.now()}`);
   };
 
-  // MEMOIZÁLT CALLBACK - Megszünteti a végtelen ciklust
   const handleManualSelection = useCallback((shelves: string[]) => {
     setShowMap(true);
     setCurrentSelectedShelves(shelves);
@@ -265,7 +264,13 @@ function ProductModify() {
 
   const handleMasterChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
-    setMasterForm((prev) => ({ ...prev, [name]: value }));
+    
+    // Convert numerical inputs back to numbers to avoid 500 error
+    if (["beszerzesiAr", "eladasiAr", "minimumKeszlet", "suly"].includes(name)) {
+      setMasterForm((prev) => ({ ...prev, [name]: Number(value) }));
+    } else {
+      setMasterForm((prev) => ({ ...prev, [name]: value }));
+    }
   };
 
   const handleMasterSubmit = async (e: React.FormEvent) => {
@@ -276,12 +281,14 @@ function ProductModify() {
       await updateProduct(Number(id), masterForm, user.id);
       toast.fire({ icon: "success", title: t("product.modify.alerts.dataUpdated") });
       navigate(`/product/${id}`);
+    } catch (err: any) {
+      MySwal.fire(t("common.error"), err.response?.data?.message || err.message, "error");
     } finally {
       setIsSubmitting(false);
     }
   };
 
-  const inputStyle = "w-full p-3 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-2xl focus:ring-2 focus:ring-blue-500 outline-none transition-all font-medium text-slate-900 dark:text-white text-center";
+  const inputStyle = "w-full p-3 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-2xl focus:ring-2 focus:ring-blue-500 outline-none transition-all font-medium text-slate-900 dark:text-white text-center disabled:opacity-50 disabled:cursor-not-allowed";
   const labelStyle = "block mb-2 text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest text-center";
 
   return (
@@ -456,7 +463,8 @@ function ProductModify() {
               </div>
               <div>
                 <label className={labelStyle}>{t("product.add.weight")}</label>
-                <input name="suly" type="number" step="0.01" value={masterForm.suly} onChange={handleMasterChange} className={inputStyle} disabled={!isAdmin} required />
+                {/* Weight is now disabled strictly */}
+                <input name="suly" type="number" step="0.01" value={masterForm.suly} onChange={handleMasterChange} className={inputStyle} disabled={true} required />
               </div>
               <div>
                 <label className={labelStyle}>{t("product.add.minStock")}</label>

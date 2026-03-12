@@ -1,3 +1,4 @@
+//raktar-backend/src/auth/auth.service.ts
 import {
   Injectable,
   UnauthorizedException,
@@ -55,13 +56,18 @@ export class AuthService {
       mustChangePassword: updatedUser.mustChangePassword,
     };
 
+    // Lejárati idő dinamikus beállítása a rememberMe alapján
+    const expiresIn = loginDto.rememberMe ? '30d' : '12h';
+
+    // A meglévő sessionök kiléptetése opcionális döntés, 
+    // de ha a JWT token verziót növeljük, az előző tokenek úgyis érvénytelenek lesznek.
     this.events.emitToUser(updatedUser.id, 'force_logout', {
       userId: updatedUser.id,
       reason: 'session_expired',
     });
 
     return {
-      access_token: this.jwtService.sign(payload),
+      access_token: this.jwtService.sign(payload, { expiresIn }),
       user: {
         id: updatedUser.id,
         nev: updatedUser.nev,
@@ -71,6 +77,8 @@ export class AuthService {
         rang: updatedUser.rang,
         mustChangePassword: updatedUser.mustChangePassword,
         avatarUrl: updatedUser.avatarUrl,
+        theme: updatedUser.theme,
+        language: updatedUser.language,
       },
     };
   }

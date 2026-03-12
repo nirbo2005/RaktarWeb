@@ -1,3 +1,4 @@
+// raktar-backend/src/user/user.service.ts
 import {
   Injectable,
   NotFoundException,
@@ -131,6 +132,29 @@ export class UserService {
     } catch (error: any) {
       throw new InternalServerErrorException(
         'Szerveroldali hiba a profil frissítése közben.',
+      );
+    }
+  }
+
+  // ÚJ FÜGGVÉNY: Beállítások (téma és nyelv) mentése
+  async updatePreferences(id: number, data: { theme?: string; language?: string }): Promise<UserEntity> {
+    const user = await this.prisma.user.findUnique({ where: { id } });
+    if (!user) throw new NotFoundException('Felhasználó nem található!');
+
+    const updateData: any = {};
+    if (data.theme) updateData.theme = data.theme;
+    if (data.language) updateData.language = data.language;
+
+    try {
+      const updated = await this.prisma.user.update({
+        where: { id },
+        data: updateData,
+      });
+      this.events.emitToUser(id, 'user_updated', updated);
+      return new UserEntity(updated);
+    } catch (error: any) {
+      throw new InternalServerErrorException(
+        'Szerveroldali hiba a beállítások frissítése közben.',
       );
     }
   }

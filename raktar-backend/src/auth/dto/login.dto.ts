@@ -1,5 +1,5 @@
 //raktar-backend/src/auth/dto/login.dto.ts
-import { IsString, IsNotEmpty, MinLength } from 'class-validator';
+import { IsString, IsNotEmpty, MinLength, IsBoolean, IsOptional } from 'class-validator';
 
 export class LoginDto {
   @IsString()
@@ -10,4 +10,8 @@ export class LoginDto {
   @IsNotEmpty({ message: 'A jelszó megadása kötelező!' })
   @MinLength(6, { message: 'A jelszó legalább 6 karakter hosszú kell legyen!' })
   jelszo: string;
+
+  @IsBoolean()
+  @IsOptional()
+  rememberMe?: boolean;
 }

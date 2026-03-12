@@ -15,7 +15,8 @@ export const notifyServerOffline = () => {
 };
 
 function getHeaders() {
-  const token = localStorage.getItem("token");
+  // A token lehet localStorage-ban vagy sessionStorage-ban is a "rememberMe" miatt
+  const token = localStorage.getItem("token") || sessionStorage.getItem("token");
   return {
     "Content-Type": "application/json",
     ...(token ? { Authorization: `Bearer ${token}` } : {}),
@@ -23,7 +24,7 @@ function getHeaders() {
 }
 
 function getUploadHeaders() {
-  const token = localStorage.getItem("token");
+  const token = localStorage.getItem("token") || sessionStorage.getItem("token");
   return {
     ...(token ? { Authorization: `Bearer ${token}` } : {}),
   };
@@ -46,6 +47,7 @@ const handleResponse = async (response: Response) => {
     }
 
     localStorage.clear();
+    sessionStorage.clear();
     if (!window.location.pathname.includes("/login")) {
       window.location.href = "/login?reason=session_lost";
     }
@@ -67,11 +69,11 @@ const handleResponse = async (response: Response) => {
 // AUTHENTICATION API
 // ==========================================
 
-export async function login(felhasznalonev: string, jelszo: string) {
+export async function login(felhasznalonev: string, jelszo: string, rememberMe: boolean = false) {
   const res = await fetch(`${BASE_URL}/auth/login`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ felhasznalonev, jelszo }),
+    body: JSON.stringify({ felhasznalonev, jelszo, rememberMe }),
   });
   return handleResponse(res);
 }
@@ -141,6 +143,16 @@ export async function updateProfile(id: number, data: any) {
   return handleResponse(res);
 }
 
+// ÚJ: Felhasználói preferenciák (téma, nyelv) mentése
+export async function updateUserPreferences(id: number, preferences: { theme?: string; language?: string }) {
+  const res = await fetch(`${BASE_URL}/users/${id}/preferences`, {
+    method: "PATCH",
+    headers: getHeaders(),
+    body: JSON.stringify(preferences),
+  });
+  return handleResponse(res);
+}
+
 export const uploadAvatar = async (userId: number | string, imageBlob: Blob): Promise<User> => {
   const formData = new FormData();
   formData.append("avatar", imageBlob, "avatar.jpg");
@@ -194,7 +206,6 @@ export async function getPendingRequests() {
   return handleResponse(res);
 }
 
-// EZ A FÜGGVÉNY HIÁNYZOTT
 export async function getUserPendingRequests(userId: number) {
   const res = await fetch(`${BASE_URL}/users/${userId}/pending-requests`, {
     headers: getHeaders(),

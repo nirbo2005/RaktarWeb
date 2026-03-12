@@ -22,7 +22,8 @@ const ProfileIndex = () => {
       icon: "👤",
       path: "/profile/details",
       show: true,
-      color: "from-blue-500 to-indigo-600",
+      color: "from-blue-500/20 to-indigo-600/20",
+      iconBg: "bg-blue-500/10",
     },
     {
       id: "stats",
@@ -31,7 +32,8 @@ const ProfileIndex = () => {
       icon: "📊",
       path: "/profile/stats",
       show: true,
-      color: "from-purple-500 to-pink-600",
+      color: "from-purple-500/20 to-pink-600/20",
+      iconBg: "bg-purple-500/10",
     },
     {
       id: "logs",
@@ -40,7 +42,8 @@ const ProfileIndex = () => {
       icon: "📜",
       path: "/profile/logs",
       show: true,
-      color: "from-amber-500 to-orange-600",
+      color: "from-amber-500/20 to-orange-600/20",
+      iconBg: "bg-amber-500/10",
     },
     {
       id: "stock",
@@ -49,7 +52,8 @@ const ProfileIndex = () => {
       icon: "💰",
       path: "/stock-value",
       show: isAdmin,
-      color: "from-emerald-500 to-teal-600",
+      color: "from-emerald-500/20 to-teal-600/20",
+      iconBg: "bg-emerald-500/10",
     },
     {
       id: "admin",
@@ -58,7 +62,8 @@ const ProfileIndex = () => {
       icon: "🛡️",
       path: "/profile/admin",
       show: isAdmin,
-      color: "from-slate-700 to-slate-900",
+      color: "from-slate-600/20 to-slate-800/20",
+      iconBg: "bg-slate-500/10",
     },
     {
       id: "system",
@@ -67,15 +72,16 @@ const ProfileIndex = () => {
       icon: "🖥️",
       path: "/profile/system",
       show: isAdmin,
-      color: "from-cyan-500 to-blue-500",
+      color: "from-cyan-500/20 to-blue-500/20",
+      iconBg: "bg-cyan-500/10",
     },
   ];
 
   return (
-    <div className="min-h-screen bg-main pt-4 transition-colors duration-300">
+    <div className="min-h-screen bg-slate-50 dark:bg-slate-950 transition-colors duration-300">
       <div className="max-w-6xl mx-auto space-y-8 py-6 text-left px-4">
-        <header className="bg-panel rounded-[2.5rem] shadow-xl overflow-hidden border border-border-main relative transition-all duration-500">
-          <div className="h-32 bg-gradient-to-r from-blue-600 via-blue-700 to-indigo-800" />
+        <header className="bg-white dark:bg-slate-900/50 rounded-[2.5rem] shadow-xl overflow-hidden border border-slate-200 dark:border-slate-800/50 relative backdrop-blur-md">
+          <div className="h-32 bg-gradient-to-r from-blue-600/80 via-blue-700/80 to-indigo-800/80" />
           <div className="px-6 md:px-12 flex flex-col md:flex-row gap-6 md:gap-8 pb-8">
             <div className="flex justify-center md:justify-end -mt-16 z-10 shrink-0">
               <div className="w-32 h-32 md:w-40 md:h-40">
@@ -86,11 +92,11 @@ const ProfileIndex = () => {
             <div className="flex-1 flex flex-col md:mt-4">
               <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
                 <div className="space-y-3 text-center md:text-left">
-                  <h1 className="text-3xl md:text-5xl font-black uppercase italic tracking-tighter text-main">
+                  <h1 className="text-3xl md:text-5xl font-black uppercase italic tracking-tighter text-slate-900 dark:text-slate-100">
                     {user?.nev || t("header.anonymous")}
                   </h1>
                   <div className="flex flex-wrap justify-center md:justify-start items-center gap-2">
-                    <span className="text-muted font-bold text-[10px] uppercase tracking-widest bg-input px-3 py-1 rounded-lg border border-border-main">
+                    <span className="text-slate-500 dark:text-slate-400 font-bold text-[10px] uppercase tracking-widest bg-slate-100 dark:bg-slate-800/50 px-3 py-1 rounded-lg border border-slate-200 dark:border-slate-700/50">
                       @{user?.felhasznalonev}
                     </span>
                     <span className="text-blue-600 dark:text-blue-400 font-black text-[10px] uppercase tracking-wider bg-blue-50 dark:bg-blue-900/20 px-3 py-1 rounded-lg border border-blue-100 dark:border-blue-800/30">
@@ -117,20 +123,20 @@ const ProfileIndex = () => {
               <div
                 key={card.id}
                 onClick={() => navigate(card.path)}
-                className="group relative bg-panel rounded-[2.5rem] p-8 border border-border-main shadow-sm hover:shadow-2xl transition-all cursor-pointer overflow-hidden active:scale-95"
+                className="group relative bg-white dark:bg-slate-900/40 rounded-[2.5rem] p-8 border border-slate-200 dark:border-slate-800/60 shadow-sm hover:shadow-2xl hover:border-blue-500/30 transition-all cursor-pointer overflow-hidden active:scale-95 backdrop-blur-sm"
               >
-                <div className={`absolute top-0 right-0 w-32 h-32 -mr-8 -mt-8 bg-gradient-to-br ${card.color} opacity-5 group-hover:opacity-15 rounded-full blur-3xl transition-all`} />
+                <div className={`absolute top-0 right-0 w-32 h-32 -mr-8 -mt-8 bg-gradient-to-br ${card.color} opacity-0 group-hover:opacity-100 rounded-full blur-3xl transition-opacity duration-500`} />
                 
                 <div className="flex flex-col h-full relative z-10">
-                  <div className="text-5xl mb-8 transform group-hover:scale-110 group-hover:-rotate-6 transition-all duration-300 w-fit">
+                  <div className={`text-4xl mb-8 p-4 rounded-2xl w-fit transform group-hover:scale-110 group-hover:-rotate-6 transition-all duration-300 ${card.iconBg} dark:bg-white/5 border border-transparent dark:border-white/5`}>
                     {card.icon}
                   </div>
                   
                   <div className="flex-1 space-y-2">
-                    <h3 className="text-2xl font-black text-main uppercase italic tracking-tighter">
+                    <h3 className="text-2xl font-black text-slate-900 dark:text-slate-200 uppercase italic tracking-tighter">
                       {card.title}
                     </h3>
-                    <p className="text-muted text-[11px] font-bold leading-relaxed uppercase tracking-wide opacity-80">
+                    <p className="text-slate-500 dark:text-slate-400 text-[11px] font-bold leading-relaxed uppercase tracking-wide opacity-80">
                       {card.desc}
                     </p>
                   </div>
@@ -139,7 +145,7 @@ const ProfileIndex = () => {
                     <span className="text-[10px] font-black uppercase tracking-widest text-blue-600 dark:text-blue-400 opacity-0 group-hover:opacity-100 transition-all translate-x-[-10px] group-hover:translate-x-0">
                       {t("common.open")} ➔
                     </span>
-                    <div className="h-10 w-10 rounded-2xl bg-input flex items-center justify-center text-muted group-hover:text-white group-hover:bg-blue-600 transition-all border border-border-main shadow-inner">
+                    <div className="h-10 w-10 rounded-2xl bg-slate-50 dark:bg-slate-800/50 flex items-center justify-center text-slate-400 dark:text-slate-500 group-hover:text-white group-hover:bg-blue-600 transition-all border border-slate-200 dark:border-slate-700/50 shadow-inner">
                       →
                     </div>
                   </div>

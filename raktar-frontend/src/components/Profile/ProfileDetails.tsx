@@ -72,7 +72,6 @@ const ProfileDetails = () => {
 
   const isKezeloPending = activeRequests.some((r: any) => r.tipus === 'RANG_MODOSITAS' && r.ujErtek === 'KEZELO');
   const isAdminPending = activeRequests.some((r: any) => r.tipus === 'RANG_MODOSITAS' && r.ujErtek === 'ADMIN');
-  const isNamePending = activeRequests.some((r: any) => r.tipus === 'NEV_MODOSITAS');
 
   const validateField = (name: string, value: string) => {
     let error = "";
@@ -135,8 +134,6 @@ const ProfileDetails = () => {
     [fieldErrors],
   );
 
-  const isNameChanged = !isAdmin && profileForm.nev !== user?.nev;
-
   const handleUpdateSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
@@ -173,7 +170,7 @@ const ProfileDetails = () => {
         telefonszam: profileForm.telefonszam.startsWith("+") ? profileForm.telefonszam : `+${profileForm.telefonszam}`,
       };
 
-      if (user.rang === "ADMIN") {
+      if (isAdmin) {
         updateData.nev = profileForm.nev;
       } else if (profileForm.nev !== user.nev) {
         await submitChangeRequest({
@@ -221,7 +218,7 @@ const ProfileDetails = () => {
   };
 
   const handleDeleteProfile = async () => {
-    if (user.rang === "ADMIN") {
+    if (isAdmin) {
       const allUsers = await getUsers();
       const activeAdmins = allUsers.filter((u: any) => u.rang === "ADMIN" && !u.isBanned && !u.isDeleted);
       if (activeAdmins.length <= 1) {
@@ -290,7 +287,7 @@ const ProfileDetails = () => {
                       @{user?.felhasznalonev}
                     </span>
                     <span className="text-blue-600 dark:text-blue-400 font-black text-[10px] uppercase tracking-wider bg-blue-50 dark:bg-blue-900/20 px-3 py-1 rounded-lg border border-blue-100 dark:border-blue-800/30">
-                      {user.rang === "ADMIN" ? `🛡️ ${t("header.admin")}` : user.rang === "KEZELO" ? `📦 ${t("header.handler")}` : `👁️ ${t("header.viewer")}`}
+                      {isAdmin ? `🛡️ ${t("header.admin")}` : isKezelo ? `📦 ${t("header.handler")}` : `👁️ ${t("header.viewer")}`}
                     </span>
                   </div>
                 </div>
@@ -405,26 +402,26 @@ const ProfileDetails = () => {
                   {hasErrors ? t("details.buttons.fixErrors") : !isDirty ? t("details.buttons.noChanges") : t("details.buttons.saveData")}
                 </button>
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
-                  {isNezelodo && (
-                    <>
-                      <button type="button" disabled={isKezeloPending} onClick={() => handleRequestRang("KEZELO")} className={`p-3 rounded-xl font-black uppercase text-[10px] transition-all flex justify-center items-center gap-2 border border-slate-200 dark:border-slate-700 ${isKezeloPending ? 'bg-slate-100 dark:bg-slate-800 text-slate-500 cursor-not-allowed' : 'bg-white dark:bg-slate-900 hover:bg-slate-50 dark:hover:bg-slate-800 text-slate-900 dark:text-white active:scale-95'}`}>
-                        {isKezeloPending ? t("profile.details.kezeloPending") : `<span>📦</span> ${t("profile.details.requestKezelo")}`}
-                      </button>
-                      <button type="button" disabled={isAdminPending} onClick={() => handleRequestRang("ADMIN")} className={`p-3 rounded-xl font-black uppercase text-[10px] transition-all flex justify-center items-center gap-2 border border-slate-200 dark:border-slate-700 ${isAdminPending ? 'bg-slate-100 dark:bg-slate-800 text-slate-500 cursor-not-allowed' : 'bg-white dark:bg-slate-900 hover:bg-slate-50 dark:hover:bg-slate-800 text-slate-900 dark:text-white active:scale-95'}`}>
-                        {isAdminPending ? t("profile.details.adminPending") : `<span>🛡️</span> ${t("profile.details.requestAdmin")}`}
-                      </button>
-                    </>
-                  )}
-                  {isKezelo && (
+                {isNezelodo && (
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <button type="button" disabled={isKezeloPending} onClick={() => handleRequestRang("KEZELO")} className={`p-3 rounded-xl font-black uppercase text-[10px] transition-all flex justify-center items-center gap-2 border border-slate-200 dark:border-slate-700 ${isKezeloPending ? 'bg-slate-100 dark:bg-slate-800 text-slate-500 cursor-not-allowed' : 'bg-white dark:bg-slate-900 hover:bg-slate-50 dark:hover:bg-slate-800 text-slate-900 dark:text-white active:scale-95'}`}>
+                      {isKezeloPending ? t("profile.details.kezeloPending") : `<span>📦</span> ${t("profile.details.requestKezelo")}`}
+                    </button>
                     <button type="button" disabled={isAdminPending} onClick={() => handleRequestRang("ADMIN")} className={`p-3 rounded-xl font-black uppercase text-[10px] transition-all flex justify-center items-center gap-2 border border-slate-200 dark:border-slate-700 ${isAdminPending ? 'bg-slate-100 dark:bg-slate-800 text-slate-500 cursor-not-allowed' : 'bg-white dark:bg-slate-900 hover:bg-slate-50 dark:hover:bg-slate-800 text-slate-900 dark:text-white active:scale-95'}`}>
                       {isAdminPending ? t("profile.details.adminPending") : `<span>🛡️</span> ${t("profile.details.requestAdmin")}`}
                     </button>
-                  )}
-                  <button type="button" onClick={handleDeleteProfile} className="bg-red-50 hover:bg-red-100 dark:bg-red-900/10 dark:hover:bg-red-900/20 text-red-600 dark:text-red-400 border border-red-100 dark:border-red-900/30 p-3 rounded-xl font-black uppercase text-[10px] transition-all active:scale-95 flex justify-center items-center gap-2">
-                    <span>🗑️</span> {t("profile.details.deleteAccount")}
+                  </div>
+                )}
+                
+                {isKezelo && (
+                  <button type="button" disabled={isAdminPending} onClick={() => handleRequestRang("ADMIN")} className={`w-full p-3 rounded-xl font-black uppercase text-[10px] transition-all flex justify-center items-center gap-2 border border-slate-200 dark:border-slate-700 ${isAdminPending ? 'bg-slate-100 dark:bg-slate-800 text-slate-500 cursor-not-allowed' : 'bg-white dark:bg-slate-900 hover:bg-slate-50 dark:hover:bg-slate-800 text-slate-900 dark:text-white active:scale-95'}`}>
+                    {isAdminPending ? t("profile.details.adminPending") : `<span>🛡️</span> ${t("profile.details.requestAdmin")}`}
                   </button>
-                </div>
+                )}
+
+                <button type="button" onClick={handleDeleteProfile} className="w-full bg-red-50 hover:bg-red-100 dark:bg-red-900/10 dark:hover:bg-red-900/20 text-red-600 dark:text-red-400 border border-red-100 dark:border-red-900/30 p-4 rounded-xl font-black uppercase text-[10px] transition-all active:scale-95 flex justify-center items-center gap-2">
+                  <span>🗑️</span> {t("profile.details.deleteAccount")}
+                </button>
               </div>
             </form>
           </div>

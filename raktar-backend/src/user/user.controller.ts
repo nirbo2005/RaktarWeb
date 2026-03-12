@@ -1,3 +1,4 @@
+// raktar-backend/src/user/user.controller.ts
 import { 
   Controller, 
   Get, 
@@ -50,11 +51,9 @@ export class UserController {
     return this.userService.findAll();
   }
 
-  // FIGYELEM: Ennek feltétlenül a :id előtt kell lennie!
   @Get('me')
   @UseGuards(JwtAuthGuard)
   getMe(@Request() req: any) {
-    // Biztosítjuk, hogy oldalfrissítéskor a legfrissebb DB adatokat kapja meg a frontend
     const userId = req.user?.id || req.user?.sub;
     return this.userService.findOne(userId);
   }
@@ -84,12 +83,20 @@ export class UserController {
     return this.userService.updateProfile(id, data);
   }
 
+  @Patch(':id/preferences')
+  @UseGuards(JwtAuthGuard)
+  updatePreferences(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() data: { theme?: string; language?: string },
+  ) {
+    return this.userService.updatePreferences(id, data);
+  }
+
   @Post(':id/avatar')
   @UseGuards(JwtAuthGuard)
   @UseInterceptors(FileInterceptor('avatar', {
     storage: diskStorage({
       destination: (req, file, cb) => {
-        // Garantáltan a főkönyvtár uploads/avatars mappájába ment
         const uploadPath = join(process.cwd(), 'uploads', 'avatars');
         if (!fs.existsSync(uploadPath)) {
           fs.mkdirSync(uploadPath, { recursive: true });

@@ -13,12 +13,7 @@ import type { AppNotification } from "../../types/Notification";
 import { useTranslation } from "react-i18next";
 import ProfileAvatar from "../Profile/ProfileAvatar";
 
-interface NavbarProps {
-  isDark: boolean;
-  setIsDark: (val: boolean) => void;
-}
-
-function Navbar({ isDark, setIsDark }: NavbarProps) {
+function Navbar() {
   const location = useLocation();
   const navigate = useNavigate();
   const { user, logout } = useAuth();
@@ -176,12 +171,6 @@ function Navbar({ isDark, setIsDark }: NavbarProps) {
         : "text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-white"
     }
   `;
-
-  const toggleTheme = (e: React.MouseEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-    setIsDark(!isDark);
-  };
 
   // Helper a JSON i18n üzenetek feldolgozásához
   const parseNotificationMessage = (uzenet: string): string => {
@@ -375,15 +364,6 @@ function Navbar({ isDark, setIsDark }: NavbarProps) {
               </div>
             )}
 
-            <div className="hidden md:block">
-              <button
-                onClick={toggleTheme}
-                className="p-2 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-xl border border-slate-200 dark:border-slate-700 transition-all active:scale-90 shadow-sm"
-              >
-                {isDark ? "☀️" : "🌙"}
-              </button>
-            </div>
-
             {user ? (
               <div className="hidden md:flex items-center gap-3">
                 <Link to="/profile" className={linkStyle("/profile")}>
@@ -471,18 +451,6 @@ function Navbar({ isDark, setIsDark }: NavbarProps) {
                    {t("auxiliary.navbar.profile")} ({user?.nev || user?.felhasznalonev})
                 </span>
               </Link>
-
-              <div className="flex items-center justify-between px-4 py-3 bg-slate-50 dark:bg-slate-900 rounded-xl border border-slate-100 dark:border-slate-800 mt-2">
-                <span className="text-slate-500 dark:text-slate-400 font-bold text-sm italic uppercase tracking-widest">
-                  {t("auxiliary.navbar.darkTheme")}
-                </span>
-                <button
-                  onClick={toggleTheme}
-                  className="p-2 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-xl border border-slate-200 dark:border-slate-700 transition-all active:scale-90 shadow-sm"
-                >
-                  {isDark ? "☀️" : "🌙"}
-                </button>
-              </div>
 
               <button
                 onClick={handleLogout}

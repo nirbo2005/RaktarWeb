@@ -1,6 +1,10 @@
-import { useState } from "react";
+// raktar-frontend/src/components/Auxiliary/LanguageSelector.tsx
+import { useState, useMemo } from "react";
 import { useTranslation } from "react-i18next";
 import { motion, AnimatePresence } from "framer-motion";
+import { useAuth } from "../../context/AuthContext";
+import { updateUserPreferences } from "../../services/api";
+import twemoji from "twemoji";
 
 const languages = [
   { code: "hu", flag: "🇭🇺" },
@@ -17,13 +21,39 @@ const languages = [
   { code: "ja", flag: "🇯🇵" },
 ];
 
+const Emoji = ({ symbol }: { symbol: string }) => {
+  const html = useMemo(() => ({
+    __html: twemoji.parse(symbol, {
+      folder: "svg",
+      ext: ".svg",
+    }),
+  }), [symbol]);
+
+  return (
+    <span 
+      className="inline-flex items-center justify-center w-[1em] h-[1em] [&>img]:w-full [&>img]:h-full [&>img]:object-contain"
+      dangerouslySetInnerHTML={html} 
+    />
+  );
+};
+
 export const LanguageSelector = () => {
   const { i18n, t } = useTranslation();
+  const { user } = useAuth();
   const [isOpen, setIsOpen] = useState(false);
 
-  const handleLanguageChange = (code: string) => {
+  const handleLanguageChange = async (code: string) => {
     i18n.changeLanguage(code);
+    localStorage.setItem("language", code);
     setIsOpen(false);
+
+    if (user) {
+      try {
+        await updateUserPreferences(user.id, { language: code });
+      } catch (err) {
+        console.error("Hiba a nyelv mentésekor:", err);
+      }
+    }
   };
 
   const currentLang = languages.find((l) => l.code === i18n.language.split("-")[0]) || languages[0];
@@ -45,7 +75,7 @@ export const LanguageSelector = () => {
               initial={{ opacity: 0, y: 20, scale: 0.95 }}
               animate={{ opacity: 1, y: 0, scale: 1 }}
               exit={{ opacity: 0, y: 20, scale: 0.95 }}
-              className="absolute bottom-16 right-0 z-[90] bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl shadow-2xl overflow-hidden min-w-[180px] p-2 flex flex-col gap-1"
+              className="absolute bottom-16 right-0 z-[90] bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl shadow-2xl overflow-hidden min-w-[200px] p-2 flex flex-col gap-1"
             >
               <div className="px-3 py-1 mb-1 border-b border-slate-100 dark:border-slate-800">
                 <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">
@@ -65,7 +95,9 @@ export const LanguageSelector = () => {
                         : "text-slate-700 dark:text-slate-300 border border-transparent"
                       }`}
                   >
-                    <span className="text-xl">{lang.flag}</span>
+                    <span className="text-2xl flex items-center justify-center">
+                      <Emoji symbol={lang.flag} />
+                    </span>
                     <span className="text-sm font-bold whitespace-nowrap">
                       {t(`languages.${lang.code}`)}
                     </span>
@@ -88,8 +120,9 @@ export const LanguageSelector = () => {
         <motion.span
           animate={{ rotate: isOpen ? 180 : 0 }}
           transition={{ type: "spring", stiffness: 200, damping: 15 }}
+          className="flex items-center justify-center"
         >
-          {isOpen ? "✕" : currentLang.flag}
+          {isOpen ? "✕" : <Emoji symbol={currentLang.flag} />}
         </motion.span>
       </button>
     </div>

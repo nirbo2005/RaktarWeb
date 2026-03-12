@@ -9,6 +9,8 @@ export interface User {
   email?: string;
   telefonszam?: string;
   avatarUrl?: string;
+  theme?: string;
+  language?: string;
   isBanned?: boolean;
   mustChangePassword?: boolean;
 }

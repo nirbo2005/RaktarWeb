@@ -1,4 +1,4 @@
-//raktar-frontend/src/components/Auth/Login.tsx
+// raktar-frontend/src/components/Auth/Login.tsx
 import { useState, useEffect } from "react";
 import { useNavigate, Link, useLocation } from "react-router-dom";
 import { login as apiLogin } from "../../services/api";
@@ -30,6 +30,7 @@ function Login() {
   const { login } = useAuth();
   const { t } = useTranslation();
   const [form, setForm] = useState({ felhasznalonev: "", jelszo: "" });
+  const [rememberMe, setRememberMe] = useState(false);
   const [error, setError] = useState("");
 
   useEffect(() => {
@@ -72,8 +73,8 @@ function Login() {
     e.preventDefault();
     setError("");
     try {
-      const data = await apiLogin(form.felhasznalonev, form.jelszo);
-      login(data.access_token, data.user);
+      const data = await apiLogin(form.felhasznalonev, form.jelszo, rememberMe);
+      login(data.access_token, data.user, rememberMe);
 
       setTimeout(() => {
         if (data.user.mustChangePassword) {
@@ -171,6 +172,22 @@ function Login() {
               onChange={(e) => setForm({ ...form, jelszo: e.target.value })}
               required
             />
+          </div>
+
+          <div className="flex items-center ml-4">
+            <input
+              id="remember-me"
+              type="checkbox"
+              className="w-5 h-5 text-blue-600 bg-slate-100 border-slate-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-slate-800 focus:ring-2 dark:bg-slate-700 dark:border-slate-600"
+              checked={rememberMe}
+              onChange={(e) => setRememberMe(e.target.checked)}
+            />
+            <label
+              htmlFor="remember-me"
+              className="ml-3 text-sm font-black text-slate-500 dark:text-slate-400 uppercase tracking-widest cursor-pointer"
+            >
+              {t("auth.login.rememberMe") || "Emlékezz rám"}
+            </label>
           </div>
 
           <button
