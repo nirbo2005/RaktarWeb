@@ -186,7 +186,7 @@ function Login() {
               htmlFor="remember-me"
               className="ml-3 text-sm font-black text-slate-500 dark:text-slate-400 uppercase tracking-widest cursor-pointer"
             >
-              {t("auth.login.rememberMe") || "Emlékezz rám"}
+              {t("auth.login.rememberMe")}
             </label>
           </div>
 

@@ -394,6 +394,12 @@ function Navbar() {
                 >
                   {t("auxiliary.navbar.login")}
                 </Link>
+                <Link
+                  to="/register"
+                  className="bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-900 dark:text-white px-4 py-2 rounded-xl text-sm font-bold shadow-lg transition-all active:scale-95"
+                >
+                  {t("auxiliary.navbar.register")}
+                </Link>
               </div>
             )}
           </div>
