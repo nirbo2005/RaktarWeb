@@ -10,15 +10,10 @@ const languages = [
   { code: "hu", flag: "🇭🇺" },
   { code: "en", flag: "🇺🇸" },
   { code: "de", flag: "🇩🇪" },
-  { code: "it", flag: "🇮🇹" },
   { code: "fr", flag: "🇫🇷" },
   { code: "es", flag: "🇪🇸" },
-  { code: "pt", flag: "🇵🇹" },
-  { code: "pl", flag: "🇵🇱" },
   { code: "ru", flag: "🇷🇺" },
-  { code: "ko", flag: "🇰🇷" },
   { code: "zh", flag: "🇨🇳" },
-  { code: "ja", flag: "🇯🇵" },
 ];
 
 const Emoji = ({ symbol }: { symbol: string }) => {
@@ -79,20 +74,19 @@ export const LanguageSelector = () => {
             >
               <div className="px-3 py-1 mb-1 border-b border-slate-100 dark:border-slate-800">
                 <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">
-                  {t("common.languageSelector")}
+                  {t("common.languageSelector", "Nyelvválasztó")}
                 </span>
               </div>
               
               <div className="max-h-[400px] overflow-y-auto custom-scrollbar flex flex-col gap-1 pr-1">
                 {languages.map((lang) => (
-                  <motion.button
+                  <button
                     key={lang.code}
-                    whileHover={{ x: 5, backgroundColor: "rgba(59, 130, 246, 0.1)" }}
                     onClick={() => handleLanguageChange(lang.code)}
                     className={`flex items-center gap-3 px-3 py-2 rounded-xl transition-colors w-full text-left
                       ${i18n.language.startsWith(lang.code) 
                         ? "bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 border border-blue-100 dark:border-blue-800" 
-                        : "text-slate-700 dark:text-slate-300 border border-transparent"
+                        : "text-slate-700 dark:text-slate-300 border border-transparent hover:bg-blue-50/50 dark:hover:bg-blue-900/20"
                       }`}
                   >
                     <span className="text-2xl flex items-center justify-center">
@@ -101,7 +95,7 @@ export const LanguageSelector = () => {
                     <span className="text-sm font-bold whitespace-nowrap">
                       {t(`languages.${lang.code}`)}
                     </span>
-                  </motion.button>
+                  </button>
                 ))}
               </div>
             </motion.div>

@@ -25,7 +25,9 @@
     "unknown": "Desconocido",
     "reset": "Restablecer",
     "loading": "Cargando",
-    "next": "Siguiente"
+    "next": "Siguiente",
+    "perPage": "Mostrar:",
+    "languageSelector": "Selector de idioma"
   },
   "admin": {
     "editTitle": "Editar: {{name}}",
@@ -226,7 +228,8 @@
       "bulkItems": "Productos eliminados ({{count}} uds)",
       "productCreate": "Nuevo producto registrado",
       "productDelete": "Producto eliminado",
-      "restored": "Restaurado"
+      "restored": "Restaurado",
+      "warehouseSort": "Optimización del almacén"
     },
     "diff": {
       "productAdded": "Producto añadido",
@@ -245,7 +248,10 @@
       "targetShelf": "Estante destino",
       "total": "Total",
       "system": "Proceso de sistema",
-      "na": "N/D"
+      "na": "N/D",
+      "message": "Mensaje",
+      "minStock": "Stock mín.",
+      "category": "Categoría"
     },
     "excel": {
       "sheetName": "Registro de actividad",
@@ -263,7 +269,8 @@
       "systemProcess": "Proceso de sistema",
       "viewDetails": "Ver detalles →",
       "noLogs": "No hay entradas de registro que mostrar.",
-      "fetchError": "Error al cargar el registro:"
+      "fetchError": "Error al cargar el registro:",
+      "sortRun": "Clasificación optimizada ejecutada"
     }
   },
   "product": {
@@ -364,7 +371,7 @@
         "sortTitle": "¿Optimización?",
         "sortText": "Ordenar almacén por categorías.",
         "start": "Iniciar",
-        "sortedSuccess": "¡Optimizado!"
+        "sortedSuccess": "¡Ordenamiento optimizado completado!"
       }
     },
 "list": {
@@ -525,6 +532,9 @@
       "emptyText": "Actualmente no hay alertas en el sistema.",
       "readStatus": "Leído",
       "markAsRead": "Leído",
+      "userDeleted": "Perfil eliminado: La cuenta de {{nev}} (@{{username}}) ha sido destruida.",
+      "expiredAlready": "CADUCADO: ¡{{nev}} ({{parcella}}) caducó el: {{datum}}!",
+      "outOfStock": "AGOTADO: ¡{{nev}} está completamente agotado!",
       "alerts": {
         "allMarkedRead": "¡Todos los avisos marcados como leídos!",
         "deleteConfirmTitle": "¿Borrar leídos?",

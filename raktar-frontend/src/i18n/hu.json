@@ -257,7 +257,8 @@
       "bulkItems": "Termékek törölve ({{count}} db)",
       "productCreate": "Új termék felvéve",
       "productDelete": "Termék törölve",
-      "restored": "Visszaállítva"
+      "restored": "Visszaállítva",
+      "warehouseSort": "Raktár optimalizálás"
     },
     "diff": {
       "productAdded": "Termék hozzáadva",
@@ -276,7 +277,10 @@
       "targetShelf": "Cél polc",
       "total": "Összesen",
       "system": "Rendszerfolyamat",
-      "na": "N/A"
+      "na": "N/A",
+      "message": "Üzenet",
+      "minStock": "Min. Készlet",
+      "category": "Kategória"
     },
     "excel": {
       "sheetName": "Tevékenységnapló",
@@ -294,7 +298,8 @@
       "systemProcess": "Rendszerfolyamat",
       "viewDetails": "Részletek megtekintése →",
       "noLogs": "Nincs megjeleníthető naplóbejegyzés.",
-      "fetchError": "Hiba a napló betöltésekor:"
+      "fetchError": "Hiba a napló betöltésekor:",
+      "sortRun": "Optimalizált rendezés lefutott"
     }
   },
   "product": {
@@ -395,7 +400,7 @@
         "sortTitle": "Optimalizálás?",
         "sortText": "Raktár rendezése kategóriák szerint.",
         "start": "Indítás",
-        "sortedSuccess": "Optimalizálva!"
+        "sortedSuccess": "Optimalizált rendezés lefutott"
       }
     },
 "list": {

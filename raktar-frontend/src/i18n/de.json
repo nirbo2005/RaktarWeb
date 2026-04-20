@@ -25,7 +25,8 @@
     "unknown": "Unbekannt",
     "reset": "Zurücksetzen",
     "loading": "Laden",
-    "next": "Weiter"
+    "next": "Weiter",
+    "languageSelector": "Sprachauswahl"
   },
   "admin": {
     "editTitle": "Bearbeiten: {{name}}",
@@ -226,7 +227,8 @@
       "bulkItems": "Produkte gelöscht ({{count}} Stk)",
       "productCreate": "Produkt neu angelegt",
       "productDelete": "Produkt gelöscht",
-      "restored": "Wiederhergestellt"
+      "restored": "Wiederhergestellt",
+      "warehouseSort": "Lageroptimierung"
     },
     "diff": {
       "productAdded": "Produkt hinzugefügt",
@@ -245,7 +247,10 @@
       "targetShelf": "Zielregal",
       "total": "Gesamt",
       "system": "Systemprozess",
-      "na": "N/V"
+      "na": "N/V",
+      "message": "Nachricht",
+      "minStock": "Min. Bestand",
+      "category": "Kategorie"
     },
     "excel": {
       "sheetName": "Protokoll",
@@ -263,7 +268,8 @@
       "systemProcess": "Systemprozess",
       "viewDetails": "Details anzeigen →",
       "noLogs": "Keine Einträge vorhanden.",
-      "fetchError": "Fehler beim Laden des Protokolls:"
+      "fetchError": "Fehler beim Laden des Protokolls:",
+      "sortRun": "Optimierte Sortierung ausgeführt"
     }
   },
   "product": {
@@ -364,7 +370,7 @@
         "sortTitle": "Optimierung?",
         "sortText": "Lager nach Kategorien sortieren.",
         "start": "Starten",
-        "sortedSuccess": "Optimiert!"
+        "sortedSuccess": "Optimierte Sortierung abgeschlossen"
       }
     },
     "list": {
@@ -474,7 +480,7 @@
       }
     }
   },
-  "stockValue": {
+"stockValue": {
     "title": "Lagerwert-Rechner",
     "subtitle": "Finanzanalyse in Echtzeit",
     "manualRefresh": "🔄 Manuelle Aktualisierung",
@@ -499,6 +505,30 @@
       "serverOffline": "Server offline",
       "reconnecting": "Automatische Verbindung..."
     },
+    "notifications": {
+      "profileDeleted": "Profil gelöscht: Das Konto von {{user}} wurde zerstört.",
+      "expiredProduct": "ABGELAUFEN: {{product}} ist am {{date}} abgelaufen!",
+      "outOfStockSpecific": "AUSVERKAUFT: {{product}} ist komplett ausverkauft!",
+      "title": "🔔 Benachrichtigungen",
+      "unreadCount": "{{count}} ungelesen",
+      "allRead": "Alle gelesen",
+      "deleteReadBtn": "🗑️ Gelesene löschen",
+      "markAllReadBtn": "✓ Alles gelesen",
+      "emptyTitle": "Keine Nachrichten",
+      "emptyText": "Es liegen aktuell keine Warnungen vor.",
+      "readStatus": "Gelesen",
+      "markAsRead": "Gelesen",
+      "userDeleted": "Profil gelöscht: Das Konto von {{nev}} (@{{username}}) wurde gelöscht.",
+      "expiredAlready": "ABGELAUFEN: {{nev}} ({{parcella}}) ist am {{datum}} abgelaufen!",
+      "outOfStock": "AUSVERKAUFT: {{nev}} ist komplett ausverkauft!",
+      "alerts": {
+        "allMarkedRead": "Alle als gelesen markiert!",
+        "deleteConfirmTitle": "Gelesene löschen?",
+        "deleteConfirmText": "Alle quittierten Nachrichten werden endgültig gelöscht!",
+        "yesDelete": "Ja, löschen!",
+        "deletedSuccess": "Nachrichten gelöscht!"
+      }
+    },
     "navbar": {
       "products": "🏠 Produkte",
       "overview": "📊 Übersicht",
@@ -514,24 +544,6 @@
       "jump": "Gehe zu →",
       "viewAll": "Alle anzeigen →",
       "noNotifications": "Keine Nachrichten"
-    },
-    "notifications": {
-      "title": "🔔 Benachrichtigungen",
-      "unreadCount": "{{count}} ungelesen",
-      "allRead": "Alle gelesen",
-      "deleteReadBtn": "🗑️ Gelesene löschen",
-      "markAllReadBtn": "✓ Alles gelesen",
-      "emptyTitle": "Keine Nachrichten",
-      "emptyText": "Es liegen aktuell keine Warnungen vor.",
-      "readStatus": "Gelesen",
-      "markAsRead": "Gelesen",
-      "alerts": {
-        "allMarkedRead": "Alle als gelesen markiert!",
-        "deleteConfirmTitle": "Gelesene löschen?",
-        "deleteConfirmText": "Alle quittierten Nachrichten werden endgültig gelöscht!",
-        "yesDelete": "Ja, löschen!",
-        "deletedSuccess": "Nachrichten gelöscht!"
-      }
     },
     "scanner": {
       "title": "📷 QR-SCANNER",

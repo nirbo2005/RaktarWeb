@@ -256,7 +256,8 @@
       "bulkItems": "Items deleted ({{count}} pcs)",
       "productCreate": "New product added",
       "productDelete": "Product deleted",
-      "restored": "Restored"
+      "restored": "Restored",
+      "warehouseSort": "Warehouse optimization"
     },
     "diff": {
       "productAdded": "Product added",
@@ -275,7 +276,10 @@
       "targetShelf": "Target shelf",
       "total": "Total",
       "system": "System Process",
-      "na": "N/A"
+      "na": "N/A",
+      "message": "Message",
+      "minStock": "Min. Stock",
+      "category": "Category"
     },
     "excel": {
       "sheetName": "Activity Log",
@@ -293,7 +297,8 @@
       "systemProcess": "System Process",
       "viewDetails": "View details →",
       "noLogs": "No activity logs to display.",
-      "fetchError": "Error loading logs:"
+      "fetchError": "Error loading logs:",
+      "sortRun": "Optimized sorting executed"
     }
   },
   "product": {
@@ -394,7 +399,7 @@
         "sortTitle": "Optimize?",
         "sortText": "Sort warehouse by categories.",
         "start": "Start",
-        "sortedSuccess": "Optimized!"
+        "sortedSuccess": "Optimized sorting has run"
       }
     },
  "list": {

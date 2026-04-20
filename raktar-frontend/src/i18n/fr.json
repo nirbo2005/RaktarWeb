@@ -25,7 +25,9 @@
     "unknown": "Inconnu",
     "reset": "Réinitialiser",
     "loading": "Chargement",
-    "next": "Suivant"
+    "next": "Suivant",
+    "perPage": "Afficher :",
+    "languageSelector": "Sélecteur de langue"
   },
   "admin": {
     "editTitle": "Modifier : {{name}}",
@@ -226,7 +228,8 @@
       "bulkItems": "Produits supprimés ({{count}} pces)",
       "productCreate": "Nouveau produit ajouté",
       "productDelete": "Produit supprimé",
-      "restored": "Restauré"
+      "restored": "Restauré",
+      "warehouseSort": "Optimisation de l'entrepôt"
     },
     "diff": {
       "productAdded": "Produit ajouté",
@@ -245,7 +248,10 @@
       "targetShelf": "Étagère cible",
       "total": "Total",
       "system": "Processus système",
-      "na": "N/A"
+      "na": "N/A",
+      "message": "Message",
+      "minStock": "Stock min.",
+      "category": "Catégorie"
     },
     "excel": {
       "sheetName": "Journal d'activité",
@@ -263,7 +269,8 @@
       "systemProcess": "Processus système",
       "viewDetails": "Voir détails →",
       "noLogs": "Aucun journal à afficher.",
-      "fetchError": "Erreur lors du chargement du journal :"
+      "fetchError": "Erreur lors du chargement du journal :",
+      "sortRun": "Tri optimisé exécuté"
     }
   },
   "product": {
@@ -364,7 +371,7 @@
         "sortTitle": "Optimisation ?",
         "sortText": "Trier le stock par catégories.",
         "start": "Démarrer",
-        "sortedSuccess": "Optimisé !"
+        "sortedSuccess": "Tri optimisé terminé"
       }
     },
     "list": {
@@ -525,6 +532,9 @@
       "emptyText": "Il n'y a aucune alerte système pour le moment.",
       "readStatus": "Lue",
       "markAsRead": "Lu",
+      "userDeleted": "Profil supprimé : Le compte de {{nev}} (@{{username}}) a été détruit.",
+      "expiredAlready": "EXPIRÉ : {{nev}} ({{parcella}}) a expiré le : {{datum}} !",
+      "outOfStock": "RUPTURE DE STOCK : {{nev}} est totalement épuisé !",
       "alerts": {
         "allMarkedRead": "Toutes les alertes marquées comme lues !",
         "deleteConfirmTitle": "Supprimer lues ?",

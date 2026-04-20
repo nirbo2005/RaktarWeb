@@ -17,7 +17,7 @@ function Navbar() {
   const location = useLocation();
   const navigate = useNavigate();
   const { user, logout } = useAuth();
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
 
   const [searchTerm, setSearchTerm] = useState("");
   const [quickResults, setQuickResults] = useState<Product[]>([]);
@@ -172,19 +172,40 @@ function Navbar() {
     }
   `;
 
-  // Helper a JSON i18n üzenetek feldolgozásához
+  // HAJSZÁLPONTOS FELDOLGOZÓ A TE JSON KULCSAIDHOZ:
   const parseNotificationMessage = (uzenet: string): string => {
+    if (!uzenet) return "";
     try {
       if (uzenet.startsWith("{")) {
         const payload = JSON.parse(uzenet);
-        if (payload.key) {
-          return t(`auxiliary.notifications.${payload.key}`, payload.data) as string;
-        }
+        if (payload.key) return t(`auxiliary.notifications.${payload.key}`, payload.data) as string;
       }
-      return uzenet;
-    } catch (e) {
-      return uzenet;
+    } catch (e) {}
+
+    const text = uzenet.replace(/\n/g, " ");
+
+    if (text.includes("Profil törölve:")) {
+      const match = text.match(/Profil törölve: (.*?) \(@(.*?)\) fiókja/);
+      if (match) return t("auxiliary.notifications.userDeleted", { nev: match[1].trim(), username: match[2].trim() });
     }
+
+    if (text.includes("LEJÁRT TERMÉK:")) {
+      const dateMatch = text.match(/ekkor: (.*?)!/);
+      const datum = dateMatch ? dateMatch[1].trim() : "";
+      const prodPart = text.split("már lejárt")[0].replace("LEJÁRT TERMÉK:", "").replace("A(z)", "").trim();
+      const parcelMatch = prodPart.match(/(.*)\s+\((.*?)\)$/);
+      
+      if (parcelMatch) {
+        return t("auxiliary.notifications.expiredAlready", { nev: parcelMatch[1].trim(), parcella: parcelMatch[2].trim(), datum });
+      }
+    }
+
+    if (text.includes("KÉSZLETHIÁNY:")) {
+      const match = text.match(/KÉSZLETHIÁNY: (.*?) teljesen elfogyott/);
+      if (match) return t("auxiliary.notifications.outOfStock", { nev: match[1].trim() });
+    }
+
+    return text;
   };
 
   const unreadCount = (notifications || []).filter(
@@ -335,7 +356,7 @@ function Navbar() {
                                 </p>
                                 <span className="text-[9px] text-slate-400 font-bold uppercase tracking-widest mt-1 block">
                                   {new Date(n.letrehozva).toLocaleString(
-                                    "hu-HU",
+                                    i18n.language === "hu" ? "hu-HU" : "en-US"
                                   )}
                                 </span>
                               </div>

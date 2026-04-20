@@ -1,3 +1,4 @@
+// raktar-frontend/src/components/Profile/ProfileLogs.tsx
 import React, { useState, useCallback, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
@@ -151,8 +152,44 @@ const ProfileLogs = () => {
       case "PRODUCT_DELETE": return t("logs.operations.delete");
       case "PRODUCT_RESTORE": return t("logs.operations.restored");
       case "PRODUCT_BULK_DELETE": return t("logs.operations.bulkDelete");
+      case "WAREHOUSE_SORT": return t("logs.operations.warehouseSort", "Raktár optimalizálás");
       default: return muvelet;
     }
+  };
+
+  const getMuveletColor = (muvelet: string, isGroup: boolean = false) => {
+    if (isGroup || muvelet.includes('DELETE')) return "bg-rose-100 text-rose-700";
+    if (muvelet === 'BATCH_UPDATE') return "bg-amber-100 text-amber-700";
+    if (muvelet === 'PRODUCT_CREATE') return "bg-emerald-100 text-emerald-700";
+    if (muvelet === 'PRODUCT_RESTORE') return "bg-indigo-100 text-indigo-700";
+    if (muvelet === 'WAREHOUSE_SORT') return "bg-teal-100 text-teal-700";
+    return "bg-blue-100 text-blue-700";
+  };
+
+  // Adatbázis mezőnevek dinamikus fordítása
+  const translateKey = (key: string) => {
+    const keyMap: Record<string, string> = {
+      message: t("logs.fields.message", "Üzenet"),
+      nev: t("logs.fields.name", "Név"),
+      gyarto: t("logs.fields.manufacturer", "Gyártó"),
+      kategoria: t("logs.fields.category", "Kategória"),
+      mennyiseg: t("logs.fields.quantity", "Mennyiség"),
+      minimumKeszlet: t("logs.fields.minStock", "Min. Készlet"),
+      lejarat: t("logs.fields.expiry", "Lejárat"),
+      parcella: t("logs.fields.plot", "Polc/Parcella"),
+    };
+    return keyMap[key] || key;
+  };
+
+  // Backendről érkező nyers szövegek fordítása
+  const translateValue = (val: any) => {
+    if (val === null || val === undefined) return "Ø";
+    if (typeof val === "string") {
+      if (val.includes("Optimalizált rendezés lefutott")) {
+        return t("logs.misc.sortRun", "Optimalizált rendezés lefutott");
+      }
+    }
+    return val instanceof Object ? JSON.stringify(val) : String(val);
   };
 
   const renderChanges = (log: AuditLog) => {
@@ -208,15 +245,15 @@ const ProfileLogs = () => {
       const valNew = uj[key];
 
       if (JSON.stringify(valOld) !== JSON.stringify(valNew)) {
-        const displayOld = valOld instanceof Object ? JSON.stringify(valOld) : String(valOld ?? "Ø");
-        const displayNew = valNew instanceof Object ? JSON.stringify(valNew) : String(valNew ?? "Ø");
+        const displayOld = translateValue(valOld);
+        const displayNew = translateValue(valNew);
 
         changes.push(
           <div key={key} className="flex items-center gap-2 text-xs py-0.5">
-            <span className="font-black uppercase text-[9px] text-slate-400 w-24">{key}:</span>
-            <span className="text-rose-400 font-medium">{displayOld}</span>
-            <span className="text-slate-400">➔</span>
-            <span className="text-emerald-500 font-black">{displayNew}</span>
+            <span className="font-black uppercase text-[9px] text-slate-400 w-24 truncate" title={key}>{translateKey(key)}:</span>
+            <span className="text-rose-400 font-medium truncate max-w-[120px]" title={displayOld}>{displayOld}</span>
+            <span className="text-slate-400 shrink-0">➔</span>
+            <span className="text-emerald-500 font-black truncate flex-1" title={displayNew}>{displayNew}</span>
           </div>
         );
       }
@@ -279,6 +316,7 @@ const ProfileLogs = () => {
               <option value="PRODUCT_DELETE">{t("logs.operations.delete")}</option>
               <option value="PRODUCT_RESTORE">{t("logs.operations.restored")}</option>
               <option value="PRODUCT_BULK_DELETE">{t("logs.operations.bulkDelete")}</option>
+              <option value="WAREHOUSE_SORT">{t("logs.operations.warehouseSort", "Raktár optimalizálás")}</option>
             </select>
           </div>
           <div className="flex flex-col gap-1">
@@ -297,7 +335,7 @@ const ProfileLogs = () => {
                  className="bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 p-5 rounded-[2rem] shadow-sm hover:shadow-md transition-all">
               <div className="flex justify-between items-start mb-4">
                 <div className="flex items-center gap-3">
-                  <div className={`px-3 py-1 rounded-full text-[9px] font-black uppercase tracking-widest ${log.muvelet === 'BATCH_UPDATE' ? "bg-amber-100 text-amber-700" : (log.muvelet === 'PRODUCT_CREATE' ? "bg-emerald-100 text-emerald-700" : (log.muvelet === 'PRODUCT_RESTORE' ? "bg-indigo-100 text-indigo-700" : "bg-blue-100 text-blue-700"))}`}>
+                  <div className={`px-3 py-1 rounded-full text-[9px] font-black uppercase tracking-widest ${getMuveletColor(log.muvelet, log.isGroup)}`}>
                      {getMuveletLabel(log.muvelet, log.isGroup)}
                   </div>
                   <span className="text-[10px] font-bold text-slate-400 italic">{formatDate(log.idopont)}</span>
@@ -321,7 +359,7 @@ const ProfileLogs = () => {
                       {log.items.map((item: any) => (
                         <div key={item.id} onClick={() => item.productId && navigate(`/product/${item.productId}`)} 
                              className="text-xs dark:text-slate-300 font-medium bg-slate-50 dark:bg-slate-800 p-2 rounded-lg border border-slate-100 cursor-pointer hover:border-blue-300 transition-all">
-                           • {item.product?.nev}
+                            • {item.product?.nev}
                         </div>
                       ))}
                     </div>

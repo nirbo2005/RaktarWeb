@@ -27,7 +27,9 @@ function Notifications() {
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
   const { user, refreshKey, triggerGlobalRefresh } = useAuth();
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
+
+  const currentLocale = i18n.language === "hu" ? "hu-HU" : "en-US";
 
   const fetchNotifications = () => {
     getMyNotifications()
@@ -40,19 +42,40 @@ function Notifications() {
     if (user) fetchNotifications();
   }, [user, refreshKey]);
 
-  // Helper a JSON i18n üzenetek feldolgozásához - JAVÍTOTT ÚTVONAL
+  // HAJSZÁLPONTOS FELDOLGOZÓ A TE JSON KULCSAIDHOZ:
   const parseNotificationMessage = (uzenet: string): string => {
+    if (!uzenet) return "";
     try {
       if (uzenet.startsWith("{")) {
         const payload = JSON.parse(uzenet);
-        if (payload.key) {
-          return t(`auxiliary.notifications.${payload.key}`, payload.data) as string;
-        }
+        if (payload.key) return t(`auxiliary.notifications.${payload.key}`, payload.data) as string;
       }
-      return uzenet;
-    } catch (e) {
-      return uzenet;
+    } catch (e) {}
+
+    const text = uzenet.replace(/\n/g, " ");
+
+    if (text.includes("Profil törölve:")) {
+      const match = text.match(/Profil törölve: (.*?) \(@(.*?)\) fiókja/);
+      if (match) return t("auxiliary.notifications.userDeleted", { nev: match[1].trim(), username: match[2].trim() });
     }
+
+    if (text.includes("LEJÁRT TERMÉK:")) {
+      const dateMatch = text.match(/ekkor: (.*?)!/);
+      const datum = dateMatch ? dateMatch[1].trim() : "";
+      const prodPart = text.split("már lejárt")[0].replace("LEJÁRT TERMÉK:", "").replace("A(z)", "").trim();
+      const parcelMatch = prodPart.match(/(.*)\s+\((.*?)\)$/);
+      
+      if (parcelMatch) {
+        return t("auxiliary.notifications.expiredAlready", { nev: parcelMatch[1].trim(), parcella: parcelMatch[2].trim(), datum });
+      }
+    }
+
+    if (text.includes("KÉSZLETHIÁNY:")) {
+      const match = text.match(/KÉSZLETHIÁNY: (.*?) teljesen elfogyott/);
+      if (match) return t("auxiliary.notifications.outOfStock", { nev: match[1].trim() });
+    }
+
+    return text;
   };
 
   const handleNavigate = async (notif: AppNotification) => {
@@ -263,7 +286,7 @@ function Notifications() {
                           {parseNotificationMessage(notif.uzenet)}
                         </p>
                         <span className="text-[10px] font-bold uppercase tracking-widest text-slate-400 mt-2 block">
-                          {new Date(notif.letrehozva).toLocaleString("hu-HU")}
+                          {new Date(notif.letrehozva).toLocaleString(currentLocale)}
                         </span>
                       </div>
                     </div>

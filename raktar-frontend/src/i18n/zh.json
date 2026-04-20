@@ -25,7 +25,9 @@
     "unknown": "未知",
     "reset": "重置",
     "loading": "加载中",
-    "next": "下一步"
+    "next": "下一步",
+    "perPage": "显示:",
+    "languageSelector": "语言选择器"
   },
   "admin": {
     "editTitle": "编辑：{{name}}",
@@ -226,7 +228,8 @@
       "bulkItems": "已删除产品（{{count}} 件）",
       "productCreate": "录入新产品",
       "productDelete": "删除产品",
-      "restored": "已恢复"
+      "restored": "已恢复",
+      "warehouseSort": "仓库优化"
     },
     "diff": {
       "productAdded": "产品已添加",
@@ -245,7 +248,10 @@
       "targetShelf": "目标货架",
       "total": "总计",
       "system": "系统进程",
-      "na": "不适用"
+      "na": "不适用",
+      "message": "消息",
+      "minStock": "最小库存",
+      "category": "类别"
     },
     "excel": {
       "sheetName": "操作日志",
@@ -263,7 +269,8 @@
       "systemProcess": "系统进程",
       "viewDetails": "查看详情 →",
       "noLogs": "暂无日志记录。",
-      "fetchError": "加载日志时出错："
+      "fetchError": "加载日志时出错：",
+      "sortRun": "已执行优化排序"
     }
   },
   "product": {
@@ -364,7 +371,7 @@
         "sortTitle": "需要优化吗？",
         "sortText": "按类别重新排列仓库布局。",
         "start": "开始",
-        "sortedSuccess": "优化完成！"
+        "sortedSuccess": "优化排序已完成"
       }
     },
    "list": {
@@ -525,6 +532,9 @@
       "emptyText": "目前系统内没有任何告警。",
       "readStatus": "已读",
       "markAsRead": "设为已读",
+      "userDeleted": "配置文件已删除：{{nev}} (@{{username}}) 的帐户已被销毁。",
+      "expiredAlready": "已过期：{{nev}} ({{parcella}}) 已于 {{datum}} 过期！",
+      "outOfStock": "缺货：{{nev}} 已完全耗尽！",
       "alerts": {
         "allMarkedRead": "所有通知已标为已读！",
         "deleteConfirmTitle": "确定删除已读消息？",
