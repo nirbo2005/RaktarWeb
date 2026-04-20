@@ -27,7 +27,10 @@
     "loading": "加载中",
     "next": "下一步",
     "perPage": "显示:",
-    "languageSelector": "语言选择器"
+    "languageSelector": "语言选择器",
+    "statistics": "统计数据",
+    "batches": "批次",
+    "move": "移动"
   },
   "admin": {
     "editTitle": "编辑：{{name}}",
@@ -135,14 +138,17 @@
       "revokeError": "无法注销会话。"
     },
     "stats": {
-      "totalActions": "总操作数",
-      "creates": "创建次数",
-      "updates": "修改次数",
-      "deletes": "删除次数",
-      "activityDistribution": "活跃度分布",
-      "movesThisMonth": "本月操作数",
-      "newProducts": "新增产品记录",
-      "fetchError": "计算统计数据时出错："
+      "fetchError": "加载统计信息时出错",
+      "totalActions": "总计",
+      "creates": "创建",
+      "updates": "修改",
+      "moves": "移动",
+      "batches": "批次",
+      "deletes": "删除",
+      "activityDistribution": "活动分布",
+      "bulk": "批量",
+      "normal": "正常操作",
+      "bulkTitle": "批量操作"
     },
     "system": {
       "database": "数据库",
@@ -221,15 +227,15 @@
     },
     "operations": {
       "create": "创建",
-      "update": "修改",
-      "batch": "库存变动",
+      "update": "更新",
+      "batch": "批次操作",
       "delete": "删除",
       "bulkDelete": "批量删除",
-      "bulkItems": "已删除产品（{{count}} 件）",
-      "productCreate": "录入新产品",
-      "productDelete": "删除产品",
+      "bulkItems": "已删除项目 ({{count}} 件)",
+      "productCreate": "添加了新产品",
+      "productDelete": "产品已删除",
       "restored": "已恢复",
-      "warehouseSort": "仓库优化"
+      "batchCreate": "新批次"
     },
     "diff": {
       "productAdded": "产品已添加",
@@ -239,19 +245,17 @@
       "reverted": "修改已撤销："
     },
     "types": {
-      "split": "部分移库",
-      "move": "全量移库",
-      "merge": "库存合并"
+      "split": "部分转移",
+      "move": "全部转移",
+      "merge": "合并"
     },
     "fields": {
-      "sourceShelf": "原始货架",
+      "sourceShelf": "源货架",
       "targetShelf": "目标货架",
       "total": "总计",
       "system": "系统进程",
       "na": "不适用",
-      "message": "消息",
-      "minStock": "最小库存",
-      "category": "类别"
+      "quantity": "数量"
     },
     "excel": {
       "sheetName": "操作日志",
@@ -535,6 +539,17 @@
       "userDeleted": "配置文件已删除：{{nev}} (@{{username}}) 的帐户已被销毁。",
       "expiredAlready": "已过期：{{nev}} ({{parcella}}) 已于 {{datum}} 过期！",
       "outOfStock": "缺货：{{nev}} 已完全耗尽！",
+      "userRegistered": "新用户注册：{{nev}} (@{{username}})",
+      "forgotPassword": "安全事件：@{{username}} 请求了新的临时密码！",
+      "passwordChanged": "出于安全原因，您的密码已成功更新。",
+      "modRequest": "收到新的 {{type}} 修改请求：{{nev}} (@{{username}}) -> {{ujErtek}}",
+      "reqApproved": "您的 {{type}} 修改请求已获批准。新值：{{ujErtek}}",
+      "reqRejected": "您的 {{type}} 修改请求已被拒绝。",
+      "userBanned": "以下用户已被封禁：{{nev}} (@{{username}})",
+      "userUnbanned": "以下用户的封禁已被解除：{{nev}} (@{{username}})",
+      "lowStock": "库存不足：{{nev}} 低于最低库存：{{mennyiseg}} / {{min}} 件",
+      "expiringSoon": "到期警告：{{nev}} ({{parcella}}) 到期日期：{{datum}}！",
+      "expiresToday": "今日到期：{{nev}} ({{parcella}}) 今日到期！",
       "alerts": {
         "allMarkedRead": "所有通知已标为已读！",
         "deleteConfirmTitle": "确定删除已读消息？",

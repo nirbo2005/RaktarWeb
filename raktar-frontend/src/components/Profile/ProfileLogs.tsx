@@ -149,6 +149,7 @@ const ProfileLogs = () => {
       case "PRODUCT_CREATE": return t("logs.operations.productCreate");
       case "PRODUCT_UPDATE": return t("logs.operations.update");
       case "BATCH_UPDATE": return t("logs.operations.batch");
+      case "BATCH_CREATE": return t("logs.operations.batchCreate", "Új sarzs");
       case "PRODUCT_DELETE": return t("logs.operations.delete");
       case "PRODUCT_RESTORE": return t("logs.operations.restored");
       case "PRODUCT_BULK_DELETE": return t("logs.operations.bulkDelete");
@@ -347,7 +348,7 @@ const ProfileLogs = () => {
                   </button>
                 )}
               </div>
-              <div className="flex items-center gap-2 mb-3 bg-slate-50 dark:bg-slate-800/40 p-2 rounded-xl inline-flex">
+              <div className="flex items-center gap-2 mb-3 bg-slate-50 dark:bg-slate-800/40 p-2 rounded-xl">
                  <span className="w-6 h-6 rounded-lg bg-blue-600 flex items-center justify-center text-[10px] font-black text-white">{log.user.nev.charAt(0)}</span>
                  <span className="text-xs font-black dark:text-white">{log.user.nev} <span className="text-slate-400 font-medium">(@{log.user.felhasznalonev})</span></span>
               </div>

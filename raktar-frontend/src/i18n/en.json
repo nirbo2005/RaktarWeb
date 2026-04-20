@@ -29,7 +29,8 @@
     "next": "Next",
     "prev": "Previous",
     "perPage": "Show:",
-    "languageSelector": "Language Selector"
+    "languageSelector": "Language Selector",
+    "selected": "Selected"
   },
   "admin": {
     "editTitle": "Edit: {{name}}",
@@ -160,14 +161,17 @@
       "revokeError": "Failed to revoke sessions."
     },
     "stats": {
-      "totalActions": "Total Actions",
-      "creates": "Creations",
+      "fetchError": "Error fetching statistics",
+      "totalActions": "Total",
+      "creates": "Creates",
       "updates": "Updates",
-      "deletes": "Deletions",
+      "moves": "Moves",
+      "batches": "Batches",
+      "deletes": "Deletes",
       "activityDistribution": "Activity Distribution",
-      "movesThisMonth": "Actions this month",
-      "newProducts": "New products added",
-      "fetchError": "Error calculating statistics:"
+      "bulk": "Bulk",
+      "normal": "Normal operations",
+      "bulkTitle": "Bulk operations"
     },
     "system": {
       "database": "Database",
@@ -257,7 +261,8 @@
       "productCreate": "New product added",
       "productDelete": "Product deleted",
       "restored": "Restored",
-      "warehouseSort": "Warehouse optimization"
+      "warehouseSort": "Warehouse optimization",
+      "batchCreate": "New Batch"
     },
     "diff": {
       "productAdded": "Product added",
@@ -277,9 +282,7 @@
       "total": "Total",
       "system": "System Process",
       "na": "N/A",
-      "message": "Message",
-      "minStock": "Min. Stock",
-      "category": "Category"
+      "quantity": "Quantity"
     },
     "excel": {
       "sheetName": "Activity Log",
@@ -399,10 +402,10 @@
         "sortTitle": "Optimize?",
         "sortText": "Sort warehouse by categories.",
         "start": "Start",
-        "sortedSuccess": "Optimized sorting has run"
+        "sortedSuccess": "Optimized sorting executed"
       }
     },
- "list": {
+    "list": {
       "title": "Warehouse",
       "print": "Print",
       "batches": "Batches",
@@ -659,6 +662,7 @@
       "forgotPassword": "Forgot password?",
       "submit": "Log into System",
       "registerNew": "Register new account",
+      "rememberMe": "Remember me",
       "alerts": {
         "accessDenied": "Access Denied",
         "sessionLost": "Session Lost",

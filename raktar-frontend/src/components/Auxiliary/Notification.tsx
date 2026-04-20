@@ -43,7 +43,7 @@ function Notifications() {
   }, [user, refreshKey]);
 
   // HAJSZÁLPONTOS FELDOLGOZÓ A TE JSON KULCSAIDHOZ:
-  const parseNotificationMessage = (uzenet: string): string => {
+const parseNotificationMessage = (uzenet: string): string => {
     if (!uzenet) return "";
     try {
       if (uzenet.startsWith("{")) {
@@ -54,25 +54,72 @@ function Notifications() {
 
     const text = uzenet.replace(/\n/g, " ");
 
+    // --- FELHASZNÁLÓK ÉS BIZTONSÁG ---
     if (text.includes("Profil törölve:")) {
-      const match = text.match(/Profil törölve: (.*?) \(@(.*?)\) fiókja/);
+      const match = text.match(/Profil törölve: (.*?) \(@(.*?)\)/);
       if (match) return t("auxiliary.notifications.userDeleted", { nev: match[1].trim(), username: match[2].trim() });
     }
+    if (text.includes("Új felhasználó regisztrált:")) {
+      const match = text.match(/regisztrált: (.*?) \(@(.*?)\)/);
+      if (match) return t("auxiliary.notifications.userRegistered", { nev: match[1].trim(), username: match[2].trim() });
+    }
+    if (text.includes("tiltva lett:") || text.includes("Felhasználó tiltva:")) {
+      const match = text.match(/tiltva.*?: (.*?) \(@(.*?)\)/);
+      if (match) return t("auxiliary.notifications.userBanned", { nev: match[1].trim(), username: match[2].trim() });
+    }
+    if (text.includes("tiltás feloldva:")) {
+      const match = text.match(/feloldva.*?: (.*?) \(@(.*?)\)/);
+      if (match) return t("auxiliary.notifications.userUnbanned", { nev: match[1].trim(), username: match[2].trim() });
+    }
+    if (text.includes("Biztonsági esemény:") && text.includes("elfelejtett jelszó")) {
+      const match = text.match(/@(.*?) új ideiglenes/);
+      if (match) return t("auxiliary.notifications.forgotPassword", { username: match[1].trim() });
+    }
+    if (text.includes("jelszavad biztonsági okokból sikeresen frissítve")) {
+      return t("auxiliary.notifications.passwordChanged");
+    }
 
-    if (text.includes("LEJÁRT TERMÉK:")) {
+    // --- JOGOSULTSÁG ÉS MÓDOSÍTÁSI KÉRELMEK ---
+    if (text.includes("módosítási kérelem érkezett:")) {
+      const match = text.match(/Új (.*?) módosítási kérelem érkezett: (.*?) \(@(.*?)\) -> (.*)/);
+      if (match) return t("auxiliary.notifications.modRequest", { type: match[1].trim(), nev: match[2].trim(), username: match[3].trim(), ujErtek: match[4].trim() });
+    }
+    if (text.includes("módosítási kérelmed EL LETT FOGADVA")) {
+      const match = text.match(/A\(z\) (.*?) módosítási kérelmed EL LETT FOGADVA.*?Új érték: (.*)/);
+      if (match) return t("auxiliary.notifications.reqApproved", { type: match[1].trim(), ujErtek: match[2].trim() });
+    }
+    if (text.includes("módosítási kérelmed EL LETT UTASÍTVA")) {
+      const match = text.match(/A\(z\) (.*?) módosítási kérelmed/);
+      if (match) return t("auxiliary.notifications.reqRejected", { type: match[1].trim() });
+    }
+
+    // --- TERMÉKEK ÉS RAKTÁRKÉSZLET ---
+    if (text.includes("LEJÁRT TERMÉK:") && text.includes("ma jár le")) {
+      const prodPart = text.split("ma jár le")[0].replace("LEJÁRT TERMÉK:", "").replace("A(z)", "").trim();
+      const parcelMatch = prodPart.match(/(.*)\s+\((.*?)\)$/);
+      if (parcelMatch) return t("auxiliary.notifications.expiresToday", { nev: parcelMatch[1].trim(), parcella: parcelMatch[2].trim() });
+    }
+    if (text.includes("LEJÁRT TERMÉK:") && text.includes("már lejárt")) {
       const dateMatch = text.match(/ekkor: (.*?)!/);
       const datum = dateMatch ? dateMatch[1].trim() : "";
       const prodPart = text.split("már lejárt")[0].replace("LEJÁRT TERMÉK:", "").replace("A(z)", "").trim();
       const parcelMatch = prodPart.match(/(.*)\s+\((.*?)\)$/);
-      
-      if (parcelMatch) {
-        return t("auxiliary.notifications.expiredAlready", { nev: parcelMatch[1].trim(), parcella: parcelMatch[2].trim(), datum });
-      }
+      if (parcelMatch) return t("auxiliary.notifications.expiredAlready", { nev: parcelMatch[1].trim(), parcella: parcelMatch[2].trim(), datum });
     }
-
+    if (text.includes("LEJÁRATI FIGYELMEZTETÉS:")) {
+      const dateMatch = text.match(/ekkor fog lejárni: (.*?)!/);
+      const datum = dateMatch ? dateMatch[1].trim() : "";
+      const prodPart = text.split("ekkor fog lejárni")[0].replace("LEJÁRATI FIGYELMEZTETÉS:", "").replace("A(z)", "").trim();
+      const parcelMatch = prodPart.match(/(.*)\s+\((.*?)\)$/);
+      if (parcelMatch) return t("auxiliary.notifications.expiringSoon", { nev: parcelMatch[1].trim(), parcella: parcelMatch[2].trim(), datum });
+    }
     if (text.includes("KÉSZLETHIÁNY:")) {
       const match = text.match(/KÉSZLETHIÁNY: (.*?) teljesen elfogyott/);
       if (match) return t("auxiliary.notifications.outOfStock", { nev: match[1].trim() });
+    }
+    if (text.includes("ALACSONY KÉSZLET:")) {
+      const match = text.match(/ALACSONY KÉSZLET: (.*?) a minimuma alá esett: (\d+)\s*\/\s*(\d+) db/);
+      if (match) return t("auxiliary.notifications.lowStock", { nev: match[1].trim(), mennyiseg: match[2], min: match[3] });
     }
 
     return text;

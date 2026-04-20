@@ -161,14 +161,17 @@
       "revokeError": "Nem sikerült a munkamenetek visszavonása."
     },
     "stats": {
-      "totalActions": "Összes művelet",
-      "creates": "Létrehozások",
-      "updates": "Módosítások",
-      "deletes": "Törlések",
+      "fetchError": "Hiba a statisztikák betöltésekor",
+      "totalActions": "Összes",
+      "creates": "Létrehozás",
+      "updates": "Módosítás",
+      "moves": "Áthelyezés",
+      "batches": "Sarzs",
+      "deletes": "Törlés",
       "activityDistribution": "Aktivitás megoszlása",
-      "movesThisMonth": "Művelet ebben a hónapban",
-      "newProducts": "Új termék rögzítve",
-      "fetchError": "Hiba a statisztikák számításakor:"
+      "bulk": "Tömeges",
+      "normal": "Normál műveletek",
+      "bulkTitle": "Tömeges műveletek"
     },
     "system": {
       "database": "Adatbázis",
@@ -258,7 +261,8 @@
       "productCreate": "Új termék felvéve",
       "productDelete": "Termék törölve",
       "restored": "Visszaállítva",
-      "warehouseSort": "Raktár optimalizálás"
+      "warehouseSort": "Raktár optimalizálás",
+      "batchCreate": "Új sarzs"
     },
     "diff": {
       "productAdded": "Termék hozzáadva",
@@ -278,9 +282,7 @@
       "total": "Összesen",
       "system": "Rendszerfolyamat",
       "na": "N/A",
-      "message": "Üzenet",
-      "minStock": "Min. Készlet",
-      "category": "Kategória"
+      "quantity": "Mennyiség"
     },
     "excel": {
       "sheetName": "Tevékenységnapló",
