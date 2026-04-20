@@ -367,47 +367,48 @@
         "sortedSuccess": "Оптимизировано!"
       }
     },
-    "list": {
+   "list": {
       "title": "Склад",
-      "bulkDelete": "🗑️ Удалить ({{count}})",
-      "filterErrors": "🚨 Только ошибки",
-      "filterAll": "⚠️ Фильтр",
-      "export": "📊 Экспорт",
-      "selectModeOn": "✖ Завершить выбор",
-      "selectModeOff": "☑️ Выбрать несколько",
-      "newProduct": "+ Новый товар",
-      "searchPlaceholder": "Поиск по имени, производителю или ID...",
+      "print": "Печать",
+      "batches": "Партии",
+      "nonPerishable": "Непортящийся",
+      "outOfStock": "Нет в наличии",
+      "details": "Детали",
+      "emptyTitle": "Пустой список",
+      "emptySubtitle": "Продукты не найдены.",
+      "bulkDelete": "Удалить ({{count}})",
+      "selectModeOn": "Отменить выбор",
+      "selectModeOff": "Выбрать",
+      "filterErrors": "Только проблемы",
+      "filterAll": "Все продукты",
+      "export": "Экспорт",
+      "newProduct": "Новый продукт",
       "headers": {
         "qr": "QR",
-        "product": "Товар",
+        "product": "Продукт",
         "category": "Категория",
-        "totalStock": "Общий остаток",
+        "totalStock": "Общий запас",
+        "expiry": "Срок годности",
         "actions": "Действие"
       },
-      "batches": "Партии",
-      "nonPerishable": "Без срока",
-      "details": "Детали",
-      "allGoodTitle": "Все ячейки в порядке",
-      "allGoodSubtitle": "Нет товаров, требующих внимания",
-      "print": "🖨️ Печать",
       "excel": {
-        "sheetName": "Складские остатки",
-        "name": "Название товара",
+        "sheetName": "Инвентарь",
+        "name": "Имя",
         "manufacturer": "Производитель",
         "category": "Категория",
-        "quantity": "Общее кол-во (шт.)",
-        "earliestExpiry": "Ближайший срок"
+        "quantity": "Количество",
+        "earliestExpiry": "Ближайший срок годности"
       },
       "alerts": {
+        "excelReady": "Файл Excel загружен!",
         "bulkDeleteTitle": "Массовое удаление",
-        "bulkDeleteText": "Удалить {{count}} поз.?",
-        "bulkDeleted": "Позиции удалены.",
-        "bulkDeleteFailed": "Массовое удаление не удалось.",
-        "deleteTitle": "Удаление товара",
-        "deleteText": "Вы действительно хотите удалить?",
-        "deleted": "Товар удален.",
-        "deleteFailed": "Удаление не удалось.",
-        "excelReady": "Excel-отчет готов! 📊"
+        "bulkDeleteText": "Вы уверены, что хотите удалить {{count}} элементов?",
+        "bulkDeleted": "Элементы удалены.",
+        "bulkDeleteFailed": "Не удалось удалить элементы.",
+        "deleteTitle": "Удалить",
+        "deleteText": "Вы уверены, что хотите удалить этот продукт?",
+        "deleted": "Продукт удален!",
+        "deleteFailed": "Ошибка удаления."
       }
     },
     "modify": {

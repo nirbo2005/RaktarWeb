@@ -367,47 +367,48 @@
         "sortedSuccess": "¡Optimizado!"
       }
     },
-    "list": {
+"list": {
       "title": "Almacén",
-      "bulkDelete": "🗑️ Eliminar ({{count}})",
-      "filterErrors": "🚨 Solo errores",
-      "filterAll": "⚠️ Filtrar",
-      "export": "📊 Exportar",
-      "selectModeOn": "✖ Finalizar selección",
-      "selectModeOff": "☑️ Selección múltiple",
-      "newProduct": "+ Nuevo Producto",
-      "searchPlaceholder": "Buscar por nombre, fabricante o ID...",
+      "print": "Imprimir",
+      "batches": "Lotes",
+      "nonPerishable": "No perecedero",
+      "outOfStock": "Agotado",
+      "details": "Detalles",
+      "emptyTitle": "Lista vacía",
+      "emptySubtitle": "No se encontraron productos.",
+      "bulkDelete": "Eliminar ({{count}})",
+      "selectModeOn": "Cancelar selección",
+      "selectModeOff": "Seleccionar",
+      "filterErrors": "Solo problemas",
+      "filterAll": "Todos los productos",
+      "export": "Exportar",
+      "newProduct": "Nuevo producto",
       "headers": {
         "qr": "QR",
         "product": "Producto",
         "category": "Categoría",
         "totalStock": "Stock Total",
+        "expiry": "Caducidad",
         "actions": "Acción"
       },
-      "batches": "Lotes",
-      "nonPerishable": "No perecedero",
-      "details": "Detalles",
-      "allGoodTitle": "Todos los estantes están bien",
-      "allGoodSubtitle": "Ningún artículo requiere intervención",
-      "print": "🖨️ Imprimir",
       "excel": {
         "sheetName": "Inventario",
-        "name": "Nombre del Producto",
+        "name": "Nombre",
         "manufacturer": "Fabricante",
         "category": "Categoría",
-        "quantity": "Cantidad Total (uds)",
-        "earliestExpiry": "Vencimiento más próximo"
+        "quantity": "Cantidad",
+        "earliestExpiry": "Caducidad más próxima"
       },
       "alerts": {
+        "excelReady": "¡Archivo Excel descargado!",
         "bulkDeleteTitle": "Eliminación masiva",
-        "bulkDeleteText": "¿Eliminar {{count}} ítems?",
-        "bulkDeleted": "Ítems eliminados.",
-        "bulkDeleteFailed": "Fallo en la eliminación masiva.",
-        "deleteTitle": "Eliminar producto",
-        "deleteText": "¿Seguro que quieres eliminarlo?",
-        "deleted": "Producto eliminado.",
-        "deleteFailed": "Fallo en la eliminación.",
-        "excelReady": "¡Informe Excel listo! 📊"
+        "bulkDeleteText": "¿Estás seguro de eliminar {{count}} elementos?",
+        "bulkDeleted": "Elementos eliminados.",
+        "bulkDeleteFailed": "Error al eliminar.",
+        "deleteTitle": "Eliminar",
+        "deleteText": "¿Estás seguro de eliminar este producto?",
+        "deleted": "¡Producto eliminado!",
+        "deleteFailed": "Error al eliminar."
       }
     },
     "modify": {

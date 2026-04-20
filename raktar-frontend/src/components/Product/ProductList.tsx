@@ -66,12 +66,24 @@ const getAlertPriority = (p: Product) => {
   return 0;
 };
 
+function useDebounce<T>(value: T, delay: number): T {
+  const [debouncedValue, setDebouncedValue] = useState<T>(value);
+  useEffect(() => {
+    const timer = setTimeout(() => setDebouncedValue(value), delay);
+    return () => clearTimeout(timer);
+  }, [value, delay]);
+  return debouncedValue;
+}
+
 function ProductList() {
   const navigate = useNavigate();
   const { page } = useParams<{ page?: string }>();
   const [searchParams, setSearchParams] = useSearchParams();
   const { user } = useAuth();
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
+  
+  // Dinamikus nyelvi kód a dátum formázásához
+  const currentLocale = i18n.language === "hu" ? "hu-HU" : "en-US";
 
   const canEdit = user && (user.rang === "KEZELO" || user.rang === "ADMIN");
 
@@ -88,12 +100,22 @@ function ProductList() {
   const showAlertsOnly = searchParams.get("alerts") === "true";
   
   const searchTerm = searchParams.get("q") || "";
+  const debouncedSearchTerm = useDebounce(searchTerm, 300);
+
+  useEffect(() => {
+    if (debouncedSearchTerm) {
+      searchParams.set("q", debouncedSearchTerm);
+    } else {
+      searchParams.delete("q");
+    }
+    setSearchParams(searchParams, { replace: true });
+  }, [debouncedSearchTerm, searchParams, setSearchParams]);
 
   const fetchProducts = useCallback(
     async (showLoading = false) => {
       if (showLoading) {
         MySwal.fire({
-          title: t("common.loading", "Betöltés..."),
+          title: t("common.loading"),
           allowOutsideClick: false,
           allowEscapeKey: false,
           didOpen: () => MySwal.showLoading(),
@@ -128,8 +150,8 @@ function ProductList() {
     MySwal.fire({
       showConfirmButton: true,
       showCancelButton: true,
-      confirmButtonText: t("product.list.print", "Nyomtatás"),
-      cancelButtonText: t("common.close", "Bezárás"),
+      confirmButtonText: t("product.list.print"),
+      cancelButtonText: t("common.close"),
       html: `
         <div id="print-qr-area" class="flex flex-col items-center justify-center p-8 bg-white rounded-3xl">
           <div class="mb-4 text-center">
@@ -236,14 +258,14 @@ function ProductList() {
   const exportToExcel = async () => {
     if (!canEdit) return;
     const workbook = new ExcelJS.Workbook();
-    const worksheet = workbook.addWorksheet(t("product.list.excel.sheetName", "Készlet"));
+    const worksheet = workbook.addWorksheet(t("product.list.excel.sheetName"));
 
     worksheet.columns = [
-      { header: t("product.list.excel.name", "Név"), key: "nev", width: 25 },
-      { header: t("product.list.excel.manufacturer", "Gyártó"), key: "gyarto", width: 20 },
-      { header: t("product.list.excel.category", "Kategória"), key: "kategoria", width: 20 },
-      { header: t("product.list.excel.quantity", "Mennyiség"), key: "mennyiseg", width: 20 },
-      { header: t("product.list.excel.earliestExpiry", "Lejárat"), key: "lejarat", width: 20 },
+      { header: t("product.list.excel.name"), key: "nev", width: 25 },
+      { header: t("product.list.excel.manufacturer"), key: "gyarto", width: 20 },
+      { header: t("product.list.excel.category"), key: "kategoria", width: 20 },
+      { header: t("product.list.excel.quantity"), key: "mennyiseg", width: 20 },
+      { header: t("product.list.excel.earliestExpiry"), key: "lejarat", width: 20 },
     ];
 
     worksheet.getRow(1).font = { bold: true, color: { argb: "FFFFFFFF" } };
@@ -260,7 +282,7 @@ function ProductList() {
         gyarto: p.gyarto,
         kategoria: t(`product.categories.${p.kategoria}`),
         mennyiseg: totalQty,
-        lejarat: earliestExpiry ? earliestExpiry.toLocaleDateString("hu-HU") : t("product.list.nonPerishable", "NEM ROMLANDÓ"),
+        lejarat: earliestExpiry ? earliestExpiry.toLocaleDateString(currentLocale) : t("product.list.nonPerishable"),
       });
 
       if (earliestExpiry) earliestExpiry.setHours(0,0,0,0);
@@ -275,7 +297,7 @@ function ProductList() {
 
     const buffer = await workbook.xlsx.writeBuffer();
     saveAs(new Blob([buffer]), `raktar_export_${new Date().toISOString().split("T")[0]}.xlsx`);
-    toast.fire({ icon: "success", title: t("product.list.alerts.excelReady", "Excel fájl letöltve!") });
+    toast.fire({ icon: "success", title: t("product.list.alerts.excelReady") });
   };
 
   const toggleSelectionMode = () => {
@@ -295,16 +317,16 @@ function ProductList() {
   const handleBulkDelete = async () => {
     if (!user || !canEdit || selectedIds.length === 0) return;
     const result = await MySwal.fire({
-      title: t("product.list.alerts.bulkDeleteTitle", "Tömeges törlés"),
+      title: t("product.list.alerts.bulkDeleteTitle"),
       text: t("product.list.alerts.bulkDeleteText", { count: selectedIds.length }),
       icon: "warning",
       showCancelButton: true,
-      confirmButtonText: t("common.yes", "Igen"),
-      cancelButtonText: t("common.cancel", "Mégse"),
+      confirmButtonText: t("common.yes"),
+      cancelButtonText: t("common.cancel"),
     });
     if (result.isConfirmed) {
       MySwal.fire({
-        title: t("common.loading", "Betöltés..."),
+        title: t("common.loading"),
         allowOutsideClick: false,
         allowEscapeKey: false,
         didOpen: () => MySwal.showLoading(),
@@ -315,10 +337,10 @@ function ProductList() {
         setIsSelectionMode(false);
         await fetchProducts(false);
         MySwal.close();
-        toast.fire({ icon: "success", title: t("product.list.alerts.bulkDeleted", "Tételek törölve.") });
+        toast.fire({ icon: "success", title: t("product.list.alerts.bulkDeleted") });
       } catch (err) {
         MySwal.close();
-        MySwal.fire(t("common.error", "Hiba"), t("product.list.alerts.bulkDeleteFailed", "Nem sikerült törölni a tételeket."), "error");
+        MySwal.fire(t("common.error"), t("product.list.alerts.bulkDeleteFailed"), "error");
       }
     }
   };
@@ -326,16 +348,16 @@ function ProductList() {
   const handleDelete = async (id: number) => {
     if (!user || !canEdit) return;
     const result = await MySwal.fire({
-      title: t("product.list.alerts.deleteTitle", "Törlés"),
-      text: t("product.list.alerts.deleteText", "Biztosan törölni szeretnéd ezt a terméket?"),
+      title: t("product.list.alerts.deleteTitle"),
+      text: t("product.list.alerts.deleteText"),
       icon: "question",
       showCancelButton: true,
-      confirmButtonText: t("common.yes", "Igen"),
-      cancelButtonText: t("common.cancel", "Mégse"),
+      confirmButtonText: t("common.yes"),
+      cancelButtonText: t("common.cancel"),
     });
     if (result.isConfirmed) {
       MySwal.fire({
-        title: t("common.loading", "Kérlek várj..."),
+        title: t("common.loading"),
         allowOutsideClick: false,
         didOpen: () => MySwal.showLoading(),
       });
@@ -343,10 +365,10 @@ function ProductList() {
         await deleteProduct(id, user.id);
         await fetchProducts(false);
         MySwal.close();
-        toast.fire({ icon: "success", title: t("product.list.alerts.deleted", "Termék törölve!") });
+        toast.fire({ icon: "success", title: t("product.list.alerts.deleted") });
       } catch (err) {
         MySwal.close();
-        MySwal.fire(t("common.error", "Hiba"), t("product.list.alerts.deleteFailed", "A törlés sikertelen."), "error");
+        MySwal.fire(t("common.error"), t("product.list.alerts.deleteFailed"), "error");
       }
     }
   };
@@ -356,14 +378,14 @@ function ProductList() {
     const earliestExpiry = getEarliestExpiry(p);
     const now = new Date();
     now.setHours(0, 0, 0, 0);
-
+    
     if (earliestExpiry) earliestExpiry.setHours(0, 0, 0, 0);
 
     const isCritical = totalQty === 0 || (earliestExpiry && earliestExpiry.getTime() <= now.getTime());
     const isWarning = totalQty <= p.minimumKeszlet || (earliestExpiry && earliestExpiry.getTime() <= now.getTime() + 7 * 24 * 60 * 60 * 1000);
 
     let base = "transition-colors group border-l-4 ";
-
+    
     if (isSelected) {
       return base + "bg-blue-50/50 dark:bg-blue-900/20 border-blue-500";
     }
@@ -382,7 +404,7 @@ function ProductList() {
     if (!p.batches || p.batches.length === 0) {
       return (
         <span className="px-3 py-1.5 bg-slate-100 dark:bg-slate-800 rounded-lg text-[10px] font-black uppercase text-slate-600 dark:text-slate-400 border border-slate-200 dark:border-slate-700 inline-block whitespace-nowrap">
-          {t("product.list.nonPerishable", "NEM ROMLANDÓ")}
+          {t("product.list.nonPerishable")}
         </span>
       );
     }
@@ -395,7 +417,7 @@ function ProductList() {
     if (dates.length === 0) {
       return (
         <span className="px-3 py-1.5 bg-slate-100 dark:bg-slate-800 rounded-lg text-[10px] font-black uppercase text-slate-600 dark:text-slate-400 border border-slate-200 dark:border-slate-700 inline-block whitespace-nowrap">
-          {t("product.list.nonPerishable", "NEM ROMLANDÓ")}
+          {t("product.list.nonPerishable")}
         </span>
       );
     }
@@ -404,7 +426,7 @@ function ProductList() {
     const latest = new Date(dates[dates.length - 1]);
     const now = new Date();
     now.setHours(0, 0, 0, 0);
-
+    
     const diffDays = Math.ceil((earliest.getTime() - now.getTime()) / (1000 * 60 * 60 * 24));
 
     let badgeClass = "bg-slate-100 text-slate-600 border-slate-200 dark:bg-slate-800 dark:text-slate-400 dark:border-slate-700";
@@ -416,17 +438,17 @@ function ProductList() {
 
     if (earliest.getTime() === latest.getTime()) {
       return (
-        <span className={`px-4 py-1.5 rounded-full text-[10px] font-black border ${badgeClass} inline-block whitespace-nowrap w-max text-center`}>
-          {earliest.toLocaleDateString("hu-HU")}
+        <span className={`px-4 py-1.5 rounded-full text-xs font-black border ${badgeClass} inline-block whitespace-nowrap w-max text-center`}>
+          {earliest.toLocaleDateString(currentLocale)}
         </span>
       );
     }
 
     return (
-      <div className={`px-3 py-1.5 rounded-xl text-[10px] font-black border ${badgeClass} inline-flex flex-col items-center justify-center w-max whitespace-nowrap mx-auto`}>
-        <span>{earliest.toLocaleDateString("hu-HU")}</span>
+      <div className={`px-4 py-2 rounded-xl text-[10px] font-black border ${badgeClass} inline-flex flex-col items-center justify-center min-w-[120px] whitespace-nowrap mx-auto`}>
+        <span>{earliest.toLocaleDateString(currentLocale)}</span>
         <span className="opacity-50 font-normal leading-none">-</span>
-        <span>{latest.toLocaleDateString("hu-HU")}</span>
+        <span>{latest.toLocaleDateString(currentLocale)}</span>
       </div>
     );
   };
@@ -434,14 +456,14 @@ function ProductList() {
   const getBatchDateStyles = (lejaratStr: string | Date | null) => {
     if (!lejaratStr) return "text-slate-500 bg-slate-100 dark:bg-slate-800 dark:text-slate-400 border border-slate-200 dark:border-slate-700";
     const d = new Date(lejaratStr);
-    d.setHours(0, 0, 0, 0);
+    d.setHours(0,0,0,0);
     const now = new Date();
-    now.setHours(0, 0, 0, 0);
+    now.setHours(0,0,0,0);
     const diff = Math.ceil((d.getTime() - now.getTime()) / (1000 * 60 * 60 * 24));
-
-    if (diff <= 0) return "text-rose-600 bg-rose-100 dark:bg-rose-900/30 dark:text-rose-400 border border-rose-300 dark:border-rose-800";
-    if (diff <= 7) return "text-amber-600 bg-amber-100 dark:bg-amber-900/30 dark:text-amber-400 border border-amber-300 dark:border-amber-800";
-
+    
+    if(diff <= 0) return "text-rose-600 bg-rose-100 dark:bg-rose-900/30 dark:text-rose-400 border border-rose-300 dark:border-rose-800";
+    if(diff <= 7) return "text-amber-600 bg-amber-100 dark:bg-amber-900/30 dark:text-amber-400 border border-amber-300 dark:border-amber-800";
+    
     return "text-slate-500 bg-slate-100 dark:bg-slate-800 dark:text-slate-400 border border-slate-200 dark:border-slate-700";
   };
 
@@ -457,7 +479,7 @@ function ProductList() {
               <span className="text-3xl text-white leading-none">📦</span>
             </div>
             <h1 className="text-4xl font-black text-slate-900 dark:text-white tracking-tighter italic uppercase">
-              {t("product.list.title", "Raktár")}
+              {t("product.list.title")}
             </h1>
           </div>
 
@@ -477,7 +499,7 @@ function ProductList() {
                         onClick={handleBulkDelete}
                         className="shrink-0 bg-red-600 hover:bg-red-500 text-white whitespace-nowrap px-4 py-3 rounded-2xl font-black uppercase text-xs shadow-lg active:scale-95 transition-transform"
                       >
-                        {t("product.list.bulkDelete", "Törlés ({{count}})", { count: selectedIds.length })}
+                        {t("product.list.bulkDelete", { count: selectedIds.length })}
                       </button>
                     )}
 
@@ -489,32 +511,32 @@ function ProductList() {
                           : "bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-400"
                       }`}
                     >
-                      {isSelectionMode ? t("product.list.selectModeOn", "Kijelölés Ki") : t("product.list.selectModeOff", "Kijelölés")}
+                      {isSelectionMode ? t("product.list.selectModeOn") : t("product.list.selectModeOff")}
                     </button>
 
                     <button
                       onClick={handleAlertFilterToggle}
-                      className={`shrink-0 whitespace-nowrap px-4 py-3 rounded-2xl font-bold text-xs uppercase tracking-widest transition-transform active:scale-95 border ${
+                      className={`shrink-0 whitespace-nowrap px-4 py-3 rounded-2xl font-bold border-2 text-xs uppercase tracking-widest transition-transform active:scale-95 ${
                         showAlertsOnly
                           ? "bg-red-600 border-red-400 text-white"
                           : "bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-400"
                       }`}
                     >
-                      {showAlertsOnly ? t("product.list.filterErrors", "Csak problémásak") : t("product.list.filterAll", "Minden termék")}
+                      {showAlertsOnly ? t("product.list.filterErrors") : t("product.list.filterAll")}
                     </button>
 
                     <button
                       onClick={exportToExcel}
                       className="shrink-0 whitespace-nowrap bg-emerald-600 hover:bg-emerald-500 text-white px-4 py-3 rounded-2xl font-black uppercase text-xs shadow-lg active:scale-95 transition-transform"
                     >
-                      {t("product.list.export", "Exportálás")}
+                      {t("product.list.export")}
                     </button>
 
                     <button
                       onClick={() => navigate("/add")}
                       className="shrink-0 whitespace-nowrap bg-blue-600 hover:bg-blue-500 text-white px-5 py-3 rounded-2xl font-black uppercase text-xs shadow-lg active:scale-95 transition-transform"
                     >
-                      {t("product.list.newProduct", "Új termék")}
+                      {t("product.list.newProduct")}
                     </button>
                   </div>
 
@@ -539,173 +561,175 @@ function ProductList() {
         {paginatedProducts.length > 0 ? (
           <>
             <div className="hidden lg:block bg-white dark:bg-slate-900 rounded-[2.5rem] border border-slate-100 dark:border-slate-800 shadow-xl overflow-hidden transition-all">
-              <table className="w-full border-collapse">
-                <thead>
-                  <tr className="bg-slate-50 dark:bg-slate-800/40 text-slate-500 dark:text-slate-400 text-[10px] font-black uppercase tracking-[0.2em] border-b border-slate-100 dark:border-slate-800">
-                    <th className="p-6 text-center w-[10%]">{t("product.list.batches", "SARZSOK")}</th>
-                    {canEdit && isSelectionMode && (
-                      <th className="p-6 text-center w-[5%]">
-                        <input
-                          type="checkbox"
-                          checked={selectedIds.length > 0 && selectedIds.length === paginatedProducts.length}
-                          onChange={toggleSelectAll}
-                          className="w-4 h-4 rounded text-blue-600"
-                        />
+              <div className="overflow-x-auto custom-scrollbar w-full">
+                <table className="w-full border-collapse">
+                  <thead>
+                    <tr className="bg-slate-50 dark:bg-slate-800/40 text-slate-500 dark:text-slate-400 text-[10px] font-black uppercase tracking-[0.2em] border-b border-slate-100 dark:border-slate-800">
+                      <th className="p-6 text-center w-[10%]">{t("product.list.batches")}</th>
+                      {canEdit && isSelectionMode && (
+                        <th className="p-6 text-center w-[5%]">
+                          <input
+                            type="checkbox"
+                            checked={selectedIds.length > 0 && selectedIds.length === paginatedProducts.length}
+                            onChange={toggleSelectAll}
+                            className="w-4 h-4 rounded text-blue-600"
+                          />
+                        </th>
+                      )}
+                      <th className="p-6 text-center w-[10%]">{t("product.list.headers.qr")}</th>
+                      <th className="p-6 cursor-pointer hover:text-blue-500 text-left w-[25%]" onClick={() => handleSort("nev")}>
+                        {t("product.list.headers.product")} {sortColumn === "nev" && (isAscending ? "↑" : "↓")}
                       </th>
-                    )}
-                    <th className="p-6 text-center w-[10%]">{t("product.list.headers.qr", "QR")}</th>
-                    <th className="p-6 cursor-pointer hover:text-blue-500 text-left w-[25%]" onClick={() => handleSort("nev")}>
-                      {t("product.list.headers.product", "TERMÉK")} {sortColumn === "nev" && (isAscending ? "↑" : "↓")}
-                    </th>
-                    <th className="p-6 cursor-pointer hover:text-blue-500 text-left w-[15%]" onClick={() => handleSort("kategoria")}>
-                      {t("product.list.headers.category", "KATEGÓRIA")} {sortColumn === "kategoria" && (isAscending ? "↑" : "↓")}
-                    </th>
-                    <th className="p-6 cursor-pointer hover:text-blue-500 text-left w-[10%]" onClick={() => handleSort("mennyiseg")}>
-                      {t("product.list.headers.totalStock", "ÖSSZ. KÉSZLET")} {sortColumn === "mennyiseg" && (isAscending ? "↑" : "↓")}
-                    </th>
-                    <th className="p-6 cursor-pointer hover:text-blue-500 text-center w-[15%]" onClick={() => handleSort("lejarat")}>
-                      {t("product.list.headers.expiry", "LEJÁRATI IDŐ")} {sortColumn === "lejarat" && (isAscending ? "↑" : "↓")}
-                    </th>
-                    {canEdit && <th className="p-6 text-right w-[10%]">{t("product.list.headers.actions", "MŰVELET")}</th>}
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-slate-100 dark:divide-slate-800 text-base">
-                  {paginatedProducts.map((p) => {
-                    const totalQty = getTotalQuantity(p);
-                    const isExpanded = expandedRowIds.includes(p.id);
+                      <th className="p-6 cursor-pointer hover:text-blue-500 text-left w-[15%]" onClick={() => handleSort("kategoria")}>
+                        {t("product.list.headers.category")} {sortColumn === "kategoria" && (isAscending ? "↑" : "↓")}
+                      </th>
+                      <th className="p-6 cursor-pointer hover:text-blue-500 text-left w-[10%]" onClick={() => handleSort("mennyiseg")}>
+                        {t("product.list.headers.totalStock")} {sortColumn === "mennyiseg" && (isAscending ? "↑" : "↓")}
+                      </th>
+                      <th className="p-6 cursor-pointer hover:text-blue-500 text-center w-[15%]" onClick={() => handleSort("lejarat")}>
+                        {t("product.list.headers.expiry")} {sortColumn === "lejarat" && (isAscending ? "↑" : "↓")}
+                      </th>
+                      {canEdit && <th className="p-6 text-right w-[10%]">{t("product.list.headers.actions")}</th>}
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-slate-100 dark:divide-slate-800 text-base">
+                    {paginatedProducts.map((p) => {
+                      const totalQty = getTotalQuantity(p);
+                      const isExpanded = expandedRowIds.includes(p.id);
 
-                    return (
-                      <React.Fragment key={p.id}>
-                        <tr className={getProductStyles(p, selectedIds.includes(p.id))}>
-                          <td className="p-6 text-center">
-                            <button
-                              onClick={() => toggleRow(p.id)}
-                              className={`flex items-center justify-between w-full px-3 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all border whitespace-nowrap ${
-                                isExpanded
-                                  ? "bg-blue-500 text-white border-blue-500 shadow-md"
-                                  : "bg-slate-100 dark:bg-slate-800/60 text-slate-500 dark:text-slate-400 border-slate-200 dark:border-slate-700 hover:border-blue-400 dark:hover:border-blue-500 hover:text-blue-600 dark:hover:text-blue-400"
-                              }`}
-                            >
-                              <span>📍 {p.batches?.length || 0}</span>
-                              <span className={`transform transition-transform duration-300 ml-2 ${isExpanded ? "rotate-180" : ""}`}>▼</span>
-                            </button>
-                          </td>
-                          {canEdit && isSelectionMode && (
+                      return (
+                        <React.Fragment key={p.id}>
+                          <tr className={getProductStyles(p, selectedIds.includes(p.id))}>
                             <td className="p-6 text-center">
-                              <input
-                                type="checkbox"
-                                className="w-4 h-4 rounded text-blue-600"
-                                checked={selectedIds.includes(p.id)}
-                                onChange={() => toggleSelect(p.id)}
-                              />
+                              <button
+                                onClick={() => toggleRow(p.id)}
+                                className={`flex items-center justify-between w-full px-3 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all border whitespace-nowrap ${
+                                  isExpanded
+                                    ? "bg-blue-500 text-white border-blue-500 shadow-md"
+                                    : "bg-slate-100 dark:bg-slate-800/60 text-slate-500 dark:text-slate-400 border-slate-200 dark:border-slate-700 hover:border-blue-400 dark:hover:border-blue-500 hover:text-blue-600 dark:hover:text-blue-400"
+                                }`}
+                              >
+                                <span>📍 {p.batches?.length || 0}</span>
+                                <span className={`transform transition-transform duration-300 ml-2 ${isExpanded ? "rotate-180" : ""}`}>▼</span>
+                              </button>
                             </td>
-                          )}
-                          <td className="p-6 text-center">
-                            <div
-                              className="inline-block bg-white p-1.5 rounded-xl border border-slate-100 dark:border-slate-700 cursor-zoom-in hover:scale-110 transition-transform shadow-sm"
-                              onClick={() => handleShowQR(p)}
-                            >
-                              <QRCodeSVG value={`${window.location.origin}/product/${p.id}`} size={35} />
-                            </div>
-                          </td>
-                          <td className="p-6 text-left">
-                            <div
-                              className={`font-black text-lg cursor-pointer hover:text-blue-500 leading-tight ${
-                                totalQty === 0 ? "text-rose-600 dark:text-rose-500" : "text-slate-800 dark:text-slate-100"
-                              }`}
-                              onClick={() => navigate(`/product/${p.id}`)}
-                            >
-                              {p.nev}
-                            </div>
-                            <div className="text-slate-400 text-xs uppercase font-bold tracking-tight mt-1">
-                              {p.gyarto}
-                            </div>
-                          </td>
-                          <td className="p-6 text-left">
-                            <span className="px-3 py-1 bg-slate-100 dark:bg-slate-800 rounded-lg text-xs font-black uppercase text-slate-600 dark:text-slate-400 inline-block whitespace-nowrap">
-                              {t(`product.categories.${p.kategoria}`)}
-                            </span>
-                          </td>
-                          <td className="p-6 text-left">
-                            <span className={`px-4 py-1.5 rounded-full text-xs font-black border inline-block whitespace-nowrap text-center ${
-                                totalQty === 0
-                                  ? "bg-rose-100 text-rose-700 border-rose-300 dark:bg-rose-900/30 dark:text-rose-400 dark:border-rose-800"
-                                  : totalQty <= p.minimumKeszlet
-                                  ? "bg-amber-50 text-amber-600 border-amber-200 dark:bg-amber-900/30 dark:text-amber-400 dark:border-amber-800"
-                                  : "bg-emerald-50 text-emerald-600 border-emerald-200 dark:bg-emerald-900/30 dark:text-emerald-400 dark:border-emerald-800"
-                              }`}
-                            >
-                              {totalQty} {t("common.pieces", "db")}
-                            </span>
-                          </td>
-                          <td className="p-6 text-center">
-                            {renderExpiryInfo(p)}
-                          </td>
-                          {canEdit && (
-                            <td className="p-6 text-right">
-                              <div className="flex justify-end gap-3 whitespace-nowrap">
-                                <button
-                                  onClick={() => navigate(`/modify/${p.id}`)}
-                                  className="bg-blue-50 hover:bg-blue-600 text-blue-600 hover:text-white dark:bg-blue-900/30 dark:text-blue-400 dark:hover:bg-blue-600 dark:hover:text-white p-2.5 rounded-xl transition-colors shadow-sm"
-                                >
-                                  ✏️
-                                </button>
-                                <button
-                                  onClick={() => handleDelete(p.id)}
-                                  className="bg-red-50 hover:bg-red-600 text-red-600 hover:text-white dark:bg-red-900/30 dark:text-red-400 dark:hover:bg-red-600 dark:hover:text-white p-2.5 rounded-xl transition-colors shadow-sm"
-                                >
-                                  🗑️
-                                </button>
+                            {canEdit && isSelectionMode && (
+                              <td className="p-6 text-center">
+                                <input
+                                  type="checkbox"
+                                  className="w-4 h-4 rounded text-blue-600"
+                                  checked={selectedIds.includes(p.id)}
+                                  onChange={() => toggleSelect(p.id)}
+                                />
+                              </td>
+                            )}
+                            <td className="p-6 text-center">
+                              <div
+                                className="inline-block bg-white p-1.5 rounded-xl border border-slate-100 dark:border-slate-700 cursor-zoom-in hover:scale-110 transition-transform shadow-sm"
+                                onClick={() => handleShowQR(p)}
+                              >
+                                <QRCodeSVG value={`${window.location.origin}/product/${p.id}`} size={35} />
                               </div>
                             </td>
-                          )}
-                        </tr>
-                        {isExpanded && (
-                          <tr className="bg-slate-50/50 dark:bg-slate-800/20">
-                            <td colSpan={canEdit ? (isSelectionMode ? 8 : 7) : 6} className="p-6 border-l-4 border-blue-500 dark:border-blue-600">
-                              <div className="pl-6">
-                                <h4 className="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-4">
-                                  {t("product.list.batches", "SARZSOK RÉSZLETEI")}
-                                </h4>
-                                {p.batches && p.batches.length > 0 ? (
-                                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                                    {p.batches.map((batch) => {
-                                      const expiryStyles = getBatchDateStyles(batch.lejarat);
-
-                                      return (
-                                        <div key={batch.id} className="bg-white dark:bg-slate-800 p-4 rounded-2xl border border-slate-100 dark:border-slate-700 shadow-sm flex justify-between items-center group">
-                                          <div>
-                                            <button
-                                              onClick={() => navigate(`/grid?parcel=${batch.parcella}&productId=${p.id}`)}
-                                              className="block text-xl font-black italic text-slate-800 dark:text-white mb-1 hover:text-blue-500 dark:hover:text-blue-400 whitespace-nowrap"
-                                            >
-                                              {batch.parcella}
-                                            </button>
-                                            <span className={`px-2 py-0.5 rounded text-[10px] font-bold block mt-1 w-max border whitespace-nowrap ${expiryStyles}`}>
-                                              {batch.lejarat ? new Date(batch.lejarat).toLocaleDateString("hu-HU") : t("product.list.nonPerishable", "NEM ROMLANDÓ")}
-                                            </span>
-                                          </div>
-                                          <div className="text-2xl font-black text-blue-600 dark:text-blue-400 border-l border-slate-100 dark:border-slate-700 pl-4 whitespace-nowrap">
-                                            {batch.mennyiseg} <span className="text-xs text-slate-400">{t("common.pieces", "db")}</span>
-                                          </div>
-                                        </div>
-                                      );
-                                    })}
-                                  </div>
-                                ) : (
-                                  <span className="text-sm font-bold text-rose-500 bg-rose-50 dark:bg-rose-900/20 px-4 py-2.5 rounded-xl inline-block border border-rose-200 dark:border-rose-800/50 uppercase tracking-widest whitespace-nowrap">
-                                    {t("product.list.outOfStock", "NINCS KÉSZLETEN")}
-                                  </span>
-                                )}
+                            <td className="p-6 text-left">
+                              <div
+                                className={`font-black text-lg cursor-pointer hover:text-blue-500 leading-tight ${
+                                  totalQty === 0 ? "text-rose-600 dark:text-rose-500" : "text-slate-800 dark:text-slate-100"
+                                }`}
+                                onClick={() => navigate(`/product/${p.id}`)}
+                              >
+                                {p.nev}
+                              </div>
+                              <div className="text-slate-400 text-xs uppercase font-bold tracking-tight mt-1">
+                                {p.gyarto}
                               </div>
                             </td>
+                            <td className="p-6 text-left">
+                              <span className="px-3 py-1 bg-slate-100 dark:bg-slate-800 rounded-lg text-xs font-black uppercase text-slate-600 dark:text-slate-400 inline-block whitespace-nowrap">
+                                {t(`product.categories.${p.kategoria}`)}
+                              </span>
+                            </td>
+                            <td className="p-6 text-left">
+                              <span className={`px-4 py-1.5 rounded-full text-xs font-black border inline-block whitespace-nowrap text-center ${
+                                  totalQty === 0
+                                    ? "bg-rose-100 text-rose-700 border-rose-300 dark:bg-rose-900/30 dark:text-rose-400 dark:border-rose-800"
+                                    : totalQty <= p.minimumKeszlet
+                                    ? "bg-amber-50 text-amber-600 border-amber-200 dark:bg-amber-900/30 dark:text-amber-400 dark:border-amber-800"
+                                    : "bg-emerald-50 text-emerald-600 border-emerald-200 dark:bg-emerald-900/30 dark:text-emerald-400 dark:border-emerald-800"
+                                }`}
+                              >
+                                {totalQty} {t("common.pieces")}
+                              </span>
+                            </td>
+                            <td className="p-6 text-center">
+                              {renderExpiryInfo(p)}
+                            </td>
+                            {canEdit && (
+                              <td className="p-6 text-right">
+                                <div className="flex justify-end gap-3 whitespace-nowrap">
+                                  <button
+                                    onClick={() => navigate(`/modify/${p.id}`)}
+                                    className="bg-blue-50 hover:bg-blue-600 text-blue-600 hover:text-white dark:bg-blue-900/30 dark:text-blue-400 dark:hover:bg-blue-600 dark:hover:text-white p-2.5 rounded-xl transition-colors shadow-sm"
+                                  >
+                                    ✏️
+                                  </button>
+                                  <button
+                                    onClick={() => handleDelete(p.id)}
+                                    className="bg-red-50 hover:bg-red-600 text-red-600 hover:text-white dark:bg-red-900/30 dark:text-red-400 dark:hover:bg-red-600 dark:hover:text-white p-2.5 rounded-xl transition-colors shadow-sm"
+                                  >
+                                    🗑️
+                                  </button>
+                                </div>
+                              </td>
+                            )}
                           </tr>
-                        )}
-                      </React.Fragment>
-                    );
-                  })}
-                </tbody>
-              </table>
+                          {isExpanded && (
+                            <tr className="bg-slate-50/50 dark:bg-slate-800/20">
+                              <td colSpan={canEdit ? (isSelectionMode ? 8 : 7) : 6} className="p-6 border-l-4 border-blue-500 dark:border-blue-600">
+                                <div className="pl-6">
+                                  <h4 className="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-4">
+                                    {t("product.list.batches")}
+                                  </h4>
+                                  {p.batches && p.batches.length > 0 ? (
+                                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                      {p.batches.map((batch) => {
+                                        const expiryStyles = getBatchDateStyles(batch.lejarat);
+
+                                        return (
+                                          <div key={batch.id} className="bg-white dark:bg-slate-800 p-4 rounded-2xl border border-slate-100 dark:border-slate-700 shadow-sm flex justify-between items-center group">
+                                            <div>
+                                              <button
+                                                onClick={() => navigate(`/grid?parcel=${batch.parcella}&productId=${p.id}`)}
+                                                className="block text-xl font-black italic text-slate-800 dark:text-white mb-1 hover:text-blue-500 dark:hover:text-blue-400 whitespace-nowrap"
+                                              >
+                                                {batch.parcella}
+                                              </button>
+                                              <span className={`px-2 py-0.5 rounded text-[10px] font-bold block mt-1 w-max border whitespace-nowrap ${expiryStyles}`}>
+                                                {batch.lejarat ? new Date(batch.lejarat).toLocaleDateString(currentLocale) : t("product.list.nonPerishable")}
+                                              </span>
+                                            </div>
+                                            <div className="text-2xl font-black text-blue-600 dark:text-blue-400 border-l border-slate-100 dark:border-slate-700 pl-4 whitespace-nowrap">
+                                              {batch.mennyiseg} <span className="text-xs text-slate-400">{t("common.pieces")}</span>
+                                            </div>
+                                          </div>
+                                        );
+                                      })}
+                                    </div>
+                                  ) : (
+                                    <span className="text-sm font-bold text-rose-500 bg-rose-50 dark:bg-rose-900/20 px-4 py-2.5 rounded-xl inline-block border border-rose-200 dark:border-rose-800/50 uppercase tracking-widest whitespace-nowrap">
+                                      {t("product.list.outOfStock")}
+                                    </span>
+                                  )}
+                                </div>
+                              </td>
+                            </tr>
+                          )}
+                        </React.Fragment>
+                      );
+                    })}
+                  </tbody>
+                </table>
+              </div>
             </div>
 
             {/* Mobil nézet */}
@@ -747,7 +771,7 @@ function ProductList() {
                               : "bg-emerald-50 text-emerald-600 border-emerald-200 dark:bg-emerald-900/30 dark:text-emerald-400 dark:border-emerald-800"
                           }`}
                         >
-                          📦 {totalQty} {t("common.pieces", "db")}
+                          📦 {totalQty} {t("common.pieces")}
                         </span>
                       </div>
                     </div>
@@ -762,7 +786,7 @@ function ProductList() {
                     
                     {/* Lejárat mező mobilra */}
                     <div className="flex justify-between items-center mb-6 bg-slate-50 dark:bg-slate-800/40 p-4 rounded-2xl border border-slate-100 dark:border-slate-700/50">
-                      <span className="text-[10px] font-black uppercase text-slate-500 tracking-widest whitespace-nowrap">{t("product.list.headers.expiry", "LEJÁRAT")}</span>
+                      <span className="text-[10px] font-black uppercase text-slate-500 tracking-widest whitespace-nowrap">{t("product.list.headers.expiry")}</span>
                       {renderExpiryInfo(p)}
                     </div>
 
@@ -772,7 +796,7 @@ function ProductList() {
                           : "bg-slate-100 dark:bg-slate-800/60 text-slate-500 dark:text-slate-400 border-slate-200 dark:border-slate-700 hover:border-blue-400"
                     }`}>
                       <span className="flex items-center gap-2">
-                        📍 {t("product.list.batches", "SARZSOK")} ({p.batches?.length || 0})
+                        📍 {t("product.list.batches")} ({p.batches?.length || 0})
                       </span>
                       <span className={`transform transition-transform duration-300 ${isExpanded ? "rotate-180" : ""}`}>▼</span>
                     </button>
@@ -784,17 +808,17 @@ function ProductList() {
                               <div>
                                 <span className="font-black italic text-sm block dark:text-white whitespace-nowrap">{batch.parcella}</span>
                                 <span className={`text-[9px] font-bold uppercase border ${getBatchDateStyles(batch.lejarat)} px-1.5 py-0.5 mt-1 block w-max rounded whitespace-nowrap`}>
-                                  {batch.lejarat ? new Date(batch.lejarat).toLocaleDateString("hu-HU") : t("product.list.nonPerishable", "NEM ROMLANDÓ")}
+                                  {batch.lejarat ? new Date(batch.lejarat).toLocaleDateString(currentLocale) : t("product.list.nonPerishable")}
                                 </span>
                               </div>
                               <span className="font-black text-blue-600 dark:text-blue-400 text-lg whitespace-nowrap">
-                                {batch.mennyiseg} <span className="text-xs text-slate-400">{t("common.pieces", "db")}</span>
+                                {batch.mennyiseg} <span className="text-xs text-slate-400">{t("common.pieces")}</span>
                               </span>
                             </div>
                           ))
                         ) : (
                           <div className="text-xs font-bold text-rose-500 bg-rose-50 dark:bg-rose-900/20 p-3 rounded-xl text-center border border-rose-200 dark:border-rose-800/50 uppercase tracking-widest whitespace-nowrap">
-                            {t("product.list.outOfStock", "NINCS KÉSZLETEN")}
+                            {t("product.list.outOfStock")}
                           </div>
                         )}
                       </div>
@@ -802,7 +826,7 @@ function ProductList() {
 
                     <div className="flex gap-2 pt-4 border-t border-slate-100 dark:border-slate-800">
                       <button onClick={() => navigate(`/product/${p.id}`)} className="flex-1 bg-slate-50 dark:bg-slate-800 py-3 rounded-xl font-bold text-xs uppercase text-slate-600 dark:text-slate-300 whitespace-nowrap">
-                        {t("product.list.details", "RÉSZLETEK")}
+                        {t("product.list.details")}
                       </button>
                       {canEdit && (
                         <>
@@ -819,7 +843,7 @@ function ProductList() {
             <div className="mt-8 bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 rounded-[2rem] p-6 flex flex-col sm:flex-row justify-between items-center gap-4 shadow-xl">
               <div className="flex items-center gap-4">
                 <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 whitespace-nowrap">
-                  {t("common.perPage", "OLDALANKÉNT")}
+                  {t("common.perPage")}
                 </label>
                 <select
                   value={limit}
@@ -839,7 +863,7 @@ function ProductList() {
                   onClick={() => handlePageChange(validPage - 1)}
                   className="px-6 py-3 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all disabled:opacity-30 disabled:cursor-not-allowed hover:bg-white dark:hover:bg-slate-700 hover:shadow-md text-slate-600 dark:text-slate-300"
                 >
-                  {t("common.prev", "ELŐZŐ")}
+                  {t("common.prev")}
                 </button>
                 <span className="px-6 text-sm font-black text-slate-800 dark:text-white whitespace-nowrap">
                   {validPage} / {totalPages}
@@ -849,7 +873,7 @@ function ProductList() {
                   onClick={() => handlePageChange(validPage + 1)}
                   className="px-6 py-3 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all disabled:opacity-30 disabled:cursor-not-allowed hover:bg-white dark:hover:bg-slate-700 hover:shadow-md text-slate-600 dark:text-slate-300"
                 >
-                  {t("common.next", "KÖVETKEZŐ")}
+                  {t("common.next")}
                 </button>
               </div>
             </div>
@@ -858,10 +882,10 @@ function ProductList() {
           <div className="py-32 text-center bg-white dark:bg-slate-900 rounded-[2.5rem] border border-slate-100 dark:border-slate-800 transition-all shadow-xl">
             <div className="text-6xl mb-6">📭</div>
             <h2 className="text-3xl font-black text-slate-800 dark:text-white uppercase tracking-tighter italic">
-              {t("product.list.emptyTitle", "ÜRES LISTA")}
+              {t("product.list.emptyTitle")}
             </h2>
             <p className="text-slate-400 font-bold uppercase text-xs tracking-[0.2em] mt-4">
-              {t("product.list.emptySubtitle", "Nem található termék a megadott feltételekkel.")}
+              {t("product.list.emptySubtitle")}
             </p>
           </div>
         )}

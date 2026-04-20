@@ -398,50 +398,48 @@
         "sortedSuccess": "Optimalizálva!"
       }
     },
-    "list": {
+"list": {
       "title": "Raktár",
-      "bulkDelete": "🗑️ Törlés ({{count}})",
-      "filterErrors": "🚨 Csak hibák",
-      "filterAll": "⚠️ Szűrés",
-      "export": "📊 Export",
-      "selectModeOn": "✖ Kijelölés vége",
-      "selectModeOff": "☑️ Több kijelölése",
-      "newProduct": "+ Új Termék",
-      "searchPlaceholder": "Keresés név, gyártó vagy ID alapján...",
+      "print": "Nyomtatás",
+      "batches": "Sarzsonként",
+      "nonPerishable": "Nem romlandó",
+      "outOfStock": "Nincs készleten",
+      "details": "Részletek",
+      "emptyTitle": "Üres lista",
+      "emptySubtitle": "Nem található termék a megadott feltételekkel.",
+      "bulkDelete": "Törlés ({{count}})",
+      "selectModeOn": "Kijelölés ki",
+      "selectModeOff": "Kijelölés",
+      "filterErrors": "Csak problémásak",
+      "filterAll": "Minden termék",
+      "export": "Exportálás",
+      "newProduct": "Új termék",
       "headers": {
         "qr": "QR",
         "product": "Termék",
         "category": "Kategória",
         "totalStock": "Össz. Készlet",
+        "expiry": "Lejárat",
         "actions": "Művelet"
       },
-      "batches": "Sarzsok",
-      "nonPerishable": "Nem romlandó",
-      "details": "Részletek",
-      "allGoodTitle": "Minden polc rendben",
-      "allGoodSubtitle": "Nincs beavatkozást igénylő tétel",
-      "print": "🖨️ Nyomtatás",
       "excel": {
-        "sheetName": "Raktárkészlet",
-        "name": "Terméknév",
+        "sheetName": "Készlet",
+        "name": "Név",
         "manufacturer": "Gyártó",
         "category": "Kategória",
-        "quantity": "Össz. Mennyiség (db)",
-        "earliestExpiry": "Legkorábbi Lejárat"
+        "quantity": "Mennyiség",
+        "earliestExpiry": "Lejárat"
       },
-      "emptyTitle": "Nincs találat",
-      "emptySubtitle": "A keresési vagy szűrési feltételeknek nem felel meg egyetlen termék sem.",
-      "outOfStock": "Készlethiány",
       "alerts": {
+        "excelReady": "Excel fájl letöltve!",
         "bulkDeleteTitle": "Tömeges törlés",
-        "bulkDeleteText": "{{count}} tétel törlése?",
+        "bulkDeleteText": "Biztosan törlöd a kijelölt {{count}} elemet?",
         "bulkDeleted": "Tételek törölve.",
-        "bulkDeleteFailed": "Sikertelen tömeges törlés.",
-        "deleteTitle": "Termék törlése",
-        "deleteText": "Biztosan törlöd?",
-        "deleted": "Termék törölve.",
-        "deleteFailed": "Sikertelen törlés.",
-        "excelReady": "Excel riport kész! 📊"
+        "bulkDeleteFailed": "Nem sikerült törölni a tételeket.",
+        "deleteTitle": "Törlés",
+        "deleteText": "Biztosan törölni szeretnéd ezt a terméket?",
+        "deleted": "Termék törölve!",
+        "deleteFailed": "A törlés sikertelen."
       }
     },
     "modify": {

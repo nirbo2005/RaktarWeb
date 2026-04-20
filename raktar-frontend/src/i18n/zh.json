@@ -367,47 +367,48 @@
         "sortedSuccess": "优化完成！"
       }
     },
-    "list": {
-      "title": "库存看板",
-      "bulkDelete": "🗑️ 删除 ({{count}})",
-      "filterErrors": "🚨 仅显示异常",
-      "filterAll": "⚠️ 筛选",
-      "export": "📊 导出",
-      "selectModeOn": "✖ 取消选择",
-      "selectModeOff": "☑️ 批量选择",
-      "newProduct": "+ 新增产品",
-      "searchPlaceholder": "按名称、生产商或 ID 搜索...",
+   "list": {
+      "title": "仓库",
+      "print": "打印",
+      "batches": "批次",
+      "nonPerishable": "不易腐烂",
+      "outOfStock": "缺货",
+      "details": "详情",
+      "emptyTitle": "空列表",
+      "emptySubtitle": "未找到符合条件的产品。",
+      "bulkDelete": "删除 ({{count}})",
+      "selectModeOn": "取消选择",
+      "selectModeOff": "选择",
+      "filterErrors": "仅显示问题",
+      "filterAll": "所有产品",
+      "export": "导出",
+      "newProduct": "新产品",
       "headers": {
-        "qr": "二维码",
+        "qr": "QR",
         "product": "产品",
         "category": "类别",
         "totalStock": "总库存",
+        "expiry": "到期日",
         "actions": "操作"
       },
-      "batches": "批次详情",
-      "nonPerishable": "常年有效",
-      "details": "查看详情",
-      "allGoodTitle": "所有货架正常",
-      "allGoodSubtitle": "目前没有需要干预的项目",
-      "print": "🖨️ 打印",
       "excel": {
-        "sheetName": "库存列表",
-        "name": "产品名称",
-        "manufacturer": "生产商",
+        "sheetName": "库存",
+        "name": "名称",
+        "manufacturer": "制造商",
         "category": "类别",
-        "quantity": "总计数量 (件)",
-        "earliestExpiry": "最近过期时间"
+        "quantity": "数量",
+        "earliestExpiry": "最早到期日"
       },
       "alerts": {
+        "excelReady": "Excel 文件已下载！",
         "bulkDeleteTitle": "批量删除",
-        "bulkDeleteText": "确定要删除这 {{count}} 个项目吗？",
+        "bulkDeleteText": "您确定要删除 {{count}} 个项目吗？",
         "bulkDeleted": "项目已删除。",
-        "bulkDeleteFailed": "批量删除失败。",
-        "deleteTitle": "删除产品",
-        "deleteText": "确定要删除吗？",
-        "deleted": "产品已删除。",
-        "deleteFailed": "删除失败。",
-        "excelReady": "Excel 报表已生成！ 📊"
+        "bulkDeleteFailed": "删除项目失败。",
+        "deleteTitle": "删除",
+        "deleteText": "您确定要删除此产品吗？",
+        "deleted": "产品已删除！",
+        "deleteFailed": "删除失败。"
       }
     },
     "modify": {
