@@ -413,6 +413,7 @@
         "product": "Termék",
         "category": "Kategória",
         "totalStock": "Össz. Készlet",
+        "expiry": "Lejárati Idő",
         "actions": "Művelet"
       },
       "batches": "Sarzsok",
