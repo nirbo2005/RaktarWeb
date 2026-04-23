@@ -168,7 +168,11 @@
       "activityDistribution": "활동 분포",
       "movesThisMonth": "이번 달 작업",
       "newProducts": "새 제품 등록됨",
-      "fetchError": "통계 계산 오류:"
+      "fetchError": "통계 계산 오류:",
+      "moves": "이동",
+      "batches": "배치",
+      "productMoves": "제품 이동",
+      "batchOperations": "배치 작업"
     },
     "system": {
       "database": "데이터베이스",
@@ -413,7 +417,8 @@
         "product": "제품",
         "category": "카테고리",
         "totalStock": "총 재고",
-        "actions": "작업"
+        "actions": "작업",
+        "expiry": "유통기한"
       },
       "batches": "배치",
       "nonPerishable": "부패하지 않음",

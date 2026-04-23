@@ -155,6 +155,24 @@ const ProfileLogs = () => {
     }
   };
 
+  // Adatbázis mezők dinamikus fordítása a JSON kulcsok alapján
+  const translateKey = (key: string) => {
+    const keyMap: Record<string, string> = {
+      mennyiseg: t("logs.labels.quantity", "Mennyiség"),
+      nev: t("logs.labels.name", "Név"),
+      gyarto: t("logs.labels.manufacturer", "Gyártó"),
+      parcella: t("logs.labels.plot", "Parcella"),
+      kategoria: t("product.list.headers.category", "Kategória"),
+      beszerzesiAr: t("product.details.purchasePrice", "Beszerzési ár"),
+      eladasiAr: t("product.details.salePrice", "Eladási ár"),
+      minimumKeszlet: t("product.details.minStock", "Min. készlet"),
+      lejarat: t("product.list.headers.expiry", "Lejárat"),
+      suly: t("product.add.weight", "Súly"),
+      message: t("logs.fields.message", "Üzenet")
+    };
+    return keyMap[key] || key;
+  };
+
   const renderChanges = (log: AuditLog) => {
     const regi = log.regiAdat;
     const uj = log.ujAdat;
@@ -213,7 +231,7 @@ const ProfileLogs = () => {
 
         changes.push(
           <div key={key} className="flex items-center gap-2 text-xs py-0.5">
-            <span className="font-black uppercase text-[9px] text-slate-400 w-24">{key}:</span>
+            <span className="font-black uppercase text-[9px] text-slate-400 w-24">{translateKey(key)}:</span>
             <span className="text-rose-400 font-medium">{displayOld}</span>
             <span className="text-slate-400">➔</span>
             <span className="text-emerald-500 font-black">{displayNew}</span>

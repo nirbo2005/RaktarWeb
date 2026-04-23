@@ -168,7 +168,11 @@
       "activityDistribution": "Répartition des activités",
       "movesThisMonth": "Opérations ce mois-ci",
       "newProducts": "Nouveaux produits enregistrés",
-      "fetchError": "Erreur lors du calcul des statistiques :"
+      "fetchError": "Erreur lors du calcul des statistiques :",
+      "moves": "Mouvements",
+      "batches": "Lots",
+      "productMoves": "Mouvements de produits",
+      "batchOperations": "Opérations sur les lots"
     },
     "system": {
       "database": "Base de données",
@@ -413,7 +417,8 @@
         "product": "Produit",
         "category": "Catégorie",
         "totalStock": "Stock total",
-        "actions": "Action"
+        "actions": "Action",
+        "expiry": "Expiration"
       },
       "batches": "Lots",
       "nonPerishable": "Non périssable",

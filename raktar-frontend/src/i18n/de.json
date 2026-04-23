@@ -168,7 +168,11 @@
       "activityDistribution": "Verteilung der Aktivitäten",
       "movesThisMonth": "Aktionen in diesem Monat",
       "newProducts": "Neues Produkt erfasst",
-      "fetchError": "Fehler bei der Berechnung der Statistiken:"
+      "fetchError": "Fehler bei der Berechnung der Statistiken:",
+      "moves": "Bewegungen",
+      "batches": "Chargen",
+      "productMoves": "Produktbewegungen",
+      "batchOperations": "Chargenoperationen"
     },
     "system": {
       "database": "Datenbank",
@@ -276,7 +280,8 @@
       "targetShelf": "Zielregal",
       "total": "Gesamt",
       "system": "Systemprozess",
-      "na": "N/A"
+      "na": "N/A",
+      "quantity": "Menge"
     },
     "excel": {
       "sheetName": "Aktivitätsprotokoll",
@@ -413,7 +418,8 @@
         "product": "Produkt",
         "category": "Kategorie",
         "totalStock": "Gesamtbestand",
-        "actions": "Aktion"
+        "actions": "Aktion",
+        "expiry": "Ablaufdatum"
       },
       "batches": "Chargen",
       "nonPerishable": "Unverderblich",

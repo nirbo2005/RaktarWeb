@@ -168,7 +168,11 @@
       "activityDistribution": "Распределение активности",
       "movesThisMonth": "Операции в этом месяце",
       "newProducts": "Новый продукт зарегистрирован",
-      "fetchError": "Ошибка вычисления статистики:"
+      "fetchError": "Ошибка вычисления статистики:",
+      "moves": "Перемещения",
+      "batches": "Партии",
+      "productMoves": "Перемещение товаров",
+      "batchOperations": "Операции с партиями"
     },
     "system": {
       "database": "База данных",
@@ -413,7 +417,8 @@
         "product": "Продукт",
         "category": "Категория",
         "totalStock": "Общий запас",
-        "actions": "Действие"
+        "actions": "Действие",
+        "expiry": "Срок годности"
       },
       "batches": "Партии",
       "nonPerishable": "Не скоропортящийся",

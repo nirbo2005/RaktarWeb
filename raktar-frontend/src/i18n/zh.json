@@ -168,7 +168,11 @@
       "activityDistribution": "活动分布",
       "movesThisMonth": "本月操作",
       "newProducts": "新记录的产品",
-      "fetchError": "计算统计信息时出错:"
+      "fetchError": "计算统计信息时出错:",
+      "moves": "移动",
+      "batches": "批次",
+      "productMoves": "产品移动",
+      "batchOperations": "批次操作"
     },
     "system": {
       "database": "数据库",
@@ -413,7 +417,8 @@
         "product": "产品",
         "category": "分类",
         "totalStock": "总库存",
-        "actions": "操作"
+        "actions": "操作",
+        "expiry": "有效期"
       },
       "batches": "批次",
       "nonPerishable": "不易腐坏",

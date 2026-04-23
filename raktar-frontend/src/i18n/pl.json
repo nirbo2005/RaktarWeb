@@ -168,7 +168,11 @@
       "activityDistribution": "Rozkład aktywności",
       "movesThisMonth": "Akcje w tym miesiącu",
       "newProducts": "Zarejestrowano nowy produkt",
-      "fetchError": "Błąd podczas obliczania statystyk:"
+      "fetchError": "Błąd podczas obliczania statystyk:",
+      "moves": "Ruchy",
+      "batches": "Partie",
+      "productMoves": "Ruch produktów",
+      "batchOperations": "Operacje na partiach"
     },
     "system": {
       "database": "Baza danych",
@@ -413,7 +417,8 @@
         "product": "Produkt",
         "category": "Kategoria",
         "totalStock": "Zapas",
-        "actions": "Akcja"
+        "actions": "Akcja",
+        "expiry": "Ważność"
       },
       "batches": "Partie",
       "nonPerishable": "Niepsujący się",

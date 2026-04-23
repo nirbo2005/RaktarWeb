@@ -168,7 +168,11 @@
       "activityDistribution": "アクティビティ分布",
       "movesThisMonth": "今月のアクション",
       "newProducts": "新製品登録",
-      "fetchError": "統計の計算エラー:"
+      "fetchError": "統計の計算エラー:",
+      "moves": "移動",
+      "batches": "バッチ",
+      "productMoves": "製品移動",
+      "batchOperations": "バッチ操作"
     },
     "system": {
       "database": "データベース",
@@ -413,7 +417,8 @@
         "product": "製品",
         "category": "カテゴリ",
         "totalStock": "総在庫",
-        "actions": "アクション"
+        "actions": "アクション",
+        "expiry": "有効期限"
       },
       "batches": "バッチ",
       "nonPerishable": "腐敗しない",
