@@ -15,6 +15,7 @@ A `raktar-backend` könyvtárban hozz létre egy `.env` fájlt az alábbi formá
 ```env
 DATABASE_URL="mysql://root:@localhost:3306/raktar"
 JWT_SECRET="valtoztasd-meg-egy-eros-titkositasi-kulcsra"
+Forrás mappában JWT kulcs generálás: node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"
 PORT=3000
 ```
 ## Inditási útmutató
