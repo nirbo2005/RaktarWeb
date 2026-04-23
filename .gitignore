@@ -19,3 +19,5 @@ Thumbs.db
 
 # IDE mappák (VS Code)
 .vscode/
+
+.env

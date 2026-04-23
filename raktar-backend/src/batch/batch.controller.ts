@@ -1,4 +1,3 @@
-// raktar-backend/src/batch/batch.controller.ts
 import {
   Controller,
   Post,
@@ -20,7 +19,12 @@ import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { RolesGuard } from '../auth/roles.guard';
 import { Roles } from '../auth/roles.decorator';
 import { Role } from '@prisma/client';
+import { ApiTags, ApiOperation, ApiBearerAuth, ApiResponse, ApiQuery, ApiBody } from '@nestjs/swagger';
 
+@ApiTags('batch')
+@ApiBearerAuth()
+@ApiResponse({ status: 401, description: 'Unauthorized - Nincs bejelentkezve vagy érvénytelen token' })
+@ApiResponse({ status: 403, description: 'Forbidden - Nincs megfelelő jogosultság' })
 @UseGuards(JwtAuthGuard, RolesGuard)
 @Controller('batch')
 export class BatchController {
@@ -41,12 +45,19 @@ export class BatchController {
     return parsedTokenId;
   }
 
+  @ApiOperation({ summary: 'A raktár jelenlegi telítettségi térképének lekérése' })
+  @ApiResponse({ status: 200, description: 'Sikeres lekérdezés' })
   @Roles(Role.KEZELO, Role.ADMIN)
   @Get('warehouse-map')
   getWarehouseMap() {
     return this.batchService.getWarehouseMap();
   }
 
+  @ApiOperation({ summary: 'Intelligens parcellajavaslat kérése betároláshoz' })
+  @ApiResponse({ status: 200, description: 'Javasolt parcellák listája' })
+  @ApiQuery({ name: 'productId', required: true, type: Number })
+  @ApiQuery({ name: 'mennyiseg', required: true, type: Number })
+  @ApiQuery({ name: 'weight', required: false, type: String })
   @Roles(Role.KEZELO, Role.ADMIN)
   @Get('suggest-placement')
   suggestPlacement(
@@ -58,6 +69,10 @@ export class BatchController {
     return this.batchService.suggestPlacement(productId, mennyiseg, parsedWeight);
   }
 
+  @ApiOperation({ summary: 'Tömeges betárolás (több tétel egyszerre)' })
+  @ApiResponse({ status: 201, description: 'Tételek sikeresen betárolva' })
+  @ApiBody({ type: [CreateBatchDto] })
+  @ApiQuery({ name: 'userId', required: false, type: String })
   @Roles(Role.KEZELO, Role.ADMIN)
   @Post('bulk')
   createBulk(
@@ -68,12 +83,18 @@ export class BatchController {
     return this.batchService.createBulk(splits, this.getUserId(req, userId));
   }
 
+  @ApiOperation({ summary: 'Raktár újrarendezése / optimalizálása' })
+  @ApiResponse({ status: 201, description: 'A raktár újrarendezése sikeresen befejeződött' })
+  @ApiQuery({ name: 'userId', required: false, type: String })
   @Roles(Role.ADMIN)
   @Post('sort-warehouse')
   sortWarehouse(@Request() req, @Query('userId') userId?: string) {
     return this.batchService.sortWarehouse(this.getUserId(req, userId));
   }
 
+  @ApiOperation({ summary: 'Új batch (tétel) létrehozása és betárolása' })
+  @ApiResponse({ status: 201, description: 'Tétel sikeresen létrehozva' })
+  @ApiQuery({ name: 'userId', required: false, type: String })
   @Roles(Role.KEZELO, Role.ADMIN)
   @Post()
   create(
@@ -87,6 +108,9 @@ export class BatchController {
     );
   }
 
+  @ApiOperation({ summary: 'Egy meglévő tétel mennyiségének vagy adatainak módosítása' })
+  @ApiResponse({ status: 200, description: 'Tétel sikeresen frissítve' })
+  @ApiQuery({ name: 'userId', required: false, type: String })
   @Roles(Role.KEZELO, Role.ADMIN)
   @Patch(':id')
   update(
@@ -102,6 +126,9 @@ export class BatchController {
     );
   }
 
+  @ApiOperation({ summary: 'Egy tétel törlése' })
+  @ApiResponse({ status: 200, description: 'Tétel sikeresen törölve' })
+  @ApiQuery({ name: 'userId', required: false, type: String })
   @Roles(Role.KEZELO, Role.ADMIN)
   @Delete(':id')
   remove(

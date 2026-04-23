@@ -1,4 +1,3 @@
-//raktar-backend/src/user/dto/create-user.dto.ts
 import {
   IsString,
   IsNotEmpty,
@@ -10,12 +9,15 @@ import {
   Matches,
 } from 'class-validator';
 import { Role } from '@prisma/client';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 
 export class CreateUserDto {
+  @ApiProperty({ example: 'Kovács János' })
   @IsString({ message: 'A névnek szövegnek kell lennie!' })
   @IsNotEmpty({ message: 'A név megadása kötelező!' })
   nev: string;
 
+  @ApiProperty({ example: 'janos_k' })
   @IsString()
   @IsNotEmpty({ message: 'A felhasználónév nem lehet üres!' })
   @MinLength(3, {
@@ -24,6 +26,7 @@ export class CreateUserDto {
   @MaxLength(20, { message: 'A felhasználónév maximum 20 karakter lehet!' })
   felhasznalonev: string;
 
+  @ApiProperty({ example: 'Jelszo123!' })
   @IsString()
   @IsNotEmpty({ message: 'A jelszó nem lehet üres!' })
   @MinLength(8, { message: 'A jelszónak legalább 8 karakternek kell lennie!' })
@@ -33,14 +36,17 @@ export class CreateUserDto {
   })
   jelszo: string;
 
+  @ApiPropertyOptional({ example: 'janos@example.com' })
   @IsEmail({}, { message: 'Érvénytelen email cím formátum!' })
   @IsOptional()
   email?: string;
 
+  @ApiPropertyOptional({ example: '+36301234567' })
   @IsString()
   @IsOptional()
   telefonszam?: string;
 
+  @ApiPropertyOptional({ enum: Role, example: Role.KEZELO })
   @IsEnum(Role, { message: 'Érvénytelen rang!' })
   @IsOptional()
   rang?: Role;
