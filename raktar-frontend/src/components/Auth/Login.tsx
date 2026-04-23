@@ -62,13 +62,6 @@ function Login() {
     }
   }, [location, navigate, t]);
 
-  const fillDemoData = () => {
-    setForm((prev) => ({
-      ...prev,
-      jelszo: "User!123",
-    }));
-  };
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
@@ -116,14 +109,7 @@ function Login() {
   return (
     <div className="min-h-screen flex items-center justify-center bg-slate-50 dark:bg-slate-950 p-6 transition-colors duration-300">
       <div className="bg-white dark:bg-slate-900 p-10 md:p-16 rounded-[3rem] shadow-2xl w-full md:w-9/12 lg:w-7/12 xl:w-6/12 min-w-[320px] max-w-[850px] border border-slate-200 dark:border-slate-800 transition-all text-left relative overflow-hidden animate-in fade-in zoom-in duration-500">
-        <button
-          onClick={fillDemoData}
-          type="button"
-          className="absolute top-8 right-10 bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest hover:scale-105 active:scale-95 transition-all border border-blue-100 dark:border-blue-800 shadow-sm z-10"
-        >
-          {t("auth.login.fillDemo")}
-        </button>
-
+        
         <h1 className="text-4xl font-black text-slate-900 dark:text-white mb-10 text-center italic uppercase tracking-tighter">
           {t("auth.login.title")}
         </h1>
